@@ -4,8 +4,8 @@ A confidence and communication coaching app for iOS, Android and the web, built 
 
 ## What's inside
 
-- **Course:** 6 modules and 24 lessons (calm confidence, assertiveness, handling pushback, speaking at work, public speaking, influence). Each lesson has a key idea, a "say this instead" example with alternatives, a two-question quiz with explanations and a practice task.
-- **Speaking coach:** 24 real-life situations plus free practice. Each answer is scored for clarity, calm, confidence and respect, with written feedback and an improved example.
+- **Course:** 6 modules and 24 lessons (calm confidence, assertiveness, handling pushback, speaking at work, public speaking, influence). Each lesson runs as a chat. The coach explains the key idea and shows "say this instead" examples. You then answer two quiz questions by tapping a reply, and finish with a role-play.
+- **Chat role-plays:** 24 characters, one per lesson (a colleague, a manager, a client, a friend…), each with a four-exchange conversation. Every reply you send is scored for clarity, calm, confidence and respect and gets a tip. The other person then reacts to how you said it and asks the next question: they warm up when you're calm and clear, push back when you're vague and take offence when you're rude. The Coach tab runs one conversation after another. Lines and reactions live in `src/content/dialogues/`.
 - **Daily challenge:** a new situation every day, with bonus XP.
 - **Power phrases:** about 70 ready-to-use lines, searchable, with read-aloud.
 - **Progress:** XP, levels and ranks, day streaks, 10 achievements, per-module progress and recent practice. Progress is saved on the device.

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput } from 'react-native';
-import { C, s, Card, Eyebrow, ListenButton } from '../ui';
+import { C, s, Card, Eyebrow, ListenButton, Button } from '../ui';
 
-export default function Phrases({ lang, speaker }) {
+export default function Phrases({ lang, speaker, onPractise }) {
   const t = lang.ui;
   const [q, setQ] = useState('');
   const needle = q.trim().toLowerCase();
@@ -30,6 +30,7 @@ export default function Phrases({ lang, speaker }) {
                   <ListenButton id={'ph-' + l.id + '-' + i} text={p} lang={lang} speaker={speaker} t={t} />
                 </View>
               ))}
+              <Button small kind="secondary" label={'💬 ' + t.chat.practiseChat.replace('{name}', l.chat.who)} onPress={() => onPractise(l.id)} />
             </Card>
           ))}
         </View>

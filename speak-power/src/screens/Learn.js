@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { C, s, Card, Button, Eyebrow, Bar, ListenButton } from '../ui';
-import Practice, { AiStatusLine } from './Practice';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { C, s, Card, Eyebrow, Bar } from '../ui';
+import ChatView, { useChatLog, useRolePlay } from './ChatView';
 import { allLessons } from '../lib/progress';
-import { inClaudeViewer } from '../lib/platform';
 
 function Course({ lang, state, onOpen }) {
   const t = lang.ui;
@@ -33,7 +32,10 @@ function Course({ lang, state, onOpen }) {
                     <View style={{ width: 28, height: 28, borderRadius: 14, alignItems: 'center', justifyContent: 'center', backgroundColor: isDone ? C.good : C.chip }}>
                       <Text style={{ color: isDone ? C.goldInk : C.text, fontWeight: '800', fontSize: 13 }}>{isDone ? '✓' : li + 1}</Text>
                     </View>
-                    <Text style={[s.bodyStrong, { flex: 1 }]}>{l.title}</Text>
+                    <View style={{ flex: 1, minWidth: 0 }}>
+                      <Text style={s.bodyStrong}>{l.title}</Text>
+                      <Text style={s.small} numberOfLines={1}>💬 {l.chat.who} · {l.chat.role}</Text>
+                    </View>
                     <Text style={{ color: C.muted, fontSize: 18 }}>›</Text>
                   </TouchableOpacity>
                 );
@@ -46,127 +48,87 @@ function Course({ lang, state, onOpen }) {
   );
 }
 
-function Lesson({ lang, lesson, nextLesson, onClose, onOpen, onComplete, aiStatus, setAiStatus, onCoachResult, speaker, scrollTop }) {
+// A lesson told as a chat: the coach explains, quizzes you with tap answers,
+// then you practise in a role-play with the lesson's character.
+function LessonChat({ lang, lesson, nextLesson, onClose, onOpen, onComplete, onConversation, aiStatus, setAiStatus, speaker }) {
   const t = lang.ui;
-  const [step, setStep] = useState('idea');
+  const c = t.chat;
+  const log = useChatLog();
+  const [stage, setStage] = useState('wait');
   const [qi, setQi] = useState(0);
-  const [picked, setPicked] = useState(null);
-  const [firstTry, setFirstTry] = useState([]);
-  const [gained, setGained] = useState(0);
-  useEffect(() => { scrollTop(); }, [step, qi]);
+  const firstTry = useRef([]);
+  const started = useRef(false);
+  const finished = useRef(false);
 
-  const totalSteps = lesson.quiz.length + 2;
-  const at = step === 'idea' ? 0 : step === 'quiz' ? 1 + qi : step === 'practice' ? totalSteps - 1 : totalSteps;
-  const q = lesson.quiz[qi];
-
-  const finish = () => {
-    setGained(onComplete(lesson, firstTry.filter(Boolean).length));
-    setStep('done');
+  const coachSay = (items, then) => {
+    if (!items.length) { if (then) then(); return; }
+    const [m, ...rest] = items;
+    const msg = typeof m === 'string' ? { text: m } : m;
+    log.typeThen(c.coachName, msg.text || '', () => { log.add({ from: 'coach', ...msg }); coachSay(rest, then); });
   };
 
+  const finish = (summary) => {
+    if (finished.current) return;
+    finished.current = true;
+    setStage('wait');
+    if (summary) log.add({ from: 'summary', data: { ...summary, xp: onConversation(summary, { id: lesson.id }) } });
+    const gained = onComplete(lesson, firstTry.current.filter(Boolean).length);
+    coachSay([`♛ ${t.lessonDone} +${gained} ${t.xp}`], () => setStage('done'));
+  };
+  const play = useRolePlay(log, { lang, aiStatus, setAiStatus, onFinish: (summary) => finish(summary) });
+
+  useEffect(() => {
+    if (started.current) return;
+    started.current = true;
+    coachSay([c.lessonIntro.replace('{title}', lesson.title), lesson.idea, { text: '', contrast: { weak: lesson.weak, strong: lesson.say[0] } }], () => setStage('intro'));
+  }, []);
+
+  const ask = (i) => {
+    setStage('wait');
+    const q = lesson.quiz[i];
+    const lead = i === 0 ? c.quizIntro : `${t.question} ${i + 1} ${t.of} ${lesson.quiz.length}`;
+    coachSay([`${lead}\n\n${q.q}`], () => { setQi(i); setStage('quiz'); });
+  };
+
+  const answer = (opt) => {
+    const q = lesson.quiz[qi];
+    setStage('wait');
+    log.add({ from: 'me', text: q.o[opt] });
+    const ok = opt === q.a;
+    firstTry.current[qi] = ok;
+    const reply = ok ? `✓ ${t.correct} ${q.why}` : `✕ ${t.notQuite} ${c.bestAnswer} “${q.o[q.a]}”\n${q.why}`;
+    coachSay([reply], () => {
+      if (qi + 1 < lesson.quiz.length) ask(qi + 1);
+      else coachSay([c.practiceIntro], () => { setStage('practice'); play.start(lesson); });
+    });
+  };
+
+  const gotIt = { label: c.gotIt + ' →', primary: true, onPress: () => { log.add({ from: 'me', text: c.gotIt }); ask(0); } };
+  let chips = [];
+  if (stage === 'intro') {
+    chips = [gotIt, { label: c.moreExamples, onPress: () => {
+      setStage('wait');
+      log.add({ from: 'me', text: c.moreExamples });
+      coachSay([{ text: t.moreWays, quotes: lesson.say.slice(1) }], () => setStage('intro2'));
+    } }];
+  } else if (stage === 'intro2') chips = [gotIt];
+  else if (stage === 'quiz') chips = lesson.quiz[qi].o.map((o, i) => ({ label: o, onPress: () => answer(i) }));
+  else if (stage === 'practice' && play.active && !play.busy) {
+    chips = [{ label: '💡 ' + c.hint, onPress: play.hint }, { label: c.skipPractice, onPress: () => { play.stop(); finish(null); } }];
+  } else if (stage === 'done') {
+    chips = [...(nextLesson ? [{ label: t.nextLesson + ' →', primary: true, onPress: () => onOpen(nextLesson.id) }] : []), { label: t.backToCourse, onPress: onClose }];
+  }
+
   return (
-    <View style={{ gap: 15 }}>
-      <View style={s.row}>
-        <TouchableOpacity role="button" aria-label={t.back} onPress={onClose} style={{ paddingVertical: 4 }}>
+    <View style={{ flex: 1 }}>
+      <View style={st.top}>
+        <TouchableOpacity role="button" aria-label={t.backToCourse} onPress={onClose}>
           <Text style={{ color: C.gold, fontWeight: '700', fontSize: 15 }}>‹ {t.backToCourse}</Text>
         </TouchableOpacity>
-        <Text style={s.small}>{Math.min(at + 1, totalSteps)}/{totalSteps}</Text>
+        <Text style={[s.small, { flexShrink: 1, textAlign: 'right' }]} numberOfLines={1}>{lesson.moduleTitle}</Text>
       </View>
-      <Bar value={at / totalSteps} height={6} />
-      <Text style={s.small}>{lesson.moduleTitle}</Text>
-      <Text style={s.heading}>{lesson.title}</Text>
-
-      {step === 'idea' && (
-        <>
-          <Card>
-            <Eyebrow>{t.keyIdea}</Eyebrow>
-            <Text style={s.bodyStrong}>{lesson.idea}</Text>
-          </Card>
-          <Card>
-            <View style={{ gap: 4 }}>
-              <Text style={[s.small, { color: C.bad, fontWeight: '700' }]}>✕ {t.insteadOf}</Text>
-              <Text style={[s.body, { textDecorationLine: 'line-through', color: C.muted }]}>{lesson.weak}</Text>
-            </View>
-            <View style={{ gap: 6 }}>
-              <Text style={[s.small, { color: C.good, fontWeight: '700' }]}>✓ {t.say}</Text>
-              <Text style={[s.title, { fontSize: 17 }]}>“{lesson.say[0]}”</Text>
-              <ListenButton id={lesson.id + '-0'} text={lesson.say[0]} lang={lang} speaker={speaker} t={t} />
-            </View>
-            <View style={{ gap: 8 }}>
-              <Text style={[s.small, { fontWeight: '700' }]}>{t.moreWays}</Text>
-              {lesson.say.slice(1).map((p, i) => (
-                <View key={i} style={{ gap: 6 }}>
-                  <Text style={s.bodyStrong}>• {p}</Text>
-                  <ListenButton id={lesson.id + '-' + (i + 1)} text={p} lang={lang} speaker={speaker} t={t} />
-                </View>
-              ))}
-            </View>
-          </Card>
-          <Button label={t.checkYourself + ' →'} onPress={() => { setStep('quiz'); setQi(0); setPicked(null); }} />
-        </>
-      )}
-
-      {step === 'quiz' && (
-        <Card>
-          <Eyebrow>{`${t.question} ${qi + 1} ${t.of} ${lesson.quiz.length}`}</Eyebrow>
-          <Text style={s.title}>{q.q}</Text>
-          <View style={{ gap: 9 }}>
-            {q.o.map((opt, i) => {
-              const show = picked !== null;
-              const isRight = i === q.a;
-              const style = show && isRight ? { borderColor: C.good, backgroundColor: C.goodBg } : show && i === picked ? { borderColor: C.bad, backgroundColor: C.badBg } : null;
-              return (
-                <TouchableOpacity key={i} role="button" aria-label={opt} disabled={show}
-                  onPress={() => { setPicked(i); setFirstTry((f) => { const n = [...f]; n[qi] = i === q.a; return n; }); }}
-                  style={[s.option, style]}>
-                  <Text style={s.optionText}>{String.fromCharCode(65 + i)}. {opt}</Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-          {picked !== null && (
-            <>
-              <View style={[s.infoBox, picked !== q.a && { backgroundColor: C.badBg }]}>
-                <Text style={{ color: picked === q.a ? C.good : C.bad, fontWeight: '800' }}>{picked === q.a ? t.correct : t.notQuite}</Text>
-                <Text style={{ color: C.info, lineHeight: 22 }}>{q.why}</Text>
-              </View>
-              <Button label={t.next + ' →'} onPress={() => {
-                if (qi + 1 < lesson.quiz.length) { setQi(qi + 1); setPicked(null); } else setStep('practice');
-              }} />
-            </>
-          )}
-        </Card>
-      )}
-
-      {step === 'practice' && (
-        <>
-          <Card>
-            <Eyebrow>{t.practiceStep}</Eyebrow>
-            <Text style={s.title}>{lesson.practice}</Text>
-            <Text style={s.small}>{inClaudeViewer ? t.practiceHint : t.practiceHintApp}</Text>
-            <Practice lang={lang} situation={lesson.practice} lesson={lesson} aiStatus={aiStatus} setAiStatus={setAiStatus}
-              onResult={(r, answer) => onCoachResult(r, { id: lesson.id, answer })} speaker={speaker} />
-          </Card>
-          <AiStatusLine status={aiStatus} setStatus={setAiStatus} t={t} />
-          <View style={{ flexDirection: 'row', gap: 10 }}>
-            <Button kind="ghost" label={t.skip} onPress={finish} />
-            <Button style={{ flex: 1 }} label={t.finish + ' ✓'} onPress={finish} />
-          </View>
-        </>
-      )}
-
-      {step === 'done' && (
-        <Card style={{ alignItems: 'center', paddingVertical: 28 }}>
-          <Text style={{ fontSize: 40, color: C.gold }}>♛</Text>
-          <Text style={s.heading}>{t.lessonDone}</Text>
-          <Text style={{ color: C.gold, fontSize: 22, fontWeight: '800' }}>+{gained} {t.xp}</Text>
-          <Text style={s.small}>{firstTry.filter(Boolean).length}/{lesson.quiz.length} {t.correct.replace('!', '')}</Text>
-          <View style={{ alignSelf: 'stretch', gap: 10, marginTop: 6 }}>
-            {nextLesson && <Button label={t.nextLesson + ' →'} onPress={() => onOpen(nextLesson.id)} />}
-            <Button kind="secondary" label={t.backToCourse} onPress={onClose} />
-          </View>
-        </Card>
-      )}
+      <ChatView lang={lang} speaker={speaker} log={log} chips={chips}
+        input={stage === 'practice' && play.active ? { onSend: play.send, disabled: play.busy } : null} />
     </View>
   );
 }
@@ -177,7 +139,11 @@ export default function Learn(props) {
   const index = lessons.findIndex((l) => l.id === lessonId);
   if (index < 0) return <Course lang={lang} state={props.state} onOpen={setLessonId} />;
   return (
-    <Lesson key={lessonId} {...props} lesson={lessons[index]} nextLesson={lessons[index + 1]}
+    <LessonChat key={lessonId + lang.code} {...props} lesson={lessons[index]} nextLesson={lessons[index + 1]}
       onClose={() => setLessonId(null)} onOpen={setLessonId} />
   );
 }
+
+const st = StyleSheet.create({
+  top: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 12, paddingHorizontal: 20, paddingBottom: 8 },
+});

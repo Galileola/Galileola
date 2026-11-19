@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const KEY = 'speak-power-v2';
 const OLD_KEY = 'speak-power-v1';
 
-export const XP = { lesson: 50, perfectAnswer: 10, review: 10, coach: 15, daily: 25 };
+export const XP = { lesson: 50, perfectAnswer: 10, review: 10, chat: 20, daily: 25 };
 export const LEVEL_XP = 150;
 
 export const freshState = () => ({
