@@ -1,0 +1,32 @@
+<%- include('partials/header') %>
+<section class="card narrow stack">
+  <h1>Complete your payment</h1>
+  <p><strong><%= deal.product_name %></strong> · <%= formatEuro(p.amount_cents) %> incl. VAT<% if (p.tax_cents != null) { %> <span class="muted small">(VAT <%= formatEuro(p.tax_cents) %>)</span><% } %></p>
+  <div class="notice <%= p.needs_authentication ? 'warn' : 'bad' %>">
+    <% if (p.needs_authentication) { %>
+      Your bank needs you to confirm this payment (Strong Customer Authentication).
+    <% } else { %>
+      Your last payment attempt didn't go through<%= p.last_error_message ? ': ' + p.last_error_message : '' %>.
+    <% } %>
+    Please complete it before <strong><%= formatDate(p.grace_ends_at) %></strong>, or your order will be cancelled. You won't be charged twice.
+  </div>
+  <% if (error) { %><div class="notice bad">That attempt didn't work. Please try again or use another payment method.</div><% } %>
+
+  <div id="pay" data-pk="<%= publishableKey %>" data-secret="<%= clientSecret %>" data-return="<%= returnUrl %>"
+       data-saved="<%= canReuseSavedCard ? p.payment_method_id : '' %>" data-name="<%= p.name %>" data-email="<%= p.email %>"
+       data-country="<%= p.country %>" data-business="<%= business.name %>">
+    <% if (canReuseSavedCard) { %>
+      <h2><%= p.needs_authentication ? 'Confirm with your bank' : 'Try your saved card again' %></h2>
+      <p><%= p.payment_method_label %></p>
+      <p><button type="button" id="pay-saved"><%= p.needs_authentication ? 'Confirm payment' : 'Pay with saved card' %></button></p>
+      <p class="muted small">Or use a different payment method:</p>
+    <% } %>
+    <form id="pay-form">
+      <div id="payment-element"></div>
+      <button type="submit" id="pay-submit">Pay <%= formatEuro(p.amount_cents) %></button>
+    </form>
+    <p id="pay-error" class="error-text" role="alert"></p>
+  </div>
+</section>
+<script src="/static/js/pay.js"></script>
+<%- include('partials/footer') %>

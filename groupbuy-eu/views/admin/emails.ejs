@@ -1,0 +1,12 @@
+<%- include('../partials/header') %>
+<p><a href="/admin">← Admin</a></p>
+<h1>Email outbox</h1>
+<p class="muted">Every email the app sends is kept here. Without SMTP_URL they are only printed to the console, so this is where you read them during testing.</p>
+<% for (const e of emails) { %>
+  <div class="card stack" style="margin-bottom:12px">
+    <div><strong><%= e.subject %></strong> <span class="badge"><%= e.kind %></span> <span class="muted small">to <%= e.to_addr %> · <%= formatDate(e.created_at) %> · <%= e.delivered ? 'delivered' : (e.error ? 'error: ' + e.error : 'console only') %></span></div>
+    <pre class="email"><%= e.body %></pre>
+  </div>
+<% } %>
+<% if (!emails.length) { %><p class="muted">No emails yet.</p><% } %>
+<%- include('../partials/footer') %>

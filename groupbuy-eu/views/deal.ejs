@@ -1,0 +1,33 @@
+<%- include('partials/header') %>
+<div class="deal-layout" id="deal" data-slug="<%= deal.slug %>">
+  <section class="deal-hero">
+    <% if (deal.image_url) { %><img src="<%= deal.image_url %>" alt="<%= deal.product_name %>"><% } %>
+    <h1><%= deal.product_name %></h1>
+    <p class="price"><%= formatEuro(deal.price_cents) %> <span class="muted small">incl. VAT</span></p>
+    <p class="muted small">Final price including VAT for every EU country. The VAT share depends on your delivery country and is calculated by Stripe Tax; the price you pay does not change.</p>
+    <% if (deal.description) { %><div class="stack"><% for (const para of deal.description.split(/\n{2,}/)) { %><p><%= para %></p><% } %></div><% } %>
+  </section>
+
+  <section class="card">
+    <p class="counter"><span data-count><%= state.count %></span> of <%= state.minBuyers %> buyers joined</p>
+    <div class="progress" aria-hidden="true"><span data-progress data-width="<%= state.percent %>"></span></div>
+    <p data-status-line>
+      <% if (state.status === 'expired') { %>
+        This deal did not reach its minimum. Nobody was charged and all saved payment methods were removed.
+      <% } else if (state.minimumReached) { %>
+        Minimum reached. The deal is on!
+      <% } else { %>
+        <span data-remaining><%= state.remaining %></span> more needed.
+      <% } %>
+    </p>
+    <p class="muted">Deadline: <%= formatDate(deal.deadline) %> · <span data-countdown data-seconds="<%= state.secondsLeft %>"></span></p>
+
+    <% if (state.joinable) { %>
+      <%- include('partials/join-form') %>
+    <% } else if (state.status !== 'expired') { %>
+      <div class="notice">This deal is closed to new buyers.</div>
+    <% } %>
+  </section>
+</div>
+<script src="/static/js/deal.js"></script>
+<%- include('partials/footer') %>

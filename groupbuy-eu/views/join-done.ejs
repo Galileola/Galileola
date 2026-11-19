@@ -1,0 +1,31 @@
+<%- include('partials/header') %>
+<section class="card narrow stack">
+  <h1><%= deal.product_name %></h1>
+  <% const amount = formatEuro(p.amount_cents ?? deal.price_cents); %>
+  <% if (p.status === 'pending_setup') { %>
+    <div class="notice warn">We're still confirming your payment method with your bank. Refresh this page in a moment.</div>
+    <p><a class="button secondary" href="/join/<%= p.token %>">Back to payment details</a></p>
+  <% } else if (p.status === 'saved' && deal.status !== 'open') { %>
+    <div class="notice ok"><strong>The minimum is reached!</strong> We're collecting <%= amount %> from <%= p.payment_method_label %> now and will email you the result.</div>
+  <% } else if (p.status === 'saved') { %>
+    <div class="notice ok"><strong>You're in!</strong> Nothing has been charged.</div>
+    <p>We'll charge <strong><%= amount %></strong> incl. VAT<% if (p.tax_cents != null) { %> (VAT <%= formatEuro(p.tax_cents) %>)<% } %> to <%= p.payment_method_label %> only if <%= deal.min_buyers %> buyers join by <%= formatDate(deal.deadline) %>.</p>
+    <p>Buyers so far: <strong><%= state.count %></strong> of <%= state.minBuyers %>. Share the deal to help it reach the minimum.</p>
+  <% } else if (p.status === 'charging') { %>
+    <div class="notice">The minimum is reached and we're collecting <%= amount %> now. Refresh in a moment.</div>
+  <% } else if (p.status === 'paid') { %>
+    <div class="notice ok"><strong>Paid.</strong> We've received <%= amount %>. Your order is confirmed.</div>
+  <% } else if (p.status === 'processing') { %>
+    <div class="notice ok"><strong>Direct debit started.</strong> <%= amount %> is being collected by SEPA Direct Debit. Your place in the order is confirmed.</div>
+  <% } else if (p.status === 'failed') { %>
+    <div class="notice bad">Your payment didn't go through. <a href="/pay/<%= p.token %>">Fix it here</a> before <%= formatDate(p.grace_ends_at) %>.</div>
+  <% } else if (p.status === 'released') { %>
+    <div class="notice">This deal closed before your payment method was saved, or it didn't reach its minimum. You have not been charged and nothing is stored.</div>
+  <% } else if (p.status === 'unpaid' || p.status === 'late_failed') { %>
+    <div class="notice">Your payment couldn't be collected, so your order was cancelled. You have not been charged.</div>
+  <% } else if (p.status === 'withdrawn') { %>
+    <div class="notice">You've withdrawn from this deal.<%= p.refund_id ? ' Your payment has been refunded.' : ' You have not been charged.' %></div>
+  <% } %>
+  <p><a href="/deals/<%= deal.slug %>">Back to the deal page</a></p>
+</section>
+<%- include('partials/footer') %>

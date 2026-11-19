@@ -1,0 +1,21 @@
+  </main>
+  <footer class="site-footer">
+    <p><%= business.name %> · <%= business.address %> · VAT <%= business.vatId %></p>
+    <p>
+      <a href="/terms">Terms &amp; withdrawal right</a> ·
+      <a href="/privacy">Privacy policy</a> ·
+      <a href="/cookies">Cookies</a> ·
+      <button type="button" class="linklike" data-cookie-settings>Cookie settings</button>
+    </p>
+  </footer>
+  <div class="cookie-banner" id="cookie-banner" role="dialog" aria-live="polite" aria-label="Cookie consent" hidden>
+    <strong>Cookies</strong>
+    <p class="small">We use cookies that are needed for the site and for secure payments (Stripe fraud prevention on payment pages). We'd only use optional cookies, such as analytics, with your consent. There are none right now. <a href="/cookies">Details</a></p>
+    <div class="actions">
+      <button type="button" data-consent="necessary">Only necessary</button>
+      <button type="button" data-consent="all">Accept optional</button>
+    </div>
+  </div>
+  <script src="/static/js/cookies.js"></script>
+</body>
+</html>

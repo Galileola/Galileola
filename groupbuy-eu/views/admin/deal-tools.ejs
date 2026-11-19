@@ -1,0 +1,30 @@
+<section class="card" style="margin-top:24px">
+  <h2>Test-mode tools</h2>
+  <p class="muted small">These move time forward for this deal so you can run the test checklist without waiting days. They exist because the app only runs with Stripe test keys.</p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <form method="post" action="/admin/tick">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <input type="hidden" name="back" value="/admin/deals/<%= deal.id %>">
+      <button class="secondary" type="submit">Run scheduler now</button>
+    </form>
+    <% if (deal.status === 'open') { %>
+    <form method="post" action="/admin/deals/<%= deal.id %>/test/expire-now" data-confirm="Move this deal's deadline to now? If it hasn't reached the minimum it will expire and all saved payment methods are released.">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <button class="secondary" type="submit">Move deadline to now</button>
+    </form>
+    <% } %>
+    <% if (deal.status === 'charging') { %>
+    <form method="post" action="/admin/deals/<%= deal.id %>/test/end-window-now" data-confirm="End the 48-hour payment window now? Unpaid buyers' orders are cancelled and the deal becomes ready to order.">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <button class="secondary" type="submit">End 48-hour window now</button>
+    </form>
+    <% } %>
+    <% if (deal.status === 'charging' || deal.status === 'ready_to_order') { %>
+    <form method="post" action="/admin/deals/<%= deal.id %>/test/retry-now">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <button class="secondary" type="submit">Retry failed charges now</button>
+    </form>
+    <% } %>
+  </div>
+</section>
+<script src="/static/js/admin.js"></script>
