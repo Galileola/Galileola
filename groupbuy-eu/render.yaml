@@ -1,0 +1,36 @@
+# One-click deploy on Render: https://render.com/deploy?repo=https://github.com/Galileola/Galileola
+# (Render > New > Blueprint, pick this repo, branch, and this file path.)
+services:
+  - type: web
+    name: groupbuy-eu
+    runtime: node
+    rootDir: groupbuy-eu
+    plan: starter            # always-on + persistent disk (the free plan has neither)
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /
+    disk:
+      name: groupbuy-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_VERSION
+        value: 22.14.0
+      - key: DATABASE_PATH
+        value: /var/data/groupbuy.sqlite
+      - key: BACKUP_DIR
+        value: /var/data/backups
+      - key: TRUST_PROXY
+        value: "1"
+      - key: APP_SECRET
+        generateValue: true
+      - key: CRON_SECRET
+        generateValue: true
+      - key: ADMIN_PASSWORD
+        generateValue: true
+      - key: STRIPE_SECRET_KEY        # sk_test_... from Stripe Dashboard (test mode)
+        sync: false
+      - key: STRIPE_PUBLISHABLE_KEY   # pk_test_...
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET    # whsec_... (after you add the webhook endpoint)
+        sync: false

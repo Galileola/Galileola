@@ -1,0 +1,20 @@
+<%- include('../partials/header') %>
+<p><a href="/admin">Admin</a> · <a href="/admin/emails">Email outbox</a></p>
+<h1>Deals</h1>
+<p><a class="button" href="/admin/deals/new">New deal</a> <a class="button secondary" href="/admin/backup.sqlite">Download database backup</a></p>
+<table>
+  <thead><tr><th>Product</th><th>Price</th><th>Buyers</th><th>Deadline</th><th>Status</th></tr></thead>
+  <tbody>
+  <% for (const d of deals) { %>
+    <tr>
+      <td><a href="/admin/deals/<%= d.id %>"><%= d.product_name %></a></td>
+      <td><%= formatEuro(d.price_cents) %></td>
+      <td><%= d.count %> / <%= d.min_buyers %></td>
+      <td><%= formatDate(d.deadline) %></td>
+      <td><span class="badge <%= d.status %>"><%= d.status.replace(/_/g, ' ') %></span></td>
+    </tr>
+  <% } %>
+  <% if (!deals.length) { %><tr><td colspan="5" class="muted">No deals yet.</td></tr><% } %>
+  </tbody>
+</table>
+<%- include('../partials/footer') %>

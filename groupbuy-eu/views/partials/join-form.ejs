@@ -1,0 +1,54 @@
+<form method="post" action="/deals/<%= deal.slug %>/join" class="stack" novalidate>
+  <h2><%= state.minimumReached ? 'Join now' : 'Join this deal' %></h2>
+  <% if (state.minimumReached) { %>
+    <div class="notice ok">The minimum is already reached, so your payment is collected as soon as you join.</div>
+  <% } else { %>
+    <div class="notice">You won't be charged now. We save your payment method and only charge <strong><%= formatEuro(deal.price_cents) %></strong> if <%= deal.min_buyers %> buyers join by <%= formatDate(deal.deadline) %>. If not, nothing is charged.</div>
+  <% } %>
+  <% if (errors.form) { %><div class="notice bad"><%= errors.form %></div><% } %>
+
+  <div>
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" autocomplete="email" required value="<%= values.email || '' %>">
+    <% if (errors.email) { %><p class="error-text"><%= errors.email %></p><% } %>
+  </div>
+  <div>
+    <label for="name">Full name</label>
+    <input type="text" id="name" name="name" autocomplete="name" required value="<%= values.name || '' %>">
+    <% if (errors.name) { %><p class="error-text"><%= errors.name %></p><% } %>
+  </div>
+  <fieldset style="border:0;padding:0;margin:0">
+    <legend class="small muted">Delivery address (used for delivery and to calculate VAT)</legend>
+    <label for="address_line1">Street and number</label>
+    <input type="text" id="address_line1" name="address_line1" autocomplete="address-line1" required value="<%= values.address_line1 || '' %>">
+    <% if (errors.address_line1) { %><p class="error-text"><%= errors.address_line1 %></p><% } %>
+    <label for="address_line2">Apartment, floor (optional)</label>
+    <input type="text" id="address_line2" name="address_line2" autocomplete="address-line2" value="<%= values.address_line2 || '' %>">
+    <div class="row">
+      <div>
+        <label for="postal_code">Postcode</label>
+        <input type="text" id="postal_code" name="postal_code" autocomplete="postal-code" required value="<%= values.postal_code || '' %>">
+        <% if (errors.postal_code) { %><p class="error-text"><%= errors.postal_code %></p><% } %>
+      </div>
+      <div>
+        <label for="city">City</label>
+        <input type="text" id="city" name="city" autocomplete="address-level2" required value="<%= values.city || '' %>">
+        <% if (errors.city) { %><p class="error-text"><%= errors.city %></p><% } %>
+      </div>
+    </div>
+    <label for="country">Country</label>
+    <select id="country" name="country" autocomplete="country" required>
+      <option value="">Choose…</option>
+      <% for (const [code, cname] of Object.entries(countries).sort((a, b) => a[1].localeCompare(b[1]))) { %>
+        <option value="<%= code %>" <%= values.country === code ? 'selected' : '' %>><%= cname %></option>
+      <% } %>
+    </select>
+    <% if (errors.country) { %><p class="error-text"><%= errors.country %></p><% } %>
+  </fieldset>
+  <label class="check">
+    <input type="checkbox" name="accept_terms" value="yes" <%= values.accept_terms === 'yes' ? 'checked' : '' %>>
+    <span>I accept the <a href="/terms" target="_blank">terms</a>, including when payment is taken, and I've read the <a href="/privacy" target="_blank">privacy policy</a> and my <a href="/terms#withdrawal" target="_blank">14-day right of withdrawal</a>.</span>
+  </label>
+  <% if (errors.accept_terms) { %><p class="error-text"><%= errors.accept_terms %></p><% } %>
+  <button type="submit">Continue to payment method</button>
+</form>

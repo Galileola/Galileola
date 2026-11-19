@@ -1,0 +1,126 @@
+# Group Buy (EU)
+
+A group-buying site for the EU market. Buyers save a payment method when they join a deal. They
+are charged only if the deal reaches its minimum number of buyers before the deadline.
+
+**Stripe test mode only.** The app refuses to start unless both Stripe keys are test-mode keys,
+and it rejects live-mode webhook events.
+
+Stack: Node.js ≥ 22.13 (built-in SQLite), Express 5, EJS templates, Stripe, Nodemailer.
+
+## How it works
+
+```
+Admin creates deal ──► buyers join (SetupIntent: card / SEPA / iDEAL→SEPA, no charge)
+                              │
+         deadline passes      │      minimum reached
+        below minimum ◄───────┴───────► charge every saved method off-session
+              │                                │
+   expired: methods detached,         paid / SEPA processing ─► counts as paid
+   nobody charged                     failed (decline or SCA) ─► email link, retries
+                                                │
+                                     48h after the minimum ─► ready to order
+                                     still unpaid ─► order cancelled (your cost)
+```
+
+- **Deals**: product, gross EUR price (VAT included), minimum buyers, deadline (at most 30 days
+  out), and a Stripe Tax product code.
+- **Joining**: name, email, EU delivery address and acceptance of the terms. Stripe Tax works out
+  the VAT share for the delivery country, with `tax_behavior: inclusive`. The gross price is the
+  same for everyone; only the VAT share inside it varies. Then the Payment Element runs on an
+  off-session SetupIntent with `card`, `sepa_debit` and `ideal`. iDEAL is used only to create a
+  SEPA mandate: later charges use the SEPA method that the iDEAL setup generates. If the
+  account hasn't activated iDEAL (or SEPA), Stripe rejects that type and the app drops it.
+- **Public deal page**: buyers vs minimum, a progress bar and a countdown, polling `/api/deals/:slug`.
+- **Minimum reached**: the deal moves to `charging` and a 48-hour window opens. Each buyer gets
+  one PaymentIntent (`off_session`, idempotency key `charge-<id>`). Retries re-confirm that same
+  PaymentIntent, so nobody can be charged twice. The "we're collecting now" email doubles as
+  the SEPA pre-notification.
+- **Failures**:
+  - Declined cards are retried at +6 h, +24 h and +44 h.
+  - SCA (`authentication_required`), hard declines and SEPA bounces wait for the buyer instead
+    of retrying blindly.
+  - The buyer gets an email linking to `/pay/<token>`. There they can confirm the same
+    PaymentIntent on-session, with the saved card (3-D Secure) or a new card or SEPA account.
+  - A reminder goes out 24 h before their window ends.
+- **After 48 hours**:
+  - The deal becomes `ready_to_order`.
+  - Unpaid buyers are cancelled: their PaymentIntent is cancelled, their method detached, and
+    the amount shown in the admin as your cost.
+  - SEPA debits still processing count as paid. If one bounces later, it is flagged as
+    `late_failed` (your cost).
+  - Late joiners (after the minimum, until the deadline) are charged immediately and get their
+    own 48-hour window.
+- **Deadline missed**: the deal becomes `expired`, every saved method is detached, unfinished
+  SetupIntents are cancelled, and nobody is charged.
+- **VAT records**: a Stripe Tax transaction is created when a payment succeeds, and reversed
+  on a refund.
+- **Order list**: the admin can download a CSV of everyone who paid (SEPA still processing
+  counts), with delivery address and VAT per country. It opens correctly in Excel, and buyer
+  input can't inject spreadsheet formulas.
+- **Withdrawal (EU 14-day right)**: an admin action. Uncharged buyers are released; paid buyers
+  get a full refund and a Stripe Tax reversal.
+- **Legal pages**: `/terms` (when payment is taken, the 48-hour rule, the withdrawal right and
+  the model form), `/privacy` (GDPR) and `/cookies`, plus a consent banner. Stripe.js only
+  loads on payment pages.
+
+## Setup
+
+```bash
+npm install
+cp .env.example .env   # fill in test keys, ADMIN_PASSWORD, APP_SECRET, business details
+stripe listen --forward-to localhost:3000/webhooks/stripe \
+  --events setup_intent.succeeded,payment_intent.succeeded,payment_intent.processing,payment_intent.payment_failed
+npm start              # http://localhost:3000, admin at /admin (needs Node.js 22.13+)
+```
+
+In the Stripe Dashboard (test mode):
+
+- Enable Cards, SEPA Direct Debit and iDEAL under Settings → Payment methods.
+- Under Settings → Tax, set your origin address and add test registrations. Without
+  registrations, VAT comes back as 0.
+
+Scheduling: an in-process timer runs the scheduler every minute. On serverless hosting, set
+`SCHEDULER_INTERVAL_MS=0` and call `POST /api/cron/tick` with
+`Authorization: Bearer $CRON_SECRET` every minute instead.
+
+Email: without `SMTP_URL`, emails are printed to the console. Either way, every email is kept
+in the admin outbox (`/admin/emails`).
+
+## Deploying
+
+- **Hostinger** (web hosting or VPS): follow [`docs/DEPLOY_HOSTINGER.md`](docs/DEPLOY_HOSTINGER.md).
+  `npm run package` builds the upload ZIP.
+- **On web hosting the app is stopped when idle.** An hPanel cron job must call
+  `POST /api/cron/tick` every minute, and the database must live outside the app folder.
+- **Other hosts** need four things:
+  - a long-running Node.js 22.13+ process (`npm start`, entry `src/start.js`)
+  - HTTPS in front of it
+  - a persistent `DATABASE_PATH`
+  - a Stripe webhook to `https://<domain>/webhooks/stripe`
+- **Operations endpoints:**
+  - `GET /healthz` for uptime checks
+  - `POST /api/cron/backup` for rotated database copies
+  - **Admin → Download database backup** for off-site copies
+
+## Testing
+
+- `npm test` runs the scenarios against an in-memory fake of the Stripe API with a controllable
+  clock (`test/support/fakeStripe.js`).
+- [`docs/TEST_CHECKLIST.md`](docs/TEST_CHECKLIST.md) is the manual checklist for a real Stripe
+  test account. It covers the deal filling, the deal failing, a declined card and an SCA
+  challenge. Admin "test-mode tools" move the deadline and the 48-hour window forward so the
+  checklist takes minutes.
+
+## Before going live (not done here)
+
+- Have the terms and privacy policy reviewed. Complete every `[bracketed]` placeholder:
+  delivery costs and times, return costs, governing law, processors, retention.
+- Confirm the SEPA pre-notification wording and timing with Stripe and your lawyer.
+- Configure Stripe Tax registrations for the countries where you must collect VAT (OSS).
+- Remove the test-key guard deliberately, and the admin test-mode tools with it.
+- Use a real email provider (ideally EU-hosted) and back up the SQLite file. SQLite and the
+  in-memory join rate limit (`JOIN_RATE_LIMIT` per IP per 15 minutes) assume a single app
+  instance.
+- Decide how long to keep abandoned joins and Stripe Customer records, and match that in the
+  privacy policy. Nothing purges them automatically yet.

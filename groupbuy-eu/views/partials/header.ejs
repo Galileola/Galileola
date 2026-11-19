@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title %> · <%= business.name.startsWith('[') ? 'Group Buy' : business.name %></title>
+  <link rel="stylesheet" href="/static/css/site.css">
+  <% if (loadStripe) { %><script src="https://js.stripe.com/v3/"></script><% } %>
+</head>
+<body>
+  <div class="test-banner">Test mode: no real payments are taken. Use Stripe test cards and IBANs only.</div>
+  <header class="site-header">
+    <a class="brand" href="/">Group Buy</a>
+    <nav><a href="/">Deals</a></nav>
+  </header>
+  <main class="container">

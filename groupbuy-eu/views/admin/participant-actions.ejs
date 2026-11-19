@@ -1,0 +1,7 @@
+<% if (['pending_setup', 'saved', 'failed', 'paid', 'unpaid', 'late_failed'].includes(p.status)) { %>
+<form method="post" action="/admin/participants/<%= p.id %>/withdraw"
+      data-confirm="<%= p.status === 'paid' ? 'Refund ' + p.email + ' in full and reverse the VAT record?' : 'Withdraw ' + p.email + ' and remove their saved payment method?' %>">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <button class="secondary small" type="submit"><%= p.status === 'paid' ? 'Withdraw + refund' : 'Withdraw' %></button>
+</form>
+<% } %>

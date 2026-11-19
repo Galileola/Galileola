@@ -1,0 +1,56 @@
+<%- include('../partials/header') %>
+<p><a href="/admin">← Admin</a> · <a href="/admin/emails">Email outbox</a></p>
+<% if (flash) { %><div class="notice"><%= flash %></div><% } %>
+<h1><%= deal.product_name %> <span class="badge <%= deal.status %>"><%= deal.status.replace(/_/g, ' ') %></span></h1>
+<p>Public page: <a href="/deals/<%= deal.slug %>">/deals/<%= deal.slug %></a></p>
+
+<div class="grid">
+  <div class="card">
+    <h2>Deal</h2>
+    <p><%= formatEuro(deal.price_cents) %> incl. VAT · tax code <code><%= deal.tax_code %></code></p>
+    <p>Buyers: <strong><%= committed %></strong> of <%= deal.min_buyers %> minimum</p>
+    <p>Deadline: <%= formatDate(deal.deadline) %></p>
+    <% if (deal.minimum_reached_at) { %><p>Minimum reached: <%= formatDate(deal.minimum_reached_at) %></p><% } %>
+    <% if (deal.grace_ends_at) { %><p>48-hour payment window ends: <%= formatDate(deal.grace_ends_at) %></p><% } %>
+    <% if (deal.ready_at) { %><p>Ready to order since: <%= formatDate(deal.ready_at) %></p><% } %>
+    <% if (deal.expired_at) { %><p>Expired: <%= formatDate(deal.expired_at) %> (nobody charged)</p><% } %>
+  </div>
+  <div class="card">
+    <h2>Money</h2>
+    <p>Paid: <strong><%= summary.paidCount %></strong> · <%= formatEuro(summary.paidCents) %></p>
+    <p>SEPA processing (counted as paid): <%= summary.processingCount %> · <%= formatEuro(summary.processingCents) %></p>
+    <p>Failed, inside 48h window: <%= summary.openFailures %> · <%= formatEuro(summary.openFailuresCents) %></p>
+    <p>Unpaid, your cost: <strong><%= summary.yourCostCount %></strong> · <%= formatEuro(summary.yourCostCents) %></p>
+    <p class="muted small">VAT in collected amounts: <%= formatEuro(summary.vatCents) %></p>
+    <% if (deal.status === 'ready_to_order') { %>
+      <div class="notice ok">Order quantity: <strong><%= summary.orderQuantity %></strong> paid units (including SEPA debits still processing).</div>
+    <% } %>
+    <% if (summary.orderQuantity > 0) { %>
+      <p><a class="button secondary" href="/admin/deals/<%= deal.id %>/orders.csv">Download order list (CSV)</a></p>
+    <% } %>
+  </div>
+</div>
+
+<h2 style="margin-top:24px">Buyers</h2>
+<table>
+  <thead><tr><th>#</th><th>Buyer</th><th>Country</th><th>Method</th><th>Amount / VAT</th><th>Status</th><th>Attempts / last error</th><th>Window ends</th><th></th></tr></thead>
+  <tbody>
+  <% for (const p of participants) { %>
+    <tr>
+      <td><%= p.id %></td>
+      <td><%= p.name %><br><span class="muted small"><%= p.email %></span></td>
+      <td><%= p.country %></td>
+      <td><%= p.payment_method_label || '—' %></td>
+      <td><%= p.amount_cents != null ? formatEuro(p.amount_cents) : '—' %><br><span class="muted small"><%= p.tax_cents != null ? 'VAT ' + formatEuro(p.tax_cents) + (p.tax_rate_label ? ' (' + p.tax_rate_label + ')' : '') : '' %></span></td>
+      <td><span class="badge <%= p.status %>"><%= p.status.replace(/_/g, ' ') %></span><% if (p.needs_authentication) { %><br><span class="small">needs SCA</span><% } %></td>
+      <td><%= p.attempts %><% if (p.last_error_code || p.last_error_message) { %><br><span class="small error-text"><%= p.last_error_code || '' %> <%= p.last_error_message || '' %></span><% } %></td>
+      <td class="small"><%= formatDate(p.grace_ends_at) %><% if (p.next_retry_at && p.status === 'failed') { %><br>retry <%= formatDate(p.next_retry_at) %><% } %></td>
+      <td><%- include('participant-actions', { p }) %></td>
+    </tr>
+  <% } %>
+  <% if (!participants.length) { %><tr><td colspan="9" class="muted">No buyers yet.</td></tr><% } %>
+  </tbody>
+</table>
+
+<%- include('deal-tools') %>
+<%- include('../partials/footer') %>
