@@ -16,13 +16,18 @@ A confidence and communication coaching app for iOS, Android and the web, built 
 2. **Your own server:** deploy `server/` and set `EXPO_PUBLIC_COACH_URL` (see below). The mobile app uses this.
 3. **Instant check:** a scorer that runs on the device and always works, even offline. It flags hedges, over-apologising, aggressive words and absolutes, and checks for a clear next step.
 
-## Run on a phone
+## Run on your iPhone (Expo Go)
 
-1. Install Node.js (current LTS) and the Expo Go app.
-2. In this folder, run `npm install`, then `npx expo install --fix`.
-3. Run `npx expo start`, or `npx expo start --tunnel` if your network blocks local access, and scan the QR code.
+The project uses Expo SDK 58, which is the version the current Expo Go app runs.
 
-Phones can use the keyboard's own microphone for voice answers. Read-aloud uses `expo-speech`.
+1. On the iPhone, install **Expo Go** from the App Store.
+2. On a computer, install Node.js 20.19.4 or newer (the 22 LTS release works).
+3. In this folder, run `npm install`, then `npx expo start`.
+4. Scan the QR code with the iPhone's Camera app and open it in Expo Go. The phone and the computer must be on the same Wi-Fi network. If the phone can't connect, stop the server and run `npx expo start --tunnel` instead.
+
+Android works the same way: scan the QR code from inside the Expo Go app.
+
+For voice answers, use the keyboard's own microphone. Read-aloud uses `expo-speech`.
 
 ## Build the web version
 

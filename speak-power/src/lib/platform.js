@@ -3,6 +3,7 @@
 // "permissions". In the native app, or on any other host, they resolve to null
 // and the app falls back to the server coach / expo-speech / the keyboard's own mic.
 import { useEffect, useRef, useState } from 'react';
+import { Platform } from 'react-native';
 import * as Speech from 'expo-speech';
 
 const claude = typeof window !== 'undefined' && window.claude && typeof window.claude.use === 'function' ? window.claude : null;
@@ -22,7 +23,7 @@ export function useAiStatus(hasServer) {
     (async () => {
       const sample = await samplePromise;
       if (!live) return;
-      if (!sample) { setStatus(hasServer ? 'server' : 'off'); return; }
+      if (!sample) { setStatus(hasServer ? 'server' : Platform.OS === 'web' ? 'off' : 'app'); return; }
       let state = 'prompt';
       try { const p = await permissionsPromise; if (p) state = await p.state('sample'); } catch (e) {}
       if (live) setStatus(state === 'denied' ? 'denied' : state === 'unavailable' ? (hasServer ? 'server' : 'off') : 'on');

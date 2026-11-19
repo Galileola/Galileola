@@ -38,6 +38,7 @@ export default {
     next: "Edasi",
     practiceStep: "HARJUTUS",
     practiceHint: "Kirjuta oma vastus või vajuta „Räägi“ ja ütle see valjusti.",
+    practiceHintApp: "Kirjuta oma vastus. Rääkimiseks vajuta klaviatuuri mikrofoni.",
     skip: "Jäta vahele",
     finish: "Lõpeta tund",
     lessonDone: "Tund läbitud!",
@@ -72,6 +73,7 @@ export default {
     needSituation: "Kirjelda kõigepealt olukorda.",
     voiceUnavailable: "Häälsisestus pole siin saadaval. Võid vastuse kirjutada.",
     ai: {
+      app: "Siin saad oma vastusele kiirkontrolli. AI tagasiside on saadaval veebiversioonis claude.ai-s või selles rakenduses pärast treeneriserveri ühendamist.",
       connecting: "Ühendan AI-treeneriga…",
       on: "AI-treener on sees. Sinu vastus saadetakse tagasiside saamiseks Claude’ile.",
       server: "AI-treener on sees.",

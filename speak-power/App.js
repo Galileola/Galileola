@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { SafeAreaView, View, Text, ScrollView, TouchableOpacity, StyleSheet, StatusBar } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, StatusBar, KeyboardAvoidingView, Platform } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import CONTENT, { LANG_ORDER } from './src/content';
 import { C, Pill } from './src/ui';
 import { loadState, saveState, freshState, markActive, levelOf, earnedBadges, overallScore, XP, dayKey } from './src/lib/progress';
@@ -88,9 +89,10 @@ export default function App() {
   const shared = { lang, state, aiStatus, setAiStatus, speaker, onCoachResult: recordCoach };
 
   return (
-    <SafeAreaView style={st.safe}>
+    <SafeAreaProvider>
+    <SafeAreaView style={st.safe} edges={['top', 'left', 'right', 'bottom']}>
       <StatusBar barStyle="light-content" />
-      <View style={st.frame}>
+      <KeyboardAvoidingView style={st.frame} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <View style={st.header}>
           <View style={{ flexShrink: 1 }}>
             <Text style={st.logo}>♛ SPEAK POWER</Text>
@@ -103,7 +105,7 @@ export default function App() {
           </View>
         </View>
 
-        <ScrollView ref={scroll} contentContainerStyle={st.content} keyboardShouldPersistTaps="handled">
+        <ScrollView ref={scroll} contentContainerStyle={st.content} keyboardShouldPersistTaps="handled" keyboardDismissMode="interactive">
           {tab === 'home' && (
             <Home lang={lang} state={state}
               onOpenLesson={(id) => { setLessonId(id); go('learn'); }}
@@ -131,8 +133,9 @@ export default function App() {
             </TouchableOpacity>
           ))}
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 

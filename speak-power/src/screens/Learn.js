@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { C, s, Card, Button, Eyebrow, Bar, ListenButton } from '../ui';
 import Practice, { AiStatusLine } from './Practice';
 import { allLessons } from '../lib/progress';
+import { inClaudeViewer } from '../lib/platform';
 
 function Course({ lang, state, onOpen }) {
   const t = lang.ui;
@@ -142,7 +143,7 @@ function Lesson({ lang, lesson, nextLesson, onClose, onOpen, onComplete, aiStatu
           <Card>
             <Eyebrow>{t.practiceStep}</Eyebrow>
             <Text style={s.title}>{lesson.practice}</Text>
-            <Text style={s.small}>{t.practiceHint}</Text>
+            <Text style={s.small}>{inClaudeViewer ? t.practiceHint : t.practiceHintApp}</Text>
             <Practice lang={lang} situation={lesson.practice} lesson={lesson} aiStatus={aiStatus} setAiStatus={setAiStatus}
               onResult={(r, answer) => onCoachResult(r, { id: lesson.id, answer })} speaker={speaker} />
           </Card>

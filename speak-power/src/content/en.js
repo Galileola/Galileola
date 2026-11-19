@@ -39,6 +39,7 @@ export default {
     next: "Next",
     practiceStep: "PRACTICE",
     practiceHint: "Write your answer, or tap Speak and say it out loud.",
+    practiceHintApp: "Write your answer. To speak it instead, tap the microphone on your keyboard.",
     skip: "Skip",
     finish: "Finish lesson",
     lessonDone: "Lesson complete!",
@@ -73,6 +74,7 @@ export default {
     needSituation: "Describe the situation first.",
     voiceUnavailable: "Voice input isn’t available here. You can type instead.",
     ai: {
+      app: "Here you get an instant check on your answer. AI feedback is available in the web version at claude.ai, or in this app once a coach server is connected.",
       connecting: "Connecting to the AI coach…",
       on: "AI coach is on. Your answer is sent to Claude for feedback.",
       server: "AI coach is on.",
