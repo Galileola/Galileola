@@ -1,0 +1,17 @@
+<%- include('partials/header') %>
+<h1>Current group deals</h1>
+<p class="lead">Join a deal and save a payment method. You're only charged if enough buyers join before the deadline.</p>
+<% if (!deals.length) { %>
+  <p class="muted">No deals are open right now. Check back soon.</p>
+<% } %>
+<div class="grid">
+<% for (const d of deals) { %>
+  <a class="card deal-card" href="/deals/<%= d.slug %>">
+    <% if (d.image_url) { %><img src="<%= d.image_url %>" alt=""><% } %>
+    <h2><%= d.product_name %></h2>
+    <p class="price"><%= formatEuro(d.price_cents) %> <span class="muted">incl. VAT</span></p>
+    <p><%= d.count %> of <%= d.min_buyers %> buyers · until <%= formatDate(d.deadline) %></p>
+  </a>
+<% } %>
+</div>
+<%- include('partials/footer') %>

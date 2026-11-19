@@ -1,0 +1,44 @@
+<%- include('../partials/header') %>
+<article class="legal">
+  <div class="notice warn small">Template: have this policy reviewed before going live. Text in [brackets] must be completed.</div>
+  <h1>Privacy policy</h1>
+
+  <h2>1. Controller</h2>
+  <p><%= business.name %>, <%= business.address %>, <%= business.email %>. [Data protection officer, if you have one.]</p>
+
+  <h2>2. What we process and why</h2>
+  <table>
+    <thead><tr><th>Data</th><th>Purpose</th><th>Legal basis (GDPR)</th></tr></thead>
+    <tbody>
+      <tr><td>Name, email address, delivery address</td><td>Taking part in a deal, delivery, emails about your order and payment</td><td>Contract, Art. 6(1)(b)</td></tr>
+      <tr><td>Payment details: card or IBAN, handled by Stripe. We only store Stripe reference IDs, the card brand or bank, and the last 4 digits.</td><td>Saving your payment method and charging it only if the deal goes ahead</td><td>Contract, Art. 6(1)(b)</td></tr>
+      <tr><td>Order, payment and VAT records (amount, VAT, country)</td><td>Accounting and tax obligations, including VAT/OSS reporting through Stripe Tax</td><td>Legal obligation, Art. 6(1)(c)</td></tr>
+      <tr><td>Technical data (IP address, browser, in server logs and Stripe's fraud checks)</td><td>Security and fraud prevention</td><td>Legitimate interests, Art. 6(1)(f)</td></tr>
+      <tr><td>Your cookie choice</td><td>Remembering your consent preference</td><td>Legal obligation / legitimate interests</td></tr>
+    </tbody>
+  </table>
+  <p>We don't use your data for advertising, we don't sell it, and we don't make automated decisions about you with legal or similarly significant effects.</p>
+
+  <h2>3. Recipients</h2>
+  <ul>
+    <li><strong>Stripe</strong> (Stripe Payments Europe, Ltd., Ireland) processes payments, mandates, fraud checks and VAT calculation. Stripe may transfer data to Stripe, Inc. in the USA, based on the EU–US Data Privacy Framework and Standard Contractual Clauses. See <a href="https://stripe.com/privacy" rel="noopener">stripe.com/privacy</a>.</li>
+    <li><strong>Email provider</strong>: [name, country] sends order and payment emails.</li>
+    <li><strong>Hosting provider</strong>: [name, country, preferably in the EU].</li>
+    <li><strong>Carrier</strong>: [name] receives your name and delivery address to deliver the goods.</li>
+    <li>Tax authorities, where the law requires it.</li>
+  </ul>
+
+  <h2>4. How long we keep it</h2>
+  <ul>
+    <li><strong>Saved payment methods</strong> are removed from Stripe once they're no longer needed: when the deal doesn't reach its minimum, when you have paid, or when your order is cancelled.</li>
+    <li><strong>Order data</strong> is kept until the deal, delivery and withdrawal period have ended, and as long as needed for possible claims [e.g. 3 years].</li>
+    <li><strong>Invoices and accounting records</strong> are kept for the period required by tax law [e.g. 10 years].</li>
+  </ul>
+
+  <h2>5. Your rights</h2>
+  <p>You can ask for access to your data (Art. 15), rectification (Art. 16), erasure (Art. 17), restriction (Art. 18), data portability (Art. 20), and you can object to processing based on legitimate interests (Art. 21). Where we rely on consent, you can withdraw it at any time. To use these rights, email <%= business.email %>. You can also complain to a data protection authority, for example <%= business.supervisoryAuthority %> or the authority in your own country.</p>
+
+  <h2>6. Cookies</h2>
+  <p>See our <a href="/cookies">cookie policy</a>.</p>
+</article>
+<%- include('../partials/footer') %>

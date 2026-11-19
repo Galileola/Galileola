@@ -1,0 +1,23 @@
+{
+  "name": "groupbuy-eu",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Group-buy deals for the EU market: save a payment method now, charge only when the minimum is reached.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env --disable-warning=ExperimentalWarning src/start.js",
+    "dev": "node --env-file-if-exists=.env --disable-warning=ExperimentalWarning --watch src/start.js",
+    "test": "node --disable-warning=ExperimentalWarning --test 'test/*.test.js'",
+    "package": "node scripts/package.js"
+  },
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^5.3.0",
+    "nodemailer": "^10.3.1",
+    "stripe": "^23.1.0"
+  },
+  "main": "src/start.js"
+}
