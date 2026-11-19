@@ -33,6 +33,14 @@ For voice answers, use the keyboard's own microphone. Read-aloud uses `expo-spee
 
 `npx expo export --platform web` writes a static site to `dist/`.
 
+## Publish on GitHub Pages
+
+`npm run build:pages` builds the web version into `docs/` at the repository root. The output is one self-contained page, plus the icon and manifest that let a phone install it.
+
+To switch Pages on (one time only): in the repository on GitHub, open **Settings → Pages**, set **Source** to **Deploy from a branch**, choose the branch and the **/docs** folder, and click **Save**. The site appears at `https://<owner>.github.io/<repo>/` within a few minutes. After you change the app, run `npm run build:pages` again and push.
+
+On an iPhone, open the site in Safari and tap **Share → Add to Home Screen**. It then opens full-screen, like an app. AI feedback and voice input come from claude.ai, so the GitHub version uses the instant check, and read-aloud uses the phone's own voices.
+
 ## AI coach server (optional, for the mobile app)
 
 1. Deploy `server/` to a Node.js host with HTTPS and run `npm install && npm start`. Set `OPENAI_API_KEY` **on the server only** (see `server/.env.example`).
