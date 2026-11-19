@@ -1,55 +1,151 @@
-import React,{useState,useEffect,useRef} from 'react';
-import {SafeAreaView,View,Text,ScrollView,TouchableOpacity,TextInput,StyleSheet,StatusBar} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-const copy={
- en:{home:'Home',lessons:'Lessons',coach:'Coach',progress:'Progress',welcome:'Build your presence.',sub:'Speak clearly. Stay calm. Earn respect.',challenge:'TODAY’S CHALLENGE',title:'Speak with calm authority',desc:'Replace uncertainty with clear, respectful statements.',start:'Start lesson',practice:'Practice with coach',completed:'Lessons completed',points:'Practice points',question:'A colleague interrupts you. What do you say?',answers:['Stop talking. I am in charge.','Sorry, maybe I could finish?','I’d like to finish my point, then hear yours.'],correct:'Excellent: confident, calm and respectful.',wrong:'Try again: be assertive without aggression.',done:'Lesson completed!',coachTitle:'Speaking Coach',scenario:'Someone says: “Your idea will never work.” How do you respond?',placeholder:'Write your response here...',evaluate:'Get feedback',feedback:'Coach feedback',sample:'Example: I understand your concern. Let me explain how we could make it work.',advice:'Try acknowledging the concern, stating your view calmly, and suggesting a next step.',progressTitle:'Your progress',tip:'Pause before responding. Speak slowly and use clear sentences.',reset:'Reset progress',resetConfirm:'Progress reset.',thinking:'Thinking…',aiNote:'AI feedback: your answer is sent to an AI coach for review.',demoNote:'Demo mode: AI feedback isn’t available here, so you’ll see example advice.',aiError:'The AI coach is unavailable right now. Here is some example advice instead.',busy:'The AI coach is busy right now. Try again in a minute.'},
- ru:{home:'Главная',lessons:'Уроки',coach:'Тренер',progress:'Прогресс',welcome:'Развивай уверенность.',sub:'Говори ясно. Сохраняй спокойствие.',challenge:'ЗАДАНИЕ ДНЯ',title:'Говори спокойно и уверенно',desc:'Замени неуверенные фразы ясными и уважительными.',start:'Начать урок',practice:'Практика с тренером',completed:'Завершено уроков',points:'Баллы',question:'Коллега перебивает тебя. Что скажешь?',answers:['Замолчи. Здесь главный я.','Извини, может, я закончу?','Я хотел бы закончить мысль, а потом выслушать тебя.'],correct:'Отлично: уверенно и уважительно.',wrong:'Попробуй ещё: уверенность без агрессии.',done:'Урок завершён!',coachTitle:'Тренер по общению',scenario:'Кто-то говорит: «Твоя идея никогда не сработает». Как ответишь?',placeholder:'Напиши свой ответ...',evaluate:'Получить отзыв',feedback:'Отзыв тренера',sample:'Пример: Я понимаю твои сомнения. Давай объясню, как это может сработать.',advice:'Признай сомнения, спокойно изложи позицию и предложи следующий шаг.',progressTitle:'Твой прогресс',tip:'Сделай паузу перед ответом. Говори спокойно и ясно.',reset:'Сбросить прогресс',resetConfirm:'Прогресс сброшен.',thinking:'Анализирую…',aiNote:'ИИ-отзыв: твой ответ отправляется ИИ-тренеру на разбор.',demoNote:'Демо-режим: ИИ-отзыв здесь недоступен, поэтому показан пример совета.',aiError:'ИИ-тренер сейчас недоступен. Вот пример совета.',busy:'ИИ-тренер сейчас занят. Попробуй через минуту.'},
- et:{home:'Avaleht',lessons:'Tunnid',coach:'Treener',progress:'Edusammud',welcome:'Arenda enesekindlust.',sub:'Räägi selgelt. Jää rahulikuks.',challenge:'TÄNANE ÜLESANNE',title:'Räägi rahulikult ja kindlalt',desc:'Asenda ebakindlad väljendid selgete ja lugupidavate sõnadega.',start:'Alusta tundi',practice:'Harjuta treeneriga',completed:'Lõpetatud tunnid',points:'Punktid',question:'Kolleeg katkestab sind. Mida ütled?',answers:['Ole vait. Mina olen siin juht.','Vabandust, kas ma võiksin lõpetada?','Soovin oma mõtte lõpetada ja siis kuulan sind.'],correct:'Suurepärane: kindel ja lugupidav.',wrong:'Proovi uuesti: ole kindel ilma agressiivsuseta.',done:'Tund lõpetatud!',coachTitle:'Suhtlustreener',scenario:'Keegi ütleb: „Sinu idee ei tööta kunagi.” Kuidas vastad?',placeholder:'Kirjuta oma vastus...',evaluate:'Saa tagasisidet',feedback:'Treeneri tagasiside',sample:'Näide: Mõistan sinu muret. Selgitan, kuidas see võiks toimida.',advice:'Tunnista muret, selgita oma seisukohta ja paku järgmine samm.',progressTitle:'Sinu edusammud',tip:'Tee enne vastamist paus. Räägi aeglaselt ja selgelt.',reset:'Lähtesta edusammud',resetConfirm:'Edusammud lähtestatud.',thinking:'Analüüsin…',aiNote:'AI tagasiside: sinu vastus saadetakse AI-treenerile hindamiseks.',demoNote:'Demorežiim: AI tagasiside pole siin saadaval, seega näed näidisnõuannet.',aiError:'AI-treener pole praegu saadaval. Siin on näidisnõuanne.',busy:'AI-treener on praegu hõivatud. Proovi minuti pärast uuesti.'}};
-const gold='#E6B96F';
-// Set EXPO_PUBLIC_COACH_URL in .env to your own secure backend URL.
-const COACH_URL=process.env.EXPO_PUBLIC_COACH_URL || '';
-async function requestCoach(message,language){
- if(!COACH_URL)return null;
- const controller=new AbortController();
- const timeout=setTimeout(()=>controller.abort(),15000);
- try{const response=await fetch(COACH_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message,language}),signal:controller.signal});
- if(!response.ok)throw new Error('Coach unavailable');
- const data=await response.json();
- if(typeof data.feedback!=='string'||!data.feedback.trim())throw new Error('Invalid coach response');
- return data.feedback.slice(0,3000);
- }finally{clearTimeout(timeout)}
+import React, { useState, useEffect, useRef } from 'react';
+import { SafeAreaView, View, Text, ScrollView, TouchableOpacity, StyleSheet, StatusBar } from 'react-native';
+import CONTENT, { LANG_ORDER } from './src/content';
+import { C, Pill } from './src/ui';
+import { loadState, saveState, freshState, markActive, levelOf, earnedBadges, overallScore, XP, dayKey } from './src/lib/progress';
+import { useAiStatus, useSpeaker } from './src/lib/platform';
+import { hasServer } from './src/lib/coach';
+import Home from './src/screens/Home';
+import Learn from './src/screens/Learn';
+import Coach from './src/screens/Coach';
+import Phrases from './src/screens/Phrases';
+import Progress from './src/screens/Progress';
+
+const TABS = [['home', '⌂'], ['learn', '▤'], ['coach', '◉'], ['phrases', '❝'], ['progress', '▥']];
+
+export default function App() {
+  const [state, setState] = useState(freshState);
+  const stateRef = useRef(state);
+  stateRef.current = state;
+  const [ready, setReady] = useState(false);
+  const [tab, setTab] = useState('home');
+  const [lessonId, setLessonId] = useState(null);
+  const [scenarioId, setScenarioId] = useState(null);
+  const [toast, setToast] = useState('');
+  const toastTimer = useRef(null);
+  const scroll = useRef(null);
+  const [aiStatus, setAiStatus] = useAiStatus(hasServer);
+  const speaker = useSpeaker();
+
+  useEffect(() => { loadState().then((loaded) => { stateRef.current = loaded; setState(loaded); setReady(true); }); }, []);
+  useEffect(() => { if (ready) saveState(state); }, [state, ready]);
+  useEffect(() => () => clearTimeout(toastTimer.current), []);
+
+  const lang = CONTENT[state.lang] || CONTENT.en;
+  const t = lang.ui;
+
+  const commit = (next) => { stateRef.current = next; setState(next); };
+  const scrollTop = () => { if (scroll.current) scroll.current.scrollTo({ y: 0, animated: false }); };
+  const go = (next) => { speaker.stop(); setTab(next); scrollTop(); };
+  const notify = (msg) => {
+    setToast(msg);
+    clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(''), 3200);
+  };
+
+  // Applies a progress change, then announces XP, level-ups and new achievements.
+  const award = (change, message) => {
+    const prev = stateRef.current;
+    const cur = CONTENT[prev.lang] || CONTENT.en;
+    const next = markActive(change(prev));
+    const notes = [message];
+    const before = levelOf(prev.xp).level, after = levelOf(next.xp).level;
+    if (after > before) notes.push(`${cur.ui.levelUp} ${cur.ui.level} ${after}`);
+    const had = earnedBadges(prev, cur);
+    earnedBadges(next, cur).filter((b) => !had.includes(b)).forEach((b) => notes.push(`${cur.ui.badgeUnlocked} ${cur.ui.badges[b][0]}`));
+    commit(next);
+    notify(notes.join('\n'));
+  };
+
+  const completeLesson = (lesson, correct) => {
+    const first = !stateRef.current.done[lesson.id];
+    const perfect = correct === lesson.quiz.length;
+    const gained = first ? XP.lesson + correct * XP.perfectAnswer : XP.review;
+    award((p) => ({
+      ...p,
+      xp: p.xp + gained,
+      done: { ...p.done, [lesson.id]: { at: Date.now(), perfect: perfect || !!(p.done[lesson.id] && p.done[lesson.id].perfect) } },
+      perfect: p.perfect + (perfect ? 1 : 0),
+    }), `+${gained} ${t.xp}`);
+    return gained;
+  };
+
+  const recordCoach = (result, { id, answer, daily }) => {
+    const overall = overallScore(result.scores);
+    const bonus = !!daily && stateRef.current.dailyDone !== dayKey();
+    const gained = XP.coach + (bonus ? XP.daily : 0);
+    award((p) => ({
+      ...p,
+      xp: p.xp + gained,
+      sessions: p.sessions + 1,
+      sharp: p.sharp + (overall !== null && overall >= 8 ? 1 : 0),
+      dailyDone: bonus ? dayKey() : p.dailyDone,
+      dailyCount: p.dailyCount + (bonus ? 1 : 0),
+      history: [{ at: Date.now(), id, answer: answer.slice(0, 240), overall, source: result.source }, ...p.history].slice(0, 20),
+    }), `+${gained} ${t.xp}`);
+  };
+
+  const shared = { lang, state, aiStatus, setAiStatus, speaker, onCoachResult: recordCoach };
+
+  return (
+    <SafeAreaView style={st.safe}>
+      <StatusBar barStyle="light-content" />
+      <View style={st.frame}>
+        <View style={st.header}>
+          <View style={{ flexShrink: 1 }}>
+            <Text style={st.logo}>♛ SPEAK POWER</Text>
+            <Text style={st.tagline}>{t.tagline}</Text>
+          </View>
+          <View style={{ flexDirection: 'row', gap: 4 }}>
+            {LANG_ORDER.map((code) => (
+              <Pill key={code} label={CONTENT[code].label} active={state.lang === code} onPress={() => { speaker.stop(); commit({ ...stateRef.current, lang: code }); }} />
+            ))}
+          </View>
+        </View>
+
+        <ScrollView ref={scroll} contentContainerStyle={st.content} keyboardShouldPersistTaps="handled">
+          {tab === 'home' && (
+            <Home lang={lang} state={state}
+              onOpenLesson={(id) => { setLessonId(id); go('learn'); }}
+              onDaily={(id) => { setScenarioId(id); go('coach'); }}
+              onCoach={() => go('coach')} />
+          )}
+          {tab === 'learn' && <Learn {...shared} lessonId={lessonId} setLessonId={(id) => { speaker.stop(); setLessonId(id); scrollTop(); }} onComplete={completeLesson} scrollTop={scrollTop} />}
+          {tab === 'coach' && <Coach {...shared} scenarioId={scenarioId} setScenarioId={(id) => { setScenarioId(id); scrollTop(); }} />}
+          {tab === 'phrases' && <Phrases lang={lang} speaker={speaker} />}
+          {tab === 'progress' && <Progress lang={lang} state={state} onReset={() => commit({ ...freshState(), lang: stateRef.current.lang })} />}
+        </ScrollView>
+
+        {!!toast && (
+          <View style={st.toast}>
+            <Text style={st.toastText}>{toast}</Text>
+          </View>
+        )}
+
+        <View style={st.nav}>
+          {TABS.map(([id, icon]) => (
+            <TouchableOpacity key={id} role="button" aria-label={t.tabs[id]} style={st.navItem}
+              onPress={() => { if (id === 'learn' && tab === 'learn') setLessonId(null); go(id); }}>
+              <Text style={[st.navIcon, { color: tab === id ? C.gold : '#9BAAC2' }]}>{icon}</Text>
+              <Text style={{ color: tab === id ? C.gold : '#9BAAC2', fontSize: 11 }} numberOfLines={1}>{t.tabs[id]}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+    </SafeAreaView>
+  );
 }
 
-// On the published web page the claude.ai viewer can answer as the coach (the "sample"
-// capability). Everywhere else this resolves null and the server/demo path is used.
-const LANG_NAMES={en:'English',ru:'Russian',et:'Estonian'};
-const claudeSample=typeof window!=='undefined'&&window.claude&&typeof window.claude.use==='function'?window.claude.use('sample').catch(()=>null):Promise.resolve(null);
-const AI_OFF=['not_granted','sampling_disabled','not_declared','capability_disabled','capability_removed'];
-async function requestClaudeCoach(message,language,scenario,onText){
- const sample=await claudeSample;
- if(!sample)return null;
- const prompt=`You are SPEAK POWER, a supportive communication coach. Reply only in ${LANG_NAMES[language]||'English'}.
-The user is practising how to respond to this situation: ${scenario}
-Assess the user's answer below. Give concise, specific feedback on clarity, calmness, confidence and respect, then one improved example answer. Do not encourage aggression or manipulation. Keep it under 130 words. Plain text only: no Markdown, asterisks or headings.
-
-The user's answer:
-"""
-${message.slice(0,2000)}
-"""`;
- const {text}=await sample(prompt,{modelTier:'quick',onText:({text})=>onText(text)});
- return text.trim();
-}
-
-export default function App(){const [lang,setLang]=useState('en'),[tab,setTab]=useState('home'),[completed,setCompleted]=useState(false),[points,setPoints]=useState(0),[choice,setChoice]=useState(-1),[answer,setAnswer]=useState(''),[feedback,setFeedback]=useState(''),[ready,setReady]=useState(false),[loading,setLoading]=useState(false),[ai,setAi]=useState(null),req=useRef(0);const t=copy[lang];
-useEffect(()=>{claudeSample.then(s=>setAi(!!s||!!COACH_URL))},[]);
-useEffect(()=>{(async()=>{try{const raw=await AsyncStorage.getItem('speak-power-v1');if(raw){const d=JSON.parse(raw);setLang(d.lang||'en');setCompleted(!!d.completed);setPoints(d.points||0)}}catch(e){}setReady(true)})()},[]);
-useEffect(()=>{if(ready)AsyncStorage.setItem('speak-power-v1',JSON.stringify({lang,completed,points})).catch(()=>{})},[lang,completed,points,ready]);
-const Button=({label,onPress,secondary=false})=><TouchableOpacity onPress={onPress} style={[styles.button,secondary&&styles.secondary]}><Text style={[styles.buttonText,secondary&&{color:'#F5F7FC'}]}>{label}</Text></TouchableOpacity>;
-const Card=({children})=><View style={styles.card}>{children}</View>;
-return <SafeAreaView style={styles.safe}><StatusBar barStyle="light-content"/><View style={styles.header}><View><Text style={styles.logo}>♛ SPEAK POWER</Text><Text style={styles.muted}>Confidence is a skill.</Text></View><View style={styles.languages}>{[['en','EN'],['ru','RU'],['et','ET']].map(([id,label])=><TouchableOpacity key={id} onPress={()=>{setLang(id);req.current++;setFeedback('')}} style={[styles.language,lang===id&&styles.languageActive]}><Text style={{color:lang===id?'#101b31':'#E5EAF3',fontWeight:'bold'}}>{label}</Text></TouchableOpacity>)}</View></View><ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-{tab==='home'&&<><Text style={styles.heading}>{t.welcome}</Text><Text style={styles.mutedLarge}>{t.sub}</Text><Card><Text style={styles.eyebrow}>{t.challenge}</Text><Text style={styles.title}>{t.title}</Text><Text style={styles.mutedLarge}>{t.desc}</Text><Button label={t.start+' →'} onPress={()=>setTab('lessons')}/></Card><View style={styles.stats}><Card><Text style={styles.number}>{completed?1:0}</Text><Text style={styles.muted}>{t.completed}</Text></Card><Card><Text style={styles.number}>{points}</Text><Text style={styles.muted}>{t.points}</Text></Card></View><Button secondary label={t.practice+' →'} onPress={()=>setTab('coach')}/></>}
-{tab==='lessons'&&<><Text style={styles.heading}>{t.title}</Text><Card><Text style={styles.title}>{t.question}</Text>{t.answers.map((a,i)=><TouchableOpacity key={i} onPress={()=>setChoice(i)} style={[styles.option,choice===i&&styles.optionSelected]}><Text style={styles.optionText}>{String.fromCharCode(65+i)}. {a}</Text></TouchableOpacity>)}{choice>=0&&<Text style={styles.feedback}>{choice===2?t.correct:t.wrong}</Text>}{choice===2&&!completed&&<Button label={t.done+' ✓'} onPress={()=>{setCompleted(true);setPoints(p=>p+50)}}/>}{completed&&<Text style={styles.success}>✓ {t.done}</Text>}</Card></>}
-{tab==='coach'&&<><Text style={styles.heading}>{t.coachTitle}</Text><Card><Text style={styles.title}>{t.scenario}</Text><TextInput multiline placeholder={t.placeholder} placeholderTextColor="#8291AA" value={answer} onChangeText={setAnswer} style={styles.input}/><Button label={loading?'…':t.evaluate} onPress={async()=>{if(!answer.trim()){setFeedback(t.placeholder);return}if(loading)return;const id=++req.current,show=x=>{if(req.current===id)setFeedback(x)};setLoading(true);show(t.thinking);try{const result=await requestClaudeCoach(answer,lang,t.scenario,show)||await requestCoach(answer,lang);show(result||t.advice+'\n\n'+t.sample);setPoints(p=>p+10)}catch(e){const code=e&&e.code;if(code==='rate_limited'){show(t.busy)}else{if(AI_OFF.includes(code))setAi(!!COACH_URL);show(e&&e.text?e.text:t.aiError+'\n\n'+t.advice+'\n\n'+t.sample);setPoints(p=>p+10)}}finally{setLoading(false)}}}/>{!!feedback&&<Text style={styles.feedback}>{t.feedback+':\n'+feedback}</Text>}</Card>{ai!==null&&<Text style={styles.note}>{ai?t.aiNote:t.demoNote}</Text>}</>}
-{tab==='progress'&&<><Text style={styles.heading}>{t.progressTitle}</Text><Card><Text style={styles.number}>{Math.min(100,(completed?50:0)+Math.max(0,points-(completed?50:0)))}%</Text><View style={styles.track}><View style={[styles.fill,{width:Math.min(100,(completed?50:0)+Math.max(0,points-(completed?50:0)))+'%'}]}/></View></Card><View style={styles.stats}><Card><Text style={styles.number}>{completed?1:0}</Text><Text style={styles.muted}>{t.completed}</Text></Card><Card><Text style={styles.number}>{points}</Text><Text style={styles.muted}>{t.points}</Text></Card></View><Card><Text style={styles.optionText}>{t.tip}</Text></Card><Button secondary label={t.reset} onPress={()=>{setCompleted(false);setPoints(0);setChoice(-1);setFeedback('');setAnswer('')}}/></>}
-</ScrollView><View style={styles.nav}>{[['home','⌂'],['lessons','▤'],['coach','◉'],['progress','▥']].map(([id,icon])=><TouchableOpacity key={id} style={styles.navItem} onPress={()=>{setTab(id);req.current++;setFeedback('')}}><Text style={[styles.navIcon,{color:tab===id?gold:'#9BAAC2'}]}>{icon}</Text><Text style={{color:tab===id?gold:'#9BAAC2',fontSize:11}}>{t[id]}</Text></TouchableOpacity>)}</View></SafeAreaView>}
-const styles=StyleSheet.create({safe:{flex:1,backgroundColor:'#101B31'},header:{padding:20,paddingBottom:12,flexDirection:'row',justifyContent:'space-between',alignItems:'center'},logo:{fontSize:19,fontWeight:'900',color:'#F8FAFC',letterSpacing:1},muted:{color:'#9BAAC2',fontSize:12,marginTop:4},mutedLarge:{color:'#B5C1D3',fontSize:15,lineHeight:23,marginBottom:16},languages:{flexDirection:'row',gap:3},language:{padding:7,borderRadius:7,backgroundColor:'#263751'},languageActive:{backgroundColor:gold},content:{padding:20,paddingTop:12,paddingBottom:35,gap:15},heading:{fontSize:26,fontWeight:'800',color:'#FFFFFF',marginBottom:3},title:{fontSize:19,fontWeight:'700',color:'#FFFFFF',marginBottom:15},card:{backgroundColor:'#1D2B44',borderColor:'#34435D',borderWidth:1,borderRadius:17,padding:17,flex:1},eyebrow:{color:gold,fontSize:11,fontWeight:'800',letterSpacing:1.5,marginBottom:12},button:{backgroundColor:gold,borderRadius:13,padding:15,alignItems:'center',marginTop:12},buttonText:{color:'#182033',fontWeight:'800',fontSize:15},secondary:{backgroundColor:'#263751',borderWidth:1,borderColor:'#52617B'},stats:{flexDirection:'row',gap:12},number:{fontSize:31,fontWeight:'800',color:gold},option:{padding:14,borderColor:'#475670',borderWidth:1,borderRadius:12,marginBottom:9},optionSelected:{borderColor:gold,backgroundColor:'#39415A'},optionText:{color:'#F5F7FC',fontSize:15,lineHeight:23},feedback:{color:'#D8F4E6',backgroundColor:'#263E48',padding:13,borderRadius:12,marginTop:12,lineHeight:22},success:{color:gold,textAlign:'center',fontWeight:'bold',marginTop:14},input:{backgroundColor:'#101B31',borderWidth:1,borderColor:'#56637B',borderRadius:12,color:'white',minHeight:110,textAlignVertical:'top',padding:13,marginTop:12},note:{color:'#9BAAC2',fontSize:12,lineHeight:19},track:{height:9,backgroundColor:'#3A4860',borderRadius:10,marginTop:10,overflow:'hidden'},fill:{height:'100%',backgroundColor:gold},nav:{flexDirection:'row',borderTopWidth:1,borderColor:'#39475D',paddingVertical:12},navItem:{flex:1,alignItems:'center',gap:4},navIcon:{fontSize:22}});
+const st = StyleSheet.create({
+  safe: { flex: 1, backgroundColor: C.bg },
+  frame: { flex: 1, width: '100%', maxWidth: 680, alignSelf: 'center' },
+  header: { paddingHorizontal: 20, paddingTop: 18, paddingBottom: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 10 },
+  logo: { fontSize: 19, fontWeight: '900', color: '#F8FAFC', letterSpacing: 1 },
+  tagline: { color: '#9BAAC2', fontSize: 12, marginTop: 4 },
+  content: { paddingHorizontal: 20, paddingTop: 10, paddingBottom: 36 },
+  toast: { position: 'absolute', left: 20, right: 20, bottom: 84, backgroundColor: C.gold, borderRadius: 14, paddingVertical: 12, paddingHorizontal: 16, pointerEvents: 'none' },
+  toastText: { color: C.goldInk, fontWeight: '800', fontSize: 14, lineHeight: 20, textAlign: 'center' },
+  nav: { flexDirection: 'row', borderTopWidth: 1, borderColor: '#39475D', paddingVertical: 10, backgroundColor: C.bg },
+  navItem: { flex: 1, alignItems: 'center', gap: 3, minWidth: 0 },
+  navIcon: { fontSize: 21 },
+});

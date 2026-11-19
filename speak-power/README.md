@@ -1,24 +1,47 @@
-# SPEAK POWER — React Native Expo MVP
+# SPEAK POWER
 
-A runnable iOS and Android Expo source project with English, Russian, and Estonian UI; daily challenge/lesson; multiple-choice speaking exercise; points and progress stored locally; and a text communication coach.
+A confidence and communication coaching app for iOS, Android and the web, built with Expo (React Native). The full interface and course are available in English, Russian and Estonian.
 
-## Try on a phone
+## What's inside
 
-1. Install Node.js (current LTS) on your computer and Expo Go on your phone.
-2. In this directory run `npm install` then `npx expo install --fix` to align native packages with your Expo SDK.
-3. Run `npx expo start` (same Wi-Fi), or `npx expo start --tunnel` if your network blocks local access.
-4. Scan the QR code with Expo Go / your iPhone camera as prompted.
+- **Course:** 6 modules and 24 lessons (calm confidence, assertiveness, handling pushback, speaking at work, public speaking, influence). Each lesson has a key idea, a "say this instead" example with alternatives, a two-question quiz with explanations and a practice task.
+- **Speaking coach:** 24 real-life situations plus free practice. Each answer is scored for clarity, calm, confidence and respect, with written feedback and an improved example.
+- **Daily challenge:** a new situation every day, with bonus XP.
+- **Power phrases:** about 70 ready-to-use lines, searchable, with read-aloud.
+- **Progress:** XP, levels and ranks, day streaks, 10 achievements, per-module progress and recent practice. Progress is saved on the device.
 
-## AI coach (optional)
+## Where the coach's feedback comes from
 
-By default the app provides clearly labeled demonstration feedback and does not require a paid AI service. For live AI coaching:
+1. **Published claude.ai page:** the page asks Claude through the viewer (the `sample` capability), so no server or API key is needed. Voice input (`dictation`) and read-aloud (`tts`) also come from the viewer where it offers them.
+2. **Your own server:** deploy `server/` and set `EXPO_PUBLIC_COACH_URL` (see below). The mobile app uses this.
+3. **Instant check:** a scorer that runs on the device and always works, even offline. It flags hedges, over-apologising, aggressive words and absolutes, and checks for a clear next step.
 
-1. Deploy the `server` folder to a Node.js host with HTTPS. Run `npm install && npm start` there. Set `OPENAI_API_KEY` **on the server only** (see `server/.env.example`).
-2. Copy `.env.example` to `.env` in the mobile project and set `EXPO_PUBLIC_COACH_URL=https://YOUR-HOST/coach`.
-3. Restart Expo. The mobile app will call your server, which calls the OpenAI API. If unavailable, the app falls back to demonstration feedback.
+## Run on a phone
 
-**Security:** Never put an OpenAI API key in the mobile app or any `EXPO_PUBLIC_` variable. Before public release add authentication, rate limiting, usage quotas, privacy disclosures, and server monitoring. The example server is for development, not hardened production deployment.
+1. Install Node.js (current LTS) and the Expo Go app.
+2. In this folder, run `npm install`, then `npx expo install --fix`.
+3. Run `npx expo start`, or `npx expo start --tunnel` if your network blocks local access, and scan the QR code.
 
-## Status and limitations
+Phones can use the keyboard's own microphone for voice answers. Read-aloud uses `expo-speech`.
 
-This is a source-code MVP, not an App Store/Google Play release. It contains one daily lesson/exercise, a text coach (not microphone speech recognition), a three-language UI, and local progress tracking. Lesson content does not rotate by date yet. No account sync. Expo SDK compatibility and physical-device behavior still need verification on a development machine with npm network access.
+## Build the web version
+
+`npx expo export --platform web` writes a static site to `dist/`.
+
+## AI coach server (optional, for the mobile app)
+
+1. Deploy `server/` to a Node.js host with HTTPS and run `npm install && npm start`. Set `OPENAI_API_KEY` **on the server only** (see `server/.env.example`).
+2. Copy `.env.example` to `.env` and set `EXPO_PUBLIC_COACH_URL=https://YOUR-HOST/coach`.
+3. Restart Expo.
+
+**Security:** never put an API key in the app or in any `EXPO_PUBLIC_` variable. Before a public release, add authentication, rate limiting, usage quotas, a privacy notice and monitoring to the server.
+
+## Project layout
+
+- `App.js`: app shell, navigation, XP and achievement handling
+- `src/content/{en,ru,et}.js`: the course and all interface text, with identical structure in each language
+- `src/lib/coach.js`: coach logic (Claude, then your server, then the instant check)
+- `src/lib/platform.js`: optional claude.ai viewer features (AI, dictation, read-aloud, permissions)
+- `src/lib/progress.js`: saving, XP, levels, streaks and achievements
+- `src/screens/`: Home, Learn (course and lesson player), Coach, Phrases, Progress
+- `server/`: optional AI coach backend
