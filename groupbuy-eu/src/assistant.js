@@ -9,17 +9,18 @@ export const MAX_USER_CHARS = 1500;
 const MAX_ASSISTANT_CHARS = 6000;
 const MAX_DESCRIPTION_CHARS = 1500;
 
+// Claude client shared by the shopping assistant and the admin's description writer.
 export function createAssistant({ apiKey, model, client }) {
-  const anthropic = client ?? new Anthropic({ apiKey, maxRetries: 2, timeout: 45_000 });
+  const anthropic = client ?? new Anthropic({ apiKey, maxRetries: 2, timeout: 60_000 });
   return {
     model,
-    // Returns { text } or { refused: true }.
-    async reply({ system, messages }) {
+    // Returns { text } or { refused: true }. `format` is an optional JSON schema for the reply.
+    async reply({ system, messages, effort = 'low', maxTokens = 4000, format }) {
       const response = await anthropic.beta.messages.create({
         model,
-        max_tokens: 4000,
-        // Short chat answers: low effort keeps replies quick and cheap.
-        output_config: { effort: 'low' },
+        max_tokens: maxTokens,
+        // Chat answers use low effort, which keeps replies quick and cheap.
+        output_config: { effort, ...(format ? { format: { type: 'json_schema', schema: format } } : {}) },
         // If the model declines a message, the API retries it on a fallback model it picks.
         betas: ['server-side-fallback-2026-07-01'],
         fallbacks: 'default',

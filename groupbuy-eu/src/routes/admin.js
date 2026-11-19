@@ -7,6 +7,14 @@ import os from 'node:os';
 import path from 'node:path';
 import { hmac, safeEqual, randomToken } from '../util.js';
 import { MAX_PHOTO_BYTES, MAX_PHOTOS_PER_DEAL, PHOTO_ACCEPT, checkPhotos, uploadErrorMessage } from '../photos.js';
+import {
+  DESCRIPTION_SCHEMA,
+  DescribeInputError,
+  describeMessages,
+  describeSystemPrompt,
+  validateDescribeInput,
+} from '../describe.js';
+import { createRateLimiter } from '../rateLimit.js';
 
 // Photo uploads are parsed into memory (admin only, at most 8 × 8 MB per request), checked,
 // and only then written to UPLOAD_DIR.
@@ -50,10 +58,13 @@ export function adminRoutes(app, ctx) {
   // Multipart forms (with photos) are parsed before the form-token check, which reads req.body.
   // The token field comes first in those forms, so it is read even if a photo is too large.
   router.post(['/deals', '/deals/:id/photos'], parsePhotos);
+  // Same for the JSON body of "Write with AI" (photos are downscaled in the browser first).
+  router.post('/ai/description', express.json({ limit: '12mb' }));
   router.use((req, res, next) => {
     res.set('Cache-Control', 'no-store');
     res.locals.csrfToken = csrfToken;
     res.locals.assistantEnabled = false;
+    res.locals.aiWritingEnabled = Boolean(ctx.assistant);
     res.locals.photoAccept = PHOTO_ACCEPT;
     res.locals.maxPhotos = MAX_PHOTOS_PER_DEAL;
     if (req.method === 'POST' && !safeEqual(req.body?._csrf ?? '', csrfToken)) {
@@ -81,6 +92,40 @@ export function adminRoutes(app, ctx) {
     const created = repo.insertDeal(deal);
     savePhotos(created.id, req.files);
     res.redirect(303, `/admin/deals/${created.id}`);
+  });
+
+  // Drafts a product description with Claude. Nothing is saved: the draft goes into the form.
+  const describeLimiter = createRateLimiter({ windowMs: 15 * 60_000, max: 30, clock });
+  router.post('/ai/description', async (req, res) => {
+    res.set('Cache-Control', 'no-store');
+    if (!ctx.assistant) {
+      return res.status(503).json({ error: 'AI writing is off. Add ANTHROPIC_API_KEY to the environment variables.' });
+    }
+    let input;
+    try {
+      input = validateDescribeInput(req.body);
+    } catch (err) {
+      if (err instanceof DescribeInputError) return res.status(400).json({ error: err.message });
+      throw err;
+    }
+    if (!describeLimiter.take(req.ip)) {
+      return res.status(429).json({ error: 'Too many drafts in a short time. Please wait a few minutes.' });
+    }
+    try {
+      const result = await ctx.assistant.reply({
+        system: describeSystemPrompt(config.business),
+        messages: describeMessages(input),
+        effort: 'medium',
+        maxTokens: 8000,
+        format: DESCRIPTION_SCHEMA,
+      });
+      const description = result.refused ? '' : String(JSON.parse(result.text).description ?? '').trim();
+      if (!description) return res.status(422).json({ error: "The AI couldn't write a description for this product. Please write it yourself." });
+      res.json({ description: description.slice(0, 5000) });
+    } catch (err) {
+      console.error('[ai-description]', err?.status ?? '', err?.message ?? err);
+      res.status(502).json({ error: 'The AI could not write a description just now. Please try again.' });
+    }
   });
 
   const savePhotos = (dealId, files) => {

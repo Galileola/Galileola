@@ -12,6 +12,13 @@
 
     <label for="description">Description</label>
     <textarea id="description" name="description" maxlength="5000"><%= values.description || '' %></textarea>
+    <div class="ai-write" data-ai-write>
+      <button type="button" class="ai-button" data-ai-write-button <%= aiWritingEnabled ? '' : 'disabled' %>>Write with AI</button>
+      <button type="button" class="linklike small" data-ai-undo hidden>Undo</button>
+      <span class="small muted" data-ai-status role="status">
+        <% if (aiWritingEnabled) { %>Writes a draft from the product name, any notes you typed here and the photos you chose below. Check it before you create the deal.<% } else { %>To turn this on, add ANTHROPIC_API_KEY to the environment variables in hPanel and restart the app.<% } %>
+      </span>
+    </div>
     <% if (errors.description) { %><p class="error-text"><%= errors.description %></p><% } %>
 
 

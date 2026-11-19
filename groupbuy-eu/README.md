@@ -74,6 +74,10 @@ Admin creates deal ──► buyers join (SetupIntent: card / SEPA / iDEAL→SEP
   stays off until `ANTHROPIC_API_KEY` is set; `ASSISTANT_RATE_LIMIT` and
   `ASSISTANT_DAILY_LIMIT` cap usage. If the model declines a message, the API's server-side
   fallback answers on another model.
+- **Write with AI** (admin, New deal form): drafts the product description from the name, the
+  notes typed in the description box and up to 4 of the chosen photos (shrunk to 1024 px in the
+  browser). It only uses facts from those inputs and fills the form; the admin edits the draft
+  before creating the deal. Uses the same `ANTHROPIC_API_KEY`.
 
 ## Setup
 
