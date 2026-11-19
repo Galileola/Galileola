@@ -1,12 +1,15 @@
   </main>
   <footer class="site-footer">
-    <p><%= business.name %> · <%= business.address %> · VAT <%= business.vatId %></p>
-    <p>
-      <a href="/terms">Terms &amp; withdrawal right</a> ·
-      <a href="/privacy">Privacy policy</a> ·
-      <a href="/cookies">Cookies</a> ·
-      <button type="button" class="linklike" data-cookie-settings>Cookie settings</button>
-    </p>
+    <div class="site-footer-inner">
+      <p class="footer-brand"><span class="brand-mark" aria-hidden="true"></span><%= business.name.startsWith('[') ? 'Group Buy' : business.name %></p>
+      <p><%= business.name %> · <%= business.address %> · VAT <%= business.vatId %></p>
+      <p>
+        <a href="/terms">Terms &amp; withdrawal right</a> ·
+        <a href="/privacy">Privacy policy</a> ·
+        <a href="/cookies">Cookies</a> ·
+        <button type="button" class="linklike" data-cookie-settings>Cookie settings</button>
+      </p>
+    </div>
   </footer>
   <div class="cookie-banner" id="cookie-banner" role="dialog" aria-live="polite" aria-label="Cookie consent" hidden>
     <strong>Cookies</strong>
@@ -16,6 +19,7 @@
       <button type="button" data-consent="all">Accept optional</button>
     </div>
   </div>
+  <% if (assistantEnabled) { %><%- include('assistant') %><% } %>
   <script src="/static/js/cookies.js"></script>
 </body>
 </html>

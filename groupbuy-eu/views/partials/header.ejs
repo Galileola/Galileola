@@ -1,16 +1,20 @@
+<% const brandName = business.name.startsWith('[') ? 'Group Buy' : business.name; %>
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title><%= title %> · <%= business.name.startsWith('[') ? 'Group Buy' : business.name %></title>
+  <meta name="theme-color" content="#6d28d9">
+  <title><%= title %> · <%= brandName %></title>
   <link rel="stylesheet" href="/static/css/site.css">
   <% if (loadStripe) { %><script src="https://js.stripe.com/v3/"></script><% } %>
 </head>
 <body>
   <div class="test-banner">Test mode: no real payments are taken. Use Stripe test cards and IBANs only.</div>
   <header class="site-header">
-    <a class="brand" href="/">Group Buy</a>
-    <nav><a href="/">Deals</a></nav>
+    <div class="site-header-inner">
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span><%= brandName %></a>
+      <nav><a href="/#deals">Deals</a><a href="/#how">How it works</a></nav>
+    </div>
   </header>
   <main class="container">

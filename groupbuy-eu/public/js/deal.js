@@ -3,6 +3,15 @@
   const root = document.getElementById('deal');
   if (!root) return;
   const $ = (sel) => root.querySelector(sel);
+
+  // Photo gallery: clicking a thumbnail shows it as the main photo.
+  const main = $('[data-gallery-main]');
+  root.querySelectorAll('[data-gallery-thumb]').forEach((thumb) => {
+    thumb.addEventListener('click', () => {
+      main.src = thumb.dataset.galleryThumb;
+      root.querySelectorAll('[data-gallery-thumb]').forEach((t) => t.classList.toggle('active', t === thumb));
+    });
+  });
   const bar = $('[data-progress]');
   const countdown = $('[data-countdown]');
   let secondsLeft = Number(countdown.dataset.seconds);

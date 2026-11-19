@@ -1,0 +1,28 @@
+<div class="assistant-widget" id="assistant">
+  <button type="button" class="assistant-launcher" data-assistant-open aria-expanded="false" aria-controls="assistant-panel">
+    <span class="assistant-dot" aria-hidden="true"></span>Ask our assistant
+  </button>
+  <section class="assistant-panel" id="assistant-panel" role="dialog" aria-label="Shopping assistant" hidden>
+    <header class="assistant-head">
+      <div>
+        <strong>Shopping assistant</strong>
+        <span>Answers by AI · usually in a few seconds</span>
+      </div>
+      <button type="button" class="assistant-close" data-assistant-close aria-label="Close the assistant">×</button>
+    </header>
+    <div class="assistant-log" data-assistant-log aria-live="polite">
+      <div class="msg assistant">Hi! Ask me about our deals, how group buying works, payment or delivery.</div>
+    </div>
+    <div class="assistant-suggestions" data-assistant-suggestions>
+      <button type="button" data-suggest>How does group buying work?</button>
+      <button type="button" data-suggest>When will I be charged?</button>
+      <button type="button" data-suggest>Which deals are open?</button>
+    </div>
+    <form class="assistant-form" data-assistant-form>
+      <textarea name="message" rows="1" maxlength="1500" placeholder="Ask a question…" aria-label="Your question"></textarea>
+      <button type="submit">Send</button>
+    </form>
+    <p class="assistant-note">AI answers can be wrong. Please don't share card or bank details here.</p>
+  </section>
+</div>
+<script src="/static/js/assistant.js"></script>

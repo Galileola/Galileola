@@ -1,10 +1,28 @@
 import express from 'express';
+import multer from 'multer';
 import { HttpError } from '../app.js';
 import { validateDealInput } from '../deals.js';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { hmac, safeEqual, randomToken } from '../util.js';
+import { MAX_PHOTO_BYTES, MAX_PHOTOS_PER_DEAL, PHOTO_ACCEPT, checkPhotos, uploadErrorMessage } from '../photos.js';
+
+// Photo uploads are parsed into memory (admin only, at most 8 × 8 MB per request), checked,
+// and only then written to UPLOAD_DIR.
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: MAX_PHOTO_BYTES, files: MAX_PHOTOS_PER_DEAL, fields: 40, fieldSize: 64 * 1024, parts: 60 },
+});
+const parsePhotos = (req, res, next) =>
+  upload.array('photos', MAX_PHOTOS_PER_DEAL)(req, res, (err) => {
+    if (err instanceof multer.MulterError) {
+      req.photoError = uploadErrorMessage(err);
+      req.files = [];
+      return next();
+    }
+    next(err);
+  });
 
 export function requireAdmin(config) {
   return (req, res, next) => {
@@ -29,9 +47,15 @@ export function adminRoutes(app, ctx) {
   const csrfToken = hmac(config.appSecret, 'admin-csrf');
 
   router.use(requireAdmin(config));
+  // Multipart forms (with photos) are parsed before the form-token check, which reads req.body.
+  // The token field comes first in those forms, so it is read even if a photo is too large.
+  router.post(['/deals', '/deals/:id/photos'], parsePhotos);
   router.use((req, res, next) => {
     res.set('Cache-Control', 'no-store');
     res.locals.csrfToken = csrfToken;
+    res.locals.assistantEnabled = false;
+    res.locals.photoAccept = PHOTO_ACCEPT;
+    res.locals.maxPhotos = MAX_PHOTOS_PER_DEAL;
     if (req.method === 'POST' && !safeEqual(req.body?._csrf ?? '', csrfToken)) {
       return next(new HttpError(403, 'Invalid form token. Reload the page and try again.'));
     }
@@ -39,7 +63,9 @@ export function adminRoutes(app, ctx) {
   });
 
   router.get('/', (req, res) => {
-    const deals = repo.listDeals().map((d) => ({ ...d, count: repo.committedCount(d.id) }));
+    const deals = repo
+      .listDeals()
+      .map((d) => ({ ...d, count: repo.committedCount(d.id), cover: repo.coverPhoto(d.id) }));
     res.render('admin/index', { title: 'Admin', deals });
   });
 
@@ -49,9 +75,49 @@ export function adminRoutes(app, ctx) {
 
   router.post('/deals', (req, res) => {
     const { errors, deal } = validateDealInput(req.body, { now: clock.now(), defaultTaxCode: config.defaultTaxCode });
-    if (!deal) return res.status(422).render('admin/new', { title: 'New deal', values: req.body, errors });
+    const photoError = req.photoError || checkPhotos(req.files);
+    if (photoError) errors.photos = `${photoError} Please choose the photos again.`;
+    if (!deal || photoError) return res.status(422).render('admin/new', { title: 'New deal', values: req.body, errors });
     const created = repo.insertDeal(deal);
+    savePhotos(created.id, req.files);
     res.redirect(303, `/admin/deals/${created.id}`);
+  });
+
+  const savePhotos = (dealId, files) => {
+    const now = clock.now().toISOString();
+    for (const f of files ?? []) repo.addPhoto(dealId, ctx.photos.save(f.buffer), now);
+  };
+  const backToDeal = (res, dealId, flash) =>
+    res.redirect(303, `/admin/deals/${dealId}?flash=${encodeURIComponent(flash)}`);
+
+  router.post('/deals/:id/photos', (req, res, next) => {
+    const deal = repo.dealById(Number(req.params.id));
+    if (!deal) return next();
+    const files = req.files ?? [];
+    const error = req.photoError || checkPhotos(files);
+    if (error) return backToDeal(res, deal.id, error);
+    if (!files.length) return backToDeal(res, deal.id, 'Choose one or more photos first.');
+    const room = MAX_PHOTOS_PER_DEAL - repo.photosForDeal(deal.id).length;
+    if (files.length > room) {
+      return backToDeal(res, deal.id, `A deal can have up to ${MAX_PHOTOS_PER_DEAL} photos. You can add ${Math.max(0, room)} more.`);
+    }
+    savePhotos(deal.id, files);
+    backToDeal(res, deal.id, files.length === 1 ? 'Photo added.' : `${files.length} photos added.`);
+  });
+
+  router.post('/photos/:id/cover', (req, res, next) => {
+    const photo = repo.photoById(Number(req.params.id));
+    if (!photo) return next();
+    repo.makeCoverPhoto(photo.id);
+    backToDeal(res, photo.deal_id, 'Cover photo changed.');
+  });
+
+  router.post('/photos/:id/delete', (req, res, next) => {
+    const photo = repo.photoById(Number(req.params.id));
+    if (!photo) return next();
+    repo.deletePhoto(photo.id);
+    ctx.photos.remove(photo.filename);
+    backToDeal(res, photo.deal_id, 'Photo deleted.');
   });
 
   router.get('/deals/:id', (req, res, next) => {
@@ -62,6 +128,7 @@ export function adminRoutes(app, ctx) {
     res.render('admin/deal', {
       title: deal.product_name,
       deal,
+      photos: repo.photosForDeal(deal.id),
       participants,
       counts,
       committed: repo.committedCount(deal.id),

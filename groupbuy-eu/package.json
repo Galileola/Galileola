@@ -14,8 +14,10 @@
     "package": "node scripts/package.js"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.11.0",
     "ejs": "^3.1.10",
     "express": "^5.3.0",
+    "multer": "^2.5.0",
     "nodemailer": "^10.3.1",
     "stripe": "^23.1.0"
   },

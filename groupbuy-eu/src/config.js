@@ -45,6 +45,16 @@ export function loadConfig(env = process.env) {
 
     defaultTaxCode: env.DEFAULT_TAX_CODE || 'txcd_99999999', // "General - Tangible Goods"
 
+    // Product photos. Default: an "uploads" folder next to the database, so it is outside the
+    // app folder whenever DATABASE_PATH is (Hostinger replaces the app folder on redeploy).
+    uploadDir: env.UPLOAD_DIR || '',
+
+    // AI shopping assistant (chat on the public pages). Off until ANTHROPIC_API_KEY is set.
+    anthropicApiKey: env.ANTHROPIC_API_KEY || '',
+    assistantModel: env.ASSISTANT_MODEL || 'claude-opus-5-5',
+    assistantRateLimit: Number(env.ASSISTANT_RATE_LIMIT || 30), // messages per IP per 15 minutes
+    assistantDailyLimit: Number(env.ASSISTANT_DAILY_LIMIT || 1000), // messages per day, whole site
+
     business: {
       name: env.BUSINESS_NAME || '[Your company name]',
       address: env.BUSINESS_ADDRESS || '[Street, postcode, city, country]',
@@ -56,6 +66,7 @@ export function loadConfig(env = process.env) {
   };
 
   config.backupDir = env.BACKUP_DIR || path.join(path.dirname(path.resolve(config.dbPath)), 'backups');
+  config.uploadDir = config.uploadDir || path.join(path.dirname(path.resolve(config.dbPath)), 'uploads');
   assertTestModeKeys(config);
   if (!config.adminPassword) throw new ConfigError('ADMIN_PASSWORD is required.');
   if (!config.appSecret || config.appSecret.length < 16) {

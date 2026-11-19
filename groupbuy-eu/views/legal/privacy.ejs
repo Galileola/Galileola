@@ -15,6 +15,9 @@
       <tr><td>Order, payment and VAT records (amount, VAT, country)</td><td>Accounting and tax obligations, including VAT/OSS reporting through Stripe Tax</td><td>Legal obligation, Art. 6(1)(c)</td></tr>
       <tr><td>Technical data (IP address, browser, in server logs and Stripe's fraud checks)</td><td>Security and fraud prevention</td><td>Legitimate interests, Art. 6(1)(f)</td></tr>
       <tr><td>Your cookie choice</td><td>Remembering your consent preference</td><td>Legal obligation / legitimate interests</td></tr>
+      <% if (assistantEnabled) { %>
+      <tr><td>Messages you type into the shopping assistant</td><td>Answering your questions about our deals. We don't store the conversation; it stays in your browser tab until you close it.</td><td>Legitimate interests, Art. 6(1)(f), and steps before a contract, Art. 6(1)(b)</td></tr>
+      <% } %>
     </tbody>
   </table>
   <p>We don't use your data for advertising, we don't sell it, and we don't make automated decisions about you with legal or similarly significant effects.</p>
@@ -22,6 +25,9 @@
   <h2>3. Recipients</h2>
   <ul>
     <li><strong>Stripe</strong> (Stripe Payments Europe, Ltd., Ireland) processes payments, mandates, fraud checks and VAT calculation. Stripe may transfer data to Stripe, Inc. in the USA, based on the EU–US Data Privacy Framework and Standard Contractual Clauses. See <a href="https://stripe.com/privacy" rel="noopener">stripe.com/privacy</a>.</li>
+    <% if (assistantEnabled) { %>
+    <li><strong>Anthropic</strong> ([Anthropic entity and country; check the basis for any transfer outside the EU]) generates the shopping assistant's answers from the messages you send it. Please don't share payment details in the chat.</li>
+    <% } %>
     <li><strong>Email provider</strong>: [name, country] sends order and payment emails.</li>
     <li><strong>Hosting provider</strong>: [name, country, preferably in the EU].</li>
     <li><strong>Carrier</strong>: [name] receives your name and delivery address to deliver the goods.</li>

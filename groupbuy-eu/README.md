@@ -63,6 +63,17 @@ Admin creates deal ──► buyers join (SetupIntent: card / SEPA / iDEAL→SEP
 - **Legal pages**: `/terms` (when payment is taken, the 48-hour rule, the withdrawal right and
   the model form), `/privacy` (GDPR) and `/cookies`, plus a consent banner. Stripe.js only
   loads on payment pages.
+- **Product photos**: the admin uploads up to 8 photos per deal (JPG, PNG, WebP or GIF, 8 MB
+  each) when creating it or later on the deal page, and picks the cover. The type is checked
+  from the file contents. Files go to `UPLOAD_DIR` (default: `uploads` next to the database,
+  so keep `DATABASE_PATH` outside the app folder) and are served at `/uploads/<random name>`.
+  They aren't in the database backups: copy that folder too.
+- **AI shopping assistant**: a chat window on the public pages, answered by Claude
+  (`claude-opus-5-5` at low effort) from the open deals and the shop's rules. It has no tools,
+  can't see orders or payments, and the conversation stays in the visitor's browser tab. It
+  stays off until `ANTHROPIC_API_KEY` is set; `ASSISTANT_RATE_LIMIT` and
+  `ASSISTANT_DAILY_LIMIT` cap usage. If the model declines a message, the API's server-side
+  fallback answers on another model.
 
 ## Setup
 
@@ -94,7 +105,8 @@ in the admin outbox (`/admin/emails`).
 - **On web hosting the app is stopped when idle.** An hPanel cron job must call
   `POST /api/cron/tick` every minute, and the database must live outside the app folder.
 - **Other hosts** need four things:
-  - a long-running Node.js 22.13+ process (`npm start`, entry `src/start.js`)
+  - a long-running Node.js 22.13+ process (`npm start`, entry `src/start.js`; on Hostinger's
+    Node.js web apps use `app.cjs`, which loads the same app for runners that `require()` the entry)
   - HTTPS in front of it
   - a persistent `DATABASE_PATH`
   - a Stripe webhook to `https://<domain>/webhooks/stripe`

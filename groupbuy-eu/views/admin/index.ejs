@@ -7,7 +7,10 @@
   <tbody>
   <% for (const d of deals) { %>
     <tr>
-      <td><a href="/admin/deals/<%= d.id %>"><%= d.product_name %></a></td>
+      <td class="product-cell">
+        <% if (d.cover) { %><img class="thumb-sm" src="<%= photoUrl(d.cover.filename) %>" alt=""><% } %>
+        <a href="/admin/deals/<%= d.id %>"><%= d.product_name %></a>
+      </td>
       <td><%= formatEuro(d.price_cents) %></td>
       <td><%= d.count %> / <%= d.min_buyers %></td>
       <td><%= formatDate(d.deadline) %></td>

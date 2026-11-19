@@ -34,6 +34,7 @@ export function joinRoutes(app, ctx) {
     res.status(status).render('deal', {
       title: deal.product_name,
       deal,
+      photos: repo.photosForDeal(deal.id),
       state: publicDealState(deal, repo.committedCount(deal.id), clock.now()),
       values,
       errors,

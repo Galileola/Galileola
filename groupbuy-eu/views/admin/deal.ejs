@@ -31,6 +31,43 @@
   </div>
 </div>
 
+<section class="card" id="photos" style="margin-top:16px">
+  <h2>Photos</h2>
+  <p class="muted small">The first photo is the cover on the deal list. Up to <%= maxPhotos %> photos, JPG, PNG, WebP or GIF, max 8 MB each.</p>
+  <% if (photos.length) { %>
+    <div class="photo-grid">
+      <% photos.forEach((ph, i) => { %>
+        <figure class="photo-item">
+          <img src="<%= photoUrl(ph.filename) %>" alt="Photo <%= i + 1 %>" loading="lazy">
+          <figcaption>
+            <% if (i === 0) { %>
+              <span class="badge paid">Cover</span>
+            <% } else { %>
+              <form method="post" action="/admin/photos/<%= ph.id %>/cover">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="small secondary">Make cover</button>
+              </form>
+            <% } %>
+            <form method="post" action="/admin/photos/<%= ph.id %>/delete" data-confirm="Delete this photo? This can't be undone.">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <button type="submit" class="small danger">Delete</button>
+            </form>
+          </figcaption>
+        </figure>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <p class="muted">No photos yet<%= deal.image_url ? ' (the deal uses its image URL)' : '' %>.</p>
+  <% } %>
+  <% if (photos.length < maxPhotos) { %>
+    <form method="post" action="/admin/deals/<%= deal.id %>/photos" enctype="multipart/form-data" class="upload-form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <input type="file" name="photos" multiple accept="<%= photoAccept %>" class="file-input" aria-label="Choose photos">
+      <button type="submit">Upload photos</button>
+    </form>
+  <% } %>
+</section>
+
 <h2 style="margin-top:24px">Buyers</h2>
 <table>
   <thead><tr><th>#</th><th>Buyer</th><th>Country</th><th>Method</th><th>Amount / VAT</th><th>Status</th><th>Attempts / last error</th><th>Window ends</th><th></th></tr></thead>

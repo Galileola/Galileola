@@ -9,6 +9,9 @@
       <tr><td><code>__stripe_mid</code>, <code>__stripe_sid</code></td><td>Stripe</td><td>Fraud prevention while you save or confirm a payment method. Only set on the payment pages.</td><td>1 year / 30 minutes</td><td>Necessary</td></tr>
     </tbody>
   </table>
+  <% if (assistantEnabled) { %>
+  <p>The shopping assistant keeps your chat in your browser's session storage (<code>gb_assistant_chat</code>) so it survives moving between pages. It isn't a cookie, it's deleted when you close the tab, and it's only sent to us together with a new question.</p>
+  <% } %>
   <p>Stripe may also set cookies on its own domains in the payment form and during bank authentication (3-D Secure or iDEAL). See <a href="https://stripe.com/cookie-settings" rel="noopener">Stripe's cookie policy</a>.</p>
   <p><button type="button" class="secondary" data-cookie-settings>Change cookie settings</button></p>
 </article>

@@ -2,7 +2,7 @@
 <p><a href="/admin">← Admin</a></p>
 <section class="card narrow">
   <h1>New deal</h1>
-  <form method="post" action="/admin/deals" id="deal-form" novalidate>
+  <form method="post" action="/admin/deals" id="deal-form" enctype="multipart/form-data" novalidate>
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <input type="hidden" name="deadline_iso" id="deadline_iso">
 
@@ -14,9 +14,6 @@
     <textarea id="description" name="description" maxlength="5000"><%= values.description || '' %></textarea>
     <% if (errors.description) { %><p class="error-text"><%= errors.description %></p><% } %>
 
-    <label for="image_url">Image URL (optional, https)</label>
-    <input type="url" id="image_url" name="image_url" value="<%= values.image_url || '' %>">
-    <% if (errors.image_url) { %><p class="error-text"><%= errors.image_url %></p><% } %>
 
     <div class="row">
       <div>
@@ -39,6 +36,21 @@
     <input type="text" id="tax_code" name="tax_code" value="<%= values.tax_code || '' %>">
     <p class="muted small">Default txcd_99999999 is "General – Tangible Goods". VAT is worked out per buyer country by Stripe Tax; the gross price stays the same for everyone.</p>
     <% if (errors.tax_code) { %><p class="error-text"><%= errors.tax_code %></p><% } %>
+
+    <%# Photos stay the last field: the upload is read in form order, so the other fields are
+        already read if a photo is too large. %>
+    <label for="photos">Product photos (optional)</label>
+    <input type="file" id="photos" name="photos" multiple accept="<%= photoAccept %>" class="file-input">
+    <p class="muted small">Up to <%= maxPhotos %> photos, JPG, PNG, WebP or GIF, max 8 MB each. The first one is the cover. You can add or change photos later.</p>
+    <% if (errors.photos) { %><p class="error-text"><%= errors.photos %></p><% } %>
+
+    <details class="small">
+      <summary>Or use a photo that's already online</summary>
+      <label for="image_url">Image URL (https)</label>
+      <input type="url" id="image_url" name="image_url" value="<%= values.image_url || '' %>">
+      <p class="muted small">Only used when the deal has no uploaded photos.</p>
+    </details>
+    <% if (errors.image_url) { %><p class="error-text"><%= errors.image_url %></p><% } %>
 
     <p><button type="submit">Create deal</button></p>
   </form>

@@ -9,6 +9,8 @@ import { allRoutes } from './routes/index.js';
 import { createMailer } from './mailer.js';
 import { createEngine } from './engine.js';
 import { startScheduler } from './scheduler.js';
+import { createPhotoStore } from './photos.js';
+import { createAssistant } from './assistant.js';
 
 let config;
 try {
@@ -33,6 +35,16 @@ if (dbFile.startsWith(appRoot + path.sep)) {
   );
 }
 
+console.log(`[photos] ${config.uploadDir}`);
+if (path.resolve(config.uploadDir).startsWith(appRoot + path.sep)) {
+  console.warn('[photos] WARNING: UPLOAD_DIR is inside the app folder. Product photos are lost on redeploy.');
+}
+console.log(
+  config.anthropicApiKey
+    ? `[assistant] on (${config.assistantModel})`
+    : '[assistant] off: set ANTHROPIC_API_KEY to turn on the AI shopping assistant'
+);
+
 const db = openDb(config.dbPath, { journalMode: config.sqliteJournalMode });
 const repo = createRepo(db);
 const stripe = new Stripe(config.stripeSecretKey, {
@@ -42,6 +54,10 @@ const stripe = new Stripe(config.stripeSecretKey, {
 const clock = systemClock;
 
 const ctx = { config, repo, stripe, clock, routes: allRoutes };
+ctx.photos = createPhotoStore(config.uploadDir);
+ctx.assistant = config.anthropicApiKey
+  ? createAssistant({ apiKey: config.anthropicApiKey, model: config.assistantModel })
+  : null;
 ctx.mailer = createMailer(ctx);
 ctx.engine = createEngine(ctx);
 const app = createApp(ctx);

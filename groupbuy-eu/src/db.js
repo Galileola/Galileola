@@ -96,6 +96,17 @@ CREATE TABLE IF NOT EXISTS stripe_events (
   received_at TEXT NOT NULL
 );
 
+-- Product photos uploaded in the admin. Files live in UPLOAD_DIR (outside the app folder);
+-- the lowest position is the cover photo.
+CREATE TABLE IF NOT EXISTS deal_photos (
+  id         INTEGER PRIMARY KEY,
+  deal_id    INTEGER NOT NULL REFERENCES deals(id),
+  filename   TEXT NOT NULL UNIQUE,
+  position   INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS deal_photos_deal ON deal_photos(deal_id, position, id);
+
 -- Leases so only one process runs the scheduler at a time (e.g. an old copy still running
 -- after a redeploy on managed hosting).
 CREATE TABLE IF NOT EXISTS locks (
@@ -182,6 +193,33 @@ export function createRepo(db) {
         .run({ ...nullify(extra), to, id, ...Object.fromEntries(froms.map((f, i) => [`f${i}`, f])) });
       return r.changes === 1;
     },
+
+    // ---- photos (cover first)
+    photosForDeal: (dealId) =>
+      db.prepare('SELECT * FROM deal_photos WHERE deal_id = ? ORDER BY position, id').all(dealId),
+    coverPhoto: (dealId) =>
+      db.prepare('SELECT * FROM deal_photos WHERE deal_id = ? ORDER BY position, id LIMIT 1').get(dealId),
+    photoById: (id) => db.prepare('SELECT * FROM deal_photos WHERE id = ?').get(id),
+    addPhoto(dealId, filename, now) {
+      const { next } = db
+        .prepare('SELECT COALESCE(MAX(position), 0) + 1 AS next FROM deal_photos WHERE deal_id = ?')
+        .get(dealId);
+      db.prepare('INSERT INTO deal_photos (deal_id, filename, position, created_at) VALUES (?, ?, ?, ?)').run(
+        dealId,
+        filename,
+        next,
+        now
+      );
+    },
+    makeCoverPhoto(id) {
+      const photo = this.photoById(id);
+      if (!photo) return;
+      const { first } = db
+        .prepare('SELECT COALESCE(MIN(position), 0) AS first FROM deal_photos WHERE deal_id = ?')
+        .get(photo.deal_id);
+      db.prepare('UPDATE deal_photos SET position = ? WHERE id = ?').run(first - 1, id);
+    },
+    deletePhoto: (id) => db.prepare('DELETE FROM deal_photos WHERE id = ?').run(id),
 
     // ---- participants
     insertParticipant(p) {

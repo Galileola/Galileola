@@ -8,7 +8,7 @@ export function publicRoutes(app, ctx) {
     const deals = repo
       .listPublicDeals()
       .filter((d) => isJoinable(d, now))
-      .map((d) => ({ ...d, count: repo.committedCount(d.id) }));
+      .map((d) => ({ ...d, count: repo.committedCount(d.id), cover: repo.coverPhoto(d.id) }));
     res.render('home', { title: 'Deals', deals });
   });
 
@@ -16,7 +16,7 @@ export function publicRoutes(app, ctx) {
     const deal = repo.dealBySlug(req.params.slug);
     if (!deal) return next();
     const state = publicDealState(deal, repo.committedCount(deal.id), clock.now());
-    res.render('deal', { title: deal.product_name, deal, state, values: {}, errors: {} });
+    res.render('deal', { title: deal.product_name, deal, photos: repo.photosForDeal(deal.id), state, values: {}, errors: {} });
   });
 
   app.get('/api/deals/:slug', (req, res) => {

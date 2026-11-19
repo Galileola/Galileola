@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { formatEuro, formatDate, EU_COUNTRIES } from './util.js';
+import { photoUrl } from './photos.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -38,10 +39,19 @@ export function createApp(ctx) {
     res.locals.business = config.business;
     res.locals.loadStripe = false; // payment pages switch this on (Stripe.js only where needed)
     res.locals.title = 'Group Buy';
+    res.locals.photoUrl = photoUrl;
+    res.locals.assistantEnabled = Boolean(ctx.assistant); // the admin router switches it off
     next();
   });
 
   app.use('/static', express.static(path.join(root, 'public'), { maxAge: '1h' }));
+  // Product photos have random, never-reused names, so they can be cached for a long time.
+  if (config.uploadDir) {
+    app.use(
+      '/uploads',
+      express.static(config.uploadDir, { maxAge: '30d', immutable: true, index: false, dotfiles: 'deny', redirect: false })
+    );
+  }
   // Only parses application/x-www-form-urlencoded; the Stripe webhook keeps its raw JSON body.
   app.use(express.urlencoded({ extended: false, limit: '100kb' }));
 
