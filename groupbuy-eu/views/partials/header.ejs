@@ -20,7 +20,7 @@
     <div class="site-header-inner">
       <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span><%= brandName %></a>
       <% if (isAdmin) { %>
-        <nav aria-label="Admin"><a href="/admin">Deals</a><a href="/admin/snap" class="nav-snap">📸 Snap a deal</a><a href="/admin/emails">Emails</a><a href="/admin/password">🔑 Password</a><a href="/">Shop</a></nav>
+        <nav aria-label="Admin"><a href="/admin">Deals</a><a href="/admin/snap" class="nav-snap">📸 Snap a deal</a><a href="/admin/emails">Emails</a><a href="/admin/legal">📄 Legal pages</a><a href="/admin/password">🔑 Password</a><a href="/">Shop</a></nav>
       <% } else { %>
         <nav class="shop-nav"><a href="/#categories"><%= t('nav.categories') %></a><a href="/#deals"><%= t('nav.deals') %></a><a href="/#how"><%= t('nav.how') %></a></nav>
         <details class="lang-menu" data-lang-menu>

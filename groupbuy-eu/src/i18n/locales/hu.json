@@ -177,7 +177,8 @@
     "cookiesTitle": "Sütik",
     "translatedNotice": "Ez az oldal angolból automatikusan lett lefordítva. Ha a fordítás és az angol szöveg eltér, az angol szöveg az irányadó.",
     "readEnglish": "Olvasd angolul",
-    "pendingNotice": "Ezt az oldalt éppen lefordítjuk a nyelvedre. Addig az angol szöveget látod."
+    "pendingNotice": "Ezt az oldalt éppen lefordítjuk a nyelvedre. Addig az angol szöveget látod.",
+    "englishOnly": "Ez az oldal egyelőre csak angolul érhető el."
   },
   "errors": {
     "notFoundTitle": "Nem található",

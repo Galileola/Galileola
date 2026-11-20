@@ -421,3 +421,10 @@ body:has(.cookie-banner:not([hidden])) .assistant-widget { bottom: 190px; }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
 }
+
+/* Admin → Legal pages */
+.table-wrap { overflow-x: auto; }
+.legal-overview td { white-space: nowrap; }
+.legal-editor { width: 100%; font: 14px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.legal-help { white-space: pre-wrap; font-size: .85rem; background: var(--bg); padding: 12px; border-radius: 10px; overflow-x: auto; }
+.row-buttons { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }

@@ -208,7 +208,8 @@
     "cookiesTitle": "Cookie-uri",
     "translatedNotice": "Această pagină a fost tradusă automat din engleză. Dacă traducerea diferă de textul în engleză, se aplică textul în engleză.",
     "readEnglish": "Citește în engleză",
-    "pendingNotice": "Traducem această pagină în limba ta. Până atunci, vezi textul în engleză."
+    "pendingNotice": "Traducem această pagină în limba ta. Până atunci, vezi textul în engleză.",
+    "englishOnly": "Deocamdată, această pagină este disponibilă doar în engleză."
   },
   "errors": {
     "notFoundTitle": "Pagina nu a fost găsită",

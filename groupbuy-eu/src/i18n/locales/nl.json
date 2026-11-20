@@ -177,7 +177,8 @@
     "cookiesTitle": "Cookies",
     "translatedNotice": "Deze pagina is automatisch vertaald uit het Engels. Als de vertaling en de Engelse tekst verschillen, geldt de Engelse tekst.",
     "readEnglish": "Lees in het Engels",
-    "pendingNotice": "Deze pagina wordt naar jouw taal vertaald. Tot die tijd zie je de Engelse tekst."
+    "pendingNotice": "Deze pagina wordt naar jouw taal vertaald. Tot die tijd zie je de Engelse tekst.",
+    "englishOnly": "Deze pagina is voorlopig alleen in het Engels beschikbaar."
   },
   "errors": {
     "notFoundTitle": "Niet gevonden",

@@ -213,7 +213,8 @@
     "cookiesTitle": "Piškotki",
     "translatedNotice": "Ta stran je bila samodejno prevedena iz angleščine. Če se prevod in angleško besedilo razlikujeta, velja angleško besedilo.",
     "readEnglish": "Preberite v angleščini",
-    "pendingNotice": "To stran prevajamo v vaš jezik. Do takrat vidite angleško besedilo."
+    "pendingNotice": "To stran prevajamo v vaš jezik. Do takrat vidite angleško besedilo.",
+    "englishOnly": "Ta stran je zaenkrat na voljo samo v angleščini."
   },
   "errors": {
     "notFoundTitle": "Ni najdeno",

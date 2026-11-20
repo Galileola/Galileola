@@ -177,7 +177,8 @@
     "cookiesTitle": "Küpsised",
     "translatedNotice": "See leht on inglise keelest automaatselt tõlgitud. Kui tõlge ja ingliskeelne tekst erinevad, kehtib ingliskeelne tekst.",
     "readEnglish": "Loe inglise keeles",
-    "pendingNotice": "Seda lehte tõlgitakse sinu keelde. Seni näed ingliskeelset teksti."
+    "pendingNotice": "Seda lehte tõlgitakse sinu keelde. Seni näed ingliskeelset teksti.",
+    "englishOnly": "See leht on praegu saadaval ainult inglise keeles."
   },
   "errors": {
     "notFoundTitle": "Ei leitud",

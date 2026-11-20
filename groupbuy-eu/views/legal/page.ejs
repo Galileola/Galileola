@@ -1,9 +1,11 @@
 <%- include('../partials/header') %>
-<article class="legal" lang="<%= translated ? lang : 'en' %>">
+<article class="legal" lang="<%= contentLang %>">
   <% if (translated) { %>
     <p class="notice small"><%= t('legal.translatedNotice') %> <a href="?original=1" hreflang="en"><%= t('legal.readEnglish') %></a></p>
   <% } else if (pending) { %>
     <p class="notice small" lang="<%= lang %>"><%= t('legal.pendingNotice') %></p>
+  <% } else if (englishOnly) { %>
+    <p class="notice small" lang="<%= lang %>"><%= t('legal.englishOnly') %></p>
   <% } %>
   <%- bodyHtml %>
 </article>

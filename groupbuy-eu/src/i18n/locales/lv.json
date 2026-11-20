@@ -177,7 +177,8 @@
     "cookiesTitle": "Sīkdatnes",
     "translatedNotice": "Šī lapa ir automātiski tulkota no angļu valodas. Ja tulkojums un angļu teksts atšķiras, spēkā ir angļu teksts.",
     "readEnglish": "Lasīt angliski",
-    "pendingNotice": "Mēs tulkojam šo lapu jūsu valodā. Pagaidām redzat angļu tekstu."
+    "pendingNotice": "Mēs tulkojam šo lapu jūsu valodā. Pagaidām redzat angļu tekstu.",
+    "englishOnly": "Šī lapa pagaidām ir pieejama tikai angļu valodā."
   },
   "errors": {
     "notFoundTitle": "Nav atrasts",

@@ -177,7 +177,8 @@
     "cookiesTitle": "Cookies",
     "translatedNotice": "Den här sidan har översatts automatiskt från engelska. Om översättningen och den engelska texten skiljer sig åt gäller den engelska texten.",
     "readEnglish": "Läs på engelska",
-    "pendingNotice": "Den här sidan håller på att översättas till ditt språk. Tills dess ser du den engelska texten."
+    "pendingNotice": "Den här sidan håller på att översättas till ditt språk. Tills dess ser du den engelska texten.",
+    "englishOnly": "Den här sidan finns än så länge bara på engelska."
   },
   "errors": {
     "notFoundTitle": "Hittades inte",

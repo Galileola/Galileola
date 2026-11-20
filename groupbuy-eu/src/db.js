@@ -131,6 +131,16 @@ CREATE TABLE IF NOT EXISTS translations (
   PRIMARY KEY (source_hash, lang)
 );
 
+-- The legal pages as written by the shop owner in the admin, one text per page and language
+-- (src/legalText.js). A language without its own text shows the English one, translated.
+CREATE TABLE IF NOT EXISTS legal_texts (
+  page       TEXT NOT NULL,
+  lang       TEXT NOT NULL,
+  body       TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  PRIMARY KEY (page, lang)
+);
+
 CREATE TABLE IF NOT EXISTS locks (
   name       TEXT PRIMARY KEY,
   holder     TEXT NOT NULL,
@@ -371,6 +381,18 @@ export function createRepo(db) {
              model = excluded.model, created_at = excluded.created_at`
         )
         .run(t),
+
+    // ---- legal pages
+    legalText: (page, lang) => db.prepare('SELECT * FROM legal_texts WHERE page = ? AND lang = ?').get(page, lang),
+    legalTexts: () => db.prepare('SELECT page, lang, updated_at FROM legal_texts ORDER BY page, lang').all(),
+    saveLegalText: (page, lang, body, now) =>
+      db
+        .prepare(
+          `INSERT INTO legal_texts (page, lang, body, updated_at) VALUES (?, ?, ?, ?)
+           ON CONFLICT(page, lang) DO UPDATE SET body = excluded.body, updated_at = excluded.updated_at`
+        )
+        .run(page, lang, body, now),
+    deleteLegalText: (page, lang) => db.prepare('DELETE FROM legal_texts WHERE page = ? AND lang = ?').run(page, lang),
 
     // ---- admin settings
     getAdminSetting: (key) => db.prepare('SELECT * FROM admin_settings WHERE key = ?').get(key),

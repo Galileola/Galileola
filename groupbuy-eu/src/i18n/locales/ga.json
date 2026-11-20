@@ -177,7 +177,8 @@
     "cookiesTitle": "Fianáin",
     "translatedNotice": "Aistríodh an leathanach seo go huathoibríoch ón mBéarla. Má tá difríocht idir an t-aistriúchán agus an téacs Béarla, is é an téacs Béarla a bheidh i bhfeidhm.",
     "readEnglish": "Léigh i mBéarla",
-    "pendingNotice": "Táimid ag aistriú an leathanaigh seo go do theanga. Go dtí sin, feiceann tú an téacs Béarla."
+    "pendingNotice": "Táimid ag aistriú an leathanaigh seo go do theanga. Go dtí sin, feiceann tú an téacs Béarla.",
+    "englishOnly": "Níl an leathanach seo ar fáil ach i mBéarla faoi láthair."
   },
   "errors": {
     "notFoundTitle": "Gan aimsiú",

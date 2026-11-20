@@ -177,7 +177,8 @@
     "cookiesTitle": "Cookies",
     "translatedNotice": "Din il-paġna ġiet tradotta awtomatikament mill-Ingliż. Jekk it-traduzzjoni u t-test Ingliż ikunu differenti, jgħodd it-test Ingliż.",
     "readEnglish": "Aqra bl-Ingliż",
-    "pendingNotice": "Qed nittraduċu din il-paġna fil-lingwa tiegħek. Sa dakinhar, qed tara t-test bl-Ingliż."
+    "pendingNotice": "Qed nittraduċu din il-paġna fil-lingwa tiegħek. Sa dakinhar, qed tara t-test bl-Ingliż.",
+    "englishOnly": "Din il-paġna għalissa hija disponibbli bl-Ingliż biss."
   },
   "errors": {
     "notFoundTitle": "Ma nstabitx",

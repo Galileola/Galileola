@@ -177,7 +177,8 @@
     "cookiesTitle": "Cookies",
     "translatedNotice": "Denne side er oversat automatisk fra engelsk. Hvis oversættelsen og den engelske tekst er forskellige, gælder den engelske tekst.",
     "readEnglish": "Læs på engelsk",
-    "pendingNotice": "Denne side bliver oversat til dit sprog. Indtil da ser du den engelske tekst."
+    "pendingNotice": "Denne side bliver oversat til dit sprog. Indtil da ser du den engelske tekst.",
+    "englishOnly": "Denne side findes indtil videre kun på engelsk."
   },
   "errors": {
     "notFoundTitle": "Ikke fundet",

@@ -213,7 +213,8 @@
     "cookiesTitle": "Cookies",
     "translatedNotice": "Tato stránka byla automaticky přeložena z angličtiny. Pokud se překlad liší od anglického textu, platí anglický text.",
     "readEnglish": "Číst anglicky",
-    "pendingNotice": "Tuto stránku právě překládáme do vašeho jazyka. Do té doby vidíte anglický text."
+    "pendingNotice": "Tuto stránku právě překládáme do vašeho jazyka. Do té doby vidíte anglický text.",
+    "englishOnly": "Tato stránka je zatím k dispozici jen v angličtině."
   },
   "errors": {
     "notFoundTitle": "Nenalezeno",

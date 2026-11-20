@@ -177,7 +177,8 @@
     "cookiesTitle": "Evästeet",
     "translatedNotice": "Tämä sivu on käännetty automaattisesti englannista. Jos käännös ja englanninkielinen teksti eroavat, englanninkielinen teksti on voimassa.",
     "readEnglish": "Lue englanniksi",
-    "pendingNotice": "Tätä sivua käännetään kielellesi. Sillä välin näet englanninkielisen tekstin."
+    "pendingNotice": "Tätä sivua käännetään kielellesi. Sillä välin näet englanninkielisen tekstin.",
+    "englishOnly": "Tämä sivu on toistaiseksi saatavilla vain englanniksi."
   },
   "errors": {
     "notFoundTitle": "Ei löytynyt",

@@ -1,0 +1,59 @@
+<%- include('../partials/header') %>
+<p><a href="/admin/legal">← Legal pages</a></p>
+<h1>📄 <%= pageName %> · <%= nativeName %></h1>
+<% if (saved === '1') { %><div class="notice ok" role="status">Saved. Visitors who read the site in <%= langName %> now see this text. <a href="<%= publicUrl %>" target="_blank" rel="noopener">View the page</a></div><% } %>
+<% if (saved === 'deleted') { %><div class="notice ok" role="status">Removed. <%= lang === 'en' ? 'The built-in English text is shown again.' : 'Visitors who read the site in ' + langName + ' now see the English text' + (aiEnabled ? ', translated automatically.' : '.') %></div><% } %>
+<% if (error) { %><div class="notice bad" role="alert"><%= error %></div><% } %>
+
+<% if (lang === 'en') { %>
+  <p class="muted">This is the English text. It is also the source for every language that has no text of its own<%= aiEnabled ? ' (those are translated from it automatically)' : '' %>.</p>
+<% } else if (own) { %>
+  <p class="muted">Visitors who read the site in <%= langName %> see this text.</p>
+<% } else { %>
+  <p class="muted">There is no <%= langName %> text yet, so visitors see the English text<%= aiEnabled ? ', translated automatically' : '' %>. Start from the English text or an AI translation, adapt it to the law of the country, and save.</p>
+<% } %>
+
+<form method="post" action="/admin/legal/<%= page %>/<%= lang %>" class="stack" id="legal-form">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <% if (lang !== 'en') { %>
+    <p class="row-buttons">
+      <button type="button" class="secondary small" data-legal-copy>Start from the English text</button>
+      <button type="button" class="secondary small" data-legal-draft data-url="/admin/legal/<%= page %>/<%= lang %>/draft"<%= aiEnabled ? '' : ' disabled' %>>✨ Translate the English text with AI</button>
+      <span class="muted small" data-legal-status role="status"><%= aiEnabled ? '' : 'AI translation needs ANTHROPIC_API_KEY.' %></span>
+    </p>
+  <% } %>
+  <label for="legal-body">Text (<%= nativeName %>)</label>
+  <textarea id="legal-body" name="body" rows="28" maxlength="<%= maxLength %>" lang="<%= lang %>" spellcheck="true" class="legal-editor"><%= text %></textarea>
+  <p class="row-buttons">
+    <button type="submit" name="action" value="save">Save</button>
+    <a class="button secondary" href="<%= publicUrl %>" target="_blank" rel="noopener">View the page</a>
+    <% if (own) { %><button type="submit" name="action" value="delete" class="secondary" data-confirm="Remove this text? Visitors will see the <%= lang === 'en' ? 'built-in English text' : 'English text' %> instead.">Remove this text</button><% } %>
+  </p>
+</form>
+
+<details class="card small">
+  <summary><strong>How to format the text</strong></summary>
+  <pre class="legal-help"># Page title
+## Section heading
+## Section heading {#withdrawal}    ← keeps links like /terms#withdrawal working
+### Smaller heading
+
+Lines next to each other form a paragraph.
+A blank line starts a new paragraph.
+
+- A bullet point
+- Another bullet point
+
+> A highlighted note (shown in a yellow box)
+
+| Column | Column |
+|---|---|
+| Cell | Cell |
+
+**bold text**   [link text](https://example.com)   `code`
+[cookie-settings: Change cookie settings]   ← the button that reopens the cookie choice</pre>
+  <p class="muted">Anything else you type is shown as plain text.</p>
+</details>
+<script type="application/json" id="legal-english"><%- JSON.stringify(english).replace(/</g, '\\u003c') %></script>
+<script src="/static/js/legal-edit.js"></script>
+<%- include('../partials/footer') %>

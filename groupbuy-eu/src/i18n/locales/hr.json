@@ -208,7 +208,8 @@
     "cookiesTitle": "Kolačići",
     "translatedNotice": "Ova je stranica automatski prevedena s engleskog. Ako se prijevod razlikuje od engleskog teksta, vrijedi engleski tekst.",
     "readEnglish": "Čitajte na engleskom",
-    "pendingNotice": "Ovu stranicu prevodimo na vaš jezik. Do tada vidite engleski tekst."
+    "pendingNotice": "Ovu stranicu prevodimo na vaš jezik. Do tada vidite engleski tekst.",
+    "englishOnly": "Ova je stranica zasad dostupna samo na engleskom."
   },
   "errors": {
     "notFoundTitle": "Nije pronađeno",

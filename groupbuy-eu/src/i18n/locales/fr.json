@@ -177,7 +177,8 @@
     "cookiesTitle": "Cookies",
     "translatedNotice": "Cette page a été traduite automatiquement de l'anglais. En cas de différence entre la traduction et le texte anglais, le texte anglais fait foi.",
     "readEnglish": "Lire en anglais",
-    "pendingNotice": "Cette page est en cours de traduction dans votre langue. En attendant, voici le texte anglais."
+    "pendingNotice": "Cette page est en cours de traduction dans votre langue. En attendant, voici le texte anglais.",
+    "englishOnly": "Cette page n'est pour l'instant disponible qu'en anglais."
   },
   "errors": {
     "notFoundTitle": "Page introuvable",

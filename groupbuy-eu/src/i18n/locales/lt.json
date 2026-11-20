@@ -213,7 +213,8 @@
     "cookiesTitle": "Slapukai",
     "translatedNotice": "Šis puslapis automatiškai išverstas iš anglų kalbos. Jei vertimas ir tekstas anglų kalba skiriasi, galioja tekstas anglų kalba.",
     "readEnglish": "Skaityti angliškai",
-    "pendingNotice": "Šį puslapį verčiame į jūsų kalbą. Kol kas matote tekstą anglų kalba."
+    "pendingNotice": "Šį puslapį verčiame į jūsų kalbą. Kol kas matote tekstą anglų kalba.",
+    "englishOnly": "Šis puslapis kol kas prieinamas tik anglų kalba."
   },
   "errors": {
     "notFoundTitle": "Nerasta",

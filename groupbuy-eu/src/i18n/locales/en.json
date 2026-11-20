@@ -188,7 +188,8 @@
     "cookiesTitle": "Cookies",
     "translatedNotice": "This page was translated automatically from English. If the translation and the English text differ, the English text applies.",
     "readEnglish": "Read it in English",
-    "pendingNotice": "This page is being translated into your language. Until then, here is the English text."
+    "pendingNotice": "This page is being translated into your language. Until then, here is the English text.",
+    "englishOnly": "This page is only available in English for now."
   },
   "errors": {
     "notFoundTitle": "Not found",
