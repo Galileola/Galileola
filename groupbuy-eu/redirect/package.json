@@ -1,0 +1,10 @@
+{
+  "name": "groupbuy-redirect",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Forwards an old shop address to the new one. Deployed at shop.sekdigital.eu.",
+  "main": "app.cjs",
+  "scripts": { "start": "node app.cjs" },
+  "redirectTo": "https://sekdigital.eu",
+  "engines": { "node": ">=18" }
+}

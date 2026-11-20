@@ -8,4 +8,12 @@ if (major < 22 || (major === 22 && minor < 13)) {
   );
   process.exit(1);
 }
+// Settings shared with other copies of the shop on this hosting account (see settingsFile.js).
+const { loadSettingsFile, settingsFilePath } = await import('./settingsFile.js');
+try {
+  const filled = loadSettingsFile();
+  if (filled.length) console.log(`[settings] ${filled.length} settings read from ${settingsFilePath()} (the hosting panel's variables take priority)`);
+} catch (err) {
+  console.error(`[settings] could not read ${settingsFilePath()}: ${err.message}`);
+}
 await import('./server.js');

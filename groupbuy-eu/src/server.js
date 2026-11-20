@@ -11,6 +11,7 @@ import { createEngine } from './engine.js';
 import { startScheduler } from './scheduler.js';
 import { createPhotoStore } from './photos.js';
 import { createAssistant } from './assistant.js';
+import { saveSettingsFile, settingsFilePath } from './settingsFile.js';
 
 let config;
 try {
@@ -21,6 +22,14 @@ try {
     process.exit(1);
   }
   throw err;
+}
+
+// Keep a private copy of the settings so a copy of the shop on another domain of this hosting
+// account can start with them (written once; see settingsFile.js).
+try {
+  if (saveSettingsFile()) console.log(`[settings] saved a private copy of the settings to ${settingsFilePath()}`);
+} catch (err) {
+  console.error(`[settings] could not save ${settingsFilePath()}: ${err.message}`);
 }
 
 // Managed hosts (Hostinger web apps) may replace the app folder on every redeploy, which would
