@@ -112,6 +112,13 @@ CREATE INDEX IF NOT EXISTS deal_photos_deal ON deal_photos(deal_id, position, id
 
 -- Leases so only one process runs the scheduler at a time (e.g. an old copy still running
 -- after a redeploy on managed hosting).
+-- Small admin settings changed in the admin itself (e.g. the admin password hash).
+CREATE TABLE IF NOT EXISTS admin_settings (
+  key        TEXT PRIMARY KEY,
+  value      TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS locks (
   name       TEXT PRIMARY KEY,
   holder     TEXT NOT NULL,
@@ -337,6 +344,16 @@ export function createRepo(db) {
       return r.changes === 1;
     },
     releaseLock: (name, holder) => db.prepare('DELETE FROM locks WHERE name = ? AND holder = ?').run(name, holder),
+
+    // ---- admin settings
+    getAdminSetting: (key) => db.prepare('SELECT * FROM admin_settings WHERE key = ?').get(key),
+    setAdminSetting: (key, value, now) =>
+      db
+        .prepare(
+          `INSERT INTO admin_settings (key, value, updated_at) VALUES (?, ?, ?)
+           ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at`
+        )
+        .run(key, value, now),
 
     // Reminder claim: only one process may send it.
     claimReminder: (id, now) =>

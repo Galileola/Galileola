@@ -17,6 +17,7 @@ import {
 import { createRateLimiter } from '../rateLimit.js';
 import { SNAP_SCHEMA, parseSnapReply, snapMessages, snapSystemPrompt, validateSnapInput } from '../snap.js';
 import { DEFAULT_CATEGORY, isCategory } from '../categories.js';
+import { MIN_PASSWORD_LENGTH, createAdminAuth, newPasswordProblem } from '../adminPassword.js';
 
 // Photo uploads are parsed into memory (admin only, at most 8 × 8 MB per request), checked,
 // and only then written to UPLOAD_DIR.
@@ -34,17 +35,14 @@ const parsePhotos = (req, res, next) =>
     next(err);
   });
 
-export function requireAdmin(config) {
+// HTTP Basic login for the admin. `auth` checks the user and password (see adminPassword.js).
+export function requireAdmin(auth) {
   return (req, res, next) => {
     const [scheme, encoded] = (req.headers.authorization || '').split(' ');
     if (scheme === 'Basic' && encoded) {
       const decoded = Buffer.from(encoded, 'base64').toString('utf8');
       const i = decoded.indexOf(':');
-      const user = decoded.slice(0, i);
-      const pass = decoded.slice(i + 1);
-      const okUser = safeEqual(user, config.adminUser);
-      const okPass = safeEqual(pass, config.adminPassword);
-      if (i > 0 && okUser && okPass) return next();
+      if (i > 0 && auth.check(decoded.slice(0, i), decoded.slice(i + 1))) return next();
     }
     res.set('WWW-Authenticate', 'Basic realm="Group Buy admin", charset="UTF-8"');
     res.status(401).send('Authentication required');
@@ -56,7 +54,8 @@ export function adminRoutes(app, ctx) {
   const router = express.Router();
   const csrfToken = hmac(config.appSecret, 'admin-csrf');
 
-  router.use(requireAdmin(config));
+  const auth = createAdminAuth({ config, repo, clock });
+  router.use(requireAdmin(auth));
   // Multipart forms (with photos) are parsed before the form-token check, which reads req.body.
   // The token field comes first in those forms, so it is read even if a photo is too large.
   router.post(['/deals', '/deals/:id/photos', '/snap'], parsePhotos);
@@ -284,6 +283,25 @@ export function adminRoutes(app, ctx) {
     }
     const stamp = clock.now().toISOString().slice(0, 10);
     res.download(tmp, `groupbuy-${stamp}.sqlite`, () => fs.rm(tmp, { force: true }, () => {}));
+  });
+
+  // Change the admin password in the browser (never sent anywhere but this server, over HTTPS).
+  const passwordLimiter = createRateLimiter({ windowMs: 15 * 60_000, max: 10, clock });
+  const passwordPage = (res, status, locals) =>
+    res.status(status).render('admin/password', { title: 'Change password', minLength: MIN_PASSWORD_LENGTH, adminUser: config.adminUser, error: '', done: false, ...locals });
+
+  router.get('/password', (req, res) => passwordPage(res, 200, {}));
+
+  router.post('/password', (req, res) => {
+    if (!passwordLimiter.take(req.ip)) return passwordPage(res, 429, { error: 'Too many tries. Please wait 15 minutes.' });
+    const current = String(req.body.current_password ?? '');
+    const next = String(req.body.new_password ?? '');
+    const repeat = String(req.body.repeat_password ?? '');
+    if (!auth.checkPassword(current)) return passwordPage(res, 422, { error: 'The current password is not right.' });
+    const problem = newPasswordProblem({ current, next, repeat });
+    if (problem) return passwordPage(res, 422, { error: problem });
+    auth.change(next);
+    passwordPage(res, 200, { done: true });
   });
 
   router.get('/emails', (req, res) => {
