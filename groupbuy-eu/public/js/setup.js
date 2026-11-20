@@ -2,9 +2,10 @@
 (function () {
   const form = document.getElementById('setup-form');
   if (!form || !window.Stripe) return;
+  const T = JSON.parse((document.getElementById('gb-i18n') || {}).textContent || '{}');
   const d = form.dataset;
   const stripe = window.Stripe(d.pk);
-  const elements = stripe.elements({ clientSecret: d.secret, appearance: { theme: 'stripe' }, locale: 'auto' });
+  const elements = stripe.elements({ clientSecret: d.secret, appearance: { theme: 'stripe' }, locale: d.locale || 'auto' });
   const payment = elements.create('payment', {
     business: { name: d.business },
     defaultValues: { billingDetails: { name: d.name, email: d.email, address: { country: d.country } } },
@@ -19,7 +20,7 @@
     errorEl.textContent = '';
     const { error } = await stripe.confirmSetup({ elements, confirmParams: { return_url: d.return } });
     // Only reached on an immediate error; otherwise Stripe redirects to return_url.
-    errorEl.textContent = error.message || 'Something went wrong. Please try again.';
+    errorEl.textContent = error.message || T.error;
     button.disabled = false;
   });
 })();

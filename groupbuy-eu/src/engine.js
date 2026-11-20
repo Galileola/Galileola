@@ -16,7 +16,13 @@ const CHARGEABLE_DEAL = ['charging', 'ready_to_order'];
 // A scheduler run that takes longer than this (or a process that dies mid-run) loses the lock.
 const TICK_LEASE_MS = 10 * MINUTE;
 
-export class JoinError extends Error {}
+// code: 'closed' | 'already_joined' | 'vat', so the page can show the message in the buyer's language.
+export class JoinError extends Error {
+  constructor(message, code) {
+    super(message);
+    this.code = code;
+  }
+}
 
 // The deal/payment state machine. Every state change is an atomic "transition" in SQLite
 // (UPDATE … WHERE status IN (…)), so a webhook, the scheduler and a buyer's browser can race
@@ -40,7 +46,9 @@ export function createEngine(ctx) {
   }
 
   async function email(kind, deal, p) {
-    const { subject, body } = render(kind, { deal, p, baseUrl: config.baseUrl, business: config.business, now: now() });
+    // The deal's name in the buyer's language, when it has been translated.
+    const shown = ctx.translator ? ctx.translator.deal(deal, p.lang) : deal;
+    const { subject, body } = render(kind, { deal: shown, p, baseUrl: config.baseUrl, business: config.business, now: now() });
     await mailer.send({ kind, to: p.email, subject, body, dealId: deal.id, participantId: p.id });
   }
 
@@ -72,11 +80,11 @@ export function createEngine(ctx) {
     // Step 1 of joining: store the buyer, create the Stripe Customer, calculate VAT for their
     // delivery country and create an off-session SetupIntent. Nothing is charged.
     async startJoin(deal, input) {
-      if (!isJoinable(deal, now())) throw new JoinError('This deal is no longer open.');
+      if (!isJoinable(deal, now())) throw new JoinError('This deal is no longer open.', 'closed');
       const n = nowIso();
       let p = repo.participantByEmail(deal.id, input.email);
       if (p && p.status !== 'pending_setup') {
-        throw new JoinError('This email address has already joined this deal.');
+        throw new JoinError('This email address has already joined this deal.', 'already_joined');
       }
       const fields = {
         name: input.name,
@@ -85,6 +93,7 @@ export function createEngine(ctx) {
         postal_code: input.postal_code,
         city: input.city,
         country: input.country,
+        lang: input.lang || 'en',
         terms_accepted_at: n,
       };
       if (p) {
@@ -124,7 +133,7 @@ export function createEngine(ctx) {
         vat = await calculateVat(stripe, deal, p);
       } catch (err) {
         if (err?.type === 'StripeInvalidRequestError') {
-          throw new JoinError('We could not calculate VAT for this address. Please check the postcode, city and country.');
+          throw new JoinError('We could not calculate VAT for this address. Please check the postcode, city and country.', 'vat');
         }
         throw err;
       }

@@ -3,10 +3,11 @@
 (function () {
   const root = document.getElementById('pay');
   if (!root || !window.Stripe) return;
+  const T = JSON.parse((document.getElementById('gb-i18n') || {}).textContent || '{}');
   const d = root.dataset;
   const stripe = window.Stripe(d.pk);
   const errorEl = document.getElementById('pay-error');
-  const fail = (error) => { errorEl.textContent = (error && error.message) || 'Something went wrong. Please try again.'; };
+  const fail = (error) => { errorEl.textContent = (error && error.message) || T.error; };
 
   const saved = document.getElementById('pay-saved');
   if (saved) {
@@ -19,7 +20,7 @@
     });
   }
 
-  const elements = stripe.elements({ clientSecret: d.secret, appearance: { theme: 'stripe' }, locale: 'auto' });
+  const elements = stripe.elements({ clientSecret: d.secret, appearance: { theme: 'stripe' }, locale: d.locale || 'auto' });
   const payment = elements.create('payment', {
     business: { name: d.business },
     defaultValues: { billingDetails: { name: d.name, email: d.email, address: { country: d.country } } },

@@ -1,7 +1,7 @@
 <%- include('partials/header') %>
 <% const images = (locals.photos || []).map((p) => photoUrl(p.filename)); if (!images.length && deal.image_url) images.push(deal.image_url); %>
 <% const cat = categoryFor(deal.category); %>
-<% const mood = state.status === 'expired' ? '' : state.minimumReached ? '' : state.count === 0 ? 'Be the first to join! 🥇' : state.percent >= 70 ? 'So close! Just a few more. 🔥' : state.percent >= 50 ? 'Over halfway there! 💪' : 'Off to a good start. 🌱'; %>
+<% const mood = state.status === 'expired' ? '' : state.minimumReached ? '' : state.count === 0 ? t('deal.moodFirst') : state.percent >= 70 ? t('deal.moodClose') : state.percent >= 50 ? t('deal.moodHalf') : t('deal.moodStart'); %>
 <div class="deal-layout" id="deal" data-slug="<%= deal.slug %>" data-reached="<%= state.minimumReached ? '1' : '0' %>">
   <section class="deal-hero">
     <% if (images.length) { %>
@@ -10,7 +10,7 @@
         <% if (images.length > 1) { %>
           <div class="gallery-thumbs">
             <% images.forEach((src, i) => { %>
-              <button type="button" class="thumb<%= i === 0 ? ' active' : '' %>" data-gallery-thumb="<%= src %>" aria-label="Show photo <%= i + 1 %> of <%= images.length %>"><img src="<%= src %>" alt="" loading="lazy"></button>
+              <button type="button" class="thumb<%= i === 0 ? ' active' : '' %>" data-gallery-thumb="<%= src %>" aria-label="<%= t('deal.showPhoto', { n: i + 1, total: images.length }) %>"><img src="<%= src %>" alt="" loading="lazy"></button>
             <% }) %>
           </div>
         <% } %>
@@ -21,43 +21,43 @@
     <a class="cat-pill" href="/?category=<%= cat.slug %>#deals"><span aria-hidden="true"><%= cat.emoji %></span> <%= cat.name %></a>
     <h1><%= deal.product_name %></h1>
     <% if (deal.headline) { %><p class="deal-headline"><%= deal.headline %></p><% } %>
-    <p class="price-tag big"><%= formatEuro(deal.price_cents) %> <small>incl. VAT</small></p>
-    <p class="muted small">Final price including VAT for every EU country. The VAT share depends on your delivery country and is calculated by Stripe Tax; the price you pay does not change.</p>
+    <p class="price-tag big"><%= formatEuro(deal.price_cents) %> <small><%= t('price.inclVat') %></small></p>
+    <p class="muted small"><%= t('deal.vatNote') %></p>
     <% if (deal.description) { %><div class="stack description"><% for (const para of deal.description.split(/(?:\r?\n\s*){2,}/)) { %><p><%= para %></p><% } %></div><% } %>
   </section>
 
   <section class="card join-card">
-    <p class="counter"><span class="counter-num" data-count><%= state.count %></span> of <%= state.minBuyers %> buyers joined</p>
+    <p class="counter"><%- th('deal.counterHtml', { min: state.minBuyers }, { count: '<span class="counter-num" data-count>' + Number(state.count) + '</span>' }) %></p>
     <div class="goal-track" aria-hidden="true">
       <div class="progress big"><span data-progress data-width="<%= state.percent %>"><i class="rocket">🚀</i></span></div>
       <i class="finish">🏁</i>
     </div>
     <p data-status-line class="status-line">
       <% if (state.status === 'expired') { %>
-        This deal did not reach its minimum. Nobody was charged and all saved payment methods were removed.
+        <%= t('deal.expired') %>
       <% } else if (state.minimumReached) { %>
-        🎉 Minimum reached. The deal is on!
+        <%= t('deal.reached') %>
       <% } else { %>
-        <span data-remaining><%= state.remaining %></span> more needed.
+        <%- th('deal.remainingHtml', { count: state.remaining }, { remaining: '<span data-remaining>' + Number(state.remaining) + '</span>' }) %>
       <% } %>
     </p>
     <% if (mood) { %><p class="mood" data-mood><%= mood %></p><% } %>
-    <p class="deadline">Deadline: <%= formatDate(deal.deadline) %></p>
+    <p class="deadline"><%= t('deal.deadline', { date: formatDate(deal.deadline) }) %></p>
     <div class="countdown" data-countdown data-seconds="<%= state.secondsLeft %>" role="timer" aria-live="off"></div>
 
     <% if (state.joinable) { %>
       <%- include('partials/join-form') %>
     <% } else if (state.status !== 'expired') { %>
-      <div class="notice">This deal is closed to new buyers.</div>
+      <div class="notice"><%= t('deal.closed') %></div>
     <% } %>
   </section>
 </div>
 
 <% if (state.joinable) { %>
   <section class="card share-card">
-    <h2>👯 Bring your friends</h2>
-    <p class="muted">Every buyer who joins brings the deal closer for everyone. Share it with people who'd love this too.</p>
-    <%- include('partials/share', { shareUrl: baseUrl + '/deals/' + deal.slug, shareText: (deal.headline || deal.product_name) + ' · Join the group deal and we all pay less!' }) %>
+    <h2><%= t('deal.shareTitle') %></h2>
+    <p class="muted"><%= t('deal.shareText') %></p>
+    <%- include('partials/share', { shareUrl: baseUrl + '/deals/' + deal.slug + '?lang=' + lang, shareText: t('deal.shareMessage', { name: deal.headline || deal.product_name }) }) %>
   </section>
 <% } %>
 <script src="/static/js/deal.js"></script>

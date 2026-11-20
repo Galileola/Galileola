@@ -2,8 +2,13 @@ import { JoinError } from '../engine.js';
 import { isJoinable, publicDealState } from '../dealState.js';
 import { EU_COUNTRIES, isValidEmail } from '../util.js';
 import { createRateLimiter } from '../rateLimit.js';
+import { isLanguage, translate } from '../i18n/index.js';
+import { applyLanguage } from '../i18n/middleware.js';
 
-export function validateJoinInput(body) {
+const english = (key) => translate('en', key);
+
+// `t` translates the error messages (English by default).
+export function validateJoinInput(body, t = english) {
   const v = (k, max = 200) => String(body[k] ?? '').trim().slice(0, max);
   const input = {
     email: v('email', 254).toLowerCase(),
@@ -15,13 +20,13 @@ export function validateJoinInput(body) {
     country: v('country', 2).toUpperCase(),
   };
   const errors = {};
-  if (!isValidEmail(input.email)) errors.email = 'Enter a valid email address.';
-  if (!input.name) errors.name = 'Enter your full name.';
-  if (!input.address_line1) errors.address_line1 = 'Enter your street and number.';
-  if (!input.postal_code) errors.postal_code = 'Enter your postcode.';
-  if (!input.city) errors.city = 'Enter your city.';
-  if (!EU_COUNTRIES[input.country]) errors.country = 'We currently deliver to EU countries only.';
-  if (body.accept_terms !== 'yes') errors.accept_terms = 'Please accept the terms to join.';
+  if (!isValidEmail(input.email)) errors.email = t('join.errEmail');
+  if (!input.name) errors.name = t('join.errName');
+  if (!input.address_line1) errors.address_line1 = t('join.errStreet');
+  if (!input.postal_code) errors.postal_code = t('join.errPostcode');
+  if (!input.city) errors.city = t('join.errCity');
+  if (!EU_COUNTRIES[input.country]) errors.country = t('join.errCountry');
+  if (body.accept_terms !== 'yes') errors.accept_terms = t('join.errTerms');
   return { input, errors };
 }
 
@@ -30,29 +35,39 @@ export function joinRoutes(app, ctx) {
   // Each join creates a Stripe Customer, a tax calculation and a SetupIntent: limit per IP.
   const joinLimiter = createRateLimiter({ windowMs: 15 * 60_000, max: config.joinRateLimit ?? 10, clock });
 
-  const renderDeal = (res, deal, values, errors, status = 422) =>
+  const renderDeal = (res, deal, values, errors, status = 422) => {
+    const shown = res.locals.localizeDeal(deal);
+    res.locals.canonicalPath = `/deals/${deal.slug}`;
     res.status(status).render('deal', {
-      title: deal.product_name,
-      deal,
+      title: shown.product_name,
+      deal: shown,
       photos: repo.photosForDeal(deal.id),
       state: publicDealState(deal, repo.committedCount(deal.id), clock.now()),
       values,
       errors,
     });
+  };
+
+  const JOIN_ERRORS = { closed: 'join.errClosed', already_joined: 'join.errAlreadyJoined', vat: 'join.errVat' };
 
   app.post('/deals/:slug/join', async (req, res, next) => {
     const deal = repo.dealBySlug(req.params.slug);
     if (!deal) return next();
+    // The form says which language the page was in (the visitor may have no language cookie).
+    if (isLanguage(req.body.lang) && req.body.lang !== res.locals.lang) applyLanguage(req, res, req.body.lang, ctx);
+    const { t, lang } = res.locals;
     if (!joinLimiter.take(req.ip)) {
-      return renderDeal(res, deal, req.body, { form: 'Too many attempts from your network. Please wait 15 minutes and try again.' }, 429);
+      return renderDeal(res, deal, req.body, { form: t('join.errTooMany') }, 429);
     }
-    const { input, errors } = validateJoinInput(req.body);
+    const { input, errors } = validateJoinInput(req.body, t);
     if (Object.keys(errors).length) return renderDeal(res, deal, req.body, errors);
     try {
-      const p = await engine.startJoin(deal, input);
+      const p = await engine.startJoin(deal, { ...input, lang });
       res.redirect(303, `/join/${p.token}`);
     } catch (err) {
-      if (err instanceof JoinError) return renderDeal(res, deal, req.body, { form: err.message });
+      if (err instanceof JoinError) {
+        return renderDeal(res, deal, req.body, { form: JOIN_ERRORS[err.code] ? t(JOIN_ERRORS[err.code]) : err.message });
+      }
       next(err);
     }
   });
@@ -63,14 +78,16 @@ export function joinRoutes(app, ctx) {
       const p = repo.participantByToken(req.params.token);
       if (!p) return next();
       if (p.status !== 'pending_setup') return res.redirect(303, `/join/${p.token}/done`);
-      const deal = repo.dealById(p.deal_id);
-      if (!isJoinable(deal, clock.now())) {
-        return res.render('message', { title: 'Deal closed', heading: 'This deal is closed', body: 'It is no longer possible to join. You have not been charged.' });
+      const { t, localizeDeal } = res.locals;
+      const found = repo.dealById(p.deal_id);
+      if (!isJoinable(found, clock.now())) {
+        return res.render('message', { title: t('join.closedTitle'), heading: t('join.closedHeading'), body: t('join.closedBody') });
       }
+      const deal = localizeDeal(found);
       const si = await stripe.setupIntents.retrieve(p.setup_intent_id);
       res.set('Cache-Control', 'no-store');
       res.render('join', {
-        title: `Join: ${deal.product_name}`,
+        title: t('setup.pageTitle', { name: deal.product_name }),
         loadStripe: true,
         deal,
         p,
@@ -100,7 +117,7 @@ export function joinRoutes(app, ctx) {
   app.get('/join/:token/done', (req, res, next) => {
     const p = repo.participantByToken(req.params.token);
     if (!p) return next();
-    const deal = repo.dealById(p.deal_id);
+    const deal = res.locals.localizeDeal(repo.dealById(p.deal_id));
     res.set('Cache-Control', 'no-store');
     res.render('join-done', {
       title: deal.product_name,

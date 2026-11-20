@@ -16,7 +16,8 @@ export function createAssistant({ apiKey, model, client }) {
   return {
     model,
     // Returns { text } or { refused: true }. `format` is an optional JSON schema for the reply.
-    async reply({ system, messages, effort = 'low', maxTokens = 4000, format }) {
+    // `timeout` (ms) overrides the client's 60 seconds, e.g. for translating a long page.
+    async reply({ system, messages, effort = 'low', maxTokens = 4000, format, timeout }) {
       const response = await anthropic.beta.messages.create({
         model,
         max_tokens: maxTokens,
@@ -28,14 +29,15 @@ export function createAssistant({ apiKey, model, client }) {
         cache_control: { type: 'ephemeral' },
         system,
         messages,
-      });
+      }, timeout ? { timeout } : undefined);
       if (response.stop_reason === 'refusal') return { refused: true };
       const text = response.content
         .filter((b) => b.type === 'text')
         .map((b) => b.text)
         .join('\n')
         .trim();
-      return { text };
+      // cutOff: the reply hit maxTokens and is incomplete.
+      return { text, cutOff: response.stop_reason === 'max_tokens' };
     },
   };
 }
@@ -60,7 +62,7 @@ export function cleanHistory(raw) {
 
 const known = (value) => value && !String(value).startsWith('[');
 
-export function buildSystemPrompt({ business, baseUrl, deals }) {
+export function buildSystemPrompt({ business, baseUrl, deals, siteLanguage = 'English' }) {
   const shop = known(business.name) ? business.name : 'this shop';
   const contact = known(business.email)
     ? `email ${business.email}`
@@ -97,7 +99,7 @@ How to answer:
 - Never ask for card numbers, IBANs, passwords or other payment details. If a visitor shares them, tell them not to share these in the chat.
 - When you mention a deal, include its full page link so the visitor can click it.
 - Keep replies short and friendly: usually two to five sentences. Write plain text without Markdown formatting (no asterisks, headings or tables); simple dashes for a short list are fine.
-- Reply in the language the visitor writes in.
+- Reply in the language the visitor writes in. This visitor is viewing the site in ${siteLanguage}, so use that if their message doesn't make the language clear. The deal details above are in the shop's own language; translate them in your reply when needed.
 - Stick to the shop, its deals and how group buying works. Politely decline unrelated requests.`;
 }
 

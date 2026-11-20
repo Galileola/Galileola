@@ -1,28 +1,28 @@
 <div class="assistant-widget" id="assistant">
   <button type="button" class="assistant-launcher" data-assistant-open aria-expanded="false" aria-controls="assistant-panel">
-    <span class="assistant-dot" aria-hidden="true"></span>Ask our assistant
+    <span class="assistant-dot" aria-hidden="true"></span><%= t('assistant.open') %>
   </button>
-  <section class="assistant-panel" id="assistant-panel" role="dialog" aria-label="Shopping assistant" hidden>
+  <section class="assistant-panel" id="assistant-panel" role="dialog" aria-label="<%= t('assistant.title') %>" hidden>
     <header class="assistant-head">
       <div>
-        <strong>Shopping assistant</strong>
-        <span>Answers by AI · usually in a few seconds</span>
+        <strong><%= t('assistant.title') %></strong>
+        <span><%= t('assistant.subtitle') %></span>
       </div>
-      <button type="button" class="assistant-close" data-assistant-close aria-label="Close the assistant">×</button>
+      <button type="button" class="assistant-close" data-assistant-close aria-label="<%= t('assistant.close') %>">×</button>
     </header>
     <div class="assistant-log" data-assistant-log aria-live="polite">
-      <div class="msg assistant">Hi! Ask me about our deals, how group buying works, payment or delivery.</div>
+      <div class="msg assistant"><%= t('assistant.welcome') %></div>
     </div>
     <div class="assistant-suggestions" data-assistant-suggestions>
-      <button type="button" data-suggest>How does group buying work?</button>
-      <button type="button" data-suggest>When will I be charged?</button>
-      <button type="button" data-suggest>Which deals are open?</button>
+      <button type="button" data-suggest><%= t('assistant.suggest1') %></button>
+      <button type="button" data-suggest><%= t('assistant.suggest2') %></button>
+      <button type="button" data-suggest><%= t('assistant.suggest3') %></button>
     </div>
     <form class="assistant-form" data-assistant-form>
-      <textarea name="message" rows="1" maxlength="1500" placeholder="Ask a question…" aria-label="Your question"></textarea>
-      <button type="submit">Send</button>
+      <textarea name="message" rows="1" maxlength="1500" placeholder="<%= t('assistant.placeholder') %>" aria-label="<%= t('assistant.inputLabel') %>"></textarea>
+      <button type="submit"><%= t('assistant.send') %></button>
     </form>
-    <p class="assistant-note">AI answers can be wrong. Please don't share card or bank details here.</p>
+    <p class="assistant-note"><%= t('assistant.note') %></p>
   </section>
 </div>
 <script src="/static/js/assistant.js"></script>

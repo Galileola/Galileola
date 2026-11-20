@@ -205,7 +205,7 @@ test('home page filters by category; admin can change a category', async (t) => 
   assert.doesNotMatch(electronics, /Coffee mug/);
 
   const pets = await (await fetch(`${app.base}/?category=pets`)).text();
-  assert.match(pets, /No pets deals right now/);
+  assert.match(pets, /No deals in this category right now/);
 
   const unknown = await (await fetch(`${app.base}/?category=<script>`)).text();
   assert.match(unknown, /Coffee mug/);

@@ -1,123 +1,192 @@
-import { formatEuro, formatDate } from './util.js';
+import { forLanguage } from './i18n/index.js';
 
-// Plain-text email templates. Every template gets ({ deal, p, baseUrl, business, now }).
+// Plain-text email templates, in the buyer's language (p.lang, saved when they joined; texts in
+// src/i18n/locales). Every template gets ({ deal, p, baseUrl, business, now, i18n }), where deal
+// already has its name in that language when a translation exists. Links carry ?lang= so the page
+// opens in the same language as the email.
 const sign = (business) => `\n\n${business.name}\n${business.address}\n${business.email}`;
-const amountLine = (deal, p) =>
-  `${formatEuro(p.amount_cents ?? deal.price_cents)} incl. VAT` + (p.tax_cents != null ? ` (of which VAT ${formatEuro(p.tax_cents)})` : '');
-const payLink = (baseUrl, p) => `${baseUrl}/pay/${p.token}`;
-const methodLine = (p) => (p.payment_method_label ? `Payment method: ${p.payment_method_label}` : '');
+
+function helpers({ deal, p, baseUrl, i18n }) {
+  const { t, formatEuro } = i18n;
+  const q = `?lang=${i18n.lang}`;
+  return {
+    t,
+    name: deal.product_name,
+    amount:
+      p.tax_cents != null
+        ? t('email.amountWithVat', { amount: formatEuro(p.amount_cents ?? deal.price_cents), vat: formatEuro(p.tax_cents) })
+        : t('email.amount', { amount: formatEuro(p.amount_cents ?? deal.price_cents) }),
+    method: p.payment_method_label ? t('email.method', { method: p.payment_method_label }) : '',
+    payLink: `${baseUrl}/pay/${p.token}${q}`,
+    dealLink: `${baseUrl}/deals/${deal.slug}${q}`,
+    termsLink: `${baseUrl}/terms${q}`,
+    withdrawalLink: `${baseUrl}/terms${q}#withdrawal`,
+  };
+}
 
 export const templates = {
-  joined: ({ deal, p, baseUrl, business }) => ({
-    subject: `You've joined: ${deal.product_name}`,
-    body: `Hi ${p.name},
+  joined: (data) => {
+    const { deal, p, business, i18n } = data;
+    const { t, name, amount, method, dealLink, termsLink } = helpers(data);
+    const intro =
+      deal.status === 'open'
+        ? `${t('email.joinedOpen', { name })}
 
-${deal.status === 'open' ? `You've joined the group deal for ${deal.product_name}. Nothing has been charged.
+${t('email.joinedNext')}
+- ${t('email.joinedIfReached', { min: deal.min_buyers, date: i18n.formatDate(deal.deadline), amount })}
+- ${t('email.joinedIfNot')}`
+        : t('email.joinedReached', { name, amount });
+    return {
+      subject: t('email.joinedSubject', { name }),
+      body: `${t('email.hi', { name: p.name })}
 
-What happens next:
-- If at least ${deal.min_buyers} buyers join by ${formatDate(deal.deadline)}, we charge ${amountLine(deal, p)} to your saved payment method.
-- If the minimum isn't reached by then, nothing is charged and your saved payment method is removed.` : `You've joined the group deal for ${deal.product_name}. The deal has already reached its minimum, so we're collecting ${amountLine(deal, p)} now. We'll email you as soon as the payment goes through.`}
+${intro}
 
-${methodLine(p)}
-Deal page: ${baseUrl}/deals/${deal.slug}
+${method}
+${t('email.dealPage', { link: dealLink })}
 
-You have a 14-day right of withdrawal, explained in our terms: ${baseUrl}/terms${sign(business)}`,
-  }),
+${t('email.withdrawalRight', { link: termsLink })}${sign(business)}`,
+    };
+  },
 
   // Doubles as the SEPA pre-notification (amount + collection date).
-  minimumReached: ({ deal, p, business, now }) => ({
-    subject: `Deal on! We're collecting payment for ${deal.product_name}`,
-    body: `Hi ${p.name},
+  minimumReached: (data) => {
+    const { deal, p, business, now, i18n } = data;
+    const { t, name, amount, method } = helpers(data);
+    const sepa =
+      p.payment_method_type === 'sepa_debit'
+        ? `\n${t('email.reachedSepa', { amount: i18n.formatEuro(p.amount_cents ?? deal.price_cents), date: i18n.formatDate(now) })}\n`
+        : '';
+    return {
+      subject: t('email.reachedSubject', { name }),
+      body: `${t('email.hi', { name: p.name })}
 
-The group deal for ${deal.product_name} has reached its minimum of ${deal.min_buyers} buyers.
+${t('email.reachedIntro', { name, min: deal.min_buyers })}
 
-We are now collecting ${amountLine(deal, p)} from your saved payment method.
-${methodLine(p)}
-${p.payment_method_type === 'sepa_debit' ? `\nThis is your pre-notification for the SEPA Direct Debit: amount ${formatEuro(p.amount_cents ?? deal.price_cents)}, collected from today (${formatDate(now)}). It usually reaches your account within a few business days.\n` : ''}
-If the payment doesn't go through, we'll email you a link to fix it. You'll have 48 hours.${sign(business)}`,
-  }),
+${t('email.reachedCollecting', { amount })}
+${method}
+${sepa}
+${t('email.reachedIfFails')}${sign(business)}`,
+    };
+  },
 
-  paid: ({ deal, p, baseUrl, business }) => ({
-    subject: `Payment received: ${deal.product_name}`,
-    body: `Hi ${p.name},
+  paid: (data) => {
+    const { p, business } = data;
+    const { t, name, amount, method, withdrawalLink } = helpers(data);
+    return {
+      subject: t('email.paidSubject', { name }),
+      body: `${t('email.hi', { name: p.name })}
 
-We've received your payment of ${amountLine(deal, p)} for ${deal.product_name}.
-${methodLine(p)}
+${t('email.paidText', { amount, name })}
+${method}
 
-Your order is confirmed. We'll let you know when it ships.
-Your 14-day right of withdrawal starts when you receive the goods: ${baseUrl}/terms#withdrawal${sign(business)}`,
-  }),
+${t('email.paidConfirmed')}
+${t('email.paidWithdrawal', { link: withdrawalLink })}${sign(business)}`,
+    };
+  },
 
-  processing: ({ deal, p, baseUrl, business }) => ({
-    subject: `Direct debit started: ${deal.product_name}`,
-    body: `Hi ${p.name},
+  processing: (data) => {
+    const { p, business } = data;
+    const { t, name, amount } = helpers(data);
+    return {
+      subject: t('email.processingSubject', { name }),
+      body: `${t('email.hi', { name: p.name })}
 
-We've started collecting ${amountLine(deal, p)} for ${deal.product_name} by SEPA Direct Debit.
-It normally takes a few business days to complete. Your place in the order is confirmed.${sign(business)}`,
-  }),
+${t('email.processingText', { amount, name })}
+${t('email.processingTime')}${sign(business)}`,
+    };
+  },
 
-  paymentFailed: ({ deal, p, baseUrl, business }) => ({
-    subject: `Action needed: payment for ${deal.product_name} didn't go through`,
-    body: `Hi ${p.name},
+  paymentFailed: (data) => {
+    const { p, business, i18n } = data;
+    const { t, name, amount, payLink } = helpers(data);
+    const what = p.last_error_message
+      ? t('email.failedTextReason', { amount, name, reason: p.last_error_message })
+      : t('email.failedText', { amount, name });
+    return {
+      subject: t('email.failedSubject', { name }),
+      body: `${t('email.hi', { name: p.name })}
 
-We tried to collect ${amountLine(deal, p)} for ${deal.product_name}, but the payment didn't go through${p.last_error_message ? ` (${p.last_error_message})` : ''}.
+${what}
 
-Please update your payment method here before ${formatDate(p.grace_ends_at)}:
-${payLink(baseUrl, p)}
+${t('email.failedUpdate', { date: i18n.formatDate(p.grace_ends_at) })}
+${payLink}
 
-We'll also retry automatically a few times. If it's still unpaid after the deadline, your order will be cancelled and you won't be charged.${sign(business)}`,
-  }),
+${t('email.failedRetry')}${sign(business)}`,
+    };
+  },
 
-  authenticationRequired: ({ deal, p, baseUrl, business }) => ({
-    subject: `Action needed: confirm your payment for ${deal.product_name}`,
-    body: `Hi ${p.name},
+  authenticationRequired: (data) => {
+    const { p, business, i18n } = data;
+    const { t, name, amount, payLink } = helpers(data);
+    return {
+      subject: t('email.authSubject', { name }),
+      body: `${t('email.hi', { name: p.name })}
 
-The group deal for ${deal.product_name} reached its minimum. Your bank needs you to confirm the payment of ${amountLine(deal, p)} (Strong Customer Authentication).
+${t('email.authText', { name, amount })}
 
-Confirm it here before ${formatDate(p.grace_ends_at)}. You can also choose a different payment method:
-${payLink(baseUrl, p)}
+${t('email.authConfirm', { date: i18n.formatDate(p.grace_ends_at) })}
+${payLink}
 
-If it isn't confirmed by then, your order will be cancelled and you won't be charged.${sign(business)}`,
-  }),
+${t('email.authIfNot')}${sign(business)}`,
+    };
+  },
 
-  reminder: ({ deal, p, baseUrl, business }) => ({
-    subject: `Reminder: your payment for ${deal.product_name} is still open`,
-    body: `Hi ${p.name},
+  reminder: (data) => {
+    const { p, business, i18n } = data;
+    const { t, name, amount, payLink } = helpers(data);
+    return {
+      subject: t('email.reminderSubject', { name }),
+      body: `${t('email.hi', { name: p.name })}
 
-Your payment of ${amountLine(deal, p)} for ${deal.product_name} still hasn't gone through.
-You have until ${formatDate(p.grace_ends_at)} to complete it:
-${payLink(baseUrl, p)}${sign(business)}`,
-  }),
+${t('email.reminderText', { amount, name })}
+${t('email.reminderUntil', { date: i18n.formatDate(p.grace_ends_at) })}
+${payLink}${sign(business)}`,
+    };
+  },
 
-  windowClosed: ({ deal, p, baseUrl, business }) => ({
-    subject: `Order cancelled: ${deal.product_name}`,
-    body: `Hi ${p.name},
+  windowClosed: (data) => {
+    const { p, business } = data;
+    const { t, name } = helpers(data);
+    return {
+      subject: t('email.closedSubject', { name }),
+      body: `${t('email.hi', { name: p.name })}
 
-We couldn't collect your payment for ${deal.product_name} within 48 hours, so your order has been cancelled.
-You have not been charged.${sign(business)}`,
-  }),
+${t('email.closedText', { name })}
+${t('email.notCharged')}${sign(business)}`,
+    };
+  },
 
-  dealExpired: ({ deal, p, baseUrl, business }) => ({
-    subject: `Deal didn't reach its minimum: ${deal.product_name}`,
-    body: `Hi ${p.name},
+  dealExpired: (data) => {
+    const { deal, p, business, i18n } = data;
+    const { t, name } = helpers(data);
+    return {
+      subject: t('email.expiredSubject', { name }),
+      body: `${t('email.hi', { name: p.name })}
 
-The group deal for ${deal.product_name} didn't reach its minimum of ${deal.min_buyers} buyers by ${formatDate(deal.deadline)}.
+${t('email.expiredText', { name, min: deal.min_buyers, date: i18n.formatDate(deal.deadline) })}
 
-Nobody was charged. We've removed your saved payment method.${sign(business)}`,
-  }),
+${t('email.expiredNobody')}${sign(business)}`,
+    };
+  },
 
-  withdrawn: ({ deal, p, baseUrl, business }) => ({
-    subject: `Withdrawal confirmed: ${deal.product_name}`,
-    body: `Hi ${p.name},
+  withdrawn: (data) => {
+    const { p, business, i18n } = data;
+    const { t, name } = helpers(data);
+    return {
+      subject: t('email.withdrawnSubject', { name }),
+      body: `${t('email.hi', { name: p.name })}
 
-We've processed your withdrawal from ${deal.product_name}.
-${p.refund_id ? `We've refunded ${formatEuro(p.amount_cents)} to your original payment method. It can take 5–10 business days to appear.` : 'You have not been charged and your saved payment method has been removed.'}${sign(business)}`,
-  }),
+${t('email.withdrawnText', { name })}
+${p.refund_id ? t('email.withdrawnRefund', { amount: i18n.formatEuro(p.amount_cents) }) : t('email.withdrawnNoCharge')}${sign(business)}`,
+    };
+  },
 };
 
 export function render(kind, data) {
-  const t = templates[kind];
-  if (!t) throw new Error(`Unknown email template: ${kind}`);
-  const { subject, body } = t(data);
-  return { subject, body: body.replace(/\n{3,}/g, '\n\n') };
+  const template = templates[kind];
+  if (!template) throw new Error(`Unknown email template: ${kind}`);
+  const i18n = forLanguage(data.p?.lang);
+  const { subject, body } = template({ ...data, i18n });
+  return { subject, body: body.replace(/[ \t]+$/gm, '').replace(/\n{3,}/g, '\n\n') };
 }

@@ -114,8 +114,16 @@
     const text = button.hasAttribute('data-copy')
       ? button.dataset.copy
       : (document.getElementById(button.dataset.copyFrom) || {}).value || '';
-    flash(button, (await copyText(text)) ? '✅ Copied!' : 'Press and hold to copy');
+    const T = JSON.parse((document.getElementById('gb-i18n') || {}).textContent || '{}');
+    flash(button, (await copyText(text)) ? T.copied || '✅ Copied!' : T.copyFallback || 'Press and hold to copy');
   });
+
+  // The language menu closes when you click elsewhere or press Escape.
+  const langMenu = document.querySelector('[data-lang-menu]');
+  if (langMenu) {
+    document.addEventListener('click', (e) => { if (langMenu.open && !langMenu.contains(e.target)) langMenu.open = false; });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && langMenu.open) { langMenu.open = false; langMenu.querySelector('summary').focus(); } });
+  }
 
   // The phone's own share sheet (WhatsApp, Messages, Instagram…) where the browser offers it.
   if (navigator.share) document.querySelectorAll('[data-share-native]').forEach((b) => { b.hidden = false; });

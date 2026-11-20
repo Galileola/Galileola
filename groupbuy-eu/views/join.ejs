@@ -1,13 +1,13 @@
 <%- include('partials/header') %>
 <section class="card narrow">
-  <h1>Save your payment method</h1>
-  <p><strong><%= deal.product_name %></strong> · <%= formatEuro(p.amount_cents ?? deal.price_cents) %> incl. VAT<% if (p.tax_cents != null) { %> <span class="muted small">(VAT <%= formatEuro(p.tax_cents) %><%= p.tax_rate_label ? ', ' + p.tax_rate_label : '' %>)</span><% } %></p>
+  <h1><%= t('setup.title') %></h1>
+  <p><strong><%= deal.product_name %></strong> · <%= formatEuro(p.amount_cents ?? deal.price_cents) %> <%= t('price.inclVat') %><% if (p.tax_cents != null) { %> <span class="muted small">(<%= t('price.vat', { amount: formatEuro(p.tax_cents) }) %><%= p.tax_rate_label ? ', ' + p.tax_rate_label : '' %>)</span><% } %></p>
   <% if (deal.status === 'open') { %>
-    <div class="notice"><strong>No charge today.</strong> You'll only be charged if <%= deal.min_buyers %> buyers join by <%= formatDate(deal.deadline) %>. If that doesn't happen, we remove your payment method and charge nothing.</div>
+    <div class="notice"><%- th('setup.noChargeHtml', { min: deal.min_buyers, date: formatDate(deal.deadline) }) %></div>
   <% } else { %>
-    <div class="notice ok">The minimum is reached, so we'll collect the payment right after you save your payment method.</div>
+    <div class="notice ok"><%= t('setup.reached') %></div>
   <% } %>
-  <% if (failed) { %><div class="notice bad">That payment method couldn't be set up. Please try again or use another method.</div><% } %>
+  <% if (failed) { %><div class="notice bad"><%= t('setup.failed') %></div><% } %>
   <form id="setup-form"
         data-pk="<%= publishableKey %>"
         data-secret="<%= clientSecret %>"
@@ -15,11 +15,12 @@
         data-name="<%= p.name %>"
         data-email="<%= p.email %>"
         data-country="<%= p.country %>"
+        data-locale="<%= stripeLocale %>"
         data-business="<%= business.name %>">
     <div id="payment-element"></div>
-    <p class="muted small">Cards and SEPA Direct Debit are accepted. iDEAL is only used to set up a SEPA Direct Debit mandate from your Dutch bank account.</p>
+    <p class="muted small"><%= t('setup.methods') %></p>
     <p id="setup-error" class="error-text" role="alert"></p>
-    <button type="submit" id="setup-submit">Save payment method</button>
+    <button type="submit" id="setup-submit"><%= t('setup.submit') %></button>
   </form>
 </section>
 <script src="/static/js/setup.js"></script>

@@ -1,11 +1,12 @@
-<%- include('../partials/header') %>
-<article class="legal">
+<%# English text of this legal page. Visitors in other languages see a translation made by Claude
+    (src/translate.js), which must keep every tag exactly as it is here. %>
   <h1>Cookies</h1>
   <p>We only use cookies that the site needs to work. Optional cookies (analytics or marketing) are only set if you accept them. The site currently uses none.</p>
   <table>
     <thead><tr><th>Cookie</th><th>Set by</th><th>Purpose</th><th>Duration</th><th>Type</th></tr></thead>
     <tbody>
       <tr><td><code>gb_consent</code></td><td>This site</td><td>Remembers your cookie choice</td><td>6 months</td><td>Necessary</td></tr>
+      <tr><td><code>gb_lang</code></td><td>This site</td><td>Remembers the language you chose in the language menu. Only set when you choose one.</td><td>1 year</td><td>Necessary</td></tr>
       <tr><td><code>__stripe_mid</code>, <code>__stripe_sid</code></td><td>Stripe</td><td>Fraud prevention while you save or confirm a payment method. Only set on the payment pages.</td><td>1 year / 30 minutes</td><td>Necessary</td></tr>
     </tbody>
   </table>
@@ -14,5 +15,3 @@
   <% } %>
   <p>Stripe may also set cookies on its own domains in the payment form and during bank authentication (3-D Secure or iDEAL). See <a href="https://stripe.com/cookie-settings" rel="noopener">Stripe's cookie policy</a>.</p>
   <p><button type="button" class="secondary" data-cookie-settings>Change cookie settings</button></p>
-</article>
-<%- include('../partials/footer') %>

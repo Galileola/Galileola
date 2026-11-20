@@ -2,21 +2,21 @@
   <footer class="site-footer">
     <div class="site-footer-inner">
       <p class="footer-brand"><span class="brand-mark" aria-hidden="true"></span><%= business.name.startsWith('[') ? 'Group Buy' : business.name %></p>
-      <p><%= business.name %> · <%= business.address %> · VAT <%= business.vatId %></p>
+      <p><%= business.name %> · <%= business.address %> · <%= t('footer.vat', { id: business.vatId }) %></p>
       <p>
-        <a href="/terms">Terms &amp; withdrawal right</a> ·
-        <a href="/privacy">Privacy policy</a> ·
-        <a href="/cookies">Cookies</a> ·
-        <button type="button" class="linklike" data-cookie-settings>Cookie settings</button>
+        <a href="/terms"><%= t('footer.terms') %></a> ·
+        <a href="/privacy"><%= t('footer.privacy') %></a> ·
+        <a href="/cookies"><%= t('footer.cookies') %></a> ·
+        <button type="button" class="linklike" data-cookie-settings><%= t('footer.cookieSettings') %></button>
       </p>
     </div>
   </footer>
-  <div class="cookie-banner" id="cookie-banner" role="dialog" aria-live="polite" aria-label="Cookie consent" hidden>
-    <strong>Cookies</strong>
-    <p class="small">We use cookies that are needed for the site and for secure payments (Stripe fraud prevention on payment pages). We'd only use optional cookies, such as analytics, with your consent. There are none right now. <a href="/cookies">Details</a></p>
+  <div class="cookie-banner" id="cookie-banner" role="dialog" aria-live="polite" aria-label="<%= t('cookieBanner.label') %>" hidden>
+    <strong><%= t('cookieBanner.title') %></strong>
+    <p class="small"><%= t('cookieBanner.text') %> <a href="/cookies"><%= t('cookieBanner.details') %></a></p>
     <div class="actions">
-      <button type="button" data-consent="necessary">Only necessary</button>
-      <button type="button" data-consent="all">Accept optional</button>
+      <button type="button" data-consent="necessary"><%= t('cookieBanner.necessary') %></button>
+      <button type="button" data-consent="all"><%= t('cookieBanner.all') %></button>
     </div>
   </div>
   <% if (assistantEnabled) { %><%- include('assistant') %><% } %>

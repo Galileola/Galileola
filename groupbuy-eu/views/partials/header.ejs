@@ -1,23 +1,37 @@
 <% const brandName = business.name.startsWith('[') ? 'Group Buy' : business.name; %>
 <!doctype html>
-<html lang="en">
+<html lang="<%= lang %>">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#6d28d9">
   <title><%= title %> · <%= brandName %></title>
   <link rel="stylesheet" href="/static/css/site.css">
+  <% if (!isAdmin) { %>
+    <% for (const l of languages) { %><link rel="alternate" hreflang="<%= l.code %>" href="<%= baseUrl + langUrl(l.code) %>">
+    <% } %><link rel="alternate" hreflang="x-default" href="<%= baseUrl + langUrl('en') %>">
+  <% } %>
   <% if (loadStripe) { %><script src="https://js.stripe.com/v3/"></script><% } %>
 </head>
 <body>
-  <div class="test-banner">Test mode: no real payments are taken. Use Stripe test cards and IBANs only.</div>
+  <script type="application/json" id="gb-i18n"><%- JSON.stringify(clientStrings).replace(/</g, '\\u003c') %></script>
+  <div class="test-banner"><%= t('layout.testBanner') %></div>
   <header class="site-header">
     <div class="site-header-inner">
       <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span><%= brandName %></a>
       <% if (isAdmin) { %>
         <nav aria-label="Admin"><a href="/admin">Deals</a><a href="/admin/snap" class="nav-snap">📸 Snap a deal</a><a href="/admin/emails">Emails</a><a href="/admin/password">🔑 Password</a><a href="/">Shop</a></nav>
       <% } else { %>
-        <nav><a href="/#categories">Categories</a><a href="/#deals">Deals</a><a href="/#how">How it works</a></nav>
+        <div class="header-right">
+          <nav><a href="/#categories"><%= t('nav.categories') %></a><a href="/#deals"><%= t('nav.deals') %></a><a href="/#how"><%= t('nav.how') %></a></nav>
+          <details class="lang-menu" data-lang-menu>
+            <summary aria-label="<%= t('layout.language') %>: <%= currentLanguage.name %>"><span aria-hidden="true">🌐</span> <span class="lang-code"><%= lang.toUpperCase() %></span></summary>
+            <ul>
+              <% for (const l of languages) { %><li><a href="<%= langUrl(l.code) %>" hreflang="<%= l.code %>" lang="<%= l.code %>"<%- l.code === lang ? ' aria-current="true"' : '' %>><%= l.name %></a></li>
+              <% } %>
+            </ul>
+          </details>
+        </div>
       <% } %>
     </div>
   </header>

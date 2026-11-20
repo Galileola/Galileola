@@ -1,4 +1,5 @@
 import express from 'express';
+import { applyLanguage } from '../i18n/middleware.js';
 import multer from 'multer';
 import { HttpError } from '../app.js';
 import { validateDealInput } from '../deals.js';
@@ -67,6 +68,7 @@ export function adminRoutes(app, ctx) {
     res.locals.csrfToken = csrfToken;
     res.locals.assistantEnabled = false;
     res.locals.isAdmin = true;
+    applyLanguage(req, res, 'en', ctx); // the admin is in English
     res.locals.aiWritingEnabled = Boolean(ctx.assistant);
     res.locals.photoAccept = PHOTO_ACCEPT;
     res.locals.maxPhotos = MAX_PHOTOS_PER_DEAL;
@@ -107,6 +109,7 @@ export function adminRoutes(app, ctx) {
     else if (!files.length) errors.photos = 'Take a photo of the product first.';
     if (!deal || Object.keys(errors).length) return res.status(422).json({ errors });
     const created = repo.insertDeal(deal);
+    ctx.translator?.warmDeal(created); // translate it into every language in the background
     savePhotos(created.id, files);
     res.json({ redirect: `/admin/deals/${created.id}?live=1` });
   });
@@ -117,6 +120,7 @@ export function adminRoutes(app, ctx) {
     if (photoError) errors.photos = `${photoError} Please choose the photos again.`;
     if (!deal || photoError) return res.status(422).render('admin/new', { title: 'New deal', values: req.body, errors });
     const created = repo.insertDeal(deal);
+    ctx.translator?.warmDeal(created); // translate it into every language in the background
     savePhotos(created.id, req.files);
     res.redirect(303, `/admin/deals/${created.id}`);
   });

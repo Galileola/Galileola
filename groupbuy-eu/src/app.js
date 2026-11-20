@@ -1,9 +1,8 @@
 import express from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { formatEuro, formatDate, EU_COUNTRIES } from './util.js';
 import { photoUrl } from './photos.js';
-import { CATEGORIES, categoryFor } from './categories.js';
+import { languageMiddleware } from './i18n/middleware.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -50,20 +49,17 @@ export function createApp(ctx) {
         "form-action 'self'",
       ].join('; '),
     });
-    res.locals.formatEuro = formatEuro;
-    res.locals.formatDate = formatDate;
-    res.locals.countries = EU_COUNTRIES;
     res.locals.business = config.business;
     res.locals.loadStripe = false; // payment pages switch this on (Stripe.js only where needed)
     res.locals.title = 'Group Buy';
     res.locals.photoUrl = photoUrl;
     res.locals.assistantEnabled = Boolean(ctx.assistant); // the admin router switches it off
     res.locals.isAdmin = false; // the admin router switches it on
-    res.locals.categories = CATEGORIES;
-    res.locals.categoryFor = categoryFor;
     res.locals.baseUrl = config.baseUrl;
     next();
   });
+  // The visitor's language: t(), prices, dates, countries and categories (src/i18n).
+  app.use(languageMiddleware(ctx));
 
   app.use('/static', express.static(path.join(root, 'public'), { maxAge: '1h' }));
   // Product photos have random, never-reused names, so they can be cached for a long time.
@@ -79,24 +75,26 @@ export function createApp(ctx) {
   // Routes are added step by step (see src/routes/*).
   for (const mount of ctx.routes ?? []) mount(app, ctx);
 
-  app.use((req, res) =>
+  app.use((req, res) => {
+    const { t } = res.locals;
     res.status(404).render('message', {
-      title: 'Not found',
+      title: t('errors.notFoundTitle'),
       emoji: '🙈',
-      heading: 'This page wandered off',
-      body: "We couldn't find it. The deals are still where you left them, though.",
-      link: { href: '/#deals', label: 'Back to the deals' },
-    })
-  );
+      heading: t('errors.notFoundHeading'),
+      body: t('errors.notFoundBody'),
+      link: { href: '/#deals', label: t('errors.backToDeals') },
+    });
+  });
 
   // eslint-disable-next-line no-unused-vars
   app.use((err, req, res, next) => {
     if (!err.status || err.status >= 500) console.error('[error]', err);
+    const t = res.locals.t ?? ((key) => key);
     res.status(err.status || 500).render('message', {
-      title: 'Error',
+      title: t('errors.title'),
       emoji: '😵',
-      heading: 'Something went wrong',
-      body: err.expose ? err.message : 'Please try again in a moment.',
+      heading: t('errors.heading'),
+      body: err.expose ? err.message : t('errors.body'),
     });
   });
 

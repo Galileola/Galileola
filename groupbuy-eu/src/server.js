@@ -11,6 +11,7 @@ import { createEngine } from './engine.js';
 import { startScheduler } from './scheduler.js';
 import { createPhotoStore } from './photos.js';
 import { createAssistant } from './assistant.js';
+import { createTranslator } from './translate.js';
 import { saveSettingsFile, settingsFilePath } from './settingsFile.js';
 
 let config;
@@ -67,6 +68,14 @@ ctx.photos = createPhotoStore(config.uploadDir);
 ctx.assistant = config.anthropicApiKey
   ? createAssistant({ apiKey: config.anthropicApiKey, model: config.assistantModel })
   : null;
+ctx.translator = createTranslator({
+  assistant: ctx.assistant,
+  repo,
+  clock,
+  shopName: config.business.name.startsWith('[') ? 'the shop' : config.business.name,
+  contentLanguage: config.contentLanguage,
+  dailyLimit: config.translationDailyLimit,
+});
 ctx.mailer = createMailer(ctx);
 ctx.engine = createEngine(ctx);
 const app = createApp(ctx);

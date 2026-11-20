@@ -119,6 +119,18 @@ CREATE TABLE IF NOT EXISTS admin_settings (
   updated_at TEXT NOT NULL
 );
 
+-- Translations of the shop's own content (deals, legal pages) made by Claude. source_hash is a
+-- fingerprint of the original text, so an edited text gets a new translation.
+CREATE TABLE IF NOT EXISTS translations (
+  source_hash TEXT NOT NULL,
+  lang        TEXT NOT NULL,
+  kind        TEXT NOT NULL,
+  content     TEXT NOT NULL,
+  model       TEXT NOT NULL DEFAULT '',
+  created_at  TEXT NOT NULL,
+  PRIMARY KEY (source_hash, lang)
+);
+
 CREATE TABLE IF NOT EXISTS locks (
   name       TEXT PRIMARY KEY,
   holder     TEXT NOT NULL,
@@ -146,6 +158,8 @@ const ADDED_COLUMNS = {
     ['headline', "TEXT NOT NULL DEFAULT ''"],
     ['social_post', "TEXT NOT NULL DEFAULT ''"],
   ],
+  // The language the buyer used on the site; their emails are written in it.
+  participants: [['lang', "TEXT NOT NULL DEFAULT 'en'"]],
 };
 
 function migrate(db) {
@@ -259,11 +273,11 @@ export function createRepo(db) {
       const r = db
         .prepare(
           `INSERT INTO participants (deal_id, token, email, name, address_line1, address_line2, postal_code, city, country,
-             terms_accepted_at, created_at, updated_at)
+             lang, terms_accepted_at, created_at, updated_at)
            VALUES (:deal_id, :token, :email, :name, :address_line1, :address_line2, :postal_code, :city, :country,
-             :terms_accepted_at, :created_at, :created_at)`
+             :lang, :terms_accepted_at, :created_at, :created_at)`
         )
-        .run(p);
+        .run({ lang: 'en', ...p });
       return this.participantById(Number(r.lastInsertRowid));
     },
     participantById: (id) => db.prepare('SELECT * FROM participants WHERE id = ?').get(id),
@@ -344,6 +358,19 @@ export function createRepo(db) {
       return r.changes === 1;
     },
     releaseLock: (name, holder) => db.prepare('DELETE FROM locks WHERE name = ? AND holder = ?').run(name, holder),
+
+    // ---- translations
+    translation: (sourceHash, lang) =>
+      db.prepare('SELECT * FROM translations WHERE source_hash = ? AND lang = ?').get(sourceHash, lang),
+    saveTranslation: (t) =>
+      db
+        .prepare(
+          `INSERT INTO translations (source_hash, lang, kind, content, model, created_at)
+           VALUES (:source_hash, :lang, :kind, :content, :model, :created_at)
+           ON CONFLICT(source_hash, lang) DO UPDATE SET content = excluded.content, kind = excluded.kind,
+             model = excluded.model, created_at = excluded.created_at`
+        )
+        .run(t),
 
     // ---- admin settings
     getAdminSetting: (key) => db.prepare('SELECT * FROM admin_settings WHERE key = ?').get(key),

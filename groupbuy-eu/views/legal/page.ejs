@@ -1,0 +1,10 @@
+<%- include('../partials/header') %>
+<article class="legal" lang="<%= translated ? lang : 'en' %>">
+  <% if (translated) { %>
+    <p class="notice small"><%= t('legal.translatedNotice') %> <a href="?original=1" hreflang="en"><%= t('legal.readEnglish') %></a></p>
+  <% } else if (pending) { %>
+    <p class="notice small" lang="<%= lang %>"><%= t('legal.pendingNotice') %></p>
+  <% } %>
+  <%- bodyHtml %>
+</article>
+<%- include('../partials/footer') %>

@@ -8,15 +8,16 @@ export function payRoutes(app, ctx) {
     try {
       const p = repo.participantByToken(req.params.token);
       if (!p) return next();
-      const deal = repo.dealById(p.deal_id);
+      const { t } = res.locals;
+      const deal = res.locals.localizeDeal(repo.dealById(p.deal_id));
       res.set('Cache-Control', 'no-store');
       if (p.status === 'paid' || p.status === 'processing') return res.redirect(303, `/join/${p.token}/done`);
       if (['unpaid', 'late_failed'].includes(p.status) || (p.grace_ends_at && clock.now() >= new Date(p.grace_ends_at))) {
-        return closed(res, 'Payment window closed', 'The 48-hour window to complete this payment has ended, so the order was cancelled. You have not been charged.');
+        return closed(res, t('pay.closedTitle'), t('pay.closedBody'));
       }
       if (p.status !== 'failed' || !p.payment_intent_id) {
         if (['saved', 'charging'].includes(p.status) && deal.status !== 'open') {
-          return closed(res, 'Payment in progress', 'We are collecting your payment right now. Refresh this page in a moment.');
+          return closed(res, t('pay.inProgressTitle'), t('pay.inProgressBody'));
         }
         return res.redirect(303, `/join/${p.token}/done`);
       }
@@ -26,10 +27,10 @@ export function payRoutes(app, ctx) {
         await engine.applyPaymentIntent(pi);
         return res.redirect(303, `/join/${p.token}/done`);
       }
-      if (pi.status === 'canceled') return closed(res, 'Payment window closed', 'This payment can no longer be completed. You have not been charged.');
+      if (pi.status === 'canceled') return closed(res, t('pay.closedTitle'), t('pay.canceledBody'));
 
       res.render('pay', {
-        title: `Complete payment: ${deal.product_name}`,
+        title: t('pay.pageTitle', { name: deal.product_name }),
         loadStripe: true,
         deal,
         p,

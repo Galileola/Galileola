@@ -1,20 +1,19 @@
 <% const cat = categoryFor(d.category); %>
-<% const badges = { on: '🎉 Deal is on!', ending: '⏰ Ends soon', hot: '🔥 Almost there', new: '✨ New' }; %>
 <a class="deal-card" href="/deals/<%= d.slug %>" style="--i: <%= Math.min(i, 12) %>">
   <div class="deal-card-media">
     <% if (d.cover) { %><img src="<%= photoUrl(d.cover.filename) %>" alt="" loading="lazy">
     <% } else if (d.image_url) { %><img src="<%= d.image_url %>" alt="" loading="lazy">
     <% } else { %><div class="placeholder tone-<%= d.id % 4 %>"><span><%= cat.emoji %></span></div><% } %>
-    <span class="chip <%= d.badge === 'on' ? 'chip-on' : '' %>"><%= d.badge === 'on' ? badges.on : d.remaining + ' more needed' %></span>
+    <span class="chip <%= d.badge === 'on' ? 'chip-on' : '' %>"><%= d.badge === 'on' ? t('card.on') : t('card.moreNeeded', { count: d.remaining }) %></span>
     <span class="cat-bubble" title="<%= cat.name %>"><span aria-hidden="true"><%= cat.emoji %></span><span class="visually-hidden"><%= cat.name %></span></span>
-    <% if (d.badge && d.badge !== 'on') { %><span class="ribbon ribbon-<%= d.badge %>"><%= badges[d.badge] %></span><% } %>
+    <% if (d.badge && d.badge !== 'on') { %><span class="ribbon ribbon-<%= d.badge %>"><%= t('card.' + d.badge) %></span><% } %>
   </div>
   <div class="deal-card-body">
     <p class="card-cat"><%= cat.name %></p>
     <h3><%= d.product_name %></h3>
     <% if (d.headline) { %><p class="card-headline"><%= d.headline %></p><% } %>
-    <div class="progress" role="img" aria-label="<%= d.count %> of <%= d.min_buyers %> buyers"><span style="width: <%= d.percent %>%"></span></div>
-    <p class="meta"><strong><%= d.count %></strong> of <%= d.min_buyers %> buyers · until <%= formatDate(d.deadline) %></p>
-    <p class="price-tag"><%= formatEuro(d.price_cents) %> <small>incl. VAT</small></p>
+    <div class="progress" role="img" aria-label="<%= t('card.progressLabel', { count: d.count, min: d.min_buyers }) %>"><span style="width: <%= d.percent %>%"></span></div>
+    <p class="meta"><%- th('card.metaHtml', { count: d.count, min: d.min_buyers, date: formatDate(d.deadline) }) %></p>
+    <p class="price-tag"><%= formatEuro(d.price_cents) %> <small><%= t('price.inclVat') %></small></p>
   </div>
 </a>

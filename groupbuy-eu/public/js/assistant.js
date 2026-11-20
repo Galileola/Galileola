@@ -3,6 +3,8 @@
 (function () {
   const root = document.getElementById('assistant');
   if (!root) return;
+  const T = JSON.parse((document.getElementById('gb-i18n') || {}).textContent || '{}');
+  const fallbackError = T.error || 'Sorry, something went wrong. Please try again.';
   const panel = root.querySelector('.assistant-panel');
   const launcher = root.querySelector('[data-assistant-open]');
   const log = root.querySelector('[data-assistant-log]');
@@ -92,24 +94,24 @@
     input.value = '';
     autosize();
     const typing = bubble('assistant typing', '');
-    typing.setAttribute('aria-label', 'The assistant is typing');
+    typing.setAttribute('aria-label', T.typing || 'The assistant is typing');
     for (let i = 0; i < 3; i++) typing.appendChild(document.createElement('span'));
     try {
       const r = await fetch('/api/assistant', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: history.slice(-12) }),
+        body: JSON.stringify({ messages: history.slice(-12), lang: document.documentElement.lang }),
       });
       const data = await r.json().catch(() => ({}));
       typing.remove();
-      if (!r.ok || !data.reply) throw new Error(data.error || 'Sorry, something went wrong. Please try again.');
+      if (!r.ok || !data.reply) throw new Error(data.error || fallbackError);
       history.push({ role: 'assistant', content: data.reply });
       save();
       bubble('assistant', data.reply);
     } catch (err) {
       typing.remove();
       history.pop(); // the question wasn't answered: let the visitor send it again
-      bubble('assistant error', err.message || 'Sorry, something went wrong. Please try again.');
+      bubble('assistant error', err.message || fallbackError);
       input.value = text;
       autosize();
     } finally {

@@ -2,6 +2,8 @@
 (function () {
   const root = document.getElementById('deal');
   if (!root) return;
+  const T = JSON.parse((document.getElementById('gb-i18n') || {}).textContent || '{}');
+  const lang = document.documentElement.lang || 'en';
   const $ = (sel) => root.querySelector(sel);
 
   // Photo gallery: clicking a thumbnail shows it as the main photo.
@@ -21,7 +23,7 @@
   requestAnimationFrame(() => requestAnimationFrame(() => { bar.style.width = bar.dataset.width + '%'; }));
 
   // Countdown tiles: days, hours, minutes, seconds.
-  const units = [['days', 86400], ['hrs', 3600], ['min', 60], ['sec', 1]];
+  const units = [[T.days || 'days', 86400], [T.hrs || 'hrs', 3600], [T.min || 'min', 60], [T.sec || 'sec', 1]];
   const tiles = units.map(([label]) => {
     const tile = document.createElement('span');
     tile.className = 'tile';
@@ -39,7 +41,7 @@
   function renderCountdown() {
     if (secondsLeft <= 0) {
       countdown.classList.add('over');
-      countdown.textContent = 'The deadline has passed';
+      countdown.textContent = T.deadlinePassed || 'The deadline has passed';
       return;
     }
     let rest = secondsLeft;
@@ -50,8 +52,19 @@
     });
     values.forEach((v, i) => { tiles[i].textContent = String(v).padStart(i ? 2 : 1, '0'); });
     countdown.classList.toggle('urgent', secondsLeft < 86400);
-    label.textContent = `${values[0]} days ${values[1]} hours ${values[2]} minutes left`;
+    label.textContent = (T.timeLeft || '{time} left').replace('{time}', spoken(values));
   }
+  // "3 days, 4 hours and 5 minutes" in the page's language, for screen readers.
+  function spoken(values) {
+    try {
+      const parts = ['day', 'hour', 'minute'].map((unit, i) =>
+        new Intl.NumberFormat(lang, { style: 'unit', unit, unitDisplay: 'long' }).format(values[i]));
+      return new Intl.ListFormat(lang, { type: 'conjunction' }).format(parts);
+    } catch (_) {
+      return `${values[0]} d ${values[1]} h ${values[2]} min`;
+    }
+  }
+
   renderCountdown();
   const timer = setInterval(() => {
     secondsLeft = Math.max(0, secondsLeft - 1);
@@ -81,7 +94,7 @@
       if (remaining) remaining.textContent = s.remaining;
       if (s.minimumReached && !reached) {
         reached = true;
-        $('[data-status-line]').textContent = '🎉 Minimum reached. The deal is on!';
+        $('[data-status-line]').textContent = T.reached || '🎉 Minimum reached. The deal is on!';
         const mood = $('[data-mood]');
         if (mood) mood.hidden = true;
         if (window.gbFun) window.gbFun.confetti();

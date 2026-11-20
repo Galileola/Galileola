@@ -1,5 +1,5 @@
 import { isJoinable, publicDealState } from '../dealState.js';
-import { categoryFor, isCategory } from '../categories.js';
+import { isCategory } from '../categories.js';
 import { HOUR } from '../util.js';
 
 export function publicRoutes(app, ctx) {
@@ -7,16 +7,17 @@ export function publicRoutes(app, ctx) {
 
   app.get('/', (req, res) => {
     const now = clock.now();
+    const { localizeDeal, t } = res.locals;
     const all = repo
       .listPublicDeals()
       .filter((d) => isJoinable(d, now))
-      .map((d) => withBadges({ ...d, count: repo.committedCount(d.id), cover: repo.coverPhoto(d.id) }, now));
-    const category = isCategory(req.query.category) ? categoryFor(req.query.category) : null;
+      .map((d) => withBadges({ ...localizeDeal(d), count: repo.committedCount(d.id), cover: repo.coverPhoto(d.id) }, now));
+    const category = isCategory(req.query.category) ? res.locals.categoryFor(req.query.category) : null;
     const deals = category ? all.filter((d) => d.category === category.slug) : all;
     const perCategory = {};
     for (const d of all) perCategory[d.category] = (perCategory[d.category] ?? 0) + 1;
     res.render('home', {
-      title: category ? `${category.name} deals` : 'Deals',
+      title: category ? t('home.titleCategory', { category: category.name }) : t('home.title'),
       deals,
       category,
       perCategory,
@@ -29,8 +30,9 @@ export function publicRoutes(app, ctx) {
   });
 
   app.get('/deals/:slug', (req, res, next) => {
-    const deal = repo.dealBySlug(req.params.slug);
-    if (!deal) return next();
+    const found = repo.dealBySlug(req.params.slug);
+    if (!found) return next();
+    const deal = res.locals.localizeDeal(found);
     const state = publicDealState(deal, repo.committedCount(deal.id), clock.now());
     res.render('deal', { title: deal.product_name, deal, photos: repo.photosForDeal(deal.id), state, values: {}, errors: {} });
   });
