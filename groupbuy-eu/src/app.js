@@ -17,6 +17,21 @@ export function createApp(ctx) {
   app.set('trust proxy', config.trustProxy ?? 1);
   app.disable('x-powered-by');
 
+  // One address for the shop: requests that reach it under another domain (an old address such
+  // as shop.example.com, or www.example.com) are sent to BASE_URL with the same path. Health
+  // checks, Stripe webhooks and the cron endpoints are answered where they arrive, because those
+  // callers don't follow redirects.
+  const canonical = canonicalHost(config.baseUrl);
+  if (canonical) {
+    app.use((req, res, next) => {
+      const host = (req.hostname || '').toLowerCase();
+      if (!host || host === canonical || isLocalHost(host)) return next();
+      if (req.path === '/healthz' || req.path.startsWith('/webhooks/') || req.path.startsWith('/api/cron/')) return next();
+      const status = req.method === 'GET' || req.method === 'HEAD' ? 301 : 308;
+      res.redirect(status, config.baseUrl + req.originalUrl);
+    });
+  }
+
   app.use((req, res, next) => {
     res.set({
       'X-Content-Type-Options': 'nosniff',
@@ -94,4 +109,19 @@ export class HttpError extends Error {
     this.status = status;
     this.expose = true;
   }
+}
+
+// The host name of BASE_URL when it is a public https address, else null (local development).
+export function canonicalHost(baseUrl) {
+  try {
+    const u = new URL(baseUrl);
+    return u.protocol === 'https:' && !isLocalHost(u.hostname) ? u.hostname.toLowerCase() : null;
+  } catch {
+    return null;
+  }
+}
+
+// localhost and bare IP addresses (the host's own health checks) are never redirected.
+function isLocalHost(host) {
+  return host === 'localhost' || /^[\d.]+$/.test(host) || host.includes(':') || host.endsWith('.localhost');
 }

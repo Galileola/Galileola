@@ -1,11 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import http from 'node:http';
 import os from 'node:os';
 import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { openDb, createRepo } from '../src/db.js';
-import { createApp } from '../src/app.js';
+import { createApp, canonicalHost } from '../src/app.js';
 import { createPhotoStore } from '../src/photos.js';
 import { validateDealInput } from '../src/deals.js';
 import { validateSnapInput, parseSnapReply, SNAP_SCHEMA } from '../src/snap.js';
@@ -221,4 +222,32 @@ test('home page filters by category; admin can change a category', async (t) => 
   });
   assert.equal(r.status, 303);
   assert.equal(app.repo.dealById(mug.id).category, 'food');
+});
+
+test('requests to another domain are sent to BASE_URL, except webhooks, cron and health checks', async (t) => {
+  assert.equal(canonicalHost('https://sekdigital.eu'), 'sekdigital.eu');
+  assert.equal(canonicalHost('http://localhost:3000'), null);
+
+  const app = await startApp(null); // BASE_URL https://shop.test
+  t.after(app.close);
+  // fetch() won't send a custom Host header, so use node:http.
+  const get = (path, host, method = 'GET') =>
+    new Promise((resolve, reject) => {
+      const req = http.request(`${app.base}${path}`, { method, headers: { Host: host } }, (res) => {
+        res.resume();
+        resolve({ status: res.statusCode, headers: { get: (k) => res.headers[k.toLowerCase()] } });
+      });
+      req.on('error', reject);
+      req.end();
+    });
+
+  const old = await get('/deals/mug-1?x=1', 'shop.old-address.test');
+  assert.equal(old.status, 301);
+  assert.equal(old.headers.get('location'), 'https://shop.test/deals/mug-1?x=1');
+  assert.equal((await get('/join/abc', 'www.shop.test', 'POST')).status, 308);
+
+  assert.equal((await get('/', 'shop.test')).status, 200); // the real address is served
+  assert.equal((await get('/', '127.0.0.1')).status, 200); // the host's own checks
+  assert.notEqual((await get('/webhooks/stripe', 'shop.old-address.test', 'POST')).status, 308);
+  assert.notEqual((await get('/api/cron/tick', 'shop.old-address.test', 'POST')).status, 308);
 });
