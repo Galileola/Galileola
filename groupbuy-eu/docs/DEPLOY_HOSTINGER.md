@@ -241,3 +241,23 @@ On a VPS the app runs permanently, so the built-in scheduler works and cron isn'
    ```
 7. Do the Stripe webhook step (A6). For backups, add a daily root cron entry that calls
    `/api/cron/backup` as in A7, and copy `/var/lib/groupbuy/backups` off the server.
+
+## Moving the shop to another domain (done for sekdigital.eu, Nov 2026)
+
+The shop moved from shop.sekdigital.eu to sekdigital.eu like this:
+
+1. **Settings without retyping them.** The running shop keeps a private copy of its settings in
+   `/home/<user>/.groupbuy/settings.env` (readable only by the hosting account, outside every
+   website folder; see `src/settingsFile.js`). A copy of the shop on another domain of the same
+   account starts from it, so the new website only needs `BASE_URL`. Variables set in hPanel
+   always win over the file. Both copies use the same `DATABASE_PATH`, so deals, buyers and
+   photos stay where they are.
+2. **CDN off for the new domain.** With the Hostinger CDN on, sekdigital.eu was unreachable (the
+   secure connection failed at the CDN). Turning the CDN off pointed DNS straight at the server.
+3. **Stripe webhook** URL changed to `https://<new domain>/webhooks/stripe` (same signing secret).
+4. **Cron jobs** in hPanel changed to call the new domain.
+5. **The old address** runs `redirect/` (no settings needed), which forwards every request to the
+   same path on the new domain, so links in emails buyers already have keep working.
+
+To change a setting later, edit it in hPanel → sekdigital.eu → Node.js → Environment variables
+(that overrides the file), for example to add `ANTHROPIC_API_KEY`.
