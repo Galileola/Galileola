@@ -1,0 +1,50 @@
+<%- include('../partials/header') %>
+<p><a href="/admin/settings">← Settings</a></p>
+<h1>🗂️ Categories</h1>
+<p class="muted">The categories shoppers filter by on the home page, in this order. Every deal is in one category; you choose it when you create the deal, or on the deal's admin page.</p>
+<% if (message) { %><div class="notice ok" role="status"><%= message %></div><% } %>
+<% if (error) { %><div class="notice bad" role="alert"><%= error %></div><% } %>
+<div class="table-wrap">
+  <table class="categories-table">
+    <thead><tr><th>Order</th><th>Category</th><th>Deals</th><th></th></tr></thead>
+    <tbody>
+      <% rows.forEach((c, i) => { %>
+        <tr>
+          <td class="nowrap">
+            <form method="post" action="/admin/categories/<%= c.slug %>/move" class="inline-actions"><input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <button type="submit" name="dir" value="up" class="small secondary" aria-label="Move <%= c.displayName %> up"<%= i === 0 ? ' disabled' : '' %>>↑</button>
+              <button type="submit" name="dir" value="down" class="small secondary" aria-label="Move <%= c.displayName %> down"<%= i === rows.length - 1 ? ' disabled' : '' %>>↓</button>
+            </form>
+          </td>
+          <td><span aria-hidden="true"><%= c.emoji %></span> <strong><%= c.displayName %></strong> <span class="muted small">/?category=<%= c.slug %></span></td>
+          <td><%= c.deals %></td>
+          <td class="nowrap">
+            <a class="button small secondary" href="/admin/categories/<%= c.slug %>">Edit names</a>
+            <% if (c.slug !== 'other') { %>
+              <form method="post" action="/admin/categories/<%= c.slug %>/delete" class="inline-actions"><input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="small secondary" data-confirm="Remove &quot;<%= c.displayName %>&quot;?<%= c.deals ? ' Its ' + c.deals + ' deal(s) will move to &quot;Other&quot;.' : '' %>">Remove</button>
+              </form>
+            <% } %>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<section class="card narrow" style="margin-top:20px">
+  <h2>Add a category</h2>
+  <form method="post" action="/admin/categories" class="stack">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div class="row">
+      <div><label for="new-emoji">Emoji</label><input type="text" id="new-emoji" name="emoji" value="<%= values.emoji || '' %>" placeholder="🏷️" maxlength="16"></div>
+      <div><label for="new-name">Name (English)</label><input type="text" id="new-name" name="name" value="<%= values.name || '' %>" maxlength="40" required></div>
+    </div>
+    <label for="new-hint">What belongs in it (optional, helps “Snap a deal” pick the category)</label>
+    <input type="text" id="new-hint" name="hint" value="<%= values.hint || '' %>" maxlength="200" placeholder="for example: phone cases, chargers, screen protectors">
+    <p><button type="submit">Add category</button></p>
+  </form>
+  <p class="muted small">After adding it, you can give it a name in each language.</p>
+</section>
+<script src="/static/js/category-edit.js"></script>
+<%- include('../partials/footer') %>

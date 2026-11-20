@@ -3,6 +3,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { photoUrl } from './photos.js';
 import { languageMiddleware } from './i18n/middleware.js';
+import { loadCategories } from './categories.js';
+import { applyBusinessSettings } from './businessSettings.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -10,6 +12,9 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export function createApp(ctx) {
   const { config } = ctx;
   const app = express();
+  // Settings the owner changes in the admin: categories and the company details.
+  loadCategories(ctx.repo);
+  applyBusinessSettings(config, ctx.repo);
 
   app.set('view engine', 'ejs');
   app.set('views', path.join(root, 'views'));

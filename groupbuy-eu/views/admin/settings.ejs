@@ -1,0 +1,22 @@
+<%- include('../partials/header') %>
+<p><a href="/admin">← Admin</a></p>
+<h1>⚙️ Settings</h1>
+<div class="grid settings-grid">
+  <a class="card settings-card" href="/admin/business">
+    <h2>🏢 Shop details</h2>
+    <p class="muted">Company name, address, contact email, VAT number and registration. Shown in the footer, the legal pages and the emails.</p>
+  </a>
+  <a class="card settings-card" href="/admin/categories">
+    <h2>🗂️ Categories</h2>
+    <p class="muted">Add, rename, reorder or remove the categories shoppers filter by, with a name for each language.</p>
+  </a>
+  <a class="card settings-card" href="/admin/legal">
+    <h2>📄 Legal pages</h2>
+    <p class="muted">Terms and conditions, privacy policy and cookie page, with your own text for each language.</p>
+  </a>
+  <a class="card settings-card" href="/admin/password">
+    <h2>🔑 Password</h2>
+    <p class="muted">Change the password for this admin.</p>
+  </a>
+</div>
+<%- include('../partials/footer') %>

@@ -1,0 +1,22 @@
+<%- include('../partials/header') %>
+<p><a href="/admin/settings">← Settings</a></p>
+<section class="card narrow">
+  <h1>🏢 Shop details</h1>
+  <p class="muted">These appear at the top of the shop, in the footer, in every email to buyers and in the legal pages. Changes show right away.</p>
+  <% if (saved) { %><div class="notice ok" role="status">Saved. <a href="/" target="_blank" rel="noopener">View the shop</a></div><% } %>
+  <% if (Object.keys(errors).length) { %><div class="notice bad" role="alert">Please check the fields marked below.</div><% } %>
+  <form method="post" action="/admin/business" class="stack">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <% for (const f of fields) { %>
+      <div>
+        <label for="b-<%= f.key %>"><%= f.label %></label>
+        <input type="<%= f.key === 'email' ? 'email' : 'text' %>" id="b-<%= f.key %>" name="<%= f.key %>" value="<%= values[f.key] || '' %>" maxlength="300"<%- f.key === 'email' ? ' autocomplete="email"' : f.key === 'name' ? ' autocomplete="organization"' : '' %>>
+        <% if (errors[f.key]) { %><p class="error-text"><%= errors[f.key] %></p><% } %>
+        <p class="muted small"><%= f.hint %></p>
+      </div>
+    <% } %>
+    <p><button type="submit">Save</button></p>
+  </form>
+  <p class="muted small">An empty field uses the value from Hostinger's environment variables (<code>BUSINESS_NAME</code>, <code>BUSINESS_ADDRESS</code> …), if there is one, or shows a [placeholder] until you fill it in.</p>
+</section>
+<%- include('../partials/footer') %>

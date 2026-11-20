@@ -1,0 +1,33 @@
+<%- include('../partials/header') %>
+<p><a href="/admin/categories">← Categories</a></p>
+<section class="card narrow">
+  <h1><span aria-hidden="true"><%= c.emoji %></span> <%= c.name %></h1>
+  <% if (added) { %><div class="notice ok" role="status">Category added. Give it a name in each language below, or let AI fill them in, then save.</div><% } %>
+  <% if (saved) { %><div class="notice ok" role="status">Saved. <a href="/?category=<%= c.slug %>#deals" target="_blank" rel="noopener">View it in the shop</a></div><% } %>
+  <% if (error) { %><div class="notice bad" role="alert"><%= error %></div><% } %>
+  <form method="post" action="/admin/categories/<%= c.slug %>" class="stack" id="category-form">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div class="row">
+      <div><label for="c-emoji">Emoji</label><input type="text" id="c-emoji" name="emoji" value="<%= values.emoji %>" maxlength="16" required></div>
+      <div><label for="c-hint">What belongs in it (for “Snap a deal”)</label><input type="text" id="c-hint" name="hint" value="<%= values.hint %>" maxlength="200"></div>
+    </div>
+    <h2>Names</h2>
+    <p class="muted small"><%= c.builtIn ? 'An empty field uses the built-in translation shown in grey.' : 'An empty field uses the English name.' %></p>
+    <p class="row-buttons">
+      <button type="button" class="secondary small" data-ai-names data-url="/admin/categories/<%= c.slug %>/ai-names"<%= aiEnabled ? '' : ' disabled' %>>✨ Fill the other languages with AI from the English name</button>
+      <span class="muted small" data-ai-status role="status"><%= aiEnabled ? '' : 'Needs ANTHROPIC_API_KEY.' %></span>
+    </p>
+    <div class="names-grid">
+      <% for (const l of languages) { %>
+        <div>
+          <label for="c-name-<%= l.code %>"><%= l.name %> <span class="muted small"><%= l.code.toUpperCase() %></span></label>
+          <input type="text" id="c-name-<%= l.code %>" name="name_<%= l.code %>" lang="<%= l.code %>" value="<%= values['name_' + l.code] || '' %>" placeholder="<%= defaults[l.code] %>" maxlength="40"<%= !c.builtIn && l.code === 'en' ? ' required' : '' %>>
+        </div>
+      <% } %>
+    </div>
+    <p><button type="submit">Save</button></p>
+  </form>
+  <p class="muted small">Link to this category: <code>/?category=<%= c.slug %></code> (stays the same when you rename it).</p>
+</section>
+<script src="/static/js/category-edit.js"></script>
+<%- include('../partials/footer') %>

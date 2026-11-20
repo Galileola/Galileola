@@ -35,6 +35,8 @@ export function createTranslator({
   retryAfterMs = 15 * 60_000,
 }) {
   const enabled = Boolean(assistant);
+  // shopName may be a function, so a name changed in the admin is used from then on.
+  const shop = () => (typeof shopName === 'function' ? shopName() : shopName);
   const jobs = [];
   const queued = new Set();
   const failedUntil = new Map();
@@ -100,7 +102,7 @@ export function createTranslator({
 
   async function translateDealFields(fields, lang) {
     const target = ENGLISH_NAMES[lang];
-    const system = `You translate product listings for ${shopName}, a group-buying web shop for customers across the European Union. Translate the JSON object you receive from ${ENGLISH_NAMES[contentLanguage]} into ${target}.
+    const system = `You translate product listings for ${shop()}, a group-buying web shop for customers across the European Union. Translate the JSON object you receive from ${ENGLISH_NAMES[contentLanguage]} into ${target}.
 
 - product_name is the product's name. Keep brand names, model names and numbers as they are; translate only the generic words.
 - headline is a short sales line. Make it sound natural and appealing in ${target}, the way a native copywriter would write it.
@@ -128,7 +130,7 @@ export function createTranslator({
 
   async function translateHtmlFragment(html, lang) {
     const target = ENGLISH_NAMES[lang];
-    const system = `You translate the legal pages of ${shopName}, a group-buying web shop for customers in the European Union. Translate the HTML fragment you receive from English into ${target}.
+    const system = `You translate the legal pages of ${shop()}, a group-buying web shop for customers in the European Union. Translate the HTML fragment you receive from English into ${target}.
 
 - Keep every HTML tag and attribute exactly as it is and in the same order. Translate only the text between the tags. Don't add, remove or merge tags.
 - Keep these unchanged: company names, addresses, email addresses, VAT and registration numbers, web addresses, and anything inside <code> tags.

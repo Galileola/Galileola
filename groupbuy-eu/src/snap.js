@@ -1,4 +1,4 @@
-import { CATEGORIES, CATEGORY_SLUGS, DEFAULT_CATEGORY, isCategory } from './categories.js';
+import { allCategories, categorySlugs, DEFAULT_CATEGORY, isCategory } from './categories.js';
 import { DescribeInputError, parseImages } from './describe.js';
 import { MAX_HEADLINE, MAX_SOCIAL_POST } from './deals.js';
 
@@ -21,7 +21,7 @@ const known = (value) => value && !String(value).startsWith('[');
 
 export function snapSystemPrompt(business) {
   const shop = known(business.name) ? business.name : 'a group-buying shop';
-  const categories = CATEGORIES.map((c) => `- ${c.slug}: ${c.name} (${c.hint})`).join('\n');
+  const categories = allCategories().map((c) => `- ${c.slug}: ${c.name}${c.hint ? ` (${c.hint})` : ''}`).join('\n');
   return `You write the ads for ${shop}, which sells products to customers in the European Union through group deals: buyers join a deal, and when enough people have joined, everyone gets the product at the group price. The shop owner has just photographed a product they want to offer. Your text goes onto the public deal page and into the shop's social media posts, after the owner has read it.
 
 Work only from the photos and the owner's notes.
@@ -51,19 +51,20 @@ export function snapMessages({ notes, images }) {
   return [{ role: 'user', content }];
 }
 
-export const SNAP_SCHEMA = {
+// A function, because the owner can change the categories while the shop runs.
+export const snapSchema = () => ({
   type: 'object',
   properties: {
     product_name: { type: 'string', description: 'Product name, at most 60 characters.' },
     headline: { type: 'string', description: 'One catchy line for the deal card, at most 70 characters.' },
-    category: { type: 'string', enum: CATEGORY_SLUGS },
+    category: { type: 'string', enum: categorySlugs() },
     description: { type: 'string', description: 'Deal page text, plain text, paragraphs separated by a blank line.' },
     social_post: { type: 'string', description: 'Social media post with emojis and hashtags, no link.' },
     photo_note: { type: 'string', description: 'Empty, or one sentence for the shop owner about a problem with the photos.' },
   },
   required: ['product_name', 'headline', 'category', 'description', 'social_post', 'photo_note'],
   additionalProperties: false,
-};
+});
 
 // Tidies the model's JSON reply into form values. Returns null when there's nothing usable.
 export function parseSnapReply(text) {

@@ -141,6 +141,17 @@ CREATE TABLE IF NOT EXISTS legal_texts (
   PRIMARY KEY (page, lang)
 );
 
+-- Shop categories, edited in the admin (src/categories.js). names is JSON {lang: name}: names
+-- the owner typed, which win over the built-in translations.
+CREATE TABLE IF NOT EXISTS categories (
+  slug     TEXT PRIMARY KEY,
+  emoji    TEXT NOT NULL,
+  position INTEGER NOT NULL DEFAULT 0,
+  names    TEXT NOT NULL DEFAULT '{}',
+  hint     TEXT NOT NULL DEFAULT '',
+  built_in INTEGER NOT NULL DEFAULT 0
+);
+
 CREATE TABLE IF NOT EXISTS locks (
   name       TEXT PRIMARY KEY,
   holder     TEXT NOT NULL,
@@ -381,6 +392,42 @@ export function createRepo(db) {
              model = excluded.model, created_at = excluded.created_at`
         )
         .run(t),
+
+    // ---- categories
+    listCategories: () => db.prepare('SELECT * FROM categories ORDER BY position, slug').all(),
+    insertCategory: (c) =>
+      db
+        .prepare('INSERT INTO categories (slug, emoji, position, names, hint, built_in) VALUES (?, ?, ?, ?, ?, ?)')
+        .run(c.slug, c.emoji, c.position, JSON.stringify(c.names ?? {}), c.hint ?? '', c.built_in ? 1 : 0),
+    updateCategory: (slug, c) =>
+      db
+        .prepare('UPDATE categories SET emoji = ?, names = ?, hint = ? WHERE slug = ?')
+        .run(c.emoji, JSON.stringify(c.names ?? {}), c.hint ?? '', slug),
+    setCategoryPositions(slugs) {
+      const stmt = db.prepare('UPDATE categories SET position = ? WHERE slug = ?');
+      db.exec('BEGIN');
+      try {
+        slugs.forEach((slug, i) => stmt.run(i, slug));
+        db.exec('COMMIT');
+      } catch (err) {
+        db.exec('ROLLBACK');
+        throw err;
+      }
+    },
+    // Removes a category; its deals move to `fallback`.
+    deleteCategory(slug, fallback) {
+      db.exec('BEGIN');
+      try {
+        db.prepare('UPDATE deals SET category = ? WHERE category = ?').run(fallback, slug);
+        db.prepare('DELETE FROM categories WHERE slug = ?').run(slug);
+        db.exec('COMMIT');
+      } catch (err) {
+        db.exec('ROLLBACK');
+        throw err;
+      }
+    },
+    dealCountsByCategory: () =>
+      Object.fromEntries(db.prepare('SELECT category, COUNT(*) AS n FROM deals GROUP BY category').all().map((r) => [r.category, r.n])),
 
     // ---- legal pages
     legalText: (page, lang) => db.prepare('SELECT * FROM legal_texts WHERE page = ? AND lang = ?').get(page, lang),

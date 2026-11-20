@@ -72,7 +72,7 @@ ctx.translator = createTranslator({
   assistant: ctx.assistant,
   repo,
   clock,
-  shopName: config.business.name.startsWith('[') ? 'the shop' : config.business.name,
+  shopName: () => (config.business.name.startsWith('[') ? 'the shop' : config.business.name),
   contentLanguage: config.contentLanguage,
   dailyLimit: config.translationDailyLimit,
 });

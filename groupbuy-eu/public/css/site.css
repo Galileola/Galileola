@@ -428,3 +428,12 @@ body:has(.cookie-banner:not([hidden])) .assistant-widget { bottom: 190px; }
 .legal-editor { width: 100%; font: 14px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
 .legal-help { white-space: pre-wrap; font-size: .85rem; background: var(--bg); padding: 12px; border-radius: 10px; overflow-x: auto; }
 .row-buttons { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+/* Admin → Settings */
+.settings-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.settings-card { display: block; color: inherit; text-decoration: none; transition: transform .15s, box-shadow .15s; }
+.settings-card:hover { transform: translateY(-2px); }
+.settings-card h2 { margin-top: 0; }
+.names-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px 14px; }
+.categories-table td { vertical-align: middle; }
+.inline-actions { display: inline-flex; gap: 4px; margin: 0; }

@@ -10,14 +10,14 @@ import {
   translate,
   translateHtml,
 } from './index.js';
-import { CATEGORIES, categoryFor } from '../categories.js';
+import { allCategories, categoryFor, categoryName } from '../categories.js';
 
 // Puts everything a page needs to speak the visitor's language on res.locals:
 // t / th (text), formatEuro / formatDate, countries, categories, the language menu and
 // localizeDeal (a deal's name and description in this language, when translated).
 export function applyLanguage(req, res, lang, ctx = {}) {
   const t = (key, vars) => translate(lang, key, vars);
-  const localCategory = (c) => ({ ...c, name: t(`categories.${c.slug}`) });
+  const localCategory = (c) => ({ ...c, name: categoryName(c, lang, t) });
 
   Object.assign(res.locals, {
     lang,
@@ -26,7 +26,7 @@ export function applyLanguage(req, res, lang, ctx = {}) {
     formatEuro: (cents) => euroFormatter(lang).format((cents ?? 0) / 100),
     formatDate: (d) => (d ? dateFormatter(lang).format(new Date(d)) : ''),
     countries: countryList(lang),
-    categories: CATEGORIES.map(localCategory),
+    categories: allCategories().map(localCategory),
     categoryFor: (slug) => localCategory(categoryFor(slug)),
     languages: LANGUAGES,
     currentLanguage: LANGUAGES.find((l) => l.code === lang),

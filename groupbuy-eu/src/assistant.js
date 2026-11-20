@@ -1,6 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { formatEuro, formatDate } from './util.js';
-import { CATEGORIES, categoryFor } from './categories.js';
+import { allCategories, categoryFor } from './categories.js';
 
 // AI shopping assistant: answers visitors' questions about the open deals and how group buying
 // works. It has no tools: it can't see orders or payments and can't change anything.
@@ -75,7 +75,7 @@ export function buildSystemPrompt({ business, baseUrl, deals, siteLanguage = 'En
   return `You are the shopping assistant on the website of ${shop}, a group-buying shop for customers in the European Union (${baseUrl}). You chat with visitors in a small chat window on the site.
 
 <how_the_shop_works>
-- Deals are sorted into these categories: ${CATEGORIES.map((c) => c.name).join(', ')}. Visitors can filter the deal list by category on the home page (${baseUrl}/?category=<slug>, where the slugs are ${CATEGORIES.map((c) => c.slug).join(', ')}).
+- Deals are sorted into these categories: ${allCategories().map((c) => c.name).join(', ')}. Visitors can filter the deal list by category on the home page (${baseUrl}/?category=<slug>, where the slugs are ${allCategories().map((c) => c.slug).join(', ')}).
 - Each deal is one product with a fixed price including VAT, a minimum number of buyers and a deadline (at most 30 days away).
 - To join, a buyer enters their name, email and EU delivery address, accepts the terms, and saves a payment method: card, SEPA Direct Debit, or iDEAL (which sets up a SEPA Direct Debit mandate). Nothing is charged when joining.
 - If the minimum number of buyers is reached before the deadline, everyone's saved payment method is charged. The "we're collecting payment now" email is also the SEPA pre-notification.

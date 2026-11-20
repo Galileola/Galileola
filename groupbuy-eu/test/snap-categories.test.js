@@ -9,8 +9,8 @@ import { openDb, createRepo } from '../src/db.js';
 import { createApp, canonicalHost } from '../src/app.js';
 import { createPhotoStore } from '../src/photos.js';
 import { validateDealInput } from '../src/deals.js';
-import { validateSnapInput, parseSnapReply, SNAP_SCHEMA } from '../src/snap.js';
-import { CATEGORY_SLUGS } from '../src/categories.js';
+import { validateSnapInput, parseSnapReply, snapSchema } from '../src/snap.js';
+import { categorySlugs } from '../src/categories.js';
 import { publicRoutes, withBadges } from '../src/routes/public.js';
 import { adminRoutes } from '../src/routes/admin.js';
 import { hmac, systemClock } from '../src/util.js';
@@ -61,7 +61,7 @@ test('snap input and AI reply parsing', () => {
   assert.equal(ok.notes, 'blue');
   assert.equal(ok.images[0].media_type, 'image/png');
 
-  assert.deepEqual(SNAP_SCHEMA.properties.category.enum, CATEGORY_SLUGS);
+  assert.deepEqual(snapSchema().properties.category.enum, categorySlugs());
   const reply = { product_name: 'Mug', headline: 'Hi', category: 'nope', description: 'Nice mug.', social_post: '#mug', photo_note: '' };
   assert.equal(parseSnapReply(JSON.stringify(reply)).category, 'other');
   assert.equal(parseSnapReply(JSON.stringify({ ...reply, category: 'home' })).category, 'home');
@@ -134,7 +134,7 @@ test('snap: AI writes the ad, one tap publishes it with photos', async (t) => {
   assert.equal(ai.status, 200);
   const draft = await ai.json();
   assert.equal(draft.category, 'home');
-  assert.equal(calls[0].format, SNAP_SCHEMA);
+  assert.deepEqual(calls[0].format, snapSchema());
   assert.equal(calls[0].messages[0].content[0].type, 'image');
   assert.match(calls[0].system, /electronics: Electronics/);
 
