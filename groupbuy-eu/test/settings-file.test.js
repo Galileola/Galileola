@@ -42,3 +42,13 @@ test('no file, no Stripe key, or SETTINGS_FILE=off: nothing happens', () => {
   assert.equal(settingsFilePath({ SETTINGS_FILE: 'off' }), null);
   assert.equal(saveSettingsFile({ SETTINGS_FILE: 'off', STRIPE_SECRET_KEY: 'sk_test_x' }), false);
 });
+
+test('settings are saved in the account home and read from SETTINGS_FILE first', async () => {
+  const { settingsFileCandidates } = await import('../src/settingsFile.js');
+  const saved = settingsFilePath({});
+  assert.equal(saved, path.join(os.userInfo().homedir, '.groupbuy', 'settings.env'));
+  const list = settingsFileCandidates({ SETTINGS_FILE: '/elsewhere/settings.env' });
+  assert.equal(list[0], '/elsewhere/settings.env');
+  assert.ok(list.includes(saved));
+  assert.deepEqual(settingsFileCandidates({ SETTINGS_FILE: 'off' }), []);
+});

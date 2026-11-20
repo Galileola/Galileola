@@ -11,7 +11,8 @@ import path from 'node:path';
 // account starts from it. Variables set in the panel always win over the file. BASE_URL and PORT
 // belong to each website and are never shared.
 //
-// SETTINGS_FILE=off turns this off; SETTINGS_FILE=/some/path uses another file.
+// SETTINGS_FILE=off turns this off; SETTINGS_FILE=/some/path reads that file instead (the copy is
+// still saved to the account's file, so later starts don't need SETTINGS_FILE).
 
 export const SHARED_KEYS = [
   'STRIPE_SECRET_KEY', 'STRIPE_PUBLISHABLE_KEY', 'STRIPE_WEBHOOK_SECRET',
@@ -24,14 +25,32 @@ export const SHARED_KEYS = [
 const PATH_KEYS = new Set(['DATABASE_PATH', 'BACKUP_DIR', 'UPLOAD_DIR']);
 const DEFAULT_DATABASE_PATH = './data/groupbuy.sqlite'; // keep in sync with src/config.js
 
+// The hosting account's own home folder. Hostinger gives every website its own HOME
+// (/home/<user>/domains/<domain>), so os.homedir() differs per website; the account's home from
+// the user database is the same for all of them.
+function accountHome() {
+  try {
+    return os.userInfo().homedir || os.homedir();
+  } catch {
+    return os.homedir();
+  }
+}
+
+// Where this copy saves the shared settings (null when turned off).
 export function settingsFilePath(env = process.env) {
-  const v = env.SETTINGS_FILE;
-  if (v === 'off') return null;
-  return v || path.join(os.homedir(), '.groupbuy', 'settings.env');
+  if (env.SETTINGS_FILE === 'off') return null;
+  return path.join(accountHome(), '.groupbuy', 'settings.env');
+}
+
+// Where this copy reads them from: SETTINGS_FILE when set, else the account's file, else the
+// website's own home (where earlier versions saved it).
+export function settingsFileCandidates(env = process.env) {
+  if (env.SETTINGS_FILE === 'off') return [];
+  return [...new Set([env.SETTINGS_FILE, settingsFilePath(env), path.join(os.homedir(), '.groupbuy', 'settings.env')].filter(Boolean))];
 }
 
 // Fills in settings missing from `env` from the file. Returns the keys it filled in.
-export function loadSettingsFile(env = process.env, file = settingsFilePath(env)) {
+export function loadSettingsFile(env = process.env, file = settingsFileCandidates(env).find((f) => fs.existsSync(f))) {
   if (!file || !fs.existsSync(file)) return [];
   const filled = [];
   for (const line of fs.readFileSync(file, 'utf8').split('\n')) {
