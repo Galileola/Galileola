@@ -22,16 +22,14 @@
       <% if (isAdmin) { %>
         <nav aria-label="Admin"><a href="/admin">Deals</a><a href="/admin/snap" class="nav-snap">📸 Snap a deal</a><a href="/admin/emails">Emails</a><a href="/admin/password">🔑 Password</a><a href="/">Shop</a></nav>
       <% } else { %>
-        <div class="header-right">
-          <nav><a href="/#categories"><%= t('nav.categories') %></a><a href="/#deals"><%= t('nav.deals') %></a><a href="/#how"><%= t('nav.how') %></a></nav>
-          <details class="lang-menu" data-lang-menu>
+        <nav class="shop-nav"><a href="/#categories"><%= t('nav.categories') %></a><a href="/#deals"><%= t('nav.deals') %></a><a href="/#how"><%= t('nav.how') %></a></nav>
+        <details class="lang-menu" data-lang-menu>
             <summary aria-label="<%= t('layout.language') %>: <%= currentLanguage.name %>"><span aria-hidden="true">🌐</span> <span class="lang-code"><%= lang.toUpperCase() %></span></summary>
             <ul>
               <% for (const l of languages) { %><li><a href="<%= langUrl(l.code) %>" hreflang="<%= l.code %>" lang="<%= l.code %>"<%- l.code === lang ? ' aria-current="true"' : '' %>><%= l.name %></a></li>
               <% } %>
             </ul>
-          </details>
-        </div>
+        </details>
       <% } %>
     </div>
   </header>

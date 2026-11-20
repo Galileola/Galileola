@@ -44,12 +44,12 @@ img { max-width: 100%; }
 .site-header nav { display: flex; gap: 4px; flex-wrap: wrap; }
 .site-header nav a { color: #fff; text-decoration: none; font-weight: 600; padding: 6px 12px; border-radius: 999px; }
 .site-header nav a:hover { background: rgba(255, 255, 255, .18); color: #fff; }
-.header-right { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.site-header-inner .shop-nav { margin-left: auto; }
 .lang-menu { position: relative; }
 .lang-menu summary { list-style: none; cursor: pointer; color: #fff; font-weight: 700; padding: 6px 12px; border-radius: 999px; background: rgba(255, 255, 255, .16); white-space: nowrap; }
 .lang-menu summary::-webkit-details-marker { display: none; }
 .lang-menu summary:hover, .lang-menu[open] summary { background: rgba(255, 255, 255, .28); }
-.lang-menu ul { position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; margin: 0; padding: 8px; list-style: none; background: var(--card); color: var(--fg); border-radius: 14px; box-shadow: var(--shadow); border: 1px solid var(--line); display: grid; grid-template-columns: repeat(2, minmax(130px, 1fr)); gap: 2px; width: max-content; max-width: calc(100vw - 32px); max-height: min(70vh, 520px); overflow-y: auto; }
+.lang-menu ul { position: absolute; right: 0; top: calc(100% + 8px); z-index: 40; margin: 0; padding: 8px; list-style: none; background: var(--card); color: var(--fg); border-radius: 14px; box-shadow: var(--shadow); border: 1px solid var(--line); display: grid; grid-template-columns: repeat(2, minmax(130px, 1fr)); gap: 2px; width: max-content; max-width: calc(100vw - 32px); max-height: min(70vh, 520px); overflow-y: auto; }
 .lang-menu li a { display: block; padding: 7px 10px; border-radius: 9px; color: var(--fg); text-decoration: none; font-weight: 500; }
 .lang-menu li a:hover { background: var(--violet-soft); }
 .lang-menu li a[aria-current] { background: var(--violet); color: #fff; font-weight: 700; }
@@ -223,6 +223,8 @@ th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--lin
 .legal h2 { margin-top: 1.6rem; color: var(--violet); }
 .legal h3 { margin-top: 1.2rem; font-size: 1.05rem; }
 .legal table { box-shadow: none; border: 1px solid var(--line); }
+/* Wide tables (the cookie list) scroll sideways on phones instead of widening the page. */
+@media (max-width: 720px) { .legal table { display: block; overflow-x: auto; max-width: 100%; } .legal { padding: 20px 16px; } }
 pre.email { white-space: pre-wrap; background: #f6f1fc; padding: 10px; border-radius: 10px; font-size: .85rem; }
 #payment-element { margin: 12px 0; }
 .cookie-banner { position: fixed; left: 16px; right: 16px; bottom: 16px; max-width: 720px; margin: 0 auto; background: #fff; border-radius: 18px; padding: 16px 18px; box-shadow: 0 14px 40px rgba(31, 21, 53, .25); border-top: 5px solid var(--pink); z-index: 30; }
@@ -410,6 +412,9 @@ body:has(.cookie-banner:not([hidden])) .assistant-widget { bottom: 190px; }
   .snap-cta { padding: 14px 16px; }
   .snap-cta-lens { width: 52px; height: 52px; font-size: 1.6rem; }
   .site-header-inner { flex-wrap: wrap; }
+  /* Phones: brand and language button on the first row, the shop links below. */
+  .site-header-inner .lang-menu { order: 2; margin-left: auto; }
+  .site-header-inner .shop-nav { order: 3; width: 100%; margin-left: -12px; }
   /* The cookie banner fills the bottom of a phone screen: show the assistant after the choice. */
   body:has(.cookie-banner:not([hidden])) .assistant-widget { display: none; }
 }
