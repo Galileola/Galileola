@@ -1,46 +1,58 @@
 <%- include('partials/header') %>
 <section class="hero">
   <div class="hero-text">
-    <p class="eyebrow">Group deals across the EU</p>
+    <p class="eyebrow">🎉 Group deals across the EU</p>
     <h1>Buy together.<br><span class="hl">Pay less.</span></h1>
-    <p class="lead">Join a deal and save a payment method. You're only charged if enough buyers join before the deadline.</p>
-    <a class="button big" href="#deals">See the deals</a>
+    <p class="lead">Team up with other shoppers. When enough people join a deal, everyone gets the group price. Not enough? Nobody pays a cent.</p>
+    <p class="hero-actions">
+      <a class="button big" href="#deals">Find a deal 🛍️</a>
+      <a class="button big secondary" href="#how">How it works</a>
+    </p>
+    <ul class="hero-stats" aria-label="Right now">
+      <li><strong><%= stats.open %></strong> open deal<%= stats.open === 1 ? '' : 's' %></li>
+      <li><strong><%= stats.buyers %></strong> buyer<%= stats.buyers === 1 ? '' : 's' %> joined</li>
+      <% if (stats.hot) { %><li class="hot"><strong><%= stats.hot %></strong> almost there 🔥</li><% } %>
+    </ul>
   </div>
   <div class="hero-art" aria-hidden="true">
-    <span class="bubble b1"></span><span class="bubble b2"></span><span class="bubble b3"></span><span class="bubble b4"></span>
+    <span class="bubble b1">🎧</span><span class="bubble b2">👟</span><span class="bubble b3">🍫</span>
+    <span class="bubble b4">🧸</span><span class="bubble b5">☕</span><span class="bubble b6">🌱</span>
   </div>
 </section>
 
 <section class="steps" id="how" aria-label="How it works">
-  <div class="step s1"><span class="num">1</span><h3>Join a deal</h3><p>Save a card, SEPA account or iDEAL. Nothing is charged yet.</p></div>
-  <div class="step s2"><span class="num">2</span><h3>Others join</h3><p>Share the deal. The bar fills up as more buyers join.</p></div>
-  <div class="step s3"><span class="num">3</span><h3>The deal is on</h3><p>Minimum reached: everyone pays the group price. Not reached: nobody pays.</p></div>
+  <div class="step s1"><span class="num">1</span><h3>🙋 Join a deal</h3><p>Save a card, SEPA account or iDEAL. Nothing is charged yet.</p></div>
+  <div class="step s2"><span class="num">2</span><h3>📣 Bring friends</h3><p>Share the deal. The bar fills up as more buyers join.</p></div>
+  <div class="step s3"><span class="num">3</span><h3>🎉 The deal is on</h3><p>Minimum reached: everyone pays the group price. Not reached: nobody pays.</p></div>
 </section>
 
-<h2 class="section-title" id="deals">Current group deals</h2>
+<nav class="category-bar" id="categories" aria-label="Categories">
+  <a class="cat-chip<%= category ? '' : ' active' %>" href="/#deals"<%- category ? '' : ' aria-current="page"' %>><span class="cat-emoji" aria-hidden="true">✨</span>All<span class="cat-count"><%= stats.open %></span></a>
+  <% for (const c of categories) { const n = perCategory[c.slug] || 0; const active = category && category.slug === c.slug; %>
+    <a class="cat-chip<%= active ? ' active' : '' %><%= n ? '' : ' none' %>" href="/?category=<%= c.slug %>#deals"<%- active ? ' aria-current="page"' : '' %>>
+      <span class="cat-emoji" aria-hidden="true"><%= c.emoji %></span><%= c.name %><% if (n) { %><span class="cat-count"><%= n %></span><% } %>
+    </a>
+  <% } %>
+</nav>
+
+<h2 class="section-title" id="deals">
+  <% if (category) { %><%= category.emoji %> <%= category.name %><% } else { %>Current group deals<% } %>
+</h2>
 <% if (!deals.length) { %>
   <div class="empty-state">
-    <p><strong>No deals are open right now.</strong></p>
-    <p class="muted">New deals are added regularly. Check back soon.</p>
+    <p class="empty-emoji" aria-hidden="true"><%= category ? category.emoji : '🛒' %></p>
+    <% if (category) { %>
+      <p><strong>No <%= category.name.toLowerCase() %> deals right now.</strong></p>
+      <p class="muted">New deals are added all the time. <a href="/#deals">See all deals</a></p>
+    <% } else { %>
+      <p><strong>No deals are open right now.</strong></p>
+      <p class="muted">New deals are added regularly. Check back soon.</p>
+    <% } %>
   </div>
 <% } %>
 <div class="grid deals-grid">
-<% for (const d of deals) { %>
-  <% const pct = Math.min(100, Math.round((d.count / d.min_buyers) * 100)); const on = d.status !== 'open'; %>
-  <a class="deal-card" href="/deals/<%= d.slug %>">
-    <div class="deal-card-media">
-      <% if (d.cover) { %><img src="<%= photoUrl(d.cover.filename) %>" alt="" loading="lazy">
-      <% } else if (d.image_url) { %><img src="<%= d.image_url %>" alt="" loading="lazy">
-      <% } else { %><div class="placeholder tone-<%= d.id % 4 %>"><span><%= d.product_name.charAt(0).toUpperCase() %></span></div><% } %>
-      <span class="chip <%= on ? 'chip-on' : '' %>"><%= on ? 'Deal is on!' : (d.min_buyers - d.count) + ' more needed' %></span>
-    </div>
-    <div class="deal-card-body">
-      <h3><%= d.product_name %></h3>
-      <div class="progress"><span style="width: <%= pct %>%"></span></div>
-      <p class="meta"><strong><%= d.count %></strong> of <%= d.min_buyers %> buyers · until <%= formatDate(d.deadline) %></p>
-      <p class="price-tag"><%= formatEuro(d.price_cents) %> <small>incl. VAT</small></p>
-    </div>
-  </a>
-<% } %>
+<% deals.forEach((d, i) => { %>
+  <%- include('partials/deal-card', { d, i }) %>
+<% }) %>
 </div>
 <%- include('partials/footer') %>

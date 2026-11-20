@@ -2,6 +2,7 @@
 <p><a href="/admin">← Admin</a></p>
 <section class="card narrow">
   <h1>New deal</h1>
+  <p class="muted small">On your phone? <a href="/admin/snap">📸 Snap a deal</a> is quicker: take a photo and the AI fills in this form for you.</p>
   <form method="post" action="/admin/deals" id="deal-form" enctype="multipart/form-data" novalidate>
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <input type="hidden" name="deadline_iso" id="deadline_iso">
@@ -9,6 +10,21 @@
     <label for="product_name">Product</label>
     <input type="text" id="product_name" name="product_name" maxlength="120" required value="<%= values.product_name || '' %>">
     <% if (errors.product_name) { %><p class="error-text"><%= errors.product_name %></p><% } %>
+
+    <div class="row">
+      <div>
+        <label for="category">Category</label>
+        <select id="category" name="category">
+          <% for (const c of categories) { %><option value="<%= c.slug %>" <%= values.category === c.slug ? 'selected' : '' %>><%= c.emoji %> <%= c.name %></option><% } %>
+        </select>
+        <% if (errors.category) { %><p class="error-text"><%= errors.category %></p><% } %>
+      </div>
+      <div>
+        <label for="headline">Headline (optional)</label>
+        <input type="text" id="headline" name="headline" maxlength="120" placeholder="One catchy line for the deal card" value="<%= values.headline || '' %>">
+        <% if (errors.headline) { %><p class="error-text"><%= errors.headline %></p><% } %>
+      </div>
+    </div>
 
     <label for="description">Description</label>
     <textarea id="description" name="description" maxlength="5000"><%= values.description || '' %></textarea>

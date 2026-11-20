@@ -15,6 +15,8 @@ import {
   validateDescribeInput,
 } from '../describe.js';
 import { createRateLimiter } from '../rateLimit.js';
+import { SNAP_SCHEMA, parseSnapReply, snapMessages, snapSystemPrompt, validateSnapInput } from '../snap.js';
+import { DEFAULT_CATEGORY, isCategory } from '../categories.js';
 
 // Photo uploads are parsed into memory (admin only, at most 8 × 8 MB per request), checked,
 // and only then written to UPLOAD_DIR.
@@ -57,13 +59,15 @@ export function adminRoutes(app, ctx) {
   router.use(requireAdmin(config));
   // Multipart forms (with photos) are parsed before the form-token check, which reads req.body.
   // The token field comes first in those forms, so it is read even if a photo is too large.
-  router.post(['/deals', '/deals/:id/photos'], parsePhotos);
-  // Same for the JSON body of "Write with AI" (photos are downscaled in the browser first).
-  router.post('/ai/description', express.json({ limit: '12mb' }));
+  router.post(['/deals', '/deals/:id/photos', '/snap'], parsePhotos);
+  // Same for the JSON body of "Write with AI" and "Snap a deal" (photos are downscaled in the
+  // browser first).
+  router.post(['/ai/description', '/ai/snap'], express.json({ limit: '12mb' }));
   router.use((req, res, next) => {
     res.set('Cache-Control', 'no-store');
     res.locals.csrfToken = csrfToken;
     res.locals.assistantEnabled = false;
+    res.locals.isAdmin = true;
     res.locals.aiWritingEnabled = Boolean(ctx.assistant);
     res.locals.photoAccept = PHOTO_ACCEPT;
     res.locals.maxPhotos = MAX_PHOTOS_PER_DEAL;
@@ -81,7 +85,31 @@ export function adminRoutes(app, ctx) {
   });
 
   router.get('/deals/new', (req, res) => {
-    res.render('admin/new', { title: 'New deal', values: { tax_code: config.defaultTaxCode }, errors: {} });
+    res.render('admin/new', {
+      title: 'New deal',
+      values: { tax_code: config.defaultTaxCode, category: DEFAULT_CATEGORY },
+      errors: {},
+    });
+  });
+
+  // "Snap a deal": take a photo on the phone, the AI writes the ad, add the price, publish.
+  router.get('/snap', (req, res) => {
+    res.render('admin/snap', { title: 'Snap a deal', defaultTaxCode: config.defaultTaxCode });
+  });
+
+  // Publishes a deal from the snap page. The page sends multipart (photos already downscaled
+  // in the browser, which also strips their location data) and expects JSON back.
+  router.post('/snap', (req, res) => {
+    res.set('Cache-Control', 'no-store');
+    const { errors, deal } = validateDealInput(req.body, { now: clock.now(), defaultTaxCode: config.defaultTaxCode });
+    const files = req.files ?? [];
+    const photoError = req.photoError || checkPhotos(files);
+    if (photoError) errors.photos = photoError;
+    else if (!files.length) errors.photos = 'Take a photo of the product first.';
+    if (!deal || Object.keys(errors).length) return res.status(422).json({ errors });
+    const created = repo.insertDeal(deal);
+    savePhotos(created.id, files);
+    res.json({ redirect: `/admin/deals/${created.id}?live=1` });
   });
 
   router.post('/deals', (req, res) => {
@@ -128,6 +156,40 @@ export function adminRoutes(app, ctx) {
     }
   });
 
+  // Writes the whole ad from the snapped photos. Nothing is saved: the draft fills the form.
+  const snapLimiter = createRateLimiter({ windowMs: 15 * 60_000, max: 30, clock });
+  router.post('/ai/snap', async (req, res) => {
+    res.set('Cache-Control', 'no-store');
+    if (!ctx.assistant) {
+      return res.status(503).json({ error: 'AI writing is off. Add ANTHROPIC_API_KEY to the environment variables.' });
+    }
+    let input;
+    try {
+      input = validateSnapInput(req.body);
+    } catch (err) {
+      if (err instanceof DescribeInputError) return res.status(400).json({ error: err.message });
+      throw err;
+    }
+    if (!snapLimiter.take(req.ip)) {
+      return res.status(429).json({ error: 'Too many photos in a short time. Please wait a few minutes.' });
+    }
+    try {
+      const result = await ctx.assistant.reply({
+        system: snapSystemPrompt(config.business),
+        messages: snapMessages(input),
+        effort: 'medium',
+        maxTokens: 8000,
+        format: SNAP_SCHEMA,
+      });
+      const draft = result.refused ? null : parseSnapReply(result.text);
+      if (!draft) return res.status(422).json({ error: "The AI couldn't write an ad for this photo. Try another photo, or fill in the form yourself." });
+      res.json(draft);
+    } catch (err) {
+      console.error('[ai-snap]', err?.status ?? '', err?.message ?? err);
+      res.status(502).json({ error: 'The AI could not write the ad just now. Please try again.' });
+    }
+  });
+
   const savePhotos = (dealId, files) => {
     const now = clock.now().toISOString();
     for (const f of files ?? []) repo.addPhoto(dealId, ctx.photos.save(f.buffer), now);
@@ -148,6 +210,15 @@ export function adminRoutes(app, ctx) {
     }
     savePhotos(deal.id, files);
     backToDeal(res, deal.id, files.length === 1 ? 'Photo added.' : `${files.length} photos added.`);
+  });
+
+  router.post('/deals/:id/category', (req, res, next) => {
+    const deal = repo.dealById(Number(req.params.id));
+    if (!deal) return next();
+    const category = String(req.body.category ?? '');
+    if (!isCategory(category)) return backToDeal(res, deal.id, 'Choose a category from the list.');
+    repo.updateDeal(deal.id, { category });
+    backToDeal(res, deal.id, 'Category saved.');
   });
 
   router.post('/photos/:id/cover', (req, res, next) => {
@@ -179,6 +250,8 @@ export function adminRoutes(app, ctx) {
       committed: repo.committedCount(deal.id),
       summary: summarize(participants),
       flash: req.query.flash || '',
+      justPublished: req.query.live === '1',
+      dealUrl: `${config.baseUrl}/deals/${deal.slug}`,
       testTools: true, // Stripe test mode only (enforced at startup)
     });
   });

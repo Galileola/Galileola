@@ -1,0 +1,102 @@
+<%- include('../partials/header') %>
+<div class="snap" id="snap" data-ai="<%= aiWritingEnabled ? '1' : '0' %>">
+  <input type="hidden" name="_csrf" id="snap-csrf" value="<%= csrfToken %>">
+  <header class="snap-head">
+    <h1>📸 Snap a deal</h1>
+    <p class="snap-steps" aria-label="How it works"><span>Photo</span><span>AI writes the ad</span><span>Add a price</span><span>Live 🚀</span></p>
+  </header>
+
+  <% if (!aiWritingEnabled) { %>
+    <div class="notice warn">AI writing is off, so you'll write the ad yourself. To turn it on, add ANTHROPIC_API_KEY to the environment variables in hPanel and restart the app.</div>
+  <% } %>
+
+  <section class="snap-shoot" data-shoot>
+    <div class="snap-shots" data-shots></div>
+    <label class="snap-camera">
+      <input type="file" accept="image/*" capture="environment" class="visually-hidden" data-camera-input>
+      <span class="snap-lens" aria-hidden="true">📸</span>
+      <span class="snap-camera-text" data-camera-text>Take a photo</span>
+    </label>
+    <p class="snap-alt">
+      <label class="linklike">or choose from your gallery<input type="file" accept="image/*" multiple class="visually-hidden" data-gallery-input></label>
+    </p>
+    <details class="snap-notes">
+      <summary>Add notes for the AI (optional)</summary>
+      <textarea id="snap-notes" maxlength="2000" placeholder="Brand, size, what's in the box, anything the photo doesn't show…"></textarea>
+    </details>
+    <p class="small muted">Up to 4 photos. Location data is removed from the photos before they're uploaded.</p>
+  </section>
+
+  <section class="snap-working" data-working hidden>
+    <div class="snap-orb" aria-hidden="true"><span>✨</span></div>
+    <p class="snap-working-text" data-working-text role="status">Looking at your photo…</p>
+    <p class="small muted">This usually takes 10 to 30 seconds.</p>
+  </section>
+
+  <div class="notice bad" data-snap-error role="alert" hidden></div>
+  <div class="notice warn" data-photo-note hidden></div>
+
+  <form class="card snap-form" data-snap-form hidden novalidate>
+    <div class="snap-form-head">
+      <h2>✍️ Your ad</h2>
+      <% if (aiWritingEnabled) { %><button type="button" class="ai-button small" data-rewrite>Rewrite with AI</button><% } %>
+    </div>
+    <p class="muted small" data-ai-written hidden>Written by AI from your photo. Read it and fix anything that isn't right: buyers rely on it.</p>
+
+    <label for="s-name">Product</label>
+    <input type="text" id="s-name" name="product_name" maxlength="120" required>
+    <p class="error-text" data-error-for="product_name" hidden></p>
+
+    <label for="s-headline">Headline</label>
+    <input type="text" id="s-headline" name="headline" maxlength="120" placeholder="One catchy line for the deal card">
+    <p class="error-text" data-error-for="headline" hidden></p>
+
+    <label for="s-category">Category</label>
+    <select id="s-category" name="category">
+      <% for (const c of categories) { %><option value="<%= c.slug %>"<%= c.slug === 'other' ? ' selected' : '' %>><%= c.emoji %> <%= c.name %></option><% } %>
+    </select>
+    <p class="error-text" data-error-for="category" hidden></p>
+
+    <label for="s-description">Ad text</label>
+    <textarea id="s-description" name="description" rows="8" maxlength="5000"></textarea>
+    <p class="error-text" data-error-for="description" hidden></p>
+
+    <div class="snap-price">
+      <label for="s-price">💶 Price per buyer (EUR, VAT included)</label>
+      <input type="text" id="s-price" name="price" inputmode="decimal" placeholder="e.g. 24.90" required>
+      <p class="error-text" data-error-for="price" hidden></p>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="s-min">👥 Minimum buyers</label>
+        <input type="number" id="s-min" name="min_buyers" min="1" max="10000" step="1" value="10" required>
+        <p class="error-text" data-error-for="min_buyers" hidden></p>
+      </div>
+      <div>
+        <label for="s-deadline">⏰ Deadline</label>
+        <input type="datetime-local" id="s-deadline" name="deadline" required>
+        <p class="error-text" data-error-for="deadline" hidden></p>
+      </div>
+    </div>
+    <div class="quick-days" role="group" aria-label="Deadline shortcuts">
+      <button type="button" data-days="3">3 days</button>
+      <button type="button" data-days="7" class="active">1 week</button>
+      <button type="button" data-days="14">2 weeks</button>
+      <button type="button" data-days="30">30 days</button>
+    </div>
+
+    <details class="snap-social">
+      <summary>📣 Social media post</summary>
+      <textarea id="s-social" name="social_post" rows="6" maxlength="2000"></textarea>
+      <p class="muted small">Only for you: it appears in the deal's share kit, with the deal link added, ready to copy. It isn't shown in the shop.</p>
+    </details>
+    <p class="error-text" data-error-for="photos" hidden></p>
+    <p class="error-text" data-error-for="form" hidden></p>
+
+    <button type="submit" class="big snap-publish" data-publish>🚀 Publish deal</button>
+    <p class="muted small">The deal goes into the shop's deal list straight away, with Stripe tax code <code><%= locals.defaultTaxCode || 'txcd_99999999' %></code>. For another tax code, use the <a href="/admin/deals/new">full form</a>.</p>
+  </form>
+</div>
+<script src="/static/js/snap.js"></script>
+<%- include('../partials/footer') %>

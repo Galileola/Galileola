@@ -50,5 +50,6 @@
     <span>I accept the <a href="/terms" target="_blank">terms</a>, including when payment is taken, and I've read the <a href="/privacy" target="_blank">privacy policy</a> and my <a href="/terms#withdrawal" target="_blank">14-day right of withdrawal</a>.</span>
   </label>
   <% if (errors.accept_terms) { %><p class="error-text"><%= errors.accept_terms %></p><% } %>
-  <button type="submit">Continue to payment method</button>
+  <button type="submit" class="big join-button">Count me in 🙌</button>
+  <p class="muted small">Next: save your payment method. <%= state.minimumReached ? 'It is charged right away, because the deal is already on.' : 'Nothing is charged today.' %></p>
 </form>

@@ -1,4 +1,8 @@
 import { MAX_DEAL_DURATION_MS, parseEuroToCents, slugify, iso } from './util.js';
+import { DEFAULT_CATEGORY, isCategory } from './categories.js';
+
+export const MAX_HEADLINE = 120;
+export const MAX_SOCIAL_POST = 2000;
 
 const MIN_LEAD_MS = 2 * 60 * 1000; // deadline at least 2 minutes out (short deadlines help testing)
 
@@ -6,8 +10,12 @@ const MIN_LEAD_MS = 2 * 60 * 1000; // deadline at least 2 minutes out (short dea
 export function validateDealInput(body, { now, defaultTaxCode }) {
   const errors = {};
   const product_name = String(body.product_name ?? '').trim();
-  const description = String(body.description ?? '').trim();
+  // Multipart forms send line breaks as \r\n: store plain \n so paragraphs split correctly.
+  const description = String(body.description ?? '').replace(/\r\n?/g, '\n').trim();
   const image_url = String(body.image_url ?? '').trim();
+  const headline = String(body.headline ?? '').replace(/\s+/g, ' ').trim();
+  const social_post = String(body.social_post ?? '').replace(/\r\n?/g, '\n').trim();
+  const category = String(body.category ?? '').trim() || DEFAULT_CATEGORY;
   const tax_code = String(body.tax_code ?? '').trim() || defaultTaxCode;
   const price_cents = parseEuroToCents(body.price);
   const min_buyers = Number(body.min_buyers);
@@ -15,6 +23,9 @@ export function validateDealInput(body, { now, defaultTaxCode }) {
   if (!product_name) errors.product_name = 'Enter a product name.';
   else if (product_name.length > 120) errors.product_name = 'Keep the name under 120 characters.';
   if (description.length > 5000) errors.description = 'Keep the description under 5,000 characters.';
+  if (headline.length > MAX_HEADLINE) errors.headline = `Keep the headline under ${MAX_HEADLINE} characters.`;
+  if (social_post.length > MAX_SOCIAL_POST) errors.social_post = `Keep the social media post under ${MAX_SOCIAL_POST} characters.`;
+  if (!isCategory(category)) errors.category = 'Choose a category from the list.';
 
   if (image_url) {
     try {
@@ -50,6 +61,9 @@ export function validateDealInput(body, { now, defaultTaxCode }) {
       product_name,
       description,
       image_url,
+      category,
+      headline,
+      social_post,
       price_cents,
       tax_code,
       min_buyers,

@@ -1,5 +1,6 @@
 <%- include('partials/header') %>
-<section class="card narrow">
+<section class="card narrow message-card">
+  <% if (typeof emoji !== 'undefined' && emoji) { %><p class="message-emoji" aria-hidden="true"><%= emoji %></p><% } %>
   <h1><%= heading %></h1>
   <% if (body) { %><p><%= body %></p><% } %>
   <% if (typeof link !== 'undefined' && link) { %><p><a class="button" href="<%= link.href %>"><%= link.label %></a></p><% } %>

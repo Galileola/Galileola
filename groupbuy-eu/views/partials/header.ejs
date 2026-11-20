@@ -14,7 +14,11 @@
   <header class="site-header">
     <div class="site-header-inner">
       <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span><%= brandName %></a>
-      <nav><a href="/#deals">Deals</a><a href="/#how">How it works</a></nav>
+      <% if (isAdmin) { %>
+        <nav aria-label="Admin"><a href="/admin">Deals</a><a href="/admin/snap" class="nav-snap">📸 Snap a deal</a><a href="/admin/emails">Emails</a><a href="/">Shop</a></nav>
+      <% } else { %>
+        <nav><a href="/#categories">Categories</a><a href="/#deals">Deals</a><a href="/#how">How it works</a></nav>
+      <% } %>
     </div>
   </header>
   <main class="container">

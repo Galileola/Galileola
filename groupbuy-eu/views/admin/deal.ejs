@@ -1,13 +1,30 @@
 <%- include('../partials/header') %>
 <p><a href="/admin">← Admin</a> · <a href="/admin/emails">Email outbox</a></p>
+<% if (justPublished) { %>
+  <div class="celebrate live" data-confetti-on-load>
+    <p class="celebrate-emoji" aria-hidden="true">🚀</p>
+    <p class="celebrate-title">Your deal is live!</p>
+    <p>It's in the deal list now. Share it below to get the first buyers in.</p>
+    <p><a class="button" href="/deals/<%= deal.slug %>">See the public page</a> <a class="button secondary" href="/admin/snap">📸 Snap another</a></p>
+  </div>
+<% } %>
 <% if (flash) { %><div class="notice"><%= flash %></div><% } %>
 <h1><%= deal.product_name %> <span class="badge <%= deal.status %>"><%= deal.status.replace(/_/g, ' ') %></span></h1>
 <p>Public page: <a href="/deals/<%= deal.slug %>">/deals/<%= deal.slug %></a></p>
+<% if (deal.headline) { %><p class="deal-headline"><%= deal.headline %></p><% } %>
 
 <div class="grid">
   <div class="card">
     <h2>Deal</h2>
     <p><%= formatEuro(deal.price_cents) %> incl. VAT · tax code <code><%= deal.tax_code %></code></p>
+    <form method="post" action="/admin/deals/<%= deal.id %>/category" class="inline-form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <label for="category" class="inline-label">Category</label>
+      <select id="category" name="category">
+        <% for (const c of categories) { %><option value="<%= c.slug %>" <%= deal.category === c.slug ? 'selected' : '' %>><%= c.emoji %> <%= c.name %></option><% } %>
+      </select>
+      <button type="submit" class="small secondary">Save</button>
+    </form>
     <p>Buyers: <strong><%= committed %></strong> of <%= deal.min_buyers %> minimum</p>
     <p>Deadline: <%= formatDate(deal.deadline) %></p>
     <% if (deal.minimum_reached_at) { %><p>Minimum reached: <%= formatDate(deal.minimum_reached_at) %></p><% } %>
@@ -30,6 +47,17 @@
     <% } %>
   </div>
 </div>
+
+<% if (['open', 'charging', 'ready_to_order'].includes(deal.status)) { %>
+<% const post = (deal.social_post || ('🛍️ ' + (deal.headline || deal.product_name) + '\nJoin the group deal: when enough of us join, we all get it for ' + formatEuro(deal.price_cents) + '.')) + '\n\n' + dealUrl; %>
+<section class="card share-kit" style="margin-top:16px">
+  <h2>📣 Share kit</h2>
+  <p class="muted small">A ready-made post for Instagram, Facebook or WhatsApp, with the deal link. Edit it here before you copy it; changes aren't saved.</p>
+  <textarea class="social-post" id="social-post" rows="6" aria-label="Social media post"><%= post %></textarea>
+  <p><button type="button" class="small" data-copy-from="social-post">📋 Copy post</button></p>
+  <%- include('../partials/share', { shareUrl: dealUrl, shareText: deal.headline || deal.product_name }) %>
+</section>
+<% } %>
 
 <section class="card" id="photos" style="margin-top:16px">
   <h2>Photos</h2>
@@ -69,6 +97,7 @@
 </section>
 
 <h2 style="margin-top:24px">Buyers</h2>
+<div class="table-scroll">
 <table>
   <thead><tr><th>#</th><th>Buyer</th><th>Country</th><th>Method</th><th>Amount / VAT</th><th>Status</th><th>Attempts / last error</th><th>Window ends</th><th></th></tr></thead>
   <tbody>
@@ -88,6 +117,7 @@
   <% if (!participants.length) { %><tr><td colspan="9" class="muted">No buyers yet.</td></tr><% } %>
   </tbody>
 </table>
+</div>
 
 <%- include('deal-tools') %>
 <%- include('../partials/footer') %>

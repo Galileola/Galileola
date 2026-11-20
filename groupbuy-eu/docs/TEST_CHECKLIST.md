@@ -145,3 +145,19 @@ behaves differently.
 a controllable clock: deal fills, deal fails, card declined with retries, SCA challenge, SEPA
 bounce inside and after the window, 48-hour cutoff, withdrawals and refunds. They check the
 app's logic, not Stripe itself. The manual run above is what confirms the real integration.
+
+## Snap a deal and categories
+
+- [ ] On a phone, open `/admin/snap` and tap the camera button. Expected: the camera opens. Take
+      a photo of a product.
+- [ ] With `ANTHROPIC_API_KEY` set: within about 30 seconds the form fills with a name, headline,
+      category, ad text and social media post. Check that nothing in the text is made up.
+- [ ] Without a price, tap **Publish deal**. Expected: "Add the price buyers pay" under the price.
+- [ ] Enter a price and publish. Expected: confetti, "Your deal is live!", and the deal on the home
+      page with its photo, under its category chip.
+- [ ] Download the published photo from the deal page and check its details (for example with
+      `exiftool`): no GPS location.
+- [ ] On the admin deal page, change the category. Expected: "Category saved." and the deal moves
+      to the new chip on the home page.
+- [ ] Copy the post from the share kit and paste it somewhere. Expected: the post ends with the
+      deal link.

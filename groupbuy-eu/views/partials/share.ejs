@@ -1,0 +1,12 @@
+<%# Share buttons. Needs shareUrl and shareText. Links open the network's own share page; nothing
+    loads from those sites until someone clicks. fun.js adds "Copy link" and the phone's share sheet. %>
+<% const u = encodeURIComponent(shareUrl); const t = encodeURIComponent(shareText); const both = encodeURIComponent(shareText + ' ' + shareUrl); %>
+<div class="share" data-share-url="<%= shareUrl %>" data-share-text="<%= shareText %>">
+  <button type="button" class="share-btn share-native" data-share-native hidden>📤 Share…</button>
+  <a class="share-btn share-wa" href="https://wa.me/?text=<%= both %>" target="_blank" rel="noopener">WhatsApp</a>
+  <a class="share-btn share-fb" href="https://www.facebook.com/sharer/sharer.php?u=<%= u %>" target="_blank" rel="noopener">Facebook</a>
+  <a class="share-btn share-tg" href="https://t.me/share/url?url=<%= u %>&amp;text=<%= t %>" target="_blank" rel="noopener">Telegram</a>
+  <a class="share-btn share-x" href="https://twitter.com/intent/tweet?text=<%= t %>&amp;url=<%= u %>" target="_blank" rel="noopener">X</a>
+  <a class="share-btn share-mail" href="mailto:?subject=<%= t %>&amp;body=<%= both %>">Email</a>
+  <button type="button" class="share-btn share-copy" data-copy="<%= shareUrl %>">🔗 Copy link</button>
+</div>

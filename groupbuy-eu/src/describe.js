@@ -18,16 +18,22 @@ export function validateDescribeInput(body) {
   if (productName.length > 120) throw new DescribeInputError('Keep the product name under 120 characters.');
   if (notes.length > 5000) throw new DescribeInputError('Keep your notes under 5,000 characters.');
 
-  const raw = Array.isArray(body?.images) ? body.images : [];
+  const images = parseImages(body?.images);
+  return { productName, notes, images };
+}
+
+// Photos sent as [{ data: base64 }] (already downscaled in the browser). The type is checked
+// from the bytes. Returns Claude image sources or throws DescribeInputError.
+export function parseImages(value) {
+  const raw = Array.isArray(value) ? value : [];
   if (raw.length > MAX_IMAGES) throw new DescribeInputError(`Use at most ${MAX_IMAGES} photos.`);
-  const images = raw.map((img) => {
+  return raw.map((img) => {
     const data = typeof img?.data === 'string' ? img.data : '';
     const buf = Buffer.from(data, 'base64');
     const type = detectImageType(buf);
     if (!type || buf.length > MAX_IMAGE_BYTES) throw new DescribeInputError('One of the photos could not be read.');
     return { media_type: MEDIA_TYPES[type], data: buf.toString('base64') };
   });
-  return { productName, notes, images };
 }
 
 const known = (value) => value && !String(value).startsWith('[');

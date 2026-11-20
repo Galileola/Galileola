@@ -1,15 +1,31 @@
 import { isJoinable, publicDealState } from '../dealState.js';
+import { categoryFor, isCategory } from '../categories.js';
+import { HOUR } from '../util.js';
 
 export function publicRoutes(app, ctx) {
   const { repo, clock } = ctx;
 
   app.get('/', (req, res) => {
     const now = clock.now();
-    const deals = repo
+    const all = repo
       .listPublicDeals()
       .filter((d) => isJoinable(d, now))
-      .map((d) => ({ ...d, count: repo.committedCount(d.id), cover: repo.coverPhoto(d.id) }));
-    res.render('home', { title: 'Deals', deals });
+      .map((d) => withBadges({ ...d, count: repo.committedCount(d.id), cover: repo.coverPhoto(d.id) }, now));
+    const category = isCategory(req.query.category) ? categoryFor(req.query.category) : null;
+    const deals = category ? all.filter((d) => d.category === category.slug) : all;
+    const perCategory = {};
+    for (const d of all) perCategory[d.category] = (perCategory[d.category] ?? 0) + 1;
+    res.render('home', {
+      title: category ? `${category.name} deals` : 'Deals',
+      deals,
+      category,
+      perCategory,
+      stats: {
+        open: all.length,
+        buyers: all.reduce((n, d) => n + d.count, 0),
+        hot: all.filter((d) => d.badge === 'hot').length,
+      },
+    });
   });
 
   app.get('/deals/:slug', (req, res, next) => {
@@ -30,3 +46,16 @@ export function publicRoutes(app, ctx) {
 }
 
 export { isJoinable };
+
+// Fun labels for the deal cards. `badge` is one of: on, ending, hot, new, or null.
+export function withBadges(d, now) {
+  const percent = Math.min(100, Math.round((d.count / d.min_buyers) * 100));
+  const hoursLeft = (new Date(d.deadline) - now) / HOUR;
+  const ageHours = (now - new Date(d.created_at)) / HOUR;
+  let badge = null;
+  if (d.status !== 'open') badge = 'on';
+  else if (hoursLeft < 24) badge = 'ending';
+  else if (percent >= 70) badge = 'hot';
+  else if (ageHours < 72) badge = 'new';
+  return { ...d, percent, remaining: Math.max(0, d.min_buyers - d.count), badge };
+}

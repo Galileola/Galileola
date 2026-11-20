@@ -1,6 +1,8 @@
 <%- include('partials/header') %>
 <% const images = (locals.photos || []).map((p) => photoUrl(p.filename)); if (!images.length && deal.image_url) images.push(deal.image_url); %>
-<div class="deal-layout" id="deal" data-slug="<%= deal.slug %>">
+<% const cat = categoryFor(deal.category); %>
+<% const mood = state.status === 'expired' ? '' : state.minimumReached ? '' : state.count === 0 ? 'Be the first to join! 🥇' : state.percent >= 70 ? 'So close! Just a few more. 🔥' : state.percent >= 50 ? 'Over halfway there! 💪' : 'Off to a good start. 🌱'; %>
+<div class="deal-layout" id="deal" data-slug="<%= deal.slug %>" data-reached="<%= state.minimumReached ? '1' : '0' %>">
   <section class="deal-hero">
     <% if (images.length) { %>
       <div class="gallery">
@@ -14,27 +16,34 @@
         <% } %>
       </div>
     <% } else { %>
-      <div class="placeholder big tone-<%= deal.id % 4 %>" aria-hidden="true"><span><%= deal.product_name.charAt(0).toUpperCase() %></span></div>
+      <div class="placeholder big tone-<%= deal.id % 4 %>" aria-hidden="true"><span><%= cat.emoji %></span></div>
     <% } %>
+    <a class="cat-pill" href="/?category=<%= cat.slug %>#deals"><span aria-hidden="true"><%= cat.emoji %></span> <%= cat.name %></a>
     <h1><%= deal.product_name %></h1>
+    <% if (deal.headline) { %><p class="deal-headline"><%= deal.headline %></p><% } %>
     <p class="price-tag big"><%= formatEuro(deal.price_cents) %> <small>incl. VAT</small></p>
     <p class="muted small">Final price including VAT for every EU country. The VAT share depends on your delivery country and is calculated by Stripe Tax; the price you pay does not change.</p>
-    <% if (deal.description) { %><div class="stack description"><% for (const para of deal.description.split(/\n{2,}/)) { %><p><%= para %></p><% } %></div><% } %>
+    <% if (deal.description) { %><div class="stack description"><% for (const para of deal.description.split(/(?:\r?\n\s*){2,}/)) { %><p><%= para %></p><% } %></div><% } %>
   </section>
 
   <section class="card join-card">
-    <p class="counter"><span data-count><%= state.count %></span> of <%= state.minBuyers %> buyers joined</p>
-    <div class="progress big" aria-hidden="true"><span data-progress data-width="<%= state.percent %>"></span></div>
+    <p class="counter"><span class="counter-num" data-count><%= state.count %></span> of <%= state.minBuyers %> buyers joined</p>
+    <div class="goal-track" aria-hidden="true">
+      <div class="progress big"><span data-progress data-width="<%= state.percent %>"><i class="rocket">🚀</i></span></div>
+      <i class="finish">🏁</i>
+    </div>
     <p data-status-line class="status-line">
       <% if (state.status === 'expired') { %>
         This deal did not reach its minimum. Nobody was charged and all saved payment methods were removed.
       <% } else if (state.minimumReached) { %>
-        Minimum reached. The deal is on!
+        🎉 Minimum reached. The deal is on!
       <% } else { %>
         <span data-remaining><%= state.remaining %></span> more needed.
       <% } %>
     </p>
-    <p class="deadline">Deadline: <%= formatDate(deal.deadline) %> · <span class="countdown" data-countdown data-seconds="<%= state.secondsLeft %>"></span></p>
+    <% if (mood) { %><p class="mood" data-mood><%= mood %></p><% } %>
+    <p class="deadline">Deadline: <%= formatDate(deal.deadline) %></p>
+    <div class="countdown" data-countdown data-seconds="<%= state.secondsLeft %>" role="timer" aria-live="off"></div>
 
     <% if (state.joinable) { %>
       <%- include('partials/join-form') %>
@@ -43,5 +52,13 @@
     <% } %>
   </section>
 </div>
+
+<% if (state.joinable) { %>
+  <section class="card share-card">
+    <h2>👯 Bring your friends</h2>
+    <p class="muted">Every buyer who joins brings the deal closer for everyone. Share it with people who'd love this too.</p>
+    <%- include('partials/share', { shareUrl: baseUrl + '/deals/' + deal.slug, shareText: (deal.headline || deal.product_name) + ' · Join the group deal and we all pay less!' }) %>
+  </section>
+<% } %>
 <script src="/static/js/deal.js"></script>
 <%- include('partials/footer') %>

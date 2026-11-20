@@ -74,6 +74,27 @@ Admin creates deal ──► buyers join (SetupIntent: card / SEPA / iDEAL→SEP
   stays off until `ANTHROPIC_API_KEY` is set; `ASSISTANT_RATE_LIMIT` and
   `ASSISTANT_DAILY_LIMIT` cap usage. If the model declines a message, the API's server-side
   fallback answers on another model.
+- **Categories**: every deal has one of 12 standard categories (Electronics, Home & Kitchen,
+  Fashion, Beauty & Health, Sports & Outdoors, Toys & Kids, Food & Drinks, Garden & DIY, Pets,
+  Books & Hobbies, Car & Motorbike, Other). The home page has a chip for each one with its number of
+  open deals, and `/?category=<slug>` lists one category. The admin picks the category on the New
+  deal form and can change it on the deal page. The list lives in `src/categories.js`. Databases
+  from before categories existed get the new columns at startup, and their deals show as "Other".
+- **Snap a deal** (admin, `/admin/snap`, made for phones): tap the camera button and photograph a
+  product. The photo is shrunk in the browser (which also strips its GPS location) and sent to
+  Claude, which writes the whole ad: product name, headline, category, the deal-page text and a
+  social media post with hashtags. The admin adds the price (and changes the minimum buyers or
+  the 1-week deadline if needed), checks the text and taps **Publish**: the deal is live in the
+  deal list right away, with the photos. Up to 4 photos; "Rewrite with AI" drafts again with all
+  of them and any notes. The AI only uses what it can see or what the notes say, and the price is
+  always the admin's. Without `ANTHROPIC_API_KEY` the page still works, but the admin writes the ad.
+- **Share kit** (admin deal page): the social media post with the deal link, a copy button and
+  share buttons (WhatsApp, Facebook, Telegram, X, email). The public deal page and the "You're
+  in!" page have the same share buttons, so buyers can bring friends.
+- **The fun bits**: category chips, "🔥 Almost there", "⏰ Ends soon" and "✨ New" badges, a rocket on
+  the progress bar, countdown tiles, and confetti when someone joins, when a deal goes live and
+  when a deal reaches its minimum while the page is open. Animations are off for visitors whose
+  device asks for reduced motion.
 - **Write with AI** (admin, New deal form): drafts the product description from the name, the
   notes typed in the description box and up to 4 of the chosen photos (shrunk to 1024 px in the
   browser). It only uses facts from those inputs and fills the form; the admin edits the draft

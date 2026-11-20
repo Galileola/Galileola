@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { formatEuro, formatDate, EU_COUNTRIES } from './util.js';
 import { photoUrl } from './photos.js';
+import { CATEGORIES, categoryFor } from './categories.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -27,7 +28,8 @@ export function createApp(ctx) {
         "script-src 'self' https://js.stripe.com https://*.js.stripe.com",
         "frame-src https://js.stripe.com https://*.js.stripe.com https://hooks.stripe.com",
         "connect-src 'self' https://api.stripe.com",
-        "img-src 'self' https: data:",
+        // blob: lets the snap page preview and shrink camera photos before uploading them.
+        "img-src 'self' https: data: blob:",
         "style-src 'self' 'unsafe-inline'",
         "frame-ancestors 'none'",
         "form-action 'self'",
@@ -41,6 +43,10 @@ export function createApp(ctx) {
     res.locals.title = 'Group Buy';
     res.locals.photoUrl = photoUrl;
     res.locals.assistantEnabled = Boolean(ctx.assistant); // the admin router switches it off
+    res.locals.isAdmin = false; // the admin router switches it on
+    res.locals.categories = CATEGORIES;
+    res.locals.categoryFor = categoryFor;
+    res.locals.baseUrl = config.baseUrl;
     next();
   });
 
@@ -58,13 +64,22 @@ export function createApp(ctx) {
   // Routes are added step by step (see src/routes/*).
   for (const mount of ctx.routes ?? []) mount(app, ctx);
 
-  app.use((req, res) => res.status(404).render('message', { title: 'Not found', heading: 'Page not found', body: '' }));
+  app.use((req, res) =>
+    res.status(404).render('message', {
+      title: 'Not found',
+      emoji: '🙈',
+      heading: 'This page wandered off',
+      body: "We couldn't find it. The deals are still where you left them, though.",
+      link: { href: '/#deals', label: 'Back to the deals' },
+    })
+  );
 
   // eslint-disable-next-line no-unused-vars
   app.use((err, req, res, next) => {
     if (!err.status || err.status >= 500) console.error('[error]', err);
     res.status(err.status || 500).render('message', {
       title: 'Error',
+      emoji: '😵',
       heading: 'Something went wrong',
       body: err.expose ? err.message : 'Please try again in a moment.',
     });

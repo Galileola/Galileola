@@ -1,23 +1,31 @@
 <%- include('../partials/header') %>
-<p><a href="/admin">Admin</a> · <a href="/admin/emails">Email outbox</a></p>
+<a class="snap-cta" href="/admin/snap">
+  <span class="snap-cta-lens" aria-hidden="true">📸</span>
+  <span><strong>Snap a deal</strong><span>Seen a great product? Take a photo. The AI writes the ad, you add the price, and it's live.</span></span>
+</a>
 <h1>Deals</h1>
-<p><a class="button" href="/admin/deals/new">New deal</a> <a class="button secondary" href="/admin/backup.sqlite">Download database backup</a></p>
+<p class="admin-actions"><a class="button secondary" href="/admin/deals/new">New deal (full form)</a> <a class="button secondary" href="/admin/backup.sqlite">Download database backup</a></p>
+<div class="table-scroll">
 <table>
-  <thead><tr><th>Product</th><th>Price</th><th>Buyers</th><th>Deadline</th><th>Status</th></tr></thead>
+  <thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Buyers</th><th>Deadline</th><th>Status</th></tr></thead>
   <tbody>
   <% for (const d of deals) { %>
     <tr>
-      <td class="product-cell">
-        <% if (d.cover) { %><img class="thumb-sm" src="<%= photoUrl(d.cover.filename) %>" alt=""><% } %>
-        <a href="/admin/deals/<%= d.id %>"><%= d.product_name %></a>
+      <td>
+        <div class="product-cell">
+          <% if (d.cover) { %><img class="thumb-sm" src="<%= photoUrl(d.cover.filename) %>" alt=""><% } %>
+          <a href="/admin/deals/<%= d.id %>"><%= d.product_name %></a>
+        </div>
       </td>
+      <td class="nowrap"><% const c = categoryFor(d.category); %><span aria-hidden="true"><%= c.emoji %></span> <%= c.name %></td>
       <td><%= formatEuro(d.price_cents) %></td>
       <td><%= d.count %> / <%= d.min_buyers %></td>
       <td><%= formatDate(d.deadline) %></td>
       <td><span class="badge <%= d.status %>"><%= d.status.replace(/_/g, ' ') %></span></td>
     </tr>
   <% } %>
-  <% if (!deals.length) { %><tr><td colspan="5" class="muted">No deals yet.</td></tr><% } %>
+  <% if (!deals.length) { %><tr><td colspan="6" class="muted">No deals yet. Tap <a href="/admin/snap">📸 Snap a deal</a> to add your first one.</td></tr><% } %>
   </tbody>
 </table>
+</div>
 <%- include('../partials/footer') %>

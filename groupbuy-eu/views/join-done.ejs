@@ -8,13 +8,22 @@
   <% } else if (p.status === 'saved' && deal.status !== 'open') { %>
     <div class="notice ok"><strong>The minimum is reached!</strong> We're collecting <%= amount %> from <%= p.payment_method_label %> now and will email you the result.</div>
   <% } else if (p.status === 'saved') { %>
-    <div class="notice ok"><strong>You're in!</strong> Nothing has been charged.</div>
+    <div class="celebrate" data-confetti-on-load>
+      <p class="celebrate-emoji" aria-hidden="true">🎉</p>
+      <p class="celebrate-title">You're in!</p>
+      <p class="muted">Nothing has been charged.</p>
+    </div>
     <p>We'll charge <strong><%= amount %></strong> incl. VAT<% if (p.tax_cents != null) { %> (VAT <%= formatEuro(p.tax_cents) %>)<% } %> to <%= p.payment_method_label %> only if <%= deal.min_buyers %> buyers join by <%= formatDate(deal.deadline) %>.</p>
-    <p>Buyers so far: <strong><%= state.count %></strong> of <%= state.minBuyers %>. Share the deal to help it reach the minimum.</p>
+    <p>Buyers so far: <strong><%= state.count %></strong> of <%= state.minBuyers %>. Share the deal to help it reach the minimum: every friend who joins brings it closer. 👯</p>
+    <%- include('partials/share', { shareUrl: baseUrl + '/deals/' + deal.slug, shareText: "I just joined the group deal for " + deal.product_name + ". Join too, so we all get it!" }) %>
   <% } else if (p.status === 'charging') { %>
     <div class="notice">The minimum is reached and we're collecting <%= amount %> now. Refresh in a moment.</div>
   <% } else if (p.status === 'paid') { %>
-    <div class="notice ok"><strong>Paid.</strong> We've received <%= amount %>. Your order is confirmed.</div>
+    <div class="celebrate" data-confetti-on-load>
+      <p class="celebrate-emoji" aria-hidden="true">🛍️</p>
+      <p class="celebrate-title">Paid. It's yours!</p>
+      <p class="muted">We've received <%= amount %>. Your order is confirmed.</p>
+    </div>
   <% } else if (p.status === 'processing') { %>
     <div class="notice ok"><strong>Direct debit started.</strong> <%= amount %> is being collected by SEPA Direct Debit. Your place in the order is confirmed.</div>
   <% } else if (p.status === 'failed') { %>

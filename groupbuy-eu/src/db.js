@@ -11,6 +11,9 @@ CREATE TABLE IF NOT EXISTS deals (
   product_name       TEXT NOT NULL,
   description        TEXT NOT NULL DEFAULT '',
   image_url          TEXT NOT NULL DEFAULT '',
+  category           TEXT NOT NULL DEFAULT 'other',  -- slug from src/categories.js
+  headline           TEXT NOT NULL DEFAULT '',       -- short ad line on the deal card
+  social_post        TEXT NOT NULL DEFAULT '',       -- admin-only: ready-made post for social media
   price_cents        INTEGER NOT NULL CHECK (price_cents > 0),   -- gross, VAT included
   currency           TEXT NOT NULL DEFAULT 'eur',
   tax_code           TEXT NOT NULL,
@@ -124,7 +127,28 @@ export function openDb(file, { journalMode = 'WAL' } = {}) {
   const mode = /^(WAL|DELETE|TRUNCATE|PERSIST)$/i.test(journalMode) ? journalMode.toUpperCase() : 'WAL';
   db.exec(`PRAGMA journal_mode = ${mode}; PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 5000;`);
   db.exec(SCHEMA);
+  migrate(db);
   return db;
+}
+
+// Columns added after the first release. CREATE TABLE IF NOT EXISTS leaves an existing table as
+// it is, so databases created before then get the new columns here (once, at startup).
+const ADDED_COLUMNS = {
+  deals: [
+    ['category', "TEXT NOT NULL DEFAULT 'other'"],
+    ['headline', "TEXT NOT NULL DEFAULT ''"],
+    ['social_post', "TEXT NOT NULL DEFAULT ''"],
+  ],
+};
+
+function migrate(db) {
+  for (const [table, columns] of Object.entries(ADDED_COLUMNS)) {
+    const existing = new Set(db.prepare(`PRAGMA table_info(${table})`).all().map((c) => c.name));
+    for (const [name, ddl] of columns) {
+      if (!existing.has(name)) db.exec(`ALTER TABLE ${table} ADD COLUMN ${name} ${ddl}`);
+    }
+  }
+  db.exec('CREATE INDEX IF NOT EXISTS deals_category ON deals(category, status)');
 }
 
 // Consistent copy of a live database (safe while the app runs). Keeps the newest `keep` files.
@@ -170,10 +194,12 @@ export function createRepo(db) {
     insertDeal(d) {
       const r = db
         .prepare(
-          `INSERT INTO deals (slug, product_name, description, image_url, price_cents, currency, tax_code, min_buyers, deadline, created_at)
-           VALUES (:slug, :product_name, :description, :image_url, :price_cents, 'eur', :tax_code, :min_buyers, :deadline, :created_at)`
+          `INSERT INTO deals (slug, product_name, description, image_url, category, headline, social_post,
+             price_cents, currency, tax_code, min_buyers, deadline, created_at)
+           VALUES (:slug, :product_name, :description, :image_url, :category, :headline, :social_post,
+             :price_cents, 'eur', :tax_code, :min_buyers, :deadline, :created_at)`
         )
-        .run(d);
+        .run({ category: 'other', headline: '', social_post: '', ...d });
       return this.dealById(Number(r.lastInsertRowid));
     },
     dealById: (id) => db.prepare('SELECT * FROM deals WHERE id = ?').get(id),
