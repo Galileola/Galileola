@@ -73,8 +73,9 @@ test('plural forms, placeholders and escaping', () => {
   assert.equal(translateHtml('en', 'home.statOpenHtml', { count: 2 }), '<strong>2</strong> open deals');
   assert.equal(translateHtml('en', 'done.failedHtml', { link: '"><script>', date: 'x' }).includes('<script>'), false);
   assert.equal(translate('en', 'no.such.key'), 'no.such.key');
-  const pl = (n) => translate('pl', 'card.moreNeeded', { count: n });
+  const pl = (n) => translate('pl', 'home.statOpenHtml', { count: n }).replace(String(n), 'N');
   assert.notEqual(pl(2), pl(5), 'Polish uses different forms for 2 and 5');
+  assert.equal(pl(2), pl(3));
 });
 
 test('prices and dates follow the language', () => {

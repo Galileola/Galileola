@@ -3,7 +3,11 @@
     "testBanner": "Mod de test: nu se fac plăți reale. Folosește doar carduri și IBAN-uri de test Stripe.",
     "language": "Limbă"
   },
-  "nav": { "categories": "Categorii", "deals": "Oferte", "how": "Cum funcționează" },
+  "nav": {
+    "categories": "Categorii",
+    "deals": "Oferte",
+    "how": "Cum funcționează"
+  },
   "footer": {
     "vat": "Cod TVA {id}",
     "terms": "Termeni și dreptul de retragere",
@@ -33,7 +37,10 @@
     "auto": "Auto și moto",
     "other": "Altele"
   },
-  "price": { "inclVat": "cu TVA", "vat": "TVA {amount}" },
+  "price": {
+    "inclVat": "cu TVA",
+    "vat": "TVA {amount}"
+  },
   "home": {
     "title": "Oferte",
     "titleCategory": "{category}: oferte",
@@ -44,9 +51,21 @@
     "findDeal": "Găsește o ofertă 🛍️",
     "howItWorks": "Cum funcționează",
     "statsLabel": "Chiar acum",
-    "statOpenHtml": { "one": "<strong>{count}</strong> ofertă deschisă", "few": "<strong>{count}</strong> oferte deschise", "other": "<strong>{count}</strong> de oferte deschise" },
-    "statBuyersHtml": { "one": "<strong>{count}</strong> cumpărător înscris", "few": "<strong>{count}</strong> cumpărători înscriși", "other": "<strong>{count}</strong> de cumpărători înscriși" },
-    "statHotHtml": { "one": "<strong>{count}</strong> aproape gata 🔥", "few": "<strong>{count}</strong> aproape gata 🔥", "other": "<strong>{count}</strong> aproape gata 🔥" },
+    "statOpenHtml": {
+      "one": "<strong>{count}</strong> ofertă deschisă",
+      "few": "<strong>{count}</strong> oferte deschise",
+      "other": "<strong>{count}</strong> de oferte deschise"
+    },
+    "statBuyersHtml": {
+      "one": "<strong>{count}</strong> cumpărător înscris",
+      "few": "<strong>{count}</strong> cumpărători înscriși",
+      "other": "<strong>{count}</strong> de cumpărători înscriși"
+    },
+    "statHotHtml": {
+      "one": "<strong>{count}</strong> aproape gata 🔥",
+      "few": "<strong>{count}</strong> aproape gata 🔥",
+      "other": "<strong>{count}</strong> aproape gata 🔥"
+    },
     "step1Title": "🙋 Înscrie-te la o ofertă",
     "step1Text": "Salvează un card, un cont SEPA sau iDEAL. Încă nu se debitează nimic.",
     "step2Title": "📣 Adu-ți prietenii",
@@ -66,7 +85,11 @@
     "ending": "⏰ Se încheie curând",
     "hot": "🔥 Aproape gata",
     "new": "✨ Nou",
-    "moreNeeded": { "one": "Mai e nevoie de {count}", "few": "Mai e nevoie de {count}", "other": "Mai e nevoie de {count}" },
+    "moreNeeded": {
+      "one": "Mai e nevoie de {count}",
+      "few": "Mai e nevoie de {count}",
+      "other": "Mai e nevoie de {count}"
+    },
     "progressLabel": "{count} din {min} cumpărători",
     "metaHtml": "<strong>{count}</strong> din {min} cumpărători · până la {date}"
   },
@@ -80,19 +103,27 @@
     "counterHtml": "{count} din {min} cumpărători înscriși",
     "expired": "Această ofertă nu a atins minimul. Nimeni nu a fost debitat și toate metodele de plată salvate au fost șterse.",
     "reached": "🎉 Minim atins. Oferta are loc!",
-    "remainingHtml": { "one": "Mai e nevoie de {remaining}.", "few": "Mai e nevoie de {remaining}.", "other": "Mai e nevoie de {remaining}." },
+    "remainingHtml": {
+      "one": "Mai e nevoie de {remaining}.",
+      "few": "Mai e nevoie de {remaining}.",
+      "other": "Mai e nevoie de {remaining}."
+    },
     "deadline": "Termen: {date}",
     "closed": "Această ofertă nu mai acceptă cumpărători noi.",
     "shareTitle": "👯 Adu-ți prietenii",
     "shareText": "Fiecare cumpărător nou apropie oferta pentru toți. Distribuie-o celor cărora le-ar plăcea.",
     "shareMessage": "{name} · Înscrie-te la cumpărarea în grup și plătim cu toții mai puțin!"
   },
-  "share": { "native": "📤 Distribuie…", "email": "E-mail", "copy": "🔗 Copiază linkul" },
+  "share": {
+    "native": "📤 Distribuie…",
+    "email": "E-mail",
+    "copy": "🔗 Copiază linkul"
+  },
   "join": {
     "titleNow": "Înscrie-te acum",
     "title": "Înscrie-te la această ofertă",
     "noticeReached": "Minimul a fost deja atins, așa că plata se încasează imediat ce te înscrii.",
-    "noticeHtml": "Acum nu ți se debitează nimic. Salvăm metoda ta de plată și încasăm <strong>{price}</strong> doar dacă se înscriu {min} cumpărători până la {date}. Altfel nu se debitează nimic.",
+    "noticeHtml": "Acum nu ți se debitează nimic. Salvăm metoda ta de plată și încasăm <strong>{price}</strong> doar dacă până la {date} numărul de cumpărători ajunge la {min}. Altfel nu se debitează nimic.",
     "email": "E-mail",
     "name": "Nume complet",
     "addressLegend": "Adresa de livrare (pentru livrare și pentru calculul TVA)",
@@ -124,7 +155,7 @@
   "setup": {
     "pageTitle": "Înscriere: {name}",
     "title": "Salvează metoda de plată",
-    "noChargeHtml": "<strong>Astăzi nu se debitează nimic.</strong> Vei plăti doar dacă se înscriu {min} cumpărători până la {date}. Dacă nu se întâmplă asta, ștergem metoda ta de plată și nu încasăm nimic.",
+    "noChargeHtml": "<strong>Astăzi nu se debitează nimic.</strong> Vei plăti doar dacă până la {date} numărul de cumpărători ajunge la {min}. Dacă nu se întâmplă asta, ștergem metoda ta de plată și nu încasăm nimic.",
     "reached": "Minimul a fost atins, așa că încasăm plata imediat după ce îți salvezi metoda de plată.",
     "failed": "Metoda de plată nu a putut fi configurată. Încearcă din nou sau folosește alta.",
     "methods": "Acceptăm carduri și debit direct SEPA. iDEAL este folosit doar pentru a crea un mandat de debit direct SEPA din contul tău bancar olandez.",
@@ -136,7 +167,7 @@
     "reachedHtml": "<strong>Minimul a fost atins!</strong> Încasăm acum {amount} de pe {method} și îți trimitem rezultatul pe e-mail.",
     "youreIn": "Te-ai înscris!",
     "nothingCharged": "Nu s-a debitat nimic.",
-    "willChargeHtml": "Vom încasa <strong>{amount}</strong> cu TVA{vat} de pe {method} doar dacă se înscriu {min} cumpărători până la {date}.",
+    "willChargeHtml": "Vom încasa <strong>{amount}</strong> cu TVA{vat} de pe {method} doar dacă până la {date} numărul de cumpărători ajunge la {min}.",
     "vatParen": " (TVA {amount})",
     "buyersSoFarHtml": "Cumpărători până acum: <strong>{count}</strong> din {min}. Distribuie oferta ca să atingă minimul: fiecare prieten care se înscrie o apropie. 👯",
     "shareMessage": "Tocmai m-am înscris la cumpărarea în grup pentru {name}. Înscrie-te și tu, ca să-l primim cu toții!",
@@ -230,12 +261,12 @@
     "joinedSubject": "Te-ai înscris: {name}",
     "joinedOpen": "Te-ai înscris la cumpărarea în grup pentru {name}. Nu s-a debitat nimic.",
     "joinedNext": "Ce urmează:",
-    "joinedIfReached": "Dacă se înscriu cel puțin {min} cumpărători până la {date}, încasăm {amount} de pe metoda ta de plată salvată.",
+    "joinedIfReached": "Dacă până la {date} numărul de cumpărători ajunge la cel puțin {min}, încasăm {amount} de pe metoda ta de plată salvată.",
     "joinedIfNot": "Dacă minimul nu este atins până atunci, nu se debitează nimic, iar metoda ta de plată salvată este ștearsă.",
     "joinedReached": "Te-ai înscris la cumpărarea în grup pentru {name}. Oferta a atins deja minimul, așa că încasăm acum {amount}. Îți scriem imediat ce plata trece.",
     "withdrawalRight": "Ai un drept de retragere de 14 zile, explicat în termenii noștri: {link}",
     "reachedSubject": "Oferta are loc! Încasăm plata pentru {name}",
-    "reachedIntro": "Cumpărarea în grup pentru {name} a atins minimul de {min} cumpărători.",
+    "reachedIntro": "Cumpărarea în grup pentru {name} a atins numărul minim de cumpărători ({min}).",
     "reachedCollecting": "Încasăm acum {amount} de pe metoda ta de plată salvată.",
     "reachedSepa": "Aceasta este pre-notificarea pentru debitul direct SEPA: suma {amount}, încasată începând de azi ({date}). De obicei ajunge în cont în câteva zile lucrătoare.",
     "reachedIfFails": "Dacă plata nu trece, îți trimitem un link ca să rezolvi problema. Vei avea 48 de ore.",
@@ -262,7 +293,7 @@
     "closedText": "Nu am putut încasa plata pentru {name} în 48 de ore, așa că comanda ta a fost anulată.",
     "notCharged": "Nu ți s-a debitat nimic.",
     "expiredSubject": "Oferta nu a atins minimul: {name}",
-    "expiredText": "Cumpărarea în grup pentru {name} nu a atins minimul de {min} cumpărători până la {date}.",
+    "expiredText": "Cumpărarea în grup pentru {name} nu a atins numărul minim de cumpărători ({min}) până la {date}.",
     "expiredNobody": "Nimeni nu a fost debitat. Am șters metoda ta de plată salvată.",
     "withdrawnSubject": "Retragere confirmată: {name}",
     "withdrawnText": "Am procesat retragerea ta din {name}.",

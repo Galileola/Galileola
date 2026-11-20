@@ -3,7 +3,11 @@
     "testBanner": "Preskusni način: prava plačila se ne izvajajo. Uporabljajte samo Stripove preskusne kartice in IBAN-e.",
     "language": "Jezik"
   },
-  "nav": { "categories": "Kategorije", "deals": "Ponudbe", "how": "Kako deluje" },
+  "nav": {
+    "categories": "Kategorije",
+    "deals": "Ponudbe",
+    "how": "Kako deluje"
+  },
   "footer": {
     "vat": "ID za DDV {id}",
     "terms": "Pogoji in pravica do odstopa",
@@ -33,7 +37,10 @@
     "auto": "Avto in moto",
     "other": "Drugo"
   },
-  "price": { "inclVat": "z DDV", "vat": "DDV {amount}" },
+  "price": {
+    "inclVat": "z DDV",
+    "vat": "DDV {amount}"
+  },
   "home": {
     "title": "Ponudbe",
     "titleCategory": "{category}: ponudbe",
@@ -44,9 +51,24 @@
     "findDeal": "Poiščite ponudbo 🛍️",
     "howItWorks": "Kako deluje",
     "statsLabel": "Prav zdaj",
-    "statOpenHtml": { "one": "<strong>{count}</strong> odprta ponudba", "two": "<strong>{count}</strong> odprti ponudbi", "few": "<strong>{count}</strong> odprte ponudbe", "other": "<strong>{count}</strong> odprtih ponudb" },
-    "statBuyersHtml": { "one": "<strong>{count}</strong> kupec se je pridružil", "two": "<strong>{count}</strong> kupca sta se pridružila", "few": "<strong>{count}</strong> kupci so se pridružili", "other": "<strong>{count}</strong> kupcev se je pridružilo" },
-    "statHotHtml": { "one": "<strong>{count}</strong> skoraj polna 🔥", "two": "<strong>{count}</strong> skoraj polni 🔥", "few": "<strong>{count}</strong> skoraj polne 🔥", "other": "<strong>{count}</strong> skoraj polnih 🔥" },
+    "statOpenHtml": {
+      "one": "<strong>{count}</strong> odprta ponudba",
+      "two": "<strong>{count}</strong> odprti ponudbi",
+      "few": "<strong>{count}</strong> odprte ponudbe",
+      "other": "<strong>{count}</strong> odprtih ponudb"
+    },
+    "statBuyersHtml": {
+      "one": "<strong>{count}</strong> kupec se je pridružil",
+      "two": "<strong>{count}</strong> kupca sta se pridružila",
+      "few": "<strong>{count}</strong> kupci so se pridružili",
+      "other": "<strong>{count}</strong> kupcev se je pridružilo"
+    },
+    "statHotHtml": {
+      "one": "<strong>{count}</strong> skoraj polna 🔥",
+      "two": "<strong>{count}</strong> skoraj polni 🔥",
+      "few": "<strong>{count}</strong> skoraj polne 🔥",
+      "other": "<strong>{count}</strong> skoraj polnih 🔥"
+    },
     "step1Title": "🙋 Pridružite se",
     "step1Text": "Shranite kartico, račun SEPA ali iDEAL. Zaenkrat se nič ne bremeni.",
     "step2Title": "📣 Pripeljite prijatelje",
@@ -66,7 +88,12 @@
     "ending": "⏰ Kmalu se izteče",
     "hot": "🔥 Skoraj polna",
     "new": "✨ Novo",
-    "moreNeeded": { "one": "Manjka še {count}", "two": "Manjkata še {count}", "few": "Manjkajo še {count}", "other": "Manjka še {count}" },
+    "moreNeeded": {
+      "one": "Manjka še {count}",
+      "two": "Manjkata še {count}",
+      "few": "Manjkajo še {count}",
+      "other": "Manjka še {count}"
+    },
     "progressLabel": "{count} od {min} kupcev",
     "metaHtml": "<strong>{count}</strong> od {min} kupcev · do {date}"
   },
@@ -80,19 +107,28 @@
     "counterHtml": "Pridružilo se je {count} od {min} kupcev",
     "expired": "Ta ponudba ni dosegla minimuma. Nikogar nismo bremenili, vsi shranjeni načini plačila pa so bili odstranjeni.",
     "reached": "🎉 Minimum dosežen. Ponudba se uresniči!",
-    "remainingHtml": { "one": "Manjka še {remaining}.", "two": "Manjkata še {remaining}.", "few": "Manjkajo še {remaining}.", "other": "Manjka še {remaining}." },
+    "remainingHtml": {
+      "one": "Manjka še {remaining}.",
+      "two": "Manjkata še {remaining}.",
+      "few": "Manjkajo še {remaining}.",
+      "other": "Manjka še {remaining}."
+    },
     "deadline": "Rok: {date}",
     "closed": "Ta ponudba ne sprejema več novih kupcev.",
     "shareTitle": "👯 Pripeljite prijatelje",
     "shareText": "Vsak nov kupec približa ponudbo vsem. Delite jo s tistimi, ki jim bo tudi všeč.",
     "shareMessage": "{name} · Pridruži se skupinskemu nakupu in vsi bomo plačali manj!"
   },
-  "share": { "native": "📤 Deli…", "email": "E-pošta", "copy": "🔗 Kopiraj povezavo" },
+  "share": {
+    "native": "📤 Deli…",
+    "email": "E-pošta",
+    "copy": "🔗 Kopiraj povezavo"
+  },
   "join": {
     "titleNow": "Pridružite se zdaj",
     "title": "Pridružite se tej ponudbi",
     "noticeReached": "Minimum je že dosežen, zato bomo plačilo bremenili takoj, ko se pridružite.",
-    "noticeHtml": "Zdaj vas ne bremenimo. Shranimo vaš način plačila in <strong>{price}</strong> bremenimo le, če se do {date} pridruži {min} kupcev. Sicer se nič ne bremeni.",
+    "noticeHtml": "Zdaj vas ne bremenimo. Shranimo vaš način plačila in <strong>{price}</strong> bremenimo le, če število kupcev do {date} doseže {min}. Sicer se nič ne bremeni.",
     "email": "E-pošta",
     "name": "Ime in priimek",
     "addressLegend": "Naslov za dostavo (za dostavo in izračun DDV)",
@@ -124,7 +160,7 @@
   "setup": {
     "pageTitle": "Pridružitev: {name}",
     "title": "Shranite način plačila",
-    "noChargeHtml": "<strong>Danes brez bremenitve.</strong> Plačali boste le, če se do {date} pridruži {min} kupcev. Če se to ne zgodi, odstranimo vaš način plačila in ne bremenimo ničesar.",
+    "noChargeHtml": "<strong>Danes brez bremenitve.</strong> Plačali boste le, če število kupcev do {date} doseže {min}. Če se to ne zgodi, odstranimo vaš način plačila in ne bremenimo ničesar.",
     "reached": "Minimum je dosežen, zato bomo plačilo bremenili takoj, ko shranite način plačila.",
     "failed": "Tega načina plačila ni bilo mogoče nastaviti. Poskusite znova ali uporabite drugega.",
     "methods": "Sprejemamo kartice in neposredno bremenitev SEPA. iDEAL se uporablja le za ustvarjanje pooblastila za neposredno bremenitev SEPA z vašega nizozemskega bančnega računa.",
@@ -136,7 +172,7 @@
     "reachedHtml": "<strong>Minimum je dosežen!</strong> Zdaj bremenimo {amount} z {method} in vam rezultat pošljemo po e-pošti.",
     "youreIn": "Ste zraven!",
     "nothingCharged": "Nič ni bilo bremenjeno.",
-    "willChargeHtml": "<strong>{amount}</strong> z DDV{vat} bomo z {method} bremenili le, če se do {date} pridruži {min} kupcev.",
+    "willChargeHtml": "<strong>{amount}</strong> z DDV{vat} bomo z {method} bremenili le, če število kupcev do {date} doseže {min}.",
     "vatParen": " (DDV {amount})",
     "buyersSoFarHtml": "Kupcev doslej: <strong>{count}</strong> od {min}. Delite ponudbo, da doseže minimum: vsak prijatelj, ki se pridruži, jo približa. 👯",
     "shareMessage": "Pravkar sem se pridružil(a) skupinskemu nakupu: {name}. Pridruži se tudi ti, da ga dobimo vsi!",
@@ -230,12 +266,12 @@
     "joinedSubject": "Pridružili ste se: {name}",
     "joinedOpen": "Pridružili ste se skupinskemu nakupu: {name}. Nič ni bilo bremenjeno.",
     "joinedNext": "Kaj sledi:",
-    "joinedIfReached": "Če se do {date} pridruži vsaj {min} kupcev, bomo {amount} bremenili z vašega shranjenega načina plačila.",
+    "joinedIfReached": "Če število kupcev do {date} doseže vsaj {min}, bomo {amount} bremenili z vašega shranjenega načina plačila.",
     "joinedIfNot": "Če minimum do takrat ni dosežen, se nič ne bremeni, vaš shranjeni način plačila pa se odstrani.",
     "joinedReached": "Pridružili ste se skupinskemu nakupu: {name}. Ponudba je minimum že dosegla, zato zdaj bremenimo {amount}. Pisali vam bomo takoj, ko bo plačilo uspelo.",
     "withdrawalRight": "Imate pravico do odstopa v 14 dneh, kot je pojasnjeno v naših pogojih: {link}",
     "reachedSubject": "Ponudba se uresniči! Bremenimo plačilo za {name}",
-    "reachedIntro": "Skupinski nakup {name} je dosegel minimum {min} kupcev.",
+    "reachedIntro": "Skupinski nakup {name} je dosegel najmanjše število kupcev ({min}).",
     "reachedCollecting": "Zdaj bremenimo {amount} z vašega shranjenega načina plačila.",
     "reachedSepa": "To je vaše predhodno obvestilo o neposredni bremenitvi SEPA: znesek {amount}, ki se bremeni od danes ({date}). Na računu je običajno viden v nekaj delovnih dneh.",
     "reachedIfFails": "Če plačilo ne uspe, vam pošljemo povezavo, da to popravite. Imeli boste 48 ur.",
@@ -262,7 +298,7 @@
     "closedText": "Vašega plačila za {name} nismo mogli bremeniti v 48 urah, zato je bilo vaše naročilo preklicano.",
     "notCharged": "Nič vam ni bilo zaračunano.",
     "expiredSubject": "Ponudba ni dosegla minimuma: {name}",
-    "expiredText": "Skupinski nakup {name} do {date} ni dosegel minimuma {min} kupcev.",
+    "expiredText": "Skupinski nakup {name} do {date} ni dosegel najmanjšega števila kupcev ({min}).",
     "expiredNobody": "Nikogar nismo bremenili. Vaš shranjeni način plačila smo odstranili.",
     "withdrawnSubject": "Odstop potrjen: {name}",
     "withdrawnText": "Obdelali smo vaš odstop od nakupa: {name}.",

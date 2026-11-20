@@ -3,7 +3,11 @@
     "testBanner": "Testovací režim: nevykonávajú sa žiadne skutočné platby. Používajte len testovacie karty a IBAN od Stripe.",
     "language": "Jazyk"
   },
-  "nav": { "categories": "Kategórie", "deals": "Ponuky", "how": "Ako to funguje" },
+  "nav": {
+    "categories": "Kategórie",
+    "deals": "Ponuky",
+    "how": "Ako to funguje"
+  },
   "footer": {
     "vat": "IČ DPH {id}",
     "terms": "Obchodné podmienky a odstúpenie",
@@ -33,7 +37,10 @@
     "auto": "Auto a moto",
     "other": "Ostatné"
   },
-  "price": { "inclVat": "s DPH", "vat": "DPH {amount}" },
+  "price": {
+    "inclVat": "s DPH",
+    "vat": "DPH {amount}"
+  },
   "home": {
     "title": "Ponuky",
     "titleCategory": "{category}: ponuky",
@@ -44,9 +51,24 @@
     "findDeal": "Nájsť ponuku 🛍️",
     "howItWorks": "Ako to funguje",
     "statsLabel": "Práve teraz",
-    "statOpenHtml": { "one": "<strong>{count}</strong> otvorená ponuka", "few": "<strong>{count}</strong> otvorené ponuky", "many": "<strong>{count}</strong> otvorenej ponuky", "other": "<strong>{count}</strong> otvorených ponúk" },
-    "statBuyersHtml": { "one": "<strong>{count}</strong> zákazník sa pridal", "few": "<strong>{count}</strong> zákazníci sa pridali", "many": "<strong>{count}</strong> zákazníka sa pridalo", "other": "<strong>{count}</strong> zákazníkov sa pridalo" },
-    "statHotHtml": { "one": "<strong>{count}</strong> takmer hotová 🔥", "few": "<strong>{count}</strong> takmer hotové 🔥", "many": "<strong>{count}</strong> takmer hotovej 🔥", "other": "<strong>{count}</strong> takmer hotových 🔥" },
+    "statOpenHtml": {
+      "one": "<strong>{count}</strong> otvorená ponuka",
+      "few": "<strong>{count}</strong> otvorené ponuky",
+      "many": "<strong>{count}</strong> otvorenej ponuky",
+      "other": "<strong>{count}</strong> otvorených ponúk"
+    },
+    "statBuyersHtml": {
+      "one": "<strong>{count}</strong> zákazník sa pridal",
+      "few": "<strong>{count}</strong> zákazníci sa pridali",
+      "many": "<strong>{count}</strong> zákazníka sa pridalo",
+      "other": "<strong>{count}</strong> zákazníkov sa pridalo"
+    },
+    "statHotHtml": {
+      "one": "<strong>{count}</strong> takmer hotová 🔥",
+      "few": "<strong>{count}</strong> takmer hotové 🔥",
+      "many": "<strong>{count}</strong> takmer hotovej 🔥",
+      "other": "<strong>{count}</strong> takmer hotových 🔥"
+    },
     "step1Title": "🙋 Pridajte sa",
     "step1Text": "Uložte kartu, účet SEPA alebo iDEAL. Zatiaľ sa nič nestrháva.",
     "step2Title": "📣 Pozvite priateľov",
@@ -66,7 +88,12 @@
     "ending": "⏰ Čoskoro končí",
     "hot": "🔥 Takmer hotovo",
     "new": "✨ Novinka",
-    "moreNeeded": { "one": "Chýba ešte {count}", "few": "Chýbajú ešte {count}", "many": "Chýba ešte {count}", "other": "Chýba ešte {count}" },
+    "moreNeeded": {
+      "one": "Chýba ešte {count}",
+      "few": "Chýbajú ešte {count}",
+      "many": "Chýba ešte {count}",
+      "other": "Chýba ešte {count}"
+    },
     "progressLabel": "{count} z {min} zákazníkov",
     "metaHtml": "<strong>{count}</strong> z {min} zákazníkov · do {date}"
   },
@@ -80,19 +107,28 @@
     "counterHtml": "Pridalo sa {count} z {min} zákazníkov",
     "expired": "Táto ponuka nedosiahla minimum. Nikomu sa nič nestrhlo a všetky uložené platobné metódy boli odstránené.",
     "reached": "🎉 Minimum dosiahnuté. Ponuka sa uskutoční!",
-    "remainingHtml": { "one": "Chýba ešte {remaining}.", "few": "Chýbajú ešte {remaining}.", "many": "Chýba ešte {remaining}.", "other": "Chýba ešte {remaining}." },
+    "remainingHtml": {
+      "one": "Chýba ešte {remaining}.",
+      "few": "Chýbajú ešte {remaining}.",
+      "many": "Chýba ešte {remaining}.",
+      "other": "Chýba ešte {remaining}."
+    },
     "deadline": "Termín: {date}",
     "closed": "Táto ponuka už neprijíma nových zákazníkov.",
     "shareTitle": "👯 Priveďte priateľov",
     "shareText": "Každý nový zákazník približuje ponuku pre všetkých. Zdieľajte ju s tými, ktorým sa bude páčiť.",
     "shareMessage": "{name} · Pridaj sa ku skupinovému nákupu a všetci zaplatíme menej!"
   },
-  "share": { "native": "📤 Zdieľať…", "email": "E-mail", "copy": "🔗 Kopírovať odkaz" },
+  "share": {
+    "native": "📤 Zdieľať…",
+    "email": "E-mail",
+    "copy": "🔗 Kopírovať odkaz"
+  },
   "join": {
     "titleNow": "Pridať sa teraz",
     "title": "Pridať sa k tejto ponuke",
     "noticeReached": "Minimum je už dosiahnuté, takže platba sa strhne hneď, ako sa pridáte.",
-    "noticeHtml": "Teraz sa vám nič nestrhne. Uložíme vašu platobnú metódu a <strong>{price}</strong> strhneme len vtedy, ak sa do {date} pridá {min} zákazníkov. Inak sa nestrhne nič.",
+    "noticeHtml": "Teraz sa vám nič nestrhne. Uložíme vašu platobnú metódu a <strong>{price}</strong> strhneme len vtedy, ak počet zákazníkov do {date} dosiahne {min}. Inak sa nestrhne nič.",
     "email": "E-mail",
     "name": "Meno a priezvisko",
     "addressLegend": "Doručovacia adresa (na doručenie a výpočet DPH)",
@@ -124,7 +160,7 @@
   "setup": {
     "pageTitle": "Pridať sa: {name}",
     "title": "Uložte platobnú metódu",
-    "noChargeHtml": "<strong>Dnes sa nič nestrhne.</strong> Zaplatíte len vtedy, ak sa do {date} pridá {min} zákazníkov. Ak sa tak nestane, vašu platobnú metódu odstránime a nestrhneme nič.",
+    "noChargeHtml": "<strong>Dnes sa nič nestrhne.</strong> Zaplatíte len vtedy, ak počet zákazníkov do {date} dosiahne {min}. Ak sa tak nestane, vašu platobnú metódu odstránime a nestrhneme nič.",
     "reached": "Minimum je dosiahnuté, takže platbu strhneme hneď po uložení platobnej metódy.",
     "failed": "Túto platobnú metódu sa nepodarilo nastaviť. Skúste to znova alebo použite inú.",
     "methods": "Prijímame karty a inkaso SEPA. iDEAL slúži len na zriadenie mandátu na inkaso SEPA z vášho holandského bankového účtu.",
@@ -136,7 +172,7 @@
     "reachedHtml": "<strong>Minimum je dosiahnuté!</strong> Práve strhávame {amount} z {method} a výsledok vám pošleme e-mailom.",
     "youreIn": "Ste v tom!",
     "nothingCharged": "Nič sa nestrhlo.",
-    "willChargeHtml": "<strong>{amount}</strong> s DPH{vat} strhneme z {method} len vtedy, ak sa do {date} pridá {min} zákazníkov.",
+    "willChargeHtml": "<strong>{amount}</strong> s DPH{vat} strhneme z {method} len vtedy, ak počet zákazníkov do {date} dosiahne {min}.",
     "vatParen": " (DPH {amount})",
     "buyersSoFarHtml": "Zákazníkov zatiaľ: <strong>{count}</strong> z {min}. Zdieľajte ponuku, nech dosiahne minimum: každý priateľ, ktorý sa pridá, ju priblíži. 👯",
     "shareMessage": "Práve som sa pridal(a) ku skupinovému nákupu: {name}. Pridaj sa aj ty, nech to dostaneme všetci!",
@@ -230,12 +266,12 @@
     "joinedSubject": "Pridali ste sa: {name}",
     "joinedOpen": "Pridali ste sa ku skupinovému nákupu: {name}. Nič sa nestrhlo.",
     "joinedNext": "Čo bude ďalej:",
-    "joinedIfReached": "Ak sa do {date} pridá aspoň {min} zákazníkov, strhneme {amount} z vašej uloženej platobnej metódy.",
+    "joinedIfReached": "Ak počet zákazníkov do {date} dosiahne aspoň {min}, strhneme {amount} z vašej uloženej platobnej metódy.",
     "joinedIfNot": "Ak sa dovtedy minimum nedosiahne, nič sa nestrhne a vaša uložená platobná metóda bude odstránená.",
     "joinedReached": "Pridali ste sa ku skupinovému nákupu: {name}. Ponuka už dosiahla minimum, takže práve strhávame {amount}. Hneď ako platba prejde, napíšeme vám.",
     "withdrawalRight": "Máte právo odstúpiť od zmluvy do 14 dní, ako vysvetľujú naše obchodné podmienky: {link}",
     "reachedSubject": "Ponuka sa uskutoční! Strhávame platbu za {name}",
-    "reachedIntro": "Skupinový nákup {name} dosiahol minimum {min} zákazníkov.",
+    "reachedIntro": "Skupinový nákup {name} dosiahol minimálny počet zákazníkov ({min}).",
     "reachedCollecting": "Práve strhávame {amount} z vašej uloženej platobnej metódy.",
     "reachedSepa": "Toto je predbežné oznámenie o inkase SEPA: suma {amount}, strhnutá od dnešného dňa ({date}). Zvyčajne sa na účte prejaví do niekoľkých pracovných dní.",
     "reachedIfFails": "Ak platba neprejde, pošleme vám odkaz, aby ste to mohli napraviť. Budete mať 48 hodín.",
@@ -262,7 +298,7 @@
     "closedText": "Platbu za {name} sa nám nepodarilo strhnúť do 48 hodín, preto bola vaša objednávka zrušená.",
     "notCharged": "Nič sa vám nestrhlo.",
     "expiredSubject": "Ponuka nedosiahla minimum: {name}",
-    "expiredText": "Skupinový nákup {name} nedosiahol do {date} minimum {min} zákazníkov.",
+    "expiredText": "Skupinový nákup {name} do {date} nedosiahol minimálny počet zákazníkov ({min}).",
     "expiredNobody": "Nikomu sa nič nestrhlo. Vašu uloženú platobnú metódu sme odstránili.",
     "withdrawnSubject": "Odstúpenie potvrdené: {name}",
     "withdrawnText": "Spracovali sme vaše odstúpenie od nákupu: {name}.",
