@@ -38,7 +38,7 @@ const COMPLETE = { name: 'SEK Digital OÜ', address: 'Narva mnt 5, Tallinn', ema
 async function startApp({ live = true, business } = {}) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'gb-live-'));
   const config = {
-    baseUrl: 'https://shop.test', adminUser: 'admin', adminPassword: 'secret-pw', appSecret: 'test-secret-0123456789abcdef',
+    baseUrl: 'https://shop.test', adminUser: 'admin', adminPassword: 'a-long-secret-pw', appSecret: 'test-secret-0123456789abcdef',
     defaultTaxCode: 'txcd_99999999', uploadDir: path.join(dir, 'uploads'), trustProxy: false, quietEmails: true,
     paymentsMode: live ? 'live' : 'test', smtpUrl: 'smtps://u:p@mail.test', stripeWebhookSecret: 'whsec_x',
     business: business ?? { name: '[Your company name]', address: '[Street]', email: '[contact@example.com]', vatId: '[EU VAT number]', registration: '[Register]', supervisoryAuthority: '[DPA]' },
@@ -50,7 +50,7 @@ async function startApp({ live = true, business } = {}) {
   const server = createApp(ctx).listen(0);
   await new Promise((resolve) => server.once('listening', resolve));
   const url = `http://127.0.0.1:${server.address().port}`;
-  const auth = { Authorization: 'Basic ' + Buffer.from('admin:secret-pw').toString('base64') };
+  const auth = { Authorization: 'Basic ' + Buffer.from('admin:a-long-secret-pw').toString('base64') };
   const deal = repo.insertDeal({ slug: 'lamp-1', product_name: 'Oak lamp', description: '', image_url: '', price_cents: 4900, tax_code: 'txcd_99999999', min_buyers: 2, deadline: new Date(Date.now() + 3 * 86400000).toISOString(), created_at: new Date().toISOString() });
   const get = async (p, headers = {}) => (await fetch(url + p, { headers })).text();
   return { url, auth, repo, ctx, deal, get, close: () => server.close() };
@@ -73,7 +73,8 @@ test('live mode: orders wait until the company details and legal pages are compl
   assert.match(admin, /Real payments are on, but the shop isn&#39;t taking new orders yet|Real payments are on, but the shop isn't taking new orders yet/);
   assert.match(admin, /Company details, Terms &amp; withdrawal right, Privacy policy/);
   const checklist = await app.get('/admin/go-live', app.auth);
-  assert.match(checklist, /<strong>3 of 6<\/strong> required items done/);
+  assert.match(checklist, /<strong>4 of 7<\/strong> required items done/);
+  assert.match(checklist, /Two-step login[\s\S]*?Recommended/);
   assert.match(checklist, /Still has \d+ placeholders, for example: \[Delivery costs/);
   assert.doesNotMatch(await app.get(`/admin/deals/${app.deal.id}`, app.auth), /Test-mode tools/);
   const tool = await fetch(`${app.url}/admin/deals/${app.deal.id}/test/expire-now`, { method: 'POST', headers: { ...app.auth, 'Content-Type': 'application/x-www-form-urlencoded' }, body: `_csrf=${hmac('test-secret-0123456789abcdef', 'admin-csrf')}` });
@@ -102,4 +103,14 @@ test('webhooks from the other Stripe mode are refused', async (t) => {
   assert.equal((await send(testShop, false)).status, 200);
   assert.match(await testShop.get('/admin', testShop.auth), /Test mode: no real payments/);
   assert.equal(goLiveChecks(testShop.ctx).find((c) => c.label === 'Payments').ok, false);
+});
+
+test('a short admin password from the hosting panel blocks going live', async () => {
+  const { goLiveChecks: checks } = await import('../src/goLive.js');
+  const repo = { legalText: () => null, getAdminSetting: () => null };
+  const short = checks({ config: { business: {}, adminPassword: 'change-me', appSecret: 'x'.repeat(20), paymentsMode: 'live' }, repo }).find((c) => c.label === 'Admin password');
+  assert.equal(short.ok, false);
+  assert.equal(short.required, true);
+  const long = checks({ config: { business: {}, adminPassword: 'correct-horse-battery', appSecret: 'x'.repeat(20) }, repo }).find((c) => c.label === 'Admin password');
+  assert.equal(long.ok, true);
 });

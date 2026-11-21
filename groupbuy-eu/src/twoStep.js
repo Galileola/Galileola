@@ -111,6 +111,28 @@ export function readCookie(req, name = COOKIE) {
   return '';
 }
 
+// The app's secret is stored encrypted (AES-256-GCM with a key derived from APP_SECRET), so a
+// copy of the database alone doesn't reveal it. Changing APP_SECRET makes it unreadable: then use
+// ADMIN_TWO_STEP=off and set two-step login up again.
+const keyFor = (appSecret) => crypto.createHash('sha256').update(`admin-two-step-key:${appSecret}`).digest();
+export function sealSecret(appSecret, secret) {
+  const iv = crypto.randomBytes(12);
+  const cipher = crypto.createCipheriv('aes-256-gcm', keyFor(appSecret), iv);
+  const data = Buffer.concat([cipher.update(secret, 'utf8'), cipher.final()]);
+  return `v1:${Buffer.concat([iv, cipher.getAuthTag(), data]).toString('base64url')}`;
+}
+export function openSecret(appSecret, sealed) {
+  if (!String(sealed).startsWith('v1:')) return sealed; // stored before encryption existed
+  try {
+    const buf = Buffer.from(String(sealed).slice(3), 'base64url');
+    const decipher = crypto.createDecipheriv('aes-256-gcm', keyFor(appSecret), buf.subarray(0, 12));
+    decipher.setAuthTag(buf.subarray(12, 28));
+    return Buffer.concat([decipher.update(buf.subarray(28)), decipher.final()]).toString('utf8');
+  } catch {
+    return null;
+  }
+}
+
 export function createTwoStep({ config, repo, clock }) {
   const read = (key) => {
     try {
@@ -120,14 +142,21 @@ export function createTwoStep({ config, repo, clock }) {
       return null;
     }
   };
-  const write = (key, value) => repo.setAdminSetting(key, JSON.stringify(value), clock.now().toISOString());
+  const write = (key, value) =>
+    repo.setAdminSetting(key, JSON.stringify({ ...value, secret: sealSecret(config.appSecret, value.secret) }), clock.now().toISOString());
+  const unseal = (s) => {
+    if (!s?.secret) return null;
+    const secret = openSecret(config.appSecret, s.secret);
+    return secret ? { ...s, secret } : { ...s, secret: null, unreadable: true };
+  };
+  // Turned on, with its secret readable (an unreadable one locks the admin until ADMIN_TWO_STEP=off).
   const stored = () => {
-    const s = read(KEY);
-    return s?.secret ? s : null;
+    const s = unseal(read(KEY));
+    return s?.secret || s?.unreadable ? s : null;
   };
   const backupHash = (code) => hmac(config.appSecret, `admin-backup-code:${normaliseBackup(code)}`);
   // Changes whenever two-step login is turned on again, so older "remember me" cookies stop working.
-  const version = (s) => hmac(config.appSecret, `admin-2fa-version:${s.secret}:${s.enabledAt}`).slice(0, 16);
+  const version = (s) => hmac(config.appSecret, `admin-2fa-version:${s.secret ?? 'unreadable'}:${s.enabledAt}`).slice(0, 16);
   const switchedOff = () => config.adminTwoStep === 'off';
 
   const api = {
@@ -145,7 +174,7 @@ export function createTwoStep({ config, repo, clock }) {
       return api.pendingSetup(issuerName);
     },
     pendingSetup(issuerName = 'Group Buy') {
-      const p = read(PENDING_KEY);
+      const p = unseal(read(PENDING_KEY));
       if (!p?.secret || clock.now() - new Date(p.createdAt) > PENDING_MS) return null;
       const url = otpauthUrl({ secret: p.secret, issuer: issuerName, account: config.adminUser || 'admin' });
       return { secret: p.secret, grouped: p.secret.match(/.{1,4}/g).join(' '), url, svg: qrSvg(url) };
@@ -153,7 +182,7 @@ export function createTwoStep({ config, repo, clock }) {
     // Step 2: the first code from the app proves it was set up. Returns the backup codes (shown
     // once), or null when the code is wrong.
     confirmSetup(code) {
-      const p = read(PENDING_KEY);
+      const p = unseal(read(PENDING_KEY));
       if (!p?.secret || clock.now() - new Date(p.createdAt) > PENDING_MS) return null;
       const step = matchTotp(p.secret, code, clock.now().getTime());
       if (step === null) return null;
@@ -167,7 +196,7 @@ export function createTwoStep({ config, repo, clock }) {
     // { ok, backup: true when a backup code was used, backupLeft }.
     verify(code) {
       const s = stored();
-      if (!s) return { ok: false };
+      if (!s || !s.secret) return { ok: false };
       const step = matchTotp(s.secret, code, clock.now().getTime(), s.lastStep ?? -1);
       if (step !== null) {
         write(KEY, { ...s, lastStep: step });

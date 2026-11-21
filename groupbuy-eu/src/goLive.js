@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { BUSINESS_FIELDS, isPlaceholder } from './businessSettings.js';
 import { LEGAL_PAGES } from './legalText.js';
 import { loadSharp } from './photos.js';
+import { MIN_PASSWORD_LENGTH, passwordChangedInAdmin } from './adminPassword.js';
 
 // Admin → Settings → Go-live checklist, and the safety net for real payments: with
 // PAYMENTS_MODE=live the shop only takes new orders while every required check passes (complete
@@ -67,6 +68,26 @@ export function goLiveChecks(ctx) {
       ? `STRIPE_WEBHOOK_SECRET is set. The webhook must point to ${config.baseUrl}/webhooks/stripe in Stripe's ${live ? 'live' : 'test'} mode.`
       : 'STRIPE_WEBHOOK_SECRET is not set, so payments that finish later (SEPA, 3-D Secure) are not recorded.',
     required: true,
+  });
+  const strongPassword = passwordChangedInAdmin(config, repo) || String(config.adminPassword ?? '').length >= MIN_PASSWORD_LENGTH;
+  checks.push({
+    label: 'Admin password',
+    ok: strongPassword,
+    detail: strongPassword
+      ? 'Long enough.'
+      : `ADMIN_PASSWORD is shorter than ${MIN_PASSWORD_LENGTH} characters. Change it in Settings → Password (or set a longer one in the hosting panel).`,
+    href: '/admin/password',
+    required: true,
+  });
+  const twoStep = repo?.getAdminSetting?.('admin_two_step');
+  checks.push({
+    label: 'Two-step login',
+    ok: Boolean(twoStep) && config.adminTwoStep !== 'off',
+    detail: twoStep && config.adminTwoStep !== 'off'
+      ? 'On: the admin asks for a code from your phone after the password.'
+      : 'Recommended: a code from your phone after the password, so a stolen password alone can\'t open the admin.',
+    href: '/admin/security',
+    required: false,
   });
   checks.push({
     label: 'Payments',

@@ -134,3 +134,17 @@ test('admin: logo and share picture uploads', { skip: !sharp && 'sharp is not in
   assert.match(after, /share-default.jpg/);
   assert.equal((await fetch(app.base + logoUrl)).status, 404, 'the old files are removed');
 });
+
+test('security headers and security.txt', async (t) => {
+  const app = await startApp({ business: { name: 'SEK', address: 'A', email: 'security@sek.test', vatId: 'EE1', registration: 'R', supervisoryAuthority: 'D' } });
+  t.after(app.close);
+  const res = await fetch(`${app.base}/?lang=en`);
+  assert.equal(res.headers.get('strict-transport-security'), 'max-age=31536000');
+  assert.match(res.headers.get('permissions-policy'), /camera=\(\).*payment=\(self "https:\/\/js.stripe.com"\)/);
+  assert.equal(res.headers.get('cross-origin-opener-policy'), 'same-origin-allow-popups');
+  assert.match(res.headers.get('content-security-policy'), /frame-ancestors 'none'.*base-uri 'self'; object-src 'none'/);
+  assert.equal(res.headers.get('x-frame-options'), 'DENY');
+  assert.equal(res.headers.get('x-powered-by'), null);
+  const txt = await (await fetch(`${app.base}/.well-known/security.txt`)).text();
+  assert.match(txt, /^Contact: mailto:security@sek.test\nExpires: \d{4}-/);
+});

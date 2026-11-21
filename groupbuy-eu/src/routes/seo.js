@@ -30,6 +30,17 @@ export function seoRoutes(app, ctx) {
       );
   });
 
+  // How to report a security problem (RFC 9116), to the shop's contact email.
+  app.get('/.well-known/security.txt', (req, res) => {
+    const email = config.business?.email;
+    if (!email || email.startsWith('[')) return res.status(404).type('text/plain').send('Not found');
+    const expires = new Date(clock.now().getTime() + 180 * 24 * 3600_000).toISOString();
+    res
+      .type('text/plain')
+      .set('Cache-Control', 'public, max-age=86400')
+      .send([`Contact: mailto:${email}`, `Expires: ${expires}`, 'Preferred-Languages: en', `Canonical: ${config.baseUrl}/.well-known/security.txt`, ''].join('\n'));
+  });
+
   // The web app manifest, so phones can add the shop to the home screen with its icon.
   app.get('/manifest.webmanifest', (req, res) => {
     const brand = currentBrand(config);

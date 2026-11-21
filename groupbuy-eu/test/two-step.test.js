@@ -172,3 +172,12 @@ test('ADMIN_TWO_STEP=off in the hosting panel lets the password alone in (lost p
   assert.equal(res.status, 200);
   assert.match(await res.text(), /switched off in the hosting panel/);
 });
+
+test('the app secret is stored encrypted; a different APP_SECRET cannot read it', async () => {
+  const { sealSecret, openSecret } = await import('../src/twoStep.js');
+  const sealed = sealSecret('app-secret-one-1234567', 'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ');
+  assert.match(sealed, /^v1:/);
+  assert.doesNotMatch(sealed, /GEZDGNBV/);
+  assert.equal(openSecret('app-secret-one-1234567', sealed), 'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ');
+  assert.equal(openSecret('another-app-secret-999', sealed), null);
+});

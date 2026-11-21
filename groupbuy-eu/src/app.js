@@ -57,8 +57,17 @@ export function createApp(ctx) {
         "style-src 'self' 'unsafe-inline'",
         "frame-ancestors 'none'",
         "form-action 'self'",
+        "base-uri 'self'",
+        "object-src 'none'",
       ].join('; '),
+      // Browser features the shop doesn't use are switched off; payments may use the browser's
+      // payment sheet (Apple Pay / Google Pay through Stripe).
+      'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), usb=(), serial=(), bluetooth=(), payment=(self "https://js.stripe.com")',
+      // Keeps other sites' windows from scripting this one (popups for 3-D Secure still work).
+      'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
     });
+    // Browsers remember to use HTTPS only (once the shop is served over HTTPS).
+    if (/^https:/.test(config.baseUrl || '')) res.set('Strict-Transport-Security', 'max-age=31536000');
     res.locals.business = config.business;
     res.locals.brand = currentBrand(config); // shop name, logo, icons, share picture (src/branding.js)
     res.locals.testMode = config.paymentsMode !== 'live'; // the yellow "test mode" banner

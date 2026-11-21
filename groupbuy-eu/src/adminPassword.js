@@ -36,6 +36,16 @@ export function verifyPassword(password, stored) {
   return crypto.timingSafeEqual(actual, expected);
 }
 
+// True when the admin password was changed in the admin (and still replaces ADMIN_PASSWORD).
+export function passwordChangedInAdmin(config, repo) {
+  try {
+    const value = JSON.parse(repo?.getAdminSetting?.(KEY)?.value || 'null');
+    return Boolean(value?.hash && value.env === hmac(config.appSecret, `admin-env-password:${config.adminPassword}`));
+  } catch {
+    return false;
+  }
+}
+
 export function createAdminAuth({ config, repo, clock }) {
   // Identifies the ADMIN_PASSWORD a stored hash replaced, without storing anything that reveals
   // it (keyed with APP_SECRET, which isn't in the database).
