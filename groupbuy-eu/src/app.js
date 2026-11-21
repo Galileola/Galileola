@@ -1,3 +1,5 @@
+import crypto from 'node:crypto';
+import fs from 'node:fs';
 import express from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -9,6 +11,21 @@ import { applyBranding, currentBrand } from './branding.js';
 import { analyticsMiddleware, createAnalytics } from './analytics.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+
+// '/static/css/site.css' -> '/static/css/site.css?v=<first 10 characters of its hash>'.
+const assetVersions = new Map();
+export function asset(url) {
+  if (!assetVersions.has(url)) {
+    let v = '';
+    try {
+      v = crypto.createHash('sha256').update(fs.readFileSync(path.join(root, 'public', url.replace(/^\/static\//, '')))).digest('hex').slice(0, 10);
+    } catch {
+      /* missing file: link it without a version */
+    }
+    assetVersions.set(url, v ? `${url}?v=${v}` : url);
+  }
+  return assetVersions.get(url);
+}
 
 // ctx = { config, repo, stripe, mailer, clock, engine }
 export function createApp(ctx) {
@@ -73,6 +90,7 @@ export function createApp(ctx) {
     res.locals.testMode = config.paymentsMode !== 'live'; // the yellow "test mode" banner
     res.locals.loadStripe = false; // payment pages switch this on (Stripe.js only where needed)
     res.locals.title = 'Group Buy';
+    res.locals.asset = asset;
     res.locals.photoUrl = photoUrl;
     res.locals.thumbUrl = thumbUrl;
     res.locals.assistantEnabled = Boolean(ctx.assistant); // the admin router switches it off
@@ -88,7 +106,14 @@ export function createApp(ctx) {
   app.use(languageMiddleware(ctx));
   app.use(analyticsMiddleware(ctx));
 
-  app.use('/static', express.static(path.join(root, 'public'), { maxAge: '1h' }));
+  // CSS and scripts are linked with ?v=<content hash> (asset() below), so browsers can keep them
+  // for a year and still get a changed file at once. Other static files: 1 hour.
+  const publicDir = path.join(root, 'public');
+  const staticFiles = express.static(publicDir, { cacheControl: false });
+  app.use('/static', (req, res, next) => {
+    res.set('Cache-Control', req.query.v ? 'public, max-age=31536000, immutable' : 'public, max-age=3600');
+    staticFiles(req, res, next);
+  });
   // Product photos have random, never-reused names, so they can be cached for a long time.
   if (config.uploadDir) {
     app.use(

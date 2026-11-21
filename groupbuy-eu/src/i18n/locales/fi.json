@@ -1,7 +1,8 @@
 {
   "layout": {
     "testBanner": "Testitila: oikeita maksuja ei veloiteta. Käytä vain Stripen testikortteja ja test-IBAN-numeroita.",
-    "language": "Kieli"
+    "language": "Kieli",
+    "skipToContent": "Siirry sisältöön"
   },
   "nav": { "categories": "Kategoriat", "deals": "Tarjoukset", "how": "Näin se toimii" },
   "footer": {

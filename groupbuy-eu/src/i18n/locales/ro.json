@@ -1,7 +1,8 @@
 {
   "layout": {
     "testBanner": "Mod de test: nu se fac plăți reale. Folosește doar carduri și IBAN-uri de test Stripe.",
-    "language": "Limbă"
+    "language": "Limbă",
+    "skipToContent": "Salt la conținut"
   },
   "nav": {
     "categories": "Categorii",

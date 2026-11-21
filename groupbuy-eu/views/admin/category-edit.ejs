@@ -29,5 +29,5 @@
   </form>
   <p class="muted small">Link to this category: <code>/?category=<%= c.slug %></code> (stays the same when you rename it).</p>
 </section>
-<script src="/static/js/category-edit.js"></script>
+<script src="<%= asset('/static/js/category-edit.js') %>"></script>
 <%- include('../partials/footer') %>

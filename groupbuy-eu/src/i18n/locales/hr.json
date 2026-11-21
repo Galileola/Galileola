@@ -1,7 +1,8 @@
 {
   "layout": {
     "testBanner": "Testni način rada: ne naplaćuju se stvarna plaćanja. Koristite samo Stripeove testne kartice i IBAN-ove.",
-    "language": "Jezik"
+    "language": "Jezik",
+    "skipToContent": "Prijeđi na sadržaj"
   },
   "nav": {
     "categories": "Kategorije",

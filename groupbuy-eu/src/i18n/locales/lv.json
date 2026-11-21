@@ -1,7 +1,8 @@
 {
   "layout": {
     "testBanner": "Testa režīms: īsti maksājumi netiek veikti. Izmantojiet tikai Stripe testa kartes un IBAN.",
-    "language": "Valoda"
+    "language": "Valoda",
+    "skipToContent": "Pāriet uz saturu"
   },
   "nav": { "categories": "Kategorijas", "deals": "Piedāvājumi", "how": "Kā tas darbojas" },
   "footer": {

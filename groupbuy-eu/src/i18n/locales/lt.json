@@ -1,7 +1,8 @@
 {
   "layout": {
     "testBanner": "Bandomasis režimas: tikri mokėjimai nevykdomi. Naudokite tik „Stripe“ bandomąsias korteles ir IBAN.",
-    "language": "Kalba"
+    "language": "Kalba",
+    "skipToContent": "Pereiti prie turinio"
   },
   "nav": {
     "categories": "Kategorijos",

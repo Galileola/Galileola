@@ -148,3 +148,16 @@ test('security headers and security.txt', async (t) => {
   const txt = await (await fetch(`${app.base}/.well-known/security.txt`)).text();
   assert.match(txt, /^Contact: mailto:security@sek.test\nExpires: \d{4}-/);
 });
+
+test('CSS and scripts are linked with a version and cached for a year', async (t) => {
+  const app = await startApp();
+  t.after(app.close);
+  const home = await app.get('/?lang=en');
+  const css = home.match(/href="(\/static\/css\/site\.css\?v=[0-9a-f]{10})"/)?.[1];
+  assert.ok(css, 'versioned stylesheet');
+  assert.match(home, /src="\/static\/js\/cookies\.js\?v=[0-9a-f]{10}"/);
+  const res = await fetch(app.base + css);
+  assert.equal(res.status, 200);
+  assert.equal(res.headers.get('cache-control'), 'public, max-age=31536000, immutable');
+  assert.equal((await fetch(`${app.base}/static/css/site.css`)).headers.get('cache-control'), 'public, max-age=3600');
+});

@@ -1,7 +1,8 @@
 {
   "layout": {
     "testBanner": "Mód tástála: ní dhéantar aon íocaíocht fhíor. Ná húsáid ach cártaí agus IBANanna tástála Stripe.",
-    "language": "Teanga"
+    "language": "Teanga",
+    "skipToContent": "Téigh chuig an ábhar"
   },
   "nav": { "categories": "Catagóirí", "deals": "Margaí", "how": "Conas a oibríonn sé" },
   "footer": {

@@ -1,7 +1,8 @@
 {
   "layout": {
     "testBanner": "Tryb testowy: żadne prawdziwe płatności nie są pobierane. Używaj tylko testowych kart i numerów IBAN Stripe.",
-    "language": "Język"
+    "language": "Język",
+    "skipToContent": "Przejdź do treści"
   },
   "nav": { "categories": "Kategorie", "deals": "Oferty", "how": "Jak to działa" },
   "footer": {

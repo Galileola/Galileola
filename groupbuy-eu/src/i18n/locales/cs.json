@@ -1,7 +1,8 @@
 {
   "layout": {
     "testBanner": "Testovací režim: neprovádějí se žádné skutečné platby. Používejte jen testovací karty a IBAN od Stripe.",
-    "language": "Jazyk"
+    "language": "Jazyk",
+    "skipToContent": "Přejít na obsah"
   },
   "nav": {
     "categories": "Kategorie",

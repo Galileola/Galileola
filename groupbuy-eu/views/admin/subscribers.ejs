@@ -9,7 +9,7 @@
 <p class="muted small">People sign up on the home page and confirm with the link in the first email (unconfirmed sign-ups are deleted after 30 days). To email a deal to everyone confirmed, use "Email to subscribers" on the deal's page. Every alert has an unsubscribe link.</p>
 <div class="table-scroll">
 <table>
-  <thead><tr><th>Email</th><th>Language</th><th>Status</th><th>Signed up</th><th>Confirmed</th><th></th></tr></thead>
+  <thead><tr><th>Email</th><th>Language</th><th>Status</th><th>Signed up</th><th>Confirmed</th><th><span class="visually-hidden">Actions</span></th></tr></thead>
   <tbody>
   <% for (const s of subscribers) { %>
     <tr>
@@ -30,5 +30,5 @@
   </tbody>
 </table>
 </div>
-<script src="/static/js/admin.js"></script>
+<script src="<%= asset('/static/js/admin.js') %>"></script>
 <%- include('../partials/footer') %>

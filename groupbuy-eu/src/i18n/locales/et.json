@@ -1,7 +1,8 @@
 {
   "layout": {
     "testBanner": "Testrežiim: päris makseid ei tehta. Kasuta ainult Stripe'i testkaarte ja test-IBAN-e.",
-    "language": "Keel"
+    "language": "Keel",
+    "skipToContent": "Liigu sisu juurde"
   },
   "nav": { "categories": "Kategooriad", "deals": "Pakkumised", "how": "Kuidas see toimib" },
   "footer": {

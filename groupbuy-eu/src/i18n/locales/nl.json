@@ -1,7 +1,8 @@
 {
   "layout": {
     "testBanner": "Testmodus: er worden geen echte betalingen gedaan. Gebruik alleen testkaarten en test-IBAN's van Stripe.",
-    "language": "Taal"
+    "language": "Taal",
+    "skipToContent": "Naar de inhoud"
   },
   "nav": { "categories": "Categorieën", "deals": "Deals", "how": "Hoe het werkt" },
   "footer": {

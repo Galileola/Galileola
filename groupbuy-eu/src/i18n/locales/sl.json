@@ -1,7 +1,8 @@
 {
   "layout": {
     "testBanner": "Preskusni način: prava plačila se ne izvajajo. Uporabljajte samo Stripove preskusne kartice in IBAN-e.",
-    "language": "Jezik"
+    "language": "Jezik",
+    "skipToContent": "Skoči na vsebino"
   },
   "nav": {
     "categories": "Kategorije",

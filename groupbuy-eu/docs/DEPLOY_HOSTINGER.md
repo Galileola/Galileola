@@ -101,6 +101,8 @@ BUSINESS_EMAIL=<support@yourdomain.com>
 BUSINESS_VAT_ID=<EU VAT number>
 BUSINESS_REGISTRATION=<Company register and number>
 BUSINESS_DPA=<Your national data protection authority>
+# Optional: AI translations of deals, the shopping assistant, Snap a deal and Write with AI
+ANTHROPIC_API_KEY=<from platform.claude.com>
 ```
 
 Notes on these values:
@@ -108,7 +110,10 @@ Notes on these values:
 - **`SMTP_URL`:** write the `@` in the mailbox name as `%40`. URL-encode special characters in
   the password (e.g. `#` → `%23`, `/` → `%2F`, `:` → `%3A`). If port 465 fails, try
   `smtp://…@smtp.hostinger.com:587`.
-- **Stripe keys:** use test keys only. The app refuses to start with live keys.
+- **Stripe keys:** use test keys until you go live. With the default `PAYMENTS_MODE=test` the
+  app refuses to start with live keys. To take real payments, follow the README's "Going live"
+  section and Admin → Settings → Go-live checklist.
+- **Company details** can also be filled in later in Admin → Settings → Shop details.
 - **After changing variables**, restart the app in hPanel so it picks them up.
 
 ### A5. Deploy and check
@@ -118,6 +123,12 @@ Notes on these values:
    - `[db] /home/<u…>/groupbuy-data/groupbuy.sqlite …` with **no WARNING** below it.
    - `Group buy running at https://<yourdomain> … (Stripe TEST mode)`.
 3. Open `https://<yourdomain>/admin` and log in with `ADMIN_USER` / `ADMIN_PASSWORD`.
+4. Admin → Settings → **Two-step login**: set it up with an authenticator app on your phone and
+   keep the backup codes somewhere safe. If you ever lose both, set `ADMIN_TWO_STEP=off` here in
+   the environment variables and restart; the password alone then works until you set it up
+   again.
+5. The logs should not say that photos can't be resized. If they do, `npm install` couldn't
+   install the optional image library (sharp): the shop still works, with photos at full size.
 
 ### A6. Stripe webhook
 
@@ -167,7 +178,7 @@ Do this once, before real testing:
 ### A9. Updating the site
 
 Upload a new ZIP (or push to GitHub) and redeploy. The database folder isn't touched. Download
-an off-site copy first: **Admin → Download database backup**.
+off-site copies first: **Admin → Download database backup** and **Download photos (ZIP)**.
 
 ### Troubleshooting
 
@@ -180,6 +191,8 @@ an off-site copy first: **Admin → Download database backup**.
 | No emails arrive | Check **Admin → Email outbox** for the error text; usually `SMTP_URL` encoding or port |
 | Payment form doesn't appear | Browser console: look for "Content Security Policy" errors and report the blocked domain |
 | Old behaviour after a redeploy | Restart the app in hPanel |
+| Lost the phone and the backup codes for two-step login | Set `ADMIN_TWO_STEP=off`, restart, log in with the password and set two-step login up again |
+| Deal pages say "closed to new buyers" with real payments on | Open Admin → Settings → Go-live checklist: something required is missing |
 
 ---
 

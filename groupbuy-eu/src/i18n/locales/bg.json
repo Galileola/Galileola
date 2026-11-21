@@ -1,7 +1,8 @@
 {
   "layout": {
     "testBanner": "Тестов режим: не се извършват реални плащания. Използвайте само тестови карти и IBAN на Stripe.",
-    "language": "Език"
+    "language": "Език",
+    "skipToContent": "Към съдържанието"
   },
   "nav": { "categories": "Категории", "deals": "Оферти", "how": "Как работи" },
   "footer": {

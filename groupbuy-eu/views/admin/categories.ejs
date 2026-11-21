@@ -6,7 +6,7 @@
 <% if (error) { %><div class="notice bad" role="alert"><%= error %></div><% } %>
 <div class="table-wrap">
   <table class="categories-table">
-    <thead><tr><th>Order</th><th>Category</th><th>Deals</th><th></th></tr></thead>
+    <thead><tr><th>Order</th><th>Category</th><th>Deals</th><th><span class="visually-hidden">Actions</span></th></tr></thead>
     <tbody>
       <% rows.forEach((c, i) => { %>
         <tr>
@@ -46,5 +46,5 @@
   </form>
   <p class="muted small">After adding it, you can give it a name in each language.</p>
 </section>
-<script src="/static/js/category-edit.js"></script>
+<script src="<%= asset('/static/js/category-edit.js') %>"></script>
 <%- include('../partials/footer') %>

@@ -1,7 +1,8 @@
 {
   "layout": {
     "testBanner": "Modalità ta' test: ma jsir l-ebda ħlas veru. Uża biss il-kards u l-IBAN tat-test ta' Stripe.",
-    "language": "Lingwa"
+    "language": "Lingwa",
+    "skipToContent": "Mur għall-kontenut"
   },
   "nav": { "categories": "Kategoriji", "deals": "Offerti", "how": "Kif taħdem" },
   "footer": {

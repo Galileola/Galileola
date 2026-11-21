@@ -1,7 +1,8 @@
 {
   "layout": {
     "testBanner": "Test mode: no real payments are taken. Use Stripe test cards and IBANs only.",
-    "language": "Language"
+    "language": "Language",
+    "skipToContent": "Skip to content"
   },
   "nav": {
     "categories": "Categories",

@@ -1,7 +1,8 @@
 {
   "layout": {
     "testBanner": "Testläge: inga riktiga betalningar dras. Använd bara Stripes testkort och test-IBAN.",
-    "language": "Språk"
+    "language": "Språk",
+    "skipToContent": "Hoppa till innehållet"
   },
   "nav": { "categories": "Kategorier", "deals": "Erbjudanden", "how": "Så fungerar det" },
   "footer": {

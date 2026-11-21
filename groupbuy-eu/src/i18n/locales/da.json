@@ -1,7 +1,8 @@
 {
   "layout": {
     "testBanner": "Testtilstand: der trækkes ingen rigtige betalinger. Brug kun Stripes testkort og test-IBAN.",
-    "language": "Sprog"
+    "language": "Sprog",
+    "skipToContent": "Gå til indhold"
   },
   "nav": { "categories": "Kategorier", "deals": "Tilbud", "how": "Sådan fungerer det" },
   "footer": {

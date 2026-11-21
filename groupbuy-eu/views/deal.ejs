@@ -84,5 +84,5 @@
     <%- include('partials/share', { shareUrl: baseUrl + '/deals/' + deal.slug + '?lang=' + lang, shareText: t('deal.shareMessage', { name: deal.headline || deal.product_name }) }) %>
   </section>
 <% } %>
-<script src="/static/js/deal.js"></script>
+<script src="<%= asset('/static/js/deal.js') %>"></script>
 <%- include('partials/footer') %>

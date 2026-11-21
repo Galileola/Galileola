@@ -98,5 +98,5 @@
     <p class="muted small">The deal goes into the shop's deal list straight away, with Stripe tax code <code><%= locals.defaultTaxCode || 'txcd_99999999' %></code>. For another tax code, use the <a href="/admin/deals/new">full form</a>.</p>
   </form>
 </div>
-<script src="/static/js/snap.js"></script>
+<script src="<%= asset('/static/js/snap.js') %>"></script>
 <%- include('../partials/footer') %>

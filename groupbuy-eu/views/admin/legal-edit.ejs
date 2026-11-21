@@ -55,5 +55,5 @@ A blank line starts a new paragraph.
   <p class="muted">Anything else you type is shown as plain text.</p>
 </details>
 <script type="application/json" id="legal-english"><%- JSON.stringify(english).replace(/</g, '\\u003c') %></script>
-<script src="/static/js/legal-edit.js"></script>
+<script src="<%= asset('/static/js/legal-edit.js') %>"></script>
 <%- include('../partials/footer') %>

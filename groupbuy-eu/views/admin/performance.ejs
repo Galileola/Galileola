@@ -249,7 +249,7 @@
   <% if (r.spend.length) { %>
     <div class="table-scroll">
       <table>
-        <thead><tr><th>Date</th><th>Channel</th><th>Campaign</th><th class="num">Amount</th><th>Note</th><th></th></tr></thead>
+        <thead><tr><th>Date</th><th>Channel</th><th>Campaign</th><th class="num">Amount</th><th>Note</th><th><span class="visually-hidden">Actions</span></th></tr></thead>
         <tbody>
           <% for (const s of r.spend) { %>
             <tr>
@@ -276,5 +276,5 @@
     <li>Visit details are deleted after 13 months. Orders are kept as your records require.</li>
   </ul>
 </details>
-<script src="/static/js/performance.js"></script>
+<script src="<%= asset('/static/js/performance.js') %>"></script>
 <%- include('../partials/footer') %>

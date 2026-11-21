@@ -174,7 +174,7 @@
 <h2 style="margin-top:24px" id="buyers">Buyers</h2>
 <div class="table-scroll">
 <table>
-  <thead><tr><th>#</th><th>Buyer</th><th>Country</th><th>Method</th><th>Amount / VAT</th><th>Status</th><th>Attempts / last error</th><th>Window ends</th><th>Shipping</th><th></th></tr></thead>
+  <thead><tr><th>#</th><th>Buyer</th><th>Country</th><th>Method</th><th>Amount / VAT</th><th>Status</th><th>Attempts / last error</th><th>Window ends</th><th>Shipping</th><th><span class="visually-hidden">Actions</span></th></tr></thead>
   <tbody>
   <% for (const p of participants) { %>
     <tr>
@@ -234,5 +234,5 @@
 <% } %>
 
 <% if (testTools) { %><%- include('deal-tools') %><% } %>
-<script src="/static/js/admin.js"></script>
+<script src="<%= asset('/static/js/admin.js') %>"></script>
 <%- include('../partials/footer') %>

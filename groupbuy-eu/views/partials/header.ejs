@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#6d28d9">
   <title><%= locals.fullTitle || title === brandName ? title : `${title} · ${brandName}` %></title>
-  <link rel="stylesheet" href="/static/css/site.css">
+  <link rel="stylesheet" href="<%= asset('/static/css/site.css') %>">
   <% if (brand.icons.faviconSvg) { %><link rel="icon" href="<%= brand.icons.faviconSvg %>" type="image/svg+xml"><% } %>
   <link rel="icon" href="<%= brand.icons.favicon %>" sizes="48x48">
   <link rel="apple-touch-icon" href="<%= brand.icons.appleTouch %>">
@@ -39,8 +39,9 @@
   <% if (loadStripe) { %><script src="https://js.stripe.com/v3/"></script><% } %>
 </head>
 <body>
+  <a class="skip-link" href="#main"><%= t('layout.skipToContent') %></a>
   <script type="application/json" id="gb-i18n"><%- JSON.stringify(clientStrings).replace(/</g, '\\u003c') %></script>
-  <% if (locals.testMode !== false) { %><div class="test-banner"><%= t('layout.testBanner') %></div><% } %>
+  <% if (locals.testMode !== false) { %><aside class="test-banner"><%= t('layout.testBanner') %></aside><% } %>
   <header class="site-header">
     <div class="site-header-inner">
       <a class="brand" href="/"><% if (brand.logo) { %><img class="brand-logo" src="<%= brand.logo %>" alt="" width="34" height="34"><% } else { %><span class="brand-mark" aria-hidden="true"></span><% } %><%= brandName %></a>
@@ -58,4 +59,4 @@
       <% } %>
     </div>
   </header>
-  <main class="container">
+  <main class="container" id="main" tabindex="-1">

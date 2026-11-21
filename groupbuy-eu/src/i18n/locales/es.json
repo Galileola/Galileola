@@ -1,7 +1,8 @@
 {
   "layout": {
     "testBanner": "Modo de prueba: no se cobra ningún pago real. Usa solo tarjetas e IBAN de prueba de Stripe.",
-    "language": "Idioma"
+    "language": "Idioma",
+    "skipToContent": "Ir al contenido"
   },
   "nav": { "categories": "Categorías", "deals": "Ofertas", "how": "Cómo funciona" },
   "footer": {

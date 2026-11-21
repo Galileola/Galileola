@@ -1,7 +1,8 @@
 {
   "layout": {
     "testBanner": "Tesztüzem: valódi fizetés nem történik. Csak a Stripe tesztkártyáit és teszt-IBAN-jait használd.",
-    "language": "Nyelv"
+    "language": "Nyelv",
+    "skipToContent": "Ugrás a tartalomhoz"
   },
   "nav": { "categories": "Kategóriák", "deals": "Ajánlatok", "how": "Hogyan működik" },
   "footer": {

@@ -1,7 +1,8 @@
 {
   "layout": {
     "testBanner": "Mode test : aucun paiement réel n'est effectué. Utilisez uniquement les cartes et IBAN de test Stripe.",
-    "language": "Langue"
+    "language": "Langue",
+    "skipToContent": "Aller au contenu"
   },
   "nav": { "categories": "Catégories", "deals": "Offres", "how": "Comment ça marche" },
   "footer": {
