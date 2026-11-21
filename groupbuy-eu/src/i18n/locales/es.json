@@ -85,7 +85,8 @@
     "closed": "Esta oferta ya no admite nuevos compradores.",
     "shareTitle": "👯 Trae a tus amigos",
     "shareText": "Cada comprador que se une acerca la oferta para todos. Compártela con quien también la vaya a disfrutar.",
-    "shareMessage": "{name} · ¡Únete a la compra en grupo y todos pagaremos menos!"
+    "shareMessage": "{name} · ¡Únete a la compra en grupo y todos pagaremos menos!",
+    "cancelled": "Esta oferta se ha cancelado. No se ha cobrado a nadie y se han eliminado todos los métodos de pago guardados."
   },
   "share": { "native": "📤 Compartir…", "email": "Correo", "copy": "🔗 Copiar enlace" },
   "join": {
@@ -268,6 +269,8 @@
     "withdrawnSubject": "Desistimiento confirmado: {name}",
     "withdrawnText": "Hemos tramitado tu desistimiento de {name}.",
     "withdrawnRefund": "Te hemos devuelto {amount} en tu método de pago original. Puede tardar entre 5 y 10 días hábiles en aparecer.",
-    "withdrawnNoCharge": "No se te ha cobrado nada y se ha eliminado tu método de pago guardado."
+    "withdrawnNoCharge": "No se te ha cobrado nada y se ha eliminado tu método de pago guardado.",
+    "cancelledSubject": "Oferta cancelada: {name}",
+    "cancelledText": "Hemos cancelado la compra en grupo de {name}. Sentimos las molestias."
   }
 }

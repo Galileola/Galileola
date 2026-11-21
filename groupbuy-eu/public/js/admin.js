@@ -4,8 +4,11 @@ if (form) {
   const input = document.getElementById('deadline');
   const max = new Date(Date.now() + 30 * 24 * 3600 * 1000);
   const toLocal = (d) => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-  input.max = toLocal(max);
-  input.min = toLocal(new Date(Date.now() + 5 * 60000));
+  // Edit form: show the saved deadline in the admin's local time.
+  if (input.dataset.iso && !input.value) input.value = toLocal(new Date(input.dataset.iso));
+  const saved = input.dataset.iso ? new Date(input.dataset.iso) : null;
+  input.max = toLocal(saved && saved > max ? saved : max);
+  input.min = toLocal(input.dataset.minIso ? new Date(input.dataset.minIso) : new Date(Date.now() + 5 * 60000));
   form.addEventListener('submit', () => {
     const v = input.value;
     document.getElementById('deadline_iso').value = v ? new Date(v).toISOString() : '';
@@ -96,4 +99,17 @@ document.querySelectorAll('form[data-confirm]').forEach((f) => {
   f.addEventListener('submit', (e) => {
     if (!window.confirm(f.dataset.confirm)) e.preventDefault();
   });
+});
+
+// Character counters for the search title and description (Google shows about 60 / 155).
+document.querySelectorAll('[data-count]').forEach((field) => {
+  const out = document.querySelector(`[data-count-for="${field.id}"]`);
+  if (!out) return;
+  const ideal = Number(field.dataset.count);
+  const update = () => {
+    const n = field.value.trim().length;
+    out.textContent = n ? `${n} characters${n > ideal ? ` (Google usually shows about ${ideal})` : ''}` : '';
+  };
+  field.addEventListener('input', update);
+  update();
 });

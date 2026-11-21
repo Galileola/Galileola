@@ -112,7 +112,8 @@
     "closed": "Această ofertă nu mai acceptă cumpărători noi.",
     "shareTitle": "👯 Adu-ți prietenii",
     "shareText": "Fiecare cumpărător nou apropie oferta pentru toți. Distribuie-o celor cărora le-ar plăcea.",
-    "shareMessage": "{name} · Înscrie-te la cumpărarea în grup și plătim cu toții mai puțin!"
+    "shareMessage": "{name} · Înscrie-te la cumpărarea în grup și plătim cu toții mai puțin!",
+    "cancelled": "Această ofertă a fost anulată. Nimeni nu a fost debitat și toate metodele de plată salvate au fost șterse."
   },
   "share": {
     "native": "📤 Distribuie…",
@@ -299,6 +300,8 @@
     "withdrawnSubject": "Retragere confirmată: {name}",
     "withdrawnText": "Am procesat retragerea ta din {name}.",
     "withdrawnRefund": "Am rambursat {amount} pe metoda ta de plată inițială. Poate dura 5–10 zile lucrătoare până apare.",
-    "withdrawnNoCharge": "Nu ți s-a debitat nimic, iar metoda ta de plată salvată a fost ștearsă."
+    "withdrawnNoCharge": "Nu ți s-a debitat nimic, iar metoda ta de plată salvată a fost ștearsă.",
+    "cancelledSubject": "Ofertă anulată: {name}",
+    "cancelledText": "Am anulat cumpărarea în grup pentru {name}. Ne pare rău pentru neplăcere."
   }
 }

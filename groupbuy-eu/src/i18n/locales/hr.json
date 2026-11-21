@@ -112,7 +112,8 @@
     "closed": "Ova ponuda više ne prima nove kupce.",
     "shareTitle": "👯 Dovedite prijatelje",
     "shareText": "Svaki novi kupac približava ponudu svima. Podijelite je s onima kojima bi se također svidjela.",
-    "shareMessage": "{name} · Pridruži se grupnoj kupnji i svi ćemo platiti manje!"
+    "shareMessage": "{name} · Pridruži se grupnoj kupnji i svi ćemo platiti manje!",
+    "cancelled": "Ova je ponuda otkazana. Nikome ništa nije naplaćeno i svi spremljeni načini plaćanja su uklonjeni."
   },
   "share": {
     "native": "📤 Podijeli…",
@@ -299,6 +300,8 @@
     "withdrawnSubject": "Odustanak potvrđen: {name}",
     "withdrawnText": "Obradili smo vaš odustanak od {name}.",
     "withdrawnRefund": "Vratili smo {amount} na vaš izvorni način plaćanja. Može proći 5–10 radnih dana dok se ne pojavi.",
-    "withdrawnNoCharge": "Ništa vam nije naplaćeno, a vaš spremljeni način plaćanja je uklonjen."
+    "withdrawnNoCharge": "Ništa vam nije naplaćeno, a vaš spremljeni način plaćanja je uklonjen.",
+    "cancelledSubject": "Ponuda otkazana: {name}",
+    "cancelledText": "Otkazali smo grupnu kupnju {name}. Ispričavamo se zbog neugodnosti."
   }
 }

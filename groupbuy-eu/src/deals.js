@@ -3,6 +3,8 @@ import { DEFAULT_CATEGORY, isCategory } from './categories.js';
 
 export const MAX_HEADLINE = 120;
 export const MAX_SOCIAL_POST = 2000;
+export const MAX_SEO_TITLE = 120;
+export const MAX_SEO_DESCRIPTION = 300;
 
 const MIN_LEAD_MS = 2 * 60 * 1000; // deadline at least 2 minutes out (short deadlines help testing)
 
@@ -26,6 +28,10 @@ export function validateDealInput(body, { now, defaultTaxCode }) {
   if (headline.length > MAX_HEADLINE) errors.headline = `Keep the headline under ${MAX_HEADLINE} characters.`;
   if (social_post.length > MAX_SOCIAL_POST) errors.social_post = `Keep the social media post under ${MAX_SOCIAL_POST} characters.`;
   if (!isCategory(category)) errors.category = 'Choose a category from the list.';
+  const seo_title = String(body.seo_title ?? '').replace(/\s+/g, ' ').trim();
+  const seo_description = String(body.seo_description ?? '').replace(/\s+/g, ' ').trim();
+  if (seo_title.length > MAX_SEO_TITLE) errors.seo_title = `Keep the search title under ${MAX_SEO_TITLE} characters (about 60 show in Google).`;
+  if (seo_description.length > MAX_SEO_DESCRIPTION) errors.seo_description = `Keep the search description under ${MAX_SEO_DESCRIPTION} characters (about 155 show in Google).`;
 
   if (image_url) {
     try {
@@ -64,6 +70,8 @@ export function validateDealInput(body, { now, defaultTaxCode }) {
       category,
       headline,
       social_post,
+      seo_title,
+      seo_description,
       price_cents,
       tax_code,
       min_buyers,
@@ -71,4 +79,46 @@ export function validateDealInput(body, { now, defaultTaxCode }) {
       created_at: iso(now),
     },
   };
+}
+
+// Admin → Edit deal. Texts, photos and the category can always change. While a deal is open and
+// nobody has joined, so can the price, minimum, tax code and deadline. Once someone has joined,
+// they agreed to that price and minimum, so those stay; the deadline can only move later.
+// After a deal has closed (charging, ready to order, expired) only the texts change.
+// Returns { errors, changes, locked } where changes holds the columns to update.
+export function validateDealEdit(body, deal, { now, joined }) {
+  const open = deal.status === 'open';
+  const locked = !open || joined > 0;
+  const input = {
+    ...body,
+    price: locked ? (deal.price_cents / 100).toFixed(2) : body.price,
+    min_buyers: locked ? String(deal.min_buyers) : body.min_buyers,
+    tax_code: locked ? deal.tax_code : body.tax_code,
+    deadline_iso: open ? body.deadline_iso || body.deadline || deal.deadline : deal.deadline,
+  };
+  const { errors, deal: valid } = validateDealInput(input, { now, defaultTaxCode: deal.tax_code });
+  // An unchanged deadline is fine even when it no longer fits the 30-day rule (or has passed on a
+  // closed deal).
+  const newDeadline = valid?.deadline ?? (input.deadline_iso ? new Date(input.deadline_iso) : null);
+  // The form works in whole minutes, so a deadline within a minute of the saved one is unchanged.
+  const sameDeadline = newDeadline && !Number.isNaN(new Date(newDeadline).getTime()) && Math.abs(new Date(newDeadline) - new Date(deal.deadline)) < 60_000;
+  if (sameDeadline || !open) delete errors.deadline;
+  if (open && joined > 0 && !sameDeadline && !errors.deadline && newDeadline && new Date(newDeadline) < new Date(deal.deadline)) {
+    errors.deadline = 'Buyers have joined, so the deadline can only move later.';
+  }
+  if (Object.keys(errors).length) return { errors, changes: null, locked };
+  const v = valid ?? validateDealInput({ ...input, deadline_iso: new Date(now.getTime() + 3_600_000).toISOString() }, { now, defaultTaxCode: deal.tax_code }).deal;
+  const changes = {
+    product_name: v.product_name,
+    headline: v.headline,
+    description: v.description,
+    social_post: v.social_post,
+    image_url: v.image_url,
+    category: v.category,
+    seo_title: v.seo_title,
+    seo_description: v.seo_description,
+  };
+  if (!locked) Object.assign(changes, { price_cents: v.price_cents, min_buyers: v.min_buyers, tax_code: v.tax_code });
+  if (open && !sameDeadline) changes.deadline = iso(newDeadline);
+  return { errors, changes, locked };
 }

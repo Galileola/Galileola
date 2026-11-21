@@ -1,0 +1,12 @@
+<details class="seo-fields" <%= values.seo_title || values.seo_description || errors.seo_title || errors.seo_description ? 'open' : '' %>>
+  <summary>🔎 Search engines and link previews (optional)</summary>
+  <p class="muted small">How the deal appears in Google and when its link is shared. Leave empty to use the product name, price and description. Used on the pages in the shop's main language; the other languages use the translated name and description.</p>
+  <label for="seo_title">Search title</label>
+  <input type="text" id="seo_title" name="seo_title" maxlength="120" value="<%= values.seo_title || '' %>" data-count="60" placeholder="<%= values.product_name || 'Product name' %> – group price">
+  <p class="muted small" data-count-for="seo_title"></p>
+  <% if (errors.seo_title) { %><p class="error-text"><%= errors.seo_title %></p><% } %>
+  <label for="seo_description">Search description</label>
+  <textarea id="seo_description" name="seo_description" maxlength="300" rows="3" data-count="155"><%= values.seo_description || '' %></textarea>
+  <p class="muted small" data-count-for="seo_description"></p>
+  <% if (errors.seo_description) { %><p class="error-text"><%= errors.seo_description %></p><% } %>
+</details>

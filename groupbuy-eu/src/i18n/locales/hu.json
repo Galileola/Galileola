@@ -85,7 +85,8 @@
     "closed": "Ehhez az ajánlathoz már nem lehet csatlakozni.",
     "shareTitle": "👯 Hívd a barátaidat",
     "shareText": "Minden új vásárló közelebb hozza az ajánlatot mindenkinek. Oszd meg azokkal, akiknek szintén tetszene.",
-    "shareMessage": "{name} · Csatlakozz a csoportos vásárláshoz, és mindannyian kevesebbet fizetünk!"
+    "shareMessage": "{name} · Csatlakozz a csoportos vásárláshoz, és mindannyian kevesebbet fizetünk!",
+    "cancelled": "Ezt az ajánlatot töröltük. Senkitől nem vontunk le semmit, és minden elmentett fizetési módot töröltünk."
   },
   "share": { "native": "📤 Megosztás…", "email": "E-mail", "copy": "🔗 Link másolása" },
   "join": {
@@ -268,6 +269,8 @@
     "withdrawnSubject": "Elállás visszaigazolva: {name}",
     "withdrawnText": "Feldolgoztuk az elállásodat: {name}.",
     "withdrawnRefund": "Visszatérítettük a(z) {amount} összeget az eredeti fizetési módodra. 5–10 munkanapba telhet, mire megjelenik.",
-    "withdrawnNoCharge": "Semmit nem vontunk le, és az elmentett fizetési módodat töröltük."
+    "withdrawnNoCharge": "Semmit nem vontunk le, és az elmentett fizetési módodat töröltük.",
+    "cancelledSubject": "Az ajánlat törölve: {name}",
+    "cancelledText": "A(z) {name} csoportos vásárlást töröltük. Elnézést kérünk a kellemetlenségért."
   }
 }

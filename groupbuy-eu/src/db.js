@@ -14,6 +14,9 @@ CREATE TABLE IF NOT EXISTS deals (
   category           TEXT NOT NULL DEFAULT 'other',  -- slug from src/categories.js
   headline           TEXT NOT NULL DEFAULT '',       -- short ad line on the deal card
   social_post        TEXT NOT NULL DEFAULT '',       -- admin-only: ready-made post for social media
+  seo_title          TEXT NOT NULL DEFAULT '',       -- search result title (content language only)
+  seo_description    TEXT NOT NULL DEFAULT '',       -- search result / link preview text
+  cancelled_at       TEXT,                           -- the owner cancelled it (status expired)
   price_cents        INTEGER NOT NULL CHECK (price_cents > 0),   -- gross, VAT included
   currency           TEXT NOT NULL DEFAULT 'eur',
   tax_code           TEXT NOT NULL,
@@ -213,6 +216,9 @@ const ADDED_COLUMNS = {
     ['category', "TEXT NOT NULL DEFAULT 'other'"],
     ['headline', "TEXT NOT NULL DEFAULT ''"],
     ['social_post', "TEXT NOT NULL DEFAULT ''"],
+    ['seo_title', "TEXT NOT NULL DEFAULT ''"],
+    ['seo_description', "TEXT NOT NULL DEFAULT ''"],
+    ['cancelled_at', 'TEXT'],
   ],
   // The language the buyer used on the site; their emails are written in it.
   participants: [
@@ -278,11 +284,11 @@ export function createRepo(db) {
       const r = db
         .prepare(
           `INSERT INTO deals (slug, product_name, description, image_url, category, headline, social_post,
-             price_cents, currency, tax_code, min_buyers, deadline, created_at)
+             seo_title, seo_description, price_cents, currency, tax_code, min_buyers, deadline, created_at)
            VALUES (:slug, :product_name, :description, :image_url, :category, :headline, :social_post,
-             :price_cents, 'eur', :tax_code, :min_buyers, :deadline, :created_at)`
+             :seo_title, :seo_description, :price_cents, 'eur', :tax_code, :min_buyers, :deadline, :created_at)`
         )
-        .run({ category: 'other', headline: '', social_post: '', ...d });
+        .run({ category: 'other', headline: '', social_post: '', seo_title: '', seo_description: '', ...d });
       return this.dealById(Number(r.lastInsertRowid));
     },
     dealById: (id) => db.prepare('SELECT * FROM deals WHERE id = ?').get(id),
@@ -291,6 +297,18 @@ export function createRepo(db) {
     listPublicDeals: () =>
       db.prepare(`SELECT * FROM deals WHERE status IN ('open','charging','ready_to_order') ORDER BY deadline ASC`).all(),
     dealsByStatus: (status) => db.prepare('SELECT * FROM deals WHERE status = ?').all(status),
+    // Everyone who ever started joining, whatever happened since (deleting needs this to be 0).
+    participantCount: (dealId) => db.prepare('SELECT COUNT(*) AS n FROM participants WHERE deal_id = ?').get(dealId).n,
+    // Removes a deal nobody has joined, with its photo rows (the caller removes the files).
+    deleteDeal(id) {
+      return this.transaction(() => {
+        if (this.participantCount(id) > 0) return false;
+        db.prepare('DELETE FROM deal_photos WHERE deal_id = ?').run(id);
+        db.prepare('UPDATE page_views SET deal_id = NULL WHERE deal_id = ?').run(id);
+        db.prepare('UPDATE emails SET deal_id = NULL WHERE deal_id = ?').run(id);
+        return db.prepare('DELETE FROM deals WHERE id = ?').run(id).changes === 1;
+      });
+    },
     updateDeal: (id, fields) => update('deals', id, fields),
     // Atomic status transition. Returns true only for the caller that won.
     transitionDeal(id, from, to, extra = {}) {

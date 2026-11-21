@@ -11,6 +11,7 @@
 <% if (flash) { %><div class="notice"><%= flash %></div><% } %>
 <h1><%= deal.product_name %> <span class="badge <%= deal.status %>"><%= deal.status.replace(/_/g, ' ') %></span></h1>
 <p>Public page: <a href="/deals/<%= deal.slug %>">/deals/<%= deal.slug %></a></p>
+<p class="row-buttons"><a class="button" href="/admin/deals/<%= deal.id %>/edit">✏️ Edit deal</a> <a class="button secondary" href="/admin/deals/new?copy=<%= deal.id %>">⧉ Duplicate</a></p>
 <% if (deal.headline) { %><p class="deal-headline"><%= deal.headline %></p><% } %>
 
 <div class="grid">
@@ -119,5 +120,25 @@
 </table>
 </div>
 
-<%- include('deal-tools') %>
+<% const canCancel = deal.status === 'open' && committed < deal.min_buyers; const canDelete = participantTotal === 0; %>
+<% if (canCancel || canDelete) { %>
+<section class="card danger-zone" style="margin-top:16px">
+  <h2>Cancel or delete</h2>
+  <% if (canCancel) { %>
+    <form method="post" action="/admin/deals/<%= deal.id %>/cancel" data-confirm="Cancel this deal now? It closes for everyone, nobody is charged, saved payment methods are removed and <%= committed %> buyer(s) get an email. This can't be undone.">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <p><button type="submit" class="danger">Cancel deal</button> <span class="muted small">Closes it now. Nobody is charged<%= committed ? ` and the ${committed} buyer${committed === 1 ? '' : 's'} get an email` : '' %>.</span></p>
+    </form>
+  <% } %>
+  <% if (canDelete) { %>
+    <form method="post" action="/admin/deals/<%= deal.id %>/delete" data-confirm="Delete this deal and its photos for good? This can't be undone.">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <p><button type="submit" class="danger">Delete deal</button> <span class="muted small">Nobody has joined it, so it can be removed completely, with its photos.</span></p>
+    </form>
+  <% } %>
+</section>
+<% } %>
+
+<% if (testTools) { %><%- include('deal-tools') %><% } %>
+<script src="/static/js/admin.js"></script>
 <%- include('../partials/footer') %>

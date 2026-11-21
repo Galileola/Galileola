@@ -85,7 +85,8 @@
     "closed": "Für dieses Angebot sind keine neuen Käufer mehr möglich.",
     "shareTitle": "👯 Freunde mitbringen",
     "shareText": "Jeder neue Käufer bringt das Angebot für alle näher. Teilen Sie es mit Leuten, denen es auch gefallen würde.",
-    "shareMessage": "{name} · Mach beim Gruppenangebot mit, dann zahlen wir alle weniger!"
+    "shareMessage": "{name} · Mach beim Gruppenangebot mit, dann zahlen wir alle weniger!",
+    "cancelled": "Dieses Angebot wurde abgesagt. Niemandem wurde etwas berechnet, und alle gespeicherten Zahlungsmethoden wurden entfernt."
   },
   "share": { "native": "📤 Teilen…", "email": "E-Mail", "copy": "🔗 Link kopieren" },
   "join": {
@@ -268,6 +269,8 @@
     "withdrawnSubject": "Widerruf bestätigt: {name}",
     "withdrawnText": "Wir haben Ihren Widerruf für {name} bearbeitet.",
     "withdrawnRefund": "Wir haben {amount} auf Ihre ursprüngliche Zahlungsmethode erstattet. Es kann 5–10 Werktage dauern, bis der Betrag erscheint.",
-    "withdrawnNoCharge": "Ihnen wurde nichts berechnet und Ihre gespeicherte Zahlungsmethode wurde entfernt."
+    "withdrawnNoCharge": "Ihnen wurde nichts berechnet und Ihre gespeicherte Zahlungsmethode wurde entfernt.",
+    "cancelledSubject": "Angebot abgesagt: {name}",
+    "cancelledText": "Wir haben das Gruppenangebot für {name} abgesagt. Wir bitten um Entschuldigung für die Unannehmlichkeiten."
   }
 }

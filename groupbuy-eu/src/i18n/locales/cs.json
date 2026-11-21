@@ -117,7 +117,8 @@
     "closed": "Tato nabídka už nepřijímá nové zákazníky.",
     "shareTitle": "👯 Přiveďte přátele",
     "shareText": "Každý nový zákazník přibližuje nabídku pro všechny. Sdílejte ji s těmi, komu se bude líbit.",
-    "shareMessage": "{name} · Přidej se ke skupinovému nákupu a všichni zaplatíme méně!"
+    "shareMessage": "{name} · Přidej se ke skupinovému nákupu a všichni zaplatíme méně!",
+    "cancelled": "Tato nabídka byla zrušena. Nikomu nebylo nic strženo a všechny uložené platební metody byly odstraněny."
   },
   "share": {
     "native": "📤 Sdílet…",
@@ -304,6 +305,8 @@
     "withdrawnSubject": "Odstoupení potvrzeno: {name}",
     "withdrawnText": "Zpracovali jsme vaše odstoupení od nákupu: {name}.",
     "withdrawnRefund": "Vrátili jsme {amount} na vaši původní platební metodu. Může trvat 5–10 pracovních dnů, než se částka objeví.",
-    "withdrawnNoCharge": "Nic vám nebylo strženo a vaše uložená platební metoda byla odstraněna."
+    "withdrawnNoCharge": "Nic vám nebylo strženo a vaše uložená platební metoda byla odstraněna.",
+    "cancelledSubject": "Nabídka zrušena: {name}",
+    "cancelledText": "Skupinový nákup {name} jsme zrušili. Omlouváme se za komplikace."
   }
 }

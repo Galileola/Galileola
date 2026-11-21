@@ -23,15 +23,15 @@ const organization = (business, baseUrl) =>
 
 // A deal page: its cover photo and price in the preview, and schema.org Product data so search
 // engines can show the price.
-export function dealMeta({ deal, photos = [], state, baseUrl, lang, business, categoryName, formatEuro }) {
+export function dealMeta({ deal, photos = [], state, baseUrl, lang, business, categoryName, formatEuro, seo = {} }) {
   const images = photos.map((p) => baseUrl + photoUrl(p.filename));
   if (!images.length && /^https:\/\//.test(deal.image_url || '')) images.push(deal.image_url);
   const description = shorten([deal.headline, deal.description].filter(Boolean).join(' – ')) || plain(deal.product_name);
   const seller = organization(business, baseUrl);
   return {
     type: 'product',
-    title: `${deal.product_name} – ${formatEuro(deal.price_cents)}`,
-    description,
+    title: plain(seo.title) || `${deal.product_name} – ${formatEuro(deal.price_cents)}`,
+    description: shorten(seo.description) || description,
     image: images[0] ?? '',
     priceAmount: (deal.price_cents / 100).toFixed(2),
     jsonLd: {

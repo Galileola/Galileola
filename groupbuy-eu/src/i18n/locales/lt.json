@@ -117,7 +117,8 @@
     "closed": "Šis pasiūlymas naujų pirkėjų nebepriima.",
     "shareTitle": "👯 Pakvieskite draugų",
     "shareText": "Kiekvienas naujas pirkėjas priartina pasiūlymą visiems. Pasidalykite su tais, kuriems jis taip pat patiktų.",
-    "shareMessage": "{name} · Prisijunk prie grupinio pirkimo ir visi mokėsime mažiau!"
+    "shareMessage": "{name} · Prisijunk prie grupinio pirkimo ir visi mokėsime mažiau!",
+    "cancelled": "Šis pasiūlymas atšauktas. Niekam nieko nenuskaičiuota, o visi išsaugoti mokėjimo būdai pašalinti."
   },
   "share": {
     "native": "📤 Dalytis…",
@@ -304,6 +305,8 @@
     "withdrawnSubject": "Atsisakymas patvirtintas: {name}",
     "withdrawnText": "Apdorojome jūsų atsisakymą: {name}.",
     "withdrawnRefund": "Grąžinome {amount} į jūsų pradinį mokėjimo būdą. Gali užtrukti 5–10 darbo dienų, kol pinigai atsiras.",
-    "withdrawnNoCharge": "Jums nieko nenuskaičiuota, o jūsų išsaugotas mokėjimo būdas pašalintas."
+    "withdrawnNoCharge": "Jums nieko nenuskaičiuota, o jūsų išsaugotas mokėjimo būdas pašalintas.",
+    "cancelledSubject": "Pasiūlymas atšauktas: {name}",
+    "cancelledText": "Atšaukėme grupinį pirkimą „{name}“. Atsiprašome už nepatogumus."
   }
 }

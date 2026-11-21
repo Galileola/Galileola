@@ -85,7 +85,8 @@
     "closed": "Dette tilbud tager ikke imod nye købere.",
     "shareTitle": "👯 Tag dine venner med",
     "shareText": "Hver ny køber bringer tilbuddet tættere på for alle. Del det med dem, der også ville kunne lide det.",
-    "shareMessage": "{name} · Vær med i gruppekøbet, så betaler vi alle mindre!"
+    "shareMessage": "{name} · Vær med i gruppekøbet, så betaler vi alle mindre!",
+    "cancelled": "Dette tilbud er blevet annulleret. Ingen er blevet trukket, og alle gemte betalingsmetoder er fjernet."
   },
   "share": { "native": "📤 Del…", "email": "E-mail", "copy": "🔗 Kopiér link" },
   "join": {
@@ -268,6 +269,8 @@
     "withdrawnSubject": "Fortrydelse bekræftet: {name}",
     "withdrawnText": "Vi har behandlet din fortrydelse af {name}.",
     "withdrawnRefund": "Vi har refunderet {amount} til din oprindelige betalingsmetode. Det kan tage 5–10 bankdage, før det kan ses.",
-    "withdrawnNoCharge": "Du er ikke blevet trukket, og din gemte betalingsmetode er fjernet."
+    "withdrawnNoCharge": "Du er ikke blevet trukket, og din gemte betalingsmetode er fjernet.",
+    "cancelledSubject": "Tilbuddet er annulleret: {name}",
+    "cancelledText": "Vi har annulleret gruppekøbet af {name}. Vi beklager ulejligheden."
   }
 }

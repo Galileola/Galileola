@@ -85,7 +85,8 @@
     "closed": "Ní ghlacann an margadh seo le ceannaitheoirí nua a thuilleadh.",
     "shareTitle": "👯 Tabhair do chairde leat",
     "shareText": "Tugann gach ceannaitheoir nua an margadh níos gaire do chách. Roinn é le daoine a mbeadh suim acu ann.",
-    "shareMessage": "{name} · Bí páirteach sa mhargadh grúpa agus íocfaimid go léir níos lú!"
+    "shareMessage": "{name} · Bí páirteach sa mhargadh grúpa agus íocfaimid go léir níos lú!",
+    "cancelled": "Cuireadh an margadh seo ar ceal. Níor gearradh aon duine agus baineadh gach modh íocaíochta sábháilte."
   },
   "share": { "native": "📤 Roinn…", "email": "Ríomhphost", "copy": "🔗 Cóipeáil an nasc" },
   "join": {
@@ -268,6 +269,8 @@
     "withdrawnSubject": "Tarraingt siar deimhnithe: {name}",
     "withdrawnText": "Phróiseálamar do tharraingt siar ó {name}.",
     "withdrawnRefund": "D'aisíocamar {amount} le do mhodh íocaíochta bunaidh. D'fhéadfadh sé 5–10 lá oibre a thógáil sula bhfeictear é.",
-    "withdrawnNoCharge": "Níor gearradh aon rud ort agus baineadh do mhodh íocaíochta sábháilte."
+    "withdrawnNoCharge": "Níor gearradh aon rud ort agus baineadh do mhodh íocaíochta sábháilte.",
+    "cancelledSubject": "Margadh curtha ar ceal: {name}",
+    "cancelledText": "Chuireamar an margadh grúpa do {name} ar ceal. Is oth linn an trioblóid."
   }
 }

@@ -160,6 +160,16 @@ ${t('email.notCharged')}${sign(business)}`,
   dealExpired: (data) => {
     const { deal, p, business, i18n } = data;
     const { t, name } = helpers(data);
+    if (deal.cancelled_at) {
+      return {
+        subject: t('email.cancelledSubject', { name }),
+        body: `${t('email.hi', { name: p.name })}
+
+${t('email.cancelledText', { name })}
+
+${t('email.expiredNobody')}${sign(business)}`,
+      };
+    }
     return {
       subject: t('email.expiredSubject', { name }),
       body: `${t('email.hi', { name: p.name })}

@@ -85,7 +85,8 @@
     "closed": "Šis piedāvājums vairs nepieņem jaunus pircējus.",
     "shareTitle": "👯 Aiciniet draugus",
     "shareText": "Katrs jauns pircējs tuvina piedāvājumu visiem. Dalieties ar tiem, kam tas arī patiktu.",
-    "shareMessage": "{name} · Pievienojies kopīgajam pirkumam, un mēs visi maksāsim mazāk!"
+    "shareMessage": "{name} · Pievienojies kopīgajam pirkumam, un mēs visi maksāsim mazāk!",
+    "cancelled": "Šis piedāvājums tika atcelts. Nevienam nekas netika iekasēts, un visi saglabātie maksājuma veidi tika dzēsti."
   },
   "share": { "native": "📤 Dalīties…", "email": "E-pasts", "copy": "🔗 Kopēt saiti" },
   "join": {
@@ -268,6 +269,8 @@
     "withdrawnSubject": "Atteikums apstiprināts: {name}",
     "withdrawnText": "Esam apstrādājuši jūsu atteikumu: {name}.",
     "withdrawnRefund": "Esam atmaksājuši {amount} uz jūsu sākotnējo maksājuma veidu. Var paiet 5–10 darba dienas, līdz tas parādīsies.",
-    "withdrawnNoCharge": "Jums nekas nav iekasēts, un jūsu saglabātais maksājuma veids ir dzēsts."
+    "withdrawnNoCharge": "Jums nekas nav iekasēts, un jūsu saglabātais maksājuma veids ir dzēsts.",
+    "cancelledSubject": "Piedāvājums atcelts: {name}",
+    "cancelledText": "Mēs atcēlām kopīgo pirkumu “{name}”. Atvainojamies par sagādātajām neērtībām."
   }
 }

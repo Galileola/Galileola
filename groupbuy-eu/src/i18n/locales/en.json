@@ -92,7 +92,8 @@
     "closed": "This deal is closed to new buyers.",
     "shareTitle": "👯 Bring your friends",
     "shareText": "Every buyer who joins brings the deal closer for everyone. Share it with people who'd love this too.",
-    "shareMessage": "{name} · Join the group deal and we all pay less!"
+    "shareMessage": "{name} · Join the group deal and we all pay less!",
+    "cancelled": "This deal was cancelled. Nobody was charged and all saved payment methods were removed."
   },
   "share": {
     "native": "📤 Share…",
@@ -279,6 +280,8 @@
     "withdrawnSubject": "Withdrawal confirmed: {name}",
     "withdrawnText": "We've processed your withdrawal from {name}.",
     "withdrawnRefund": "We've refunded {amount} to your original payment method. It can take 5–10 business days to appear.",
-    "withdrawnNoCharge": "You have not been charged and your saved payment method has been removed."
+    "withdrawnNoCharge": "You have not been charged and your saved payment method has been removed.",
+    "cancelledSubject": "Deal cancelled: {name}",
+    "cancelledText": "We've cancelled the group deal for {name}. We're sorry for the inconvenience."
   }
 }

@@ -40,10 +40,12 @@ export function publicRoutes(app, ctx) {
     const photos = repo.photosForDeal(deal.id);
     res.locals.trackDealId = deal.id;
     const { lang, formatEuro, categoryFor } = res.locals;
+    // The owner's search title and description are written in the shop's main language.
+    const seo = lang === (ctx.config.contentLanguage ?? 'en') ? { title: found.seo_title, description: found.seo_description } : {};
     res.locals.meta = dealMeta({
-      deal, photos, state, lang, formatEuro, baseUrl: ctx.config.baseUrl, business: ctx.config.business, categoryName: categoryFor(deal.category).name,
+      deal, photos, state, lang, formatEuro, baseUrl: ctx.config.baseUrl, business: ctx.config.business, categoryName: categoryFor(deal.category).name, seo,
     });
-    res.render('deal', { title: deal.product_name, deal, photos, state, values: {}, errors: {} });
+    res.render('deal', { title: seo.title || deal.product_name, deal, photos, state, values: {}, errors: {} });
   });
 
   app.get('/api/deals/:slug', (req, res) => {

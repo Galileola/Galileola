@@ -85,7 +85,8 @@
     "closed": "Tähän tarjoukseen ei voi enää liittyä.",
     "shareTitle": "👯 Ota ystävät mukaan",
     "shareText": "Jokainen liittyjä tuo tarjouksen lähemmäs kaikille. Jaa se niille, jotka myös pitäisivät siitä.",
-    "shareMessage": "{name} · Liity ryhmäostoon, niin maksamme kaikki vähemmän!"
+    "shareMessage": "{name} · Liity ryhmäostoon, niin maksamme kaikki vähemmän!",
+    "cancelled": "Tämä tarjous on peruttu. Keneltäkään ei veloitettu mitään, ja kaikki tallennetut maksutavat on poistettu."
   },
   "share": { "native": "📤 Jaa…", "email": "Sähköposti", "copy": "🔗 Kopioi linkki" },
   "join": {
@@ -268,6 +269,8 @@
     "withdrawnSubject": "Peruutus vahvistettu: {name}",
     "withdrawnText": "Olemme käsitelleet peruutuksesi: {name}.",
     "withdrawnRefund": "Olemme palauttaneet {amount} alkuperäiselle maksutavallesi. Palautuksen näkyminen voi kestää 5–10 pankkipäivää.",
-    "withdrawnNoCharge": "Sinulta ei ole veloitettu mitään, ja tallennettu maksutapasi on poistettu."
+    "withdrawnNoCharge": "Sinulta ei ole veloitettu mitään, ja tallennettu maksutapasi on poistettu.",
+    "cancelledSubject": "Tarjous peruttu: {name}",
+    "cancelledText": "Olemme perineet ryhmäoston {name}. Pahoittelemme vaivaa."
   }
 }

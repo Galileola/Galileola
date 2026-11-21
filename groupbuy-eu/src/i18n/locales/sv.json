@@ -85,7 +85,8 @@
     "closed": "Det här erbjudandet tar inte emot nya köpare.",
     "shareTitle": "👯 Ta med dina vänner",
     "shareText": "Varje ny köpare tar erbjudandet närmare målet för alla. Dela det med dem som också skulle gilla det.",
-    "shareMessage": "{name} · Gå med i gruppköpet så betalar vi alla mindre!"
+    "shareMessage": "{name} · Gå med i gruppköpet så betalar vi alla mindre!",
+    "cancelled": "Det här erbjudandet har ställts in. Ingen har debiterats och alla sparade betalsätt har tagits bort."
   },
   "share": { "native": "📤 Dela…", "email": "E-post", "copy": "🔗 Kopiera länk" },
   "join": {
@@ -268,6 +269,8 @@
     "withdrawnSubject": "Ånger bekräftad: {name}",
     "withdrawnText": "Vi har hanterat din ånger för {name}.",
     "withdrawnRefund": "Vi har återbetalat {amount} till ditt ursprungliga betalsätt. Det kan ta 5–10 bankdagar innan det syns.",
-    "withdrawnNoCharge": "Du har inte debiterats och ditt sparade betalsätt har tagits bort."
+    "withdrawnNoCharge": "Du har inte debiterats och ditt sparade betalsätt har tagits bort.",
+    "cancelledSubject": "Erbjudandet har ställts in: {name}",
+    "cancelledText": "Vi har ställt in gruppköpet av {name}. Vi ber om ursäkt för besväret."
   }
 }

@@ -85,7 +85,8 @@
     "closed": "See pakkumine ei võta enam uusi ostjaid vastu.",
     "shareTitle": "👯 Kutsu sõbrad kaasa",
     "shareText": "Iga liituja toob pakkumise kõigile lähemale. Jaga seda nendega, kellele see samuti meeldiks.",
-    "shareMessage": "{name} · Liitu ühisostuga ja me kõik maksame vähem!"
+    "shareMessage": "{name} · Liitu ühisostuga ja me kõik maksame vähem!",
+    "cancelled": "See pakkumine tühistati. Kelleltki ei võetud raha ja kõik salvestatud makseviisid eemaldati."
   },
   "share": { "native": "📤 Jaga…", "email": "E-post", "copy": "🔗 Kopeeri link" },
   "join": {
@@ -268,6 +269,8 @@
     "withdrawnSubject": "Taganemine kinnitatud: {name}",
     "withdrawnText": "Oleme sinu taganemise töödelnud: {name}.",
     "withdrawnRefund": "Tagastasime {amount} sinu algsele makseviisile. Selle ilmumine võib võtta 5–10 tööpäeva.",
-    "withdrawnNoCharge": "Sinult ei ole midagi võetud ja sinu salvestatud makseviis on eemaldatud."
+    "withdrawnNoCharge": "Sinult ei ole midagi võetud ja sinu salvestatud makseviis on eemaldatud.",
+    "cancelledSubject": "Pakkumine tühistati: {name}",
+    "cancelledText": "Tühistasime ühisostu „{name}”. Vabandame ebamugavuste pärast."
   }
 }

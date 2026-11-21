@@ -85,7 +85,8 @@
     "closed": "Din l-offerta ma għadhiex taċċetta xerrejja ġodda.",
     "shareTitle": "👯 Ġib il-ħbieb tiegħek",
     "shareText": "Kull xerrej ġdid iqarreb l-offerta għal kulħadd. Aqsamha ma' min jista' jħobbha wkoll.",
-    "shareMessage": "{name} · Ingħaqad max-xiri fi grupp u lkoll inħallsu inqas!"
+    "shareMessage": "{name} · Ingħaqad max-xiri fi grupp u lkoll inħallsu inqas!",
+    "cancelled": "Din l-offerta ġiet ikkanċellata. Ħadd ma ġie ddebitat u l-metodi tal-ħlas issejvjati kollha tneħħew."
   },
   "share": { "native": "📤 Aqsam…", "email": "Email", "copy": "🔗 Ikkopja l-link" },
   "join": {
@@ -268,6 +269,8 @@
     "withdrawnSubject": "Irtirar ikkonfermat: {name}",
     "withdrawnText": "Ipproċessajna l-irtirar tiegħek minn {name}.",
     "withdrawnRefund": "Irrimborżajna {amount} lill-metodu tal-ħlas oriġinali tiegħek. Jista' jieħu 5–10 ijiem tax-xogħol biex jidher.",
-    "withdrawnNoCharge": "Ma ġejt iddebitat xejn u l-metodu tal-ħlas issejvjat tiegħek tneħħa."
+    "withdrawnNoCharge": "Ma ġejt iddebitat xejn u l-metodu tal-ħlas issejvjat tiegħek tneħħa.",
+    "cancelledSubject": "L-offerta ġiet ikkanċellata: {name}",
+    "cancelledText": "Ikkanċellajna x-xiri fi grupp għal {name}. Niskużaw ruħna għall-inkonvenjent."
   }
 }

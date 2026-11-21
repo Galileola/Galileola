@@ -85,7 +85,8 @@
     "closed": "Deze deal neemt geen nieuwe kopers meer aan.",
     "shareTitle": "👯 Neem je vrienden mee",
     "shareText": "Elke koper die meedoet, brengt de deal dichterbij voor iedereen. Deel hem met mensen die hem ook leuk vinden.",
-    "shareMessage": "{name} · Doe mee met de groepsdeal, dan betalen we allemaal minder!"
+    "shareMessage": "{name} · Doe mee met de groepsdeal, dan betalen we allemaal minder!",
+    "cancelled": "Deze deal is geannuleerd. Er is bij niemand iets afgeschreven en alle opgeslagen betaalmethoden zijn verwijderd."
   },
   "share": { "native": "📤 Delen…", "email": "E-mail", "copy": "🔗 Link kopiëren" },
   "join": {
@@ -268,6 +269,8 @@
     "withdrawnSubject": "Herroeping bevestigd: {name}",
     "withdrawnText": "We hebben je herroeping voor {name} verwerkt.",
     "withdrawnRefund": "We hebben {amount} teruggestort op je oorspronkelijke betaalmethode. Het kan 5–10 werkdagen duren voordat je het ziet.",
-    "withdrawnNoCharge": "Er is niets afgeschreven en je opgeslagen betaalmethode is verwijderd."
+    "withdrawnNoCharge": "Er is niets afgeschreven en je opgeslagen betaalmethode is verwijderd.",
+    "cancelledSubject": "Deal geannuleerd: {name}",
+    "cancelledText": "We hebben de groepsdeal voor {name} geannuleerd. Onze excuses voor het ongemak."
   }
 }

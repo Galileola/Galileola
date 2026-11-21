@@ -85,7 +85,8 @@
     "closed": "Esta oferta já não aceita novos compradores.",
     "shareTitle": "👯 Traga os seus amigos",
     "shareText": "Cada comprador que adere aproxima a oferta para todos. Partilhe-a com quem também vai gostar.",
-    "shareMessage": "{name} · Adere à compra em grupo e pagamos todos menos!"
+    "shareMessage": "{name} · Adere à compra em grupo e pagamos todos menos!",
+    "cancelled": "Esta oferta foi cancelada. Ninguém foi cobrado e todos os métodos de pagamento guardados foram removidos."
   },
   "share": { "native": "📤 Partilhar…", "email": "E-mail", "copy": "🔗 Copiar ligação" },
   "join": {
@@ -268,6 +269,8 @@
     "withdrawnSubject": "Livre resolução confirmada: {name}",
     "withdrawnText": "Tratámos da sua desistência de {name}.",
     "withdrawnRefund": "Reembolsámos {amount} no seu método de pagamento original. Pode demorar 5 a 10 dias úteis a aparecer.",
-    "withdrawnNoCharge": "Não foi cobrado nada e o seu método de pagamento guardado foi removido."
+    "withdrawnNoCharge": "Não foi cobrado nada e o seu método de pagamento guardado foi removido.",
+    "cancelledSubject": "Oferta cancelada: {name}",
+    "cancelledText": "Cancelámos a compra em grupo de {name}. Pedimos desculpa pelo incómodo."
   }
 }

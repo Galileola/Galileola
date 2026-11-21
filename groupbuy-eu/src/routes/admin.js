@@ -36,6 +36,7 @@ import { MIN_PASSWORD_LENGTH, createAdminAuth, newPasswordProblem } from '../adm
 import { AD_CHANNELS, LINK_TYPES, RANGES, buildReport, validateAdSpend } from '../performance.js';
 import { CHANNELS, shopDay } from '../analytics.js';
 import { importParsers, importRoutes } from './adminImport.js';
+import { copyPhotos, dealRoutes, dealToFormValues } from './adminDeals.js';
 
 // Photo uploads are parsed into memory (admin only, at most 8 × 8 MB per request), checked,
 // and only then written to UPLOAD_DIR.
@@ -106,16 +107,24 @@ export function adminRoutes(app, ctx) {
     const deals = repo
       .listDeals()
       .map((d) => ({ ...d, count: repo.committedCount(d.id), cover: repo.coverPhoto(d.id) }));
-    res.render('admin/index', { title: 'Admin', deals });
+    res.render('admin/index', { title: 'Admin', deals, flash: req.query.flash || '' });
   });
 
   importRoutes(router, ctx);
+  dealRoutes(router, ctx);
 
+  // New deal form. ?copy=<id> fills it in from an existing deal (Duplicate on the deal page); the
+  // original's photos are copied when the new deal is created.
   router.get('/deals/new', (req, res) => {
+    const original = req.query.copy ? repo.dealById(Number(req.query.copy)) : null;
+    const values = original
+      ? { ...dealToFormValues(original), deadline_iso: '', copy_photos_from: String(original.id) }
+      : { tax_code: config.defaultTaxCode, category: DEFAULT_CATEGORY };
     res.render('admin/new', {
       title: 'New deal',
-      values: { tax_code: config.defaultTaxCode, category: DEFAULT_CATEGORY },
+      values,
       errors: {},
+      copyPhotos: original ? repo.photosForDeal(original.id) : [],
     });
   });
 
@@ -144,9 +153,15 @@ export function adminRoutes(app, ctx) {
     const { errors, deal } = validateDealInput(req.body, { now: clock.now(), defaultTaxCode: config.defaultTaxCode });
     const photoError = req.photoError || checkPhotos(req.files);
     if (photoError) errors.photos = `${photoError} Please choose the photos again.`;
-    if (!deal || photoError) return res.status(422).render('admin/new', { title: 'New deal', values: req.body, errors });
+    const copyFrom = req.body.copy_photos_from ? repo.dealById(Number(req.body.copy_photos_from)) : null;
+    if (!deal || photoError) {
+      return res.status(422).render('admin/new', {
+        title: 'New deal', values: req.body, errors, copyPhotos: copyFrom ? repo.photosForDeal(copyFrom.id) : [],
+      });
+    }
     const created = repo.insertDeal(deal);
     ctx.translator?.warmDeal(created); // translate it into every language in the background
+    if (copyFrom) copyPhotos(ctx, copyFrom.id, created.id);
     savePhotos(created.id, req.files);
     res.redirect(303, `/admin/deals/${created.id}`);
   });
@@ -277,6 +292,7 @@ export function adminRoutes(app, ctx) {
       participants,
       counts,
       committed: repo.committedCount(deal.id),
+      participantTotal: repo.participantCount(deal.id),
       summary: summarize(participants),
       flash: req.query.flash || '',
       justPublished: req.query.live === '1',

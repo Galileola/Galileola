@@ -85,7 +85,8 @@
     "closed": "Cette offre n'accepte plus de nouveaux acheteurs.",
     "shareTitle": "👯 Invitez vos amis",
     "shareText": "Chaque nouvel acheteur rapproche l'offre du but pour tout le monde. Partagez-la avec ceux qui l'aimeraient aussi.",
-    "shareMessage": "{name} · Rejoins l'achat groupé et on paie tous moins cher !"
+    "shareMessage": "{name} · Rejoins l'achat groupé et on paie tous moins cher !",
+    "cancelled": "Cette offre a été annulée. Personne n'a été débité et tous les moyens de paiement enregistrés ont été supprimés."
   },
   "share": { "native": "📤 Partager…", "email": "E-mail", "copy": "🔗 Copier le lien" },
   "join": {
@@ -268,6 +269,8 @@
     "withdrawnSubject": "Rétractation confirmée : {name}",
     "withdrawnText": "Nous avons traité votre rétractation pour {name}.",
     "withdrawnRefund": "Nous avons remboursé {amount} sur votre moyen de paiement d'origine. Le remboursement peut mettre 5 à 10 jours ouvrés à apparaître.",
-    "withdrawnNoCharge": "Vous n'avez pas été débité et votre moyen de paiement enregistré a été supprimé."
+    "withdrawnNoCharge": "Vous n'avez pas été débité et votre moyen de paiement enregistré a été supprimé.",
+    "cancelledSubject": "Offre annulée : {name}",
+    "cancelledText": "Nous avons annulé l'achat groupé pour {name}. Nous vous prions de nous excuser pour la gêne occasionnée."
   }
 }

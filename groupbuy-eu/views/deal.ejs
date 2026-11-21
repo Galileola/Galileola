@@ -34,7 +34,7 @@
     </div>
     <p data-status-line class="status-line">
       <% if (state.status === 'expired') { %>
-        <%= t('deal.expired') %>
+        <%= state.cancelled ? t('deal.cancelled') : t('deal.expired') %>
       <% } else if (state.minimumReached) { %>
         <%= t('deal.reached') %>
       <% } else { %>
