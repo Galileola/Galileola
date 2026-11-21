@@ -5,6 +5,7 @@ import { photoUrl } from './photos.js';
 import { languageMiddleware } from './i18n/middleware.js';
 import { loadCategories } from './categories.js';
 import { applyBusinessSettings } from './businessSettings.js';
+import { analyticsMiddleware, createAnalytics } from './analytics.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -15,6 +16,8 @@ export function createApp(ctx) {
   // Settings the owner changes in the admin: categories and the company details.
   loadCategories(ctx.repo);
   applyBusinessSettings(config, ctx.repo);
+  // Visit statistics for Admin → Performance (no cookies; see src/analytics.js).
+  if (ctx.analytics === undefined && ctx.repo?.insertVisit) ctx.analytics = createAnalytics({ repo: ctx.repo, clock: ctx.clock, config });
 
   app.set('view engine', 'ejs');
   app.set('views', path.join(root, 'views'));
@@ -61,10 +64,15 @@ export function createApp(ctx) {
     res.locals.assistantEnabled = Boolean(ctx.assistant); // the admin router switches it off
     res.locals.isAdmin = false; // the admin router switches it on
     res.locals.baseUrl = config.baseUrl;
+    // Buyers' private pages (their links hold a secret) and the admin stay out of search engines
+    // and link previews.
+    res.locals.noindex = /^\/(join|pay|admin|api)(\/|$)/.test(req.path);
+    res.locals.meta = null; // link preview and search details; pages set their own (src/seo.js)
     next();
   });
   // The visitor's language: t(), prices, dates, countries and categories (src/i18n).
   app.use(languageMiddleware(ctx));
+  app.use(analyticsMiddleware(ctx));
 
   app.use('/static', express.static(path.join(root, 'public'), { maxAge: '1h' }));
   // Product photos have random, never-reused names, so they can be cached for a long time.

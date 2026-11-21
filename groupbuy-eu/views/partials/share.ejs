@@ -1,12 +1,16 @@
 <%# Share buttons. Needs shareUrl and shareText. Links open the network's own share page; nothing
     loads from those sites until someone clicks. fun.js adds "Copy link" and the phone's share sheet. %>
-<% const u = encodeURIComponent(shareUrl); const text = encodeURIComponent(shareText); const both = encodeURIComponent(shareText + ' ' + shareUrl); %>
-<div class="share" data-share-url="<%= shareUrl %>" data-share-text="<%= shareText %>">
+<%# Each button's link says where it was shared (utm_source, utm_medium=share), so Admin →
+    Performance shows how many visitors and buyers shoppers bring by sharing. %>
+<% const shareMedium = locals.shareMedium || 'share'; %>
+<% const tagged = (source) => shareUrl + (shareUrl.includes('?') ? '&' : '?') + 'utm_source=' + source + '&utm_medium=' + shareMedium; %>
+<% const u = (source) => encodeURIComponent(tagged(source)); const text = encodeURIComponent(shareText); const both = (source) => encodeURIComponent(shareText + ' ' + tagged(source)); %>
+<div class="share" data-share-url="<%= tagged('link') %>" data-share-text="<%= shareText %>">
   <button type="button" class="share-btn share-native" data-share-native hidden><%= t('share.native') %></button>
-  <a class="share-btn share-wa" href="https://wa.me/?text=<%= both %>" target="_blank" rel="noopener">WhatsApp</a>
-  <a class="share-btn share-fb" href="https://www.facebook.com/sharer/sharer.php?u=<%= u %>" target="_blank" rel="noopener">Facebook</a>
-  <a class="share-btn share-tg" href="https://t.me/share/url?url=<%= u %>&amp;text=<%= text %>" target="_blank" rel="noopener">Telegram</a>
-  <a class="share-btn share-x" href="https://twitter.com/intent/tweet?text=<%= text %>&amp;url=<%= u %>" target="_blank" rel="noopener">X</a>
-  <a class="share-btn share-mail" href="mailto:?subject=<%= text %>&amp;body=<%= both %>"><%= t('share.email') %></a>
-  <button type="button" class="share-btn share-copy" data-copy="<%= shareUrl %>"><%= t('share.copy') %></button>
+  <a class="share-btn share-wa" href="https://wa.me/?text=<%= both('whatsapp') %>" target="_blank" rel="noopener">WhatsApp</a>
+  <a class="share-btn share-fb" href="https://www.facebook.com/sharer/sharer.php?u=<%= u('facebook') %>" target="_blank" rel="noopener">Facebook</a>
+  <a class="share-btn share-tg" href="https://t.me/share/url?url=<%= u('telegram') %>&amp;text=<%= text %>" target="_blank" rel="noopener">Telegram</a>
+  <a class="share-btn share-x" href="https://twitter.com/intent/tweet?text=<%= text %>&amp;url=<%= u('x') %>" target="_blank" rel="noopener">X</a>
+  <a class="share-btn share-mail" href="mailto:?subject=<%= text %>&amp;body=<%= both('email') %>"><%= t('share.email') %></a>
+  <button type="button" class="share-btn share-copy" data-copy="<%= tagged('link') %>"><%= t('share.copy') %></button>
 </div>

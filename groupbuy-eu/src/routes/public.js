@@ -1,6 +1,7 @@
 import { isJoinable, publicDealState } from '../dealState.js';
 import { isCategory } from '../categories.js';
 import { HOUR } from '../util.js';
+import { dealMeta, homeMeta } from '../seo.js';
 
 export function publicRoutes(app, ctx) {
   const { repo, clock } = ctx;
@@ -16,6 +17,8 @@ export function publicRoutes(app, ctx) {
     const deals = category ? all.filter((d) => d.category === category.slug) : all;
     const perCategory = {};
     for (const d of all) perCategory[d.category] = (perCategory[d.category] ?? 0) + 1;
+    const cover = (category ? deals : all).find((d) => d.cover)?.cover;
+    res.locals.meta = homeMeta({ t, cover, baseUrl: ctx.config.baseUrl, business: ctx.config.business });
     res.render('home', {
       title: category ? t('home.titleCategory', { category: category.name }) : t('home.title'),
       deals,
@@ -34,7 +37,13 @@ export function publicRoutes(app, ctx) {
     if (!found) return next();
     const deal = res.locals.localizeDeal(found);
     const state = publicDealState(deal, repo.committedCount(deal.id), clock.now());
-    res.render('deal', { title: deal.product_name, deal, photos: repo.photosForDeal(deal.id), state, values: {}, errors: {} });
+    const photos = repo.photosForDeal(deal.id);
+    res.locals.trackDealId = deal.id;
+    const { lang, formatEuro, categoryFor } = res.locals;
+    res.locals.meta = dealMeta({
+      deal, photos, state, lang, formatEuro, baseUrl: ctx.config.baseUrl, business: ctx.config.business, categoryName: categoryFor(deal.category).name,
+    });
+    res.render('deal', { title: deal.product_name, deal, photos, state, values: {}, errors: {} });
   });
 
   app.get('/api/deals/:slug', (req, res) => {

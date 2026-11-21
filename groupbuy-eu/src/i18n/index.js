@@ -51,6 +51,14 @@ export const isLanguage = (code) => typeof code === 'string' && known.has(code);
 const INTL_LOCALE = { en: 'en-IE', pt: 'pt-PT' };
 export const intlLocale = (lang) => INTL_LOCALE[lang] ?? lang;
 
+// Facebook's og:locale names (language_COUNTRY) for the link previews.
+const OG_LOCALE = {
+  bg: 'bg_BG', cs: 'cs_CZ', da: 'da_DK', de: 'de_DE', el: 'el_GR', en: 'en_GB', es: 'es_ES', et: 'et_EE', fi: 'fi_FI',
+  fr: 'fr_FR', ga: 'ga_IE', hr: 'hr_HR', hu: 'hu_HU', it: 'it_IT', lt: 'lt_LT', lv: 'lv_LV', mt: 'mt_MT', nl: 'nl_NL',
+  pl: 'pl_PL', pt: 'pt_PT', ro: 'ro_RO', ru: 'ru_RU', sk: 'sk_SK', sl: 'sl_SI', sv: 'sv_SE',
+};
+export const ogLocale = (lang) => OG_LOCALE[lang] ?? 'en_GB';
+
 // Stripe's payment form speaks all of these except Irish, which gets English.
 export const stripeLocale = (lang) => (lang === 'ga' ? 'en' : lang);
 

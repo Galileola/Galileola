@@ -33,6 +33,8 @@ import {
 import { BUSINESS_FIELDS, isPlaceholder, saveBusinessSettings } from '../businessSettings.js';
 import { translate } from '../i18n/index.js';
 import { MIN_PASSWORD_LENGTH, createAdminAuth, newPasswordProblem } from '../adminPassword.js';
+import { AD_CHANNELS, LINK_TYPES, RANGES, buildReport, validateAdSpend } from '../performance.js';
+import { CHANNELS, shopDay } from '../analytics.js';
 
 // Photo uploads are parsed into memory (admin only, at most 8 × 8 MB per request), checked,
 // and only then written to UPLOAD_DIR.
@@ -391,6 +393,38 @@ export function adminRoutes(app, ctx) {
   });
 
   for (const extend of ctx.adminExtensions ?? []) extend(router, ctx);
+
+  // ---- Performance: visits, sources, sales, the funnel per deal, ad spend (src/performance.js)
+  const performancePage = (req, res, status = 200, spendForm = null, spendErrors = {}) => {
+    const days = RANGES.some((r) => r.days === Number(req.query.days)) ? Number(req.query.days) : 30;
+    const now = clock.now();
+    const report = buildReport(repo, { days, now });
+    res.status(status).render('admin/performance', {
+      title: 'Performance',
+      report,
+      ranges: RANGES,
+      channels: AD_CHANNELS.map((key) => ({ key, label: CHANNELS[key].label })),
+      linkTypes: LINK_TYPES,
+      linkPages: repo
+        .listPublicDeals()
+        .filter((d) => d.status === 'open')
+        .map((d) => ({ path: `/deals/${d.slug}`, label: d.product_name })),
+      spendForm: spendForm ?? { day: shopDay(now), source: 'facebook', campaign: '', amount: '', note: '' },
+      spendErrors,
+      saved: req.query.saved,
+    });
+  };
+  router.get('/performance', (req, res) => performancePage(req, res));
+  router.post('/performance/spend', (req, res) => {
+    const { errors, values, form } = validateAdSpend(req.body, clock.now());
+    if (Object.keys(errors).length) return performancePage(req, res, 422, form, errors);
+    repo.insertAdSpend(values);
+    res.redirect(303, `/admin/performance?days=${Number(req.query.days) || 30}&saved=spend#ad-spend`);
+  });
+  router.post('/performance/spend/:id/delete', (req, res) => {
+    repo.deleteAdSpend(Number(req.params.id));
+    res.redirect(303, `/admin/performance?days=${Number(req.query.days) || 30}&saved=deleted#ad-spend`);
+  });
 
   // ---- Settings: one page that links to everything the owner can set up.
   router.get('/settings', (req, res) => res.render('admin/settings', { title: 'Settings' }));

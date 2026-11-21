@@ -1,0 +1,20 @@
+<%# One bar chart (a single series): heading, points [{ label, … }], valueKey, format(value).
+    Hovering or tapping a bar shows its value in the readout line (public/js/performance.js);
+    the same numbers are in the table below the charts. %>
+<% const values = points.map((p) => Number(p[valueKey]) || 0); const max = Math.max(0, ...values); const total = values.reduce((a, b) => a + b, 0); %>
+<figure class="card chart">
+  <figcaption>
+    <span class="chart-title"><%= heading %></span>
+    <strong class="chart-total"><%= format(total) %></strong>
+    <span class="chart-readout muted small" data-readout aria-hidden="true" data-default="Tap or hover over a bar">Tap or hover over a bar</span>
+  </figcaption>
+  <div class="chart-plot" role="img" aria-label="<%= heading %>: <%= format(total) %> in total; the highest was <%= format(max) %>.">
+    <span class="chart-max muted small"><%= max ? format(max) : '' %></span>
+    <div class="bars<%= points.length > 45 ? ' dense' : '' %>">
+      <% points.forEach((p, i) => { const v = values[i]; const h = max && v ? Math.max(2, (v / max) * 100) : 0; %>
+        <span class="bar" data-tip="<%= p.label %>: <%= format(v) %>"><i style="height: <%= h.toFixed(1) %>%"></i></span>
+      <% }) %>
+    </div>
+  </div>
+  <div class="chart-axis muted small"><span><%= points[0]?.label %></span><span><%= points.at(-1)?.label %></span></div>
+</figure>

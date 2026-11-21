@@ -63,6 +63,12 @@ export function joinRoutes(app, ctx) {
     if (Object.keys(errors).length) return renderDeal(res, deal, req.body, errors);
     try {
       const p = await engine.startJoin(deal, { ...input, lang });
+      // Which ad, post or website brought this buyer (Admin → Performance).
+      try {
+        if (ctx.analytics) repo.setParticipantSource(p.id, ctx.analytics.sourceOf(req));
+      } catch (err) {
+        console.warn(`[analytics] could not save the buyer's source: ${err.message}`);
+      }
       res.redirect(303, `/join/${p.token}`);
     } catch (err) {
       if (err instanceof JoinError) {

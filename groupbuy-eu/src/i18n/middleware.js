@@ -4,6 +4,7 @@ import {
   countryList,
   dateFormatter,
   euroFormatter,
+  ogLocale,
   pickLanguage,
   section,
   stripeLocale,
@@ -11,6 +12,7 @@ import {
   translateHtml,
 } from './index.js';
 import { allCategories, categoryFor, categoryName } from '../categories.js';
+import { TRACKING_PARAMS } from '../analytics.js';
 
 // Puts everything a page needs to speak the visitor's language on res.locals:
 // t / th (text), formatEuro / formatDate, countries, categories, the language menu and
@@ -31,6 +33,7 @@ export function applyLanguage(req, res, lang, ctx = {}) {
     languages: LANGUAGES,
     currentLanguage: LANGUAGES.find((l) => l.code === lang),
     stripeLocale: stripeLocale(lang),
+    ogLocale: ogLocale(lang),
     clientStrings: section(lang, 'js'),
     localizeDeal: (deal) => (ctx.translator ? ctx.translator.deal(deal, lang) : deal),
     // Link to the same page in another language. After a form post the page has no address of
@@ -39,6 +42,7 @@ export function applyLanguage(req, res, lang, ctx = {}) {
       const u = new URL(req.originalUrl || '/', 'http://local');
       const base = req.method === 'GET' ? u.pathname : res.locals.canonicalPath || '/';
       const params = req.method === 'GET' ? u.searchParams : new URLSearchParams();
+      for (const p of TRACKING_PARAMS) params.delete(p); // an ad's tags belong to the visit, not the page
       params.set('lang', code);
       return `${base}?${params}`;
     },

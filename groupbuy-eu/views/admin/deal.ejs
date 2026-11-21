@@ -55,7 +55,7 @@
   <p class="muted small">A ready-made post for Instagram, Facebook or WhatsApp, with the deal link. Edit it here before you copy it; changes aren't saved.</p>
   <textarea class="social-post" id="social-post" rows="6" aria-label="Social media post"><%= post %></textarea>
   <p><button type="button" class="small" data-copy-from="social-post">📋 Copy post</button></p>
-  <%- include('../partials/share', { shareUrl: dealUrl, shareText: deal.headline || deal.product_name }) %>
+  <%- include('../partials/share', { shareUrl: dealUrl, shareText: deal.headline || deal.product_name, shareMedium: 'social' }) %>
 </section>
 <% } %>
 

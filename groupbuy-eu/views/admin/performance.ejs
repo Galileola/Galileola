@@ -1,0 +1,280 @@
+<%- include('../partials/header') %>
+<%
+  const r = report;
+  const T = r.totals;
+  const num = (n) => Number(n ?? 0).toLocaleString('en-IE');
+  const pct = (x) => (x == null ? '–' : (x * 100).toFixed(x < 0.1 ? 1 : 0) + '%');
+  const euro = (c) => (c == null ? '–' : formatEuro(c));
+  const times = (x) => (x == null ? '–' : x.toFixed(1) + '×');
+  const rangeLink = (days) => '/admin/performance?days=' + days;
+  const longDate = (day) => new Date(day + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+  const funnel = [
+    { label: 'Visitors', value: T.visitors, hint: 'people who opened a page of the shop' },
+    { label: 'Filled in the join form', value: T.started, hint: 'name, email and address' },
+    { label: 'Joined (payment method saved)', value: T.joined, hint: 'these count towards the deal minimum' },
+    { label: 'Paid', value: T.paid, hint: 'charged after the deal reached its minimum' },
+  ];
+%>
+<p><a href="/admin">← Admin</a></p>
+<div class="perf-head">
+  <h1>📊 Performance</h1>
+  <nav class="range-tabs" aria-label="Time range">
+    <% for (const g of ranges) { %><a href="<%= rangeLink(g.days) %>"<%- g.days === r.days ? ' aria-current="page"' : '' %>><%= g.label %></a><% } %>
+  </nav>
+</div>
+<p class="muted small"><%= longDate(r.from) %> – <%= longDate(r.to) %>.
+  <% if (r.trackingSince) { %>Visits are counted since <%= longDate(r.trackingSince) %>.<% } else { %>No visits counted yet: they appear here as soon as people open the shop.<% } %>
+  <a href="#how-counted">How this is counted</a></p>
+
+<section class="kpis" aria-label="Totals">
+  <div class="kpi"><span class="kpi-label">Visitors</span><strong><%= num(T.visitors) %></strong><span class="kpi-sub"><%= num(T.views) %> page views</span></div>
+  <div class="kpi"><span class="kpi-label">Buyers joined</span><strong><%= num(T.joined) %></strong><span class="kpi-sub"><%= pct(T.conversion) %> of visitors</span></div>
+  <div class="kpi"><span class="kpi-label">Sales (paid)</span><strong><%= euro(T.revenueCents) %></strong><span class="kpi-sub"><%= num(T.paid) %> orders · VAT <%= euro(T.vatCents) %></span></div>
+  <div class="kpi"><span class="kpi-label">Average order</span><strong><%= euro(T.averageOrderCents) %></strong><span class="kpi-sub">VAT included</span></div>
+  <div class="kpi"><span class="kpi-label">Ad spend</span><strong><%= euro(T.spendCents) %></strong><span class="kpi-sub"><a href="#ad-spend">Add what you spent</a></span></div>
+  <div class="kpi"><span class="kpi-label">Cost per buyer</span><strong><%= euro(T.costPerBuyerCents) %></strong><span class="kpi-sub">ad spend ÷ buyers joined</span></div>
+  <div class="kpi"><span class="kpi-label">Return on ad spend</span><strong><%= times(T.roas) %></strong><span class="kpi-sub">sales ÷ ad spend</span></div>
+</section>
+
+<section class="grid charts">
+  <%- include('bar-chart', { heading: r.byWeek ? 'Visitors per week' : 'Visitors per day', points: r.series, valueKey: 'visitors', format: num }) %>
+  <%- include('bar-chart', { heading: r.byWeek ? 'Buyers joined per week' : 'Buyers joined per day', points: r.series, valueKey: 'joined', format: num }) %>
+  <%- include('bar-chart', { heading: r.byWeek ? 'Sales per week' : 'Sales per day', points: r.series, valueKey: 'revenueCents', format: euro }) %>
+</section>
+<details class="table-view">
+  <summary>Show these numbers as a table</summary>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th><%= r.byWeek ? 'Week' : 'Day' %></th><th class="num">Visitors</th><th class="num">Page views</th><th class="num">Buyers joined</th><th class="num">Sales</th></tr></thead>
+      <tbody>
+        <% for (const p of r.series.slice().reverse()) { %>
+          <tr><td><%= p.label %></td><td class="num"><%= num(p.visitors) %></td><td class="num"><%= num(p.views) %></td><td class="num"><%= num(p.joined) %></td><td class="num"><%= euro(p.revenueCents) %></td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</details>
+
+<section class="card perf-section">
+  <h2>🛒 From visitor to buyer</h2>
+  <p class="muted small">Where people drop off. A low step tells you what to improve: few visitors → advertise more; visitors but no form → the deal or price; form but no payment → the payment step.</p>
+  <div class="funnel">
+    <% for (const step of funnel) { const share = T.visitors ? step.value / T.visitors : null; %>
+      <div class="funnel-row">
+        <div class="funnel-label"><strong><%= step.label %></strong><span class="muted small"><%= step.hint %></span></div>
+        <div class="funnel-track"><span style="width: <%= share == null ? 0 : step.value ? Math.max(1, share * 100).toFixed(1) : 0 %>%"></span></div>
+        <div class="funnel-value"><strong><%= num(step.value) %></strong><span class="muted small"><%= step === funnel[0] ? '' : pct(share) %></span></div>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<section class="perf-section">
+  <h2>📣 Where visitors and buyers come from</h2>
+  <p class="muted small">Ads and posts made with the <a href="#link-maker">tracked link maker</a> show up by name. Shares from the deal pages' share buttons count under the app they were shared on.</p>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Channel</th><th class="num">Visits</th><th class="num">Visitors</th><th class="num">Buyers joined</th><th class="num">Conversion</th><th class="num">Paid</th><th class="num">Sales</th><th class="num">Ad spend</th><th class="num">Cost per buyer</th><th class="num">Return</th></tr></thead>
+      <tbody>
+        <% for (const s of r.sources) { %>
+          <tr>
+            <td><%= s.label %></td><td class="num"><%= num(s.visits) %></td><td class="num"><%= num(s.visitors) %></td><td class="num"><%= num(s.joined) %></td>
+            <td class="num"><%= pct(s.conversion) %></td><td class="num"><%= num(s.paid) %></td><td class="num"><%= euro(s.revenueCents) %></td>
+            <td class="num"><%= s.spendCents ? euro(s.spendCents) : '–' %></td><td class="num"><%= euro(s.costPerBuyerCents) %></td><td class="num"><%= times(s.roas) %></td>
+          </tr>
+        <% } %>
+        <% if (!r.sources.length) { %><tr><td colspan="10" class="muted">No visits in this period yet.</td></tr><% } %>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="perf-section">
+  <h2>🎯 Campaigns</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Campaign</th><th>Channel</th><th class="num">Visits</th><th class="num">Buyers joined</th><th class="num">Conversion</th><th class="num">Sales</th><th class="num">Ad spend</th><th class="num">Cost per buyer</th><th class="num">Return</th></tr></thead>
+      <tbody>
+        <% for (const c of r.campaigns) { %>
+          <tr>
+            <td><code><%= c.campaign %></code></td><td><%= c.label %></td><td class="num"><%= num(c.visits) %></td><td class="num"><%= num(c.joined) %></td>
+            <td class="num"><%= pct(c.conversion) %></td><td class="num"><%= euro(c.revenueCents) %></td><td class="num"><%= c.spendCents ? euro(c.spendCents) : '–' %></td>
+            <td class="num"><%= euro(c.costPerBuyerCents) %></td><td class="num"><%= times(c.roas) %></td>
+          </tr>
+        <% } %>
+        <% if (!r.campaigns.length) { %><tr><td colspan="9" class="muted">No campaigns yet. Give your next ad or post a campaign name in the <a href="#link-maker">link maker</a> and it shows up here.</td></tr><% } %>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="perf-section">
+  <h2>🏷️ Deals</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Deal</th><th class="num">Visitors</th><th class="num">Filled in form</th><th class="num">Joined</th><th class="num">Conversion</th><th class="num">Paid</th><th class="num">Sales</th><th class="num">Buyers so far</th><th>Status</th></tr></thead>
+      <tbody>
+        <% for (const d of r.deals) { %>
+          <tr>
+            <td><a href="/admin/deals/<%= d.deal.id %>"><%= d.deal.product_name %></a></td>
+            <td class="num"><%= num(d.visitors) %></td><td class="num"><%= num(d.started) %></td><td class="num"><%= num(d.joined) %></td>
+            <td class="num"><%= pct(d.conversion) %></td><td class="num"><%= num(d.paid) %></td><td class="num"><%= euro(d.revenueCents) %></td>
+            <td class="num"><%= d.committed %> / <%= d.deal.min_buyers %></td>
+            <td><span class="badge <%= d.deal.status %>"><%= d.deal.status.replace(/_/g, ' ') %></span></td>
+          </tr>
+        <% } %>
+        <% if (!r.deals.length) { %><tr><td colspan="9" class="muted">No deals with visitors in this period.</td></tr><% } %>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="grid perf-small">
+  <div class="card">
+    <h2>🌍 Buyers' countries</h2>
+    <table class="plain">
+      <thead><tr><th>Country</th><th class="num">Joined</th><th class="num">Sales</th></tr></thead>
+      <tbody>
+        <% for (const c of r.countries) { %><tr><td><%= c.name %></td><td class="num"><%= num(c.joined) %></td><td class="num"><%= euro(c.revenueCents) %></td></tr><% } %>
+        <% if (!r.countries.length) { %><tr><td colspan="3" class="muted">No buyers yet.</td></tr><% } %>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <h2>🌐 Shop languages</h2>
+    <table class="plain">
+      <thead><tr><th>Language</th><th class="num">Visitors</th><th class="num">Joined</th></tr></thead>
+      <tbody>
+        <% for (const l of r.languages.slice(0, 12)) { %><tr><td><%= l.name %></td><td class="num"><%= num(l.visitors) %></td><td class="num"><%= num(l.joined) %></td></tr><% } %>
+        <% if (!r.languages.length) { %><tr><td colspan="3" class="muted">No visits yet.</td></tr><% } %>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <h2>📱 Devices</h2>
+    <table class="plain">
+      <thead><tr><th>Device</th><th class="num">Visitors</th><th class="num">Share</th></tr></thead>
+      <tbody>
+        <% for (const d of r.devices) { %><tr><td><%= { phone: '📱 Phone', tablet: '📲 Tablet', computer: '💻 Computer' }[d.device] || d.device %></td><td class="num"><%= num(d.visitors) %></td><td class="num"><%= pct(d.share) %></td></tr><% } %>
+        <% if (!r.devices.length) { %><tr><td colspan="3" class="muted">No visits yet.</td></tr><% } %>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="card perf-section" id="link-maker">
+  <h2>🔗 Tracked link maker</h2>
+  <p class="muted small">Use a tracked link in every ad, post and message. Visitors and buyers from it then show up above under its channel and campaign name.</p>
+  <form class="link-maker" data-link-maker data-base="<%= baseUrl %>">
+    <div class="link-maker-grid">
+      <div>
+        <label for="lm-path">Page</label>
+        <select id="lm-path" name="path">
+          <option value="/">Home page (all deals)</option>
+          <% for (const p of linkPages) { %><option value="<%= p.path %>"><%= p.label %></option><% } %>
+        </select>
+      </div>
+      <div>
+        <label for="lm-source">Where it goes</label>
+        <select id="lm-source" name="source">
+          <% for (const c of channels) { %><option value="<%= c.key %>"><%= c.label %></option><% } %>
+          <option value="other">Somewhere else…</option>
+        </select>
+        <input type="text" name="other_source" aria-label="Name of the website or app" placeholder="e.g. a website's name" maxlength="40" data-other-source hidden>
+      </div>
+      <div>
+        <label for="lm-medium">Type</label>
+        <select id="lm-medium" name="medium">
+          <% for (const t of linkTypes) { %><option value="<%= t.medium %>"><%= t.label %></option><% } %>
+        </select>
+      </div>
+      <div>
+        <label for="lm-campaign">Campaign name</label>
+        <input type="text" id="lm-campaign" name="campaign" placeholder="e.g. black-friday" maxlength="60" autocomplete="off">
+      </div>
+      <div>
+        <label for="lm-lang">Page language</label>
+        <select id="lm-lang" name="lang">
+          <option value="">The visitor's own language</option>
+          <% for (const l of languages) { %><option value="<%= l.code %>"><%= l.name %></option><% } %>
+        </select>
+      </div>
+    </div>
+    <label for="lm-url">Your link</label>
+    <div class="link-output">
+      <input type="text" id="lm-url" readonly data-link-output value="<%= baseUrl %>/?utm_source=facebook&amp;utm_medium=paid">
+      <button type="button" data-link-copy>Copy link</button>
+    </div>
+    <p class="muted small" data-link-copied hidden role="status">Copied. Paste it into your ad or post.</p>
+    <p class="muted small">Tip: give an ad in one country the page language of that country, e.g. German for an ad shown in Austria.</p>
+  </form>
+</section>
+
+<section class="card perf-section" id="ad-spend">
+  <h2>💶 Ad spend</h2>
+  <p class="muted small">Type in what you paid for adverts (from the ad platform's invoice or dashboard), so the cost per buyer and the return on ad spend can be worked out. Use the same channel and campaign name as the tracked link.</p>
+  <% if (saved === 'spend') { %><div class="notice ok" role="status">Saved.</div><% } else if (saved === 'deleted') { %><div class="notice ok" role="status">Removed.</div><% } %>
+  <% if (Object.keys(spendErrors).length) { %><div class="notice bad" role="alert">Please check the fields marked below.</div><% } %>
+  <form method="post" action="/admin/performance/spend?days=<%= r.days %>" class="spend-form">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div>
+      <label for="as-day">Date</label>
+      <input type="date" id="as-day" name="day" value="<%= spendForm.day %>" required>
+      <% if (spendErrors.day) { %><p class="error-text"><%= spendErrors.day %></p><% } %>
+    </div>
+    <div>
+      <label for="as-source">Channel</label>
+      <select id="as-source" name="source" data-spend-source>
+        <% for (const c of channels) { %><option value="<%= c.key %>"<%- spendForm.source === c.key ? ' selected' : '' %>><%= c.label %></option><% } %>
+        <option value="other"<%- spendForm.source === 'other' ? ' selected' : '' %>>Somewhere else…</option>
+      </select>
+      <input type="text" name="other_source" aria-label="Name of the website or app" value="<%= spendForm.other_source || '' %>" maxlength="40" data-spend-other<%- spendForm.source === 'other' ? '' : ' hidden' %>>
+      <% if (spendErrors.source) { %><p class="error-text"><%= spendErrors.source %></p><% } %>
+    </div>
+    <div>
+      <label for="as-campaign">Campaign name <span class="muted small">(optional)</span></label>
+      <input type="text" id="as-campaign" name="campaign" value="<%= spendForm.campaign %>" maxlength="60">
+    </div>
+    <div>
+      <label for="as-amount">Amount (€)</label>
+      <input type="text" id="as-amount" name="amount" value="<%= spendForm.amount %>" inputmode="decimal" placeholder="25.00" required>
+      <% if (spendErrors.amount) { %><p class="error-text"><%= spendErrors.amount %></p><% } %>
+    </div>
+    <div class="spend-note">
+      <label for="as-note">Note <span class="muted small">(optional)</span></label>
+      <input type="text" id="as-note" name="note" value="<%= spendForm.note %>" maxlength="200">
+    </div>
+    <div class="spend-submit"><button type="submit">Add</button></div>
+  </form>
+  <% if (r.spend.length) { %>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Date</th><th>Channel</th><th>Campaign</th><th class="num">Amount</th><th>Note</th><th></th></tr></thead>
+        <tbody>
+          <% for (const s of r.spend) { %>
+            <tr>
+              <td class="nowrap"><%= s.day %></td><td><%= s.label %></td><td><%= s.campaign ? s.campaign : '–' %></td><td class="num"><%= euro(s.amount_cents) %></td><td><%= s.note %></td>
+              <td><form method="post" action="/admin/performance/spend/<%= s.id %>/delete?days=<%= r.days %>" data-confirm="Remove this ad spend?"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button type="submit" class="small secondary">Remove</button></form></td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  <% } else { %>
+    <p class="muted small">No ad spend in this period.</p>
+  <% } %>
+</section>
+
+<details class="card perf-section" id="how-counted">
+  <summary><strong>How this is counted</strong></summary>
+  <ul class="small">
+    <li><strong>No cookies, no consent banner needed.</strong> Nothing is stored on visitors' devices and IP addresses aren't saved. Each visitor is counted with a code made from their connection and browser that changes every day, so the same person can't be followed from one day to the next.</li>
+    <li><strong>Visitors</strong> are counted once a day: someone who visits on three days counts three times. <strong>Visits</strong> are arrivals from outside the shop; clicks from one page of the shop to another aren't new visits.</li>
+    <li>Search engines, link previews (WhatsApp, Facebook …) and other robots aren't counted.</li>
+    <li><strong>Where a buyer came from</strong> is the source of their visit on the day they joined. If they came back later by typing the address, the earlier ad or post still gets the credit that day.</li>
+    <li><strong>Buyers joined</strong> and <strong>filled in the form</strong> count orders started in the period; <strong>paid</strong> and <strong>sales</strong> count payments made in the period. Refunded orders aren't counted as sales.</li>
+    <li>Visit details are deleted after 13 months. Orders are kept as your records require.</li>
+  </ul>
+</details>
+<script src="/static/js/performance.js"></script>
+<%- include('../partials/footer') %>

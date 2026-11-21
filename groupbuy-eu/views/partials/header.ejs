@@ -7,9 +7,26 @@
   <meta name="theme-color" content="#6d28d9">
   <title><%= title %> · <%= brandName %></title>
   <link rel="stylesheet" href="/static/css/site.css">
-  <% if (!isAdmin) { %>
+  <% if (isAdmin || noindex) { %>
+    <meta name="robots" content="noindex, nofollow">
+  <% } else { %>
+    <% const m = meta || {}; const pageUrl = baseUrl + langUrl(lang); const description = m.description || t('home.lead'); %>
+    <meta name="description" content="<%= description %>">
+    <link rel="canonical" href="<%= pageUrl %>">
     <% for (const l of languages) { %><link rel="alternate" hreflang="<%= l.code %>" href="<%= baseUrl + langUrl(l.code) %>">
     <% } %><link rel="alternate" hreflang="x-default" href="<%= baseUrl + langUrl('en') %>">
+    <meta property="og:site_name" content="<%= brandName %>">
+    <meta property="og:type" content="<%= m.type || 'website' %>">
+    <meta property="og:title" content="<%= m.title || title %>">
+    <meta property="og:description" content="<%= description %>">
+    <meta property="og:url" content="<%= pageUrl %>">
+    <meta property="og:locale" content="<%= ogLocale %>">
+    <% if (m.image) { %><meta property="og:image" content="<%= m.image %>">
+    <meta property="og:image:alt" content="<%= m.title || title %>"><% } %>
+    <meta name="twitter:card" content="<%= m.image ? 'summary_large_image' : 'summary' %>">
+    <% if (m.priceAmount) { %><meta property="product:price:amount" content="<%= m.priceAmount %>">
+    <meta property="product:price:currency" content="EUR"><% } %>
+    <% if (m.jsonLd) { %><script type="application/ld+json"><%- JSON.stringify(m.jsonLd).replace(/</g, '\\u003c') %></script><% } %>
   <% } %>
   <% if (loadStripe) { %><script src="https://js.stripe.com/v3/"></script><% } %>
 </head>
@@ -20,7 +37,7 @@
     <div class="site-header-inner">
       <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span><%= brandName %></a>
       <% if (isAdmin) { %>
-        <nav aria-label="Admin"><a href="/admin">Deals</a><a href="/admin/snap" class="nav-snap">📸 Snap a deal</a><a href="/admin/emails">Emails</a><a href="/admin/settings">⚙️ Settings</a><a href="/">Shop</a></nav>
+        <nav aria-label="Admin"><a href="/admin">Deals</a><a href="/admin/snap" class="nav-snap">📸 Snap a deal</a><a href="/admin/performance">📊 Performance</a><a href="/admin/emails">Emails</a><a href="/admin/settings">⚙️ Settings</a><a href="/">Shop</a></nav>
       <% } else { %>
         <nav class="shop-nav"><a href="/#categories"><%= t('nav.categories') %></a><a href="/#deals"><%= t('nav.deals') %></a><a href="/#how"><%= t('nav.how') %></a></nav>
         <details class="lang-menu" data-lang-menu>

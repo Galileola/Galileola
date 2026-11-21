@@ -152,6 +152,41 @@ CREATE TABLE IF NOT EXISTS categories (
   built_in INTEGER NOT NULL DEFAULT 0
 );
 
+-- Visit statistics (src/analytics.js): one row per page view. No IP addresses: visitor is a
+-- fingerprint made with a key that changes every day. day is YYYY-MM-DD in the shop's time zone.
+-- entry = 1 when the visit started on this page (it came from outside the shop); source, medium
+-- and campaign say from where ('' for clicks inside the shop).
+CREATE TABLE IF NOT EXISTS page_views (
+  id         INTEGER PRIMARY KEY,
+  day        TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  path       TEXT NOT NULL,
+  deal_id    INTEGER,
+  visitor    TEXT NOT NULL,
+  entry      INTEGER NOT NULL DEFAULT 0,
+  source     TEXT NOT NULL DEFAULT '',
+  medium     TEXT NOT NULL DEFAULT '',
+  campaign   TEXT NOT NULL DEFAULT '',
+  referrer   TEXT NOT NULL DEFAULT '',
+  lang       TEXT NOT NULL DEFAULT '',
+  device     TEXT NOT NULL DEFAULT ''
+);
+CREATE INDEX IF NOT EXISTS page_views_day ON page_views(day);
+CREATE INDEX IF NOT EXISTS page_views_visitor ON page_views(day, visitor);
+
+-- Money spent on adverts, typed in by the owner (Admin → Performance), so the dashboard can show
+-- the cost per buyer and the return on ad spend. source and campaign match the tracked links.
+CREATE TABLE IF NOT EXISTS ad_spend (
+  id           INTEGER PRIMARY KEY,
+  day          TEXT NOT NULL,
+  source       TEXT NOT NULL,
+  campaign     TEXT NOT NULL DEFAULT '',
+  amount_cents INTEGER NOT NULL CHECK (amount_cents > 0),
+  note         TEXT NOT NULL DEFAULT '',
+  created_at   TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS ad_spend_day ON ad_spend(day);
+
 CREATE TABLE IF NOT EXISTS locks (
   name       TEXT PRIMARY KEY,
   holder     TEXT NOT NULL,
@@ -180,7 +215,13 @@ const ADDED_COLUMNS = {
     ['social_post', "TEXT NOT NULL DEFAULT ''"],
   ],
   // The language the buyer used on the site; their emails are written in it.
-  participants: [['lang', "TEXT NOT NULL DEFAULT 'en'"]],
+  participants: [
+    ['lang', "TEXT NOT NULL DEFAULT 'en'"],
+    // Where the buyer's visit came from (src/analytics.js): e.g. facebook / paid / summer-sale.
+    ['source', "TEXT NOT NULL DEFAULT ''"],
+    ['medium', "TEXT NOT NULL DEFAULT ''"],
+    ['campaign', "TEXT NOT NULL DEFAULT ''"],
+  ],
 };
 
 function migrate(db) {
@@ -450,6 +491,68 @@ export function createRepo(db) {
            ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at`
         )
         .run(key, value, now),
+
+    // ---- visit statistics and ad spend (src/analytics.js, src/performance.js)
+    insertVisit: (v) =>
+      db
+        .prepare(
+          `INSERT INTO page_views (day, created_at, path, deal_id, visitor, entry, source, medium, campaign, referrer, lang, device)
+           VALUES (:day, :created_at, :path, :deal_id, :visitor, :entry, :source, :medium, :campaign, :referrer, :lang, :device)`
+        )
+        .run(nullify(v)),
+    deleteVisitsBefore: (day) => db.prepare('DELETE FROM page_views WHERE day < ?').run(day),
+    // The visitor's last source today that isn't "direct", else direct.
+    lastVisitSource: (day, visitor) =>
+      db
+        .prepare(
+          `SELECT source, medium, campaign FROM page_views WHERE day = ? AND visitor = ? AND entry = 1
+           ORDER BY (source = 'direct'), id DESC LIMIT 1`
+        )
+        .get(day, visitor),
+    setParticipantSource: (id, s) =>
+      db.prepare('UPDATE participants SET source = ?, medium = ?, campaign = ? WHERE id = ?').run(s.source, s.medium, s.campaign, id),
+    visitsByDay: (from, to) =>
+      db
+        .prepare(
+          `SELECT day, COUNT(*) AS views, COUNT(DISTINCT visitor) AS visitors, SUM(entry) AS visits
+           FROM page_views WHERE day BETWEEN ? AND ? GROUP BY day ORDER BY day`
+        )
+        .all(from, to),
+    // Visitors and visits grouped by one of a fixed set of columns. Visitors are counted once
+    // per day (the fingerprint changes daily).
+    visitsBy(group, from, to, { entriesOnly = false } = {}) {
+      const columns = { source: 'source', campaign: 'source, campaign', deal: 'deal_id', lang: 'lang', device: 'device', path: 'path' }[group];
+      if (!columns) throw new Error(`unknown group ${group}`);
+      const where = [`day BETWEEN ? AND ?`, entriesOnly ? 'entry = 1' : '', group === 'deal' ? 'deal_id IS NOT NULL' : '', group === 'campaign' ? "campaign != ''" : '']
+        .filter(Boolean)
+        .join(' AND ');
+      return db
+        .prepare(
+          `SELECT ${columns}, COUNT(*) AS views, COUNT(DISTINCT day || visitor) AS visitors, SUM(entry) AS visits
+           FROM page_views WHERE ${where} GROUP BY ${columns} ORDER BY visitors DESC`
+        )
+        .all(from, to);
+    },
+    firstVisitDay: () => db.prepare('SELECT MIN(day) AS day FROM page_views').get()?.day ?? null,
+    // Orders created or paid since `iso` (enough columns for the dashboard, no personal data).
+    participantsForReport: (iso) =>
+      db
+        .prepare(
+          `SELECT id, deal_id, country, lang, status, payment_method_id, amount_cents, tax_cents, refund_id,
+                  source, medium, campaign, created_at, paid_at
+           FROM participants WHERE created_at >= ? OR paid_at >= ?`
+        )
+        .all(iso, iso),
+    insertAdSpend: (a) =>
+      db
+        .prepare(
+          `INSERT INTO ad_spend (day, source, campaign, amount_cents, note, created_at)
+           VALUES (:day, :source, :campaign, :amount_cents, :note, :created_at)`
+        )
+        .run(a),
+    adSpendBetween: (from, to) =>
+      db.prepare('SELECT * FROM ad_spend WHERE day BETWEEN ? AND ? ORDER BY day DESC, id DESC').all(from, to),
+    deleteAdSpend: (id) => db.prepare('DELETE FROM ad_spend WHERE id = ?').run(id),
 
     // Reminder claim: only one process may send it.
     claimReminder: (id, now) =>
