@@ -1,0 +1,31 @@
+<%- include('../partials/header') %>
+<% if (flash) { %><div class="notice"><%= flash %></div><% } %>
+<div class="perf-head">
+  <h1>👥 Customers</h1>
+  <p class="row-buttons"><a class="button secondary" href="/admin/customers.csv">Download list (CSV)</a></p>
+</div>
+<p class="muted small">Everyone who has joined a deal, by email address. Sign-ups that never led to a payment are anonymised automatically <%= eraseAfterDays %> days after they ended; open a customer to erase their data sooner when they ask.</p>
+<form method="get" action="/admin/customers" class="search-form" role="search">
+  <label class="visually-hidden" for="q">Search customers</label>
+  <input type="search" id="q" name="q" value="<%= q %>" placeholder="Search by name, email or city">
+  <button type="submit" class="secondary">Search</button>
+</form>
+<div class="table-scroll">
+<table>
+  <thead><tr><th>Customer</th><th class="num">Sign-ups</th><th class="num">Paid orders</th><th class="num">Paid</th><th>Countries</th><th>Last sign-up</th></tr></thead>
+  <tbody>
+  <% for (const c of customers) { %>
+    <tr>
+      <td><a href="/admin/customers/person?email=<%= encodeURIComponent(c.email) %>"><%= c.name || '—' %></a><br><span class="muted small"><%= c.email %></span></td>
+      <td class="num"><%= c.signups %></td>
+      <td class="num"><%= c.orders %></td>
+      <td class="num"><%= formatEuro(c.paid_cents) %></td>
+      <td><%= (c.countries || '').split(',').join(', ') %></td>
+      <td class="small"><%= formatDate(c.last_at) %></td>
+    </tr>
+  <% } %>
+  <% if (!customers.length) { %><tr><td colspan="6" class="muted"><%= q ? 'Nobody matches that search.' : 'No customers yet.' %></td></tr><% } %>
+  </tbody>
+</table>
+</div>
+<%- include('../partials/footer') %>

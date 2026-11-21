@@ -78,6 +78,7 @@ CREATE TABLE IF NOT EXISTS participants (
   shipped_at           TEXT,                      -- the owner marked the order as sent
   tracking_number      TEXT NOT NULL DEFAULT '',
   tracking_url         TEXT NOT NULL DEFAULT '',
+  erased_at            TEXT,                      -- personal data removed (src/privacy.js)
   created_at           TEXT NOT NULL,
   updated_at           TEXT NOT NULL
 );
@@ -243,6 +244,7 @@ const ADDED_COLUMNS = {
     ['shipped_at', 'TEXT'],
     ['tracking_number', "TEXT NOT NULL DEFAULT ''"],
     ['tracking_url', "TEXT NOT NULL DEFAULT ''"],
+    ['erased_at', 'TEXT'],
   ],
 };
 
@@ -407,6 +409,29 @@ export function createRepo(db) {
         .prepare(`SELECT * FROM participants WHERE deal_id = ? AND status IN (${s.map(() => '?').join(',')}) ORDER BY id`)
         .all(dealId, ...s);
     },
+    // Admin → Customers: one row per email address, newest first. `q` searches name, email and city.
+    customers({ q = '', limit = 500 } = {}) {
+      const like = `%${String(q).trim().toLowerCase().replace(/[%_\\]/g, (c) => `\\${c}`)}%`;
+      return db
+        .prepare(
+          `SELECT lower(email) AS email, MAX(name) AS name, COUNT(*) AS signups,
+             SUM(CASE WHEN status IN ('paid','processing') THEN 1 ELSE 0 END) AS orders,
+             SUM(CASE WHEN status IN ('paid','processing') THEN COALESCE(amount_cents, 0) ELSE 0 END) AS paid_cents,
+             GROUP_CONCAT(DISTINCT country) AS countries, MAX(created_at) AS last_at, MIN(created_at) AS first_at
+           FROM participants
+           WHERE erased_at IS NULL
+             AND (:q = '%%' OR lower(email) LIKE :q ESCAPE '\\' OR lower(name) LIKE :q ESCAPE '\\' OR lower(city) LIKE :q ESCAPE '\\')
+           GROUP BY lower(email) ORDER BY last_at DESC LIMIT :limit`
+        )
+        .all({ q: like, limit });
+    },
+    participantsByEmail: (email) =>
+      db
+        .prepare(
+          `SELECT p.*, d.product_name, d.slug, d.status AS deal_status FROM participants p JOIN deals d ON d.id = p.deal_id
+           WHERE lower(p.email) = lower(?) ORDER BY p.created_at DESC`
+        )
+        .all(email),
     participantsWhere: (whereSql, params = {}) =>
       db.prepare(`SELECT * FROM participants WHERE ${whereSql} ORDER BY id`).all(params),
     updateParticipant: (id, fields, now) => update('participants', id, { ...fields, updated_at: now }),

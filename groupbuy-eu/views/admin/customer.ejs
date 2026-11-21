@@ -1,0 +1,39 @@
+<%- include('../partials/header') %>
+<p><a href="/admin/customers">← Customers</a></p>
+<% if (flash) { %><div class="notice"><%= flash %></div><% } %>
+<h1><%= signups[0].name || email %></h1>
+<p><a href="mailto:<%= email %>"><%= email %></a></p>
+<div class="table-scroll">
+<table>
+  <thead><tr><th>#</th><th>Deal</th><th>Status</th><th>Amount</th><th>Delivery address</th><th>Joined</th><th>Shipped</th></tr></thead>
+  <tbody>
+  <% for (const p of signups) { %>
+    <tr>
+      <td><%= p.id %></td>
+      <td><a href="/admin/deals/<%= p.deal_id %>"><%= p.product_name %></a></td>
+      <td><span class="badge <%= p.status %>"><%= p.status.replace(/_/g, ' ') %></span></td>
+      <td><%= p.amount_cents != null ? formatEuro(p.amount_cents) : '—' %></td>
+      <td class="small"><%= [p.address_line1, p.address_line2, `${p.postal_code} ${p.city}`, p.country].filter((x) => x && x.trim()).join(', ') %></td>
+      <td class="small"><%= formatDate(p.created_at) %></td>
+      <td class="small"><%= p.shipped_at ? formatDate(p.shipped_at) : '—' %></td>
+    </tr>
+  <% } %>
+  </tbody>
+</table>
+</div>
+<% const erasable = signups.filter((p) => p.erasable).length; %>
+<section class="card danger-zone" style="margin-top:16px">
+  <h2>Erase personal data</h2>
+  <% if (erasable) { %>
+    <p class="small">When this person asks to be forgotten: their name, email address and delivery address are removed from <%= erasable %> sign-up<%= erasable === 1 ? '' : 's' %> that never led to a payment, and their Stripe customer record is deleted. <% if (erasable < signups.length) { %>Paid and active orders are kept, because accounting and tax law require those records.<% } %></p>
+    <form method="post" action="/admin/customers/erase" data-confirm="Erase this person's data from <%= erasable %> sign-up(s)? This can't be undone.">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <input type="hidden" name="email" value="<%= email %>">
+      <button type="submit" class="danger">Erase</button>
+    </form>
+  <% } else { %>
+    <p class="small muted">All of this person's sign-ups are paid or still active orders. Those records are kept as long as accounting and tax law require; tell the customer so if they ask to be forgotten.</p>
+  <% } %>
+</section>
+<script src="/static/js/admin.js"></script>
+<%- include('../partials/footer') %>

@@ -45,7 +45,7 @@
     <div class="site-header-inner">
       <a class="brand" href="/"><% if (brand.logo) { %><img class="brand-logo" src="<%= brand.logo %>" alt="" width="34" height="34"><% } else { %><span class="brand-mark" aria-hidden="true"></span><% } %><%= brandName %></a>
       <% if (isAdmin) { %>
-        <nav aria-label="Admin"><a href="/admin">Deals</a><a href="/admin/snap" class="nav-snap">📸 Snap a deal</a><a href="/admin/performance">📊 Performance</a><a href="/admin/emails">Emails</a><a href="/admin/settings">⚙️ Settings</a><a href="/">Shop</a></nav>
+        <nav aria-label="Admin"><a href="/admin">Deals</a><a href="/admin/snap" class="nav-snap">📸 Snap a deal</a><a href="/admin/performance">📊 Performance</a><a href="/admin/customers">👥 Customers</a><a href="/admin/emails">Emails</a><a href="/admin/settings">⚙️ Settings</a><a href="/">Shop</a></nav>
       <% } else { %>
         <nav class="shop-nav"><a href="/#categories"><%= t('nav.categories') %></a><a href="/#deals"><%= t('nav.deals') %></a><a href="/#how"><%= t('nav.how') %></a></nav>
         <details class="lang-menu" data-lang-menu>

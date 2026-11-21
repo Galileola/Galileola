@@ -150,6 +150,19 @@ Admin creates deal ──► buyers join (SetupIntent: card / SEPA / iDEAL→SEP
     are translated when a visitor first opens them in another language, so a large import doesn't
     use up the day's translation budget.
 
+- **Customers** (admin): everyone who has joined a deal, by email address, with their sign-ups,
+  paid orders and amount paid; a search by name, email or city; and a CSV download. A customer's
+  page lists their orders and erases their data on request (GDPR Art. 17): sign-ups that never
+  led to a payment are anonymised and their Stripe customer record is deleted, while paid orders
+  are kept for the accounting and tax records.
+- **Data that is no longer needed**: sign-ups that were never charged (the deal didn't go ahead,
+  the buyer withdrew before paying or never finished joining) are anonymised automatically 30
+  days after they ended (checked hourly by the scheduler). Mention this in your privacy policy.
+- **Admin login**: after 10 wrong passwords from one address in 15 minutes, that address is
+  refused for 15 minutes.
+- **Photo backup**: Admin → Download photos (ZIP) downloads every product photo and logo; the
+  database backup doesn't include them.
+
 ## Setup
 
 ```bash
@@ -209,5 +222,5 @@ in the admin outbox (`/admin/emails`).
 - Use a real email provider (ideally EU-hosted) and back up the SQLite file. SQLite and the
   in-memory join rate limit (`JOIN_RATE_LIMIT` per IP per 15 minutes) assume a single app
   instance.
-- Decide how long to keep abandoned joins and Stripe Customer records, and match that in the
-  privacy policy. Nothing purges them automatically yet.
+- Sign-ups that never led to a payment are anonymised 30 days after they ended. Say so in the
+  privacy policy, together with how long you keep paid orders.

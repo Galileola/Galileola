@@ -1,4 +1,5 @@
 import { render } from './emails.js';
+import { anonymiseOldSignups } from './privacy.js';
 import { isJoinable } from './dealState.js';
 import { randomToken, addMs, iso, HOUR, GRACE_WINDOW_MS } from './util.js';
 import { calculateVat, createSetupIntentFactory, extractSavedMethod, stripeErrorInfo, describePaymentMethod } from './stripeHelpers.js';
@@ -33,6 +34,7 @@ export function createEngine(ctx) {
   const now = () => clock.now();
   const nowIso = () => clock.now().toISOString();
   let ticking = null;
+  let lastPrivacyRun = 0;
   const background = new Set();
   const instanceId = `${process.pid}-${randomToken(6)}`;
 
@@ -571,6 +573,12 @@ export function createEngine(ctx) {
           }],
           ['mark deals ready to order', async () => {
             for (const d of repo.dealsByStatus('charging')) await engine.markReadyIfDue(d.id);
+          }],
+          ['anonymise sign-ups that ended long ago', async () => {
+            // At most once an hour: it only removes data that is no longer needed.
+            if (now().getTime() - lastPrivacyRun < HOUR) return;
+            lastPrivacyRun = now().getTime();
+            await anonymiseOldSignups(ctx);
           }],
           ['remind buyers 24h before their payment window closes', async () => {
             const n = now();

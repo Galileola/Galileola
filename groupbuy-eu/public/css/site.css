@@ -176,7 +176,7 @@ img { max-width: 100%; }
 .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); }
 .card.narrow { max-width: 580px; margin: 0 auto; }
 label { display: block; font-weight: 650; margin: 14px 0 4px; font-size: .95rem; }
-input[type=text], input[type=email], input[type=password], input[type=number], input[type=url], input[type=datetime-local], input[type=date], select, textarea {
+input[type=text], input[type=search], input[type=email], input[type=password], input[type=number], input[type=url], input[type=datetime-local], input[type=date], select, textarea {
   width: 100%; padding: 11px 13px; border: 1.5px solid #e2d6f0; border-radius: 12px; font: inherit; background: #fff; color: inherit;
 }
 input:focus, select:focus, textarea:focus { outline: none; border-color: var(--violet); box-shadow: 0 0 0 4px rgba(109, 40, 217, .15); }
@@ -553,3 +553,7 @@ table.plain th, table.plain td { padding: 6px 4px; }
 .ship-cell form { margin: 4px 0 0; }
 .ship-form { display: grid; gap: 4px; min-width: 190px; }
 .ship-form input { padding: 6px 8px; font-size: .85rem; }
+
+/* Admin → Customers */
+.search-form { display: flex; gap: 8px; margin: 12px 0 16px; max-width: 560px; }
+.search-form input { flex: 1; min-width: 0; }

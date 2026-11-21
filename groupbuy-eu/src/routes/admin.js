@@ -39,6 +39,7 @@ import { importParsers, importRoutes } from './adminImport.js';
 import { copyPhotos, dealRoutes, dealToFormValues } from './adminDeals.js';
 import { brandingParsers, brandingRoutes } from './adminBranding.js';
 import { fulfilmentRoutes } from './adminFulfilment.js';
+import { customerRoutes } from './adminCustomers.js';
 
 // Photo uploads are parsed into memory (admin only, at most 8 × 8 MB per request), checked,
 // and only then written to UPLOAD_DIR.
@@ -57,13 +58,38 @@ const parsePhotos = (req, res, next) =>
   });
 
 // HTTP Basic login for the admin. `auth` checks the user and password (see adminPassword.js).
-export function requireAdmin(auth) {
+// After MAX_LOGIN_FAILURES wrong passwords from one address within LOCKOUT_MS, that address is
+// refused for LOCKOUT_MS, so the password can't be guessed by trying many.
+export const MAX_LOGIN_FAILURES = 10;
+export const LOCKOUT_MS = 15 * 60_000;
+
+export function requireAdmin(auth, { clock = { now: () => new Date() } } = {}) {
+  const failures = new Map(); // ip -> { count, first, lockedUntil }
   return (req, res, next) => {
+    const now = clock.now().getTime();
+    const ip = req.ip || 'unknown';
+    const f = failures.get(ip);
+    if (f?.lockedUntil > now) {
+      res.set('Retry-After', String(Math.ceil((f.lockedUntil - now) / 1000)));
+      return res.status(429).send('Too many wrong passwords. Try again in 15 minutes.');
+    }
     const [scheme, encoded] = (req.headers.authorization || '').split(' ');
     if (scheme === 'Basic' && encoded) {
       const decoded = Buffer.from(encoded, 'base64').toString('utf8');
       const i = decoded.indexOf(':');
-      if (i > 0 && auth.check(decoded.slice(0, i), decoded.slice(i + 1))) return next();
+      if (i > 0 && auth.check(decoded.slice(0, i), decoded.slice(i + 1))) {
+        failures.delete(ip);
+        return next();
+      }
+      // A wrong user name or password.
+      const entry = f && now - f.first < LOCKOUT_MS ? f : { count: 0, first: now, lockedUntil: 0 };
+      entry.count += 1;
+      if (entry.count >= MAX_LOGIN_FAILURES) {
+        entry.lockedUntil = now + LOCKOUT_MS;
+        console.warn(`[admin] ${entry.count} wrong passwords from ${ip}: locked out for 15 minutes`);
+      }
+      failures.set(ip, entry);
+      if (failures.size > 10_000) for (const [k, v] of failures) if (v.lockedUntil < now && now - v.first > LOCKOUT_MS) failures.delete(k);
     }
     res.set('WWW-Authenticate', 'Basic realm="Group Buy admin", charset="UTF-8"');
     res.status(401).send('Authentication required');
@@ -78,7 +104,7 @@ export function adminRoutes(app, ctx) {
   const csrfToken = hmac(config.appSecret, 'admin-csrf');
 
   const auth = createAdminAuth({ config, repo, clock });
-  router.use(requireAdmin(auth));
+  router.use(requireAdmin(auth, { clock }));
   // Multipart forms (with photos) are parsed before the form-token check, which reads req.body.
   // The token field comes first in those forms, so it is read even if a photo is too large.
   router.post(['/deals', '/deals/:id/photos', '/snap'], parsePhotos);
@@ -117,6 +143,7 @@ export function adminRoutes(app, ctx) {
   dealRoutes(router, ctx);
   brandingRoutes(router, ctx);
   fulfilmentRoutes(router, ctx);
+  customerRoutes(router, ctx);
 
   // New deal form. ?copy=<id> fills it in from an existing deal (Duplicate on the deal page); the
   // original's photos are copied when the new deal is created.
