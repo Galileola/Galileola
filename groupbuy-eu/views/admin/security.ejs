@@ -1,0 +1,59 @@
+<%- include('../partials/header') %>
+<p><a href="/admin/settings">← Settings</a></p>
+<section class="card narrow">
+  <h1>🛡️ Two-step login</h1>
+  <% if (flash) { %><div class="notice ok"><%= flash %></div><% } %>
+  <% if (error) { %><div class="notice bad" role="alert"><%= error %></div><% } %>
+
+  <% if (backupCodes) { %>
+    <h2>Your backup codes</h2>
+    <p>Each code works once, if you can't use your phone. <strong>Save them now</strong> (print them, or keep them in your password manager): they won't be shown again.</p>
+    <ol class="backup-codes"><% for (const c of backupCodes) { %><li><code><%= c %></code></li><% } %></ol>
+    <p class="row-buttons"><button type="button" class="secondary" data-copy-codes="<%= backupCodes.join('\n') %>">📋 Copy codes</button> <button type="button" class="secondary" data-print>🖨️ Print</button></p>
+    <p><a class="button" href="/admin">I've saved them</a></p>
+  <% } else if (setup) { %>
+    <h2>1. Scan this with your authenticator app</h2>
+    <p class="muted small">For example Google Authenticator, Microsoft Authenticator, 1Password, Bitwarden or Authy: add an account, then scan the code.</p>
+    <div class="qr"><%- setup.svg %></div>
+    <details>
+      <summary>Can't scan it? Type this key instead</summary>
+      <p><code class="secret"><%= setup.grouped %></code></p>
+      <p class="muted small">Account: <%= adminUser %>, time-based, 6 digits.</p>
+    </details>
+    <h2>2. Type the code the app shows</h2>
+    <form method="post" action="/admin/security/confirm" autocomplete="off">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <label for="code">Code</label>
+      <input type="text" id="code" name="code" class="code-input" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required placeholder="123456">
+      <p><button type="submit">Turn on two-step login</button></p>
+    </form>
+  <% } else if (status.switchedOff) { %>
+    <div class="notice warn">Two-step login is switched off in the hosting panel (<code>ADMIN_TWO_STEP=off</code>), so the password alone opens the admin. Remove that setting and restart the app to use it again.</div>
+  <% } else if (status.enabled) { %>
+    <p><span class="badge paid">On</span> since <%= formatDate(status.enabledAt) %>. After the password, the admin asks for a code from your authenticator app.</p>
+    <p><strong><%= status.backupLeft %></strong> backup code<%= status.backupLeft === 1 ? '' : 's' %> left.</p>
+    <h2>New backup codes</h2>
+    <form method="post" action="/admin/security/backup-codes" autocomplete="off" class="inline-code-form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <label for="code-backup">Current code from the app</label>
+      <input type="text" id="code-backup" name="code" class="code-input" inputmode="numeric" autocomplete="one-time-code" maxlength="12" required>
+      <button type="submit" class="secondary">Make new backup codes</button>
+    </form>
+    <h2>Turn off</h2>
+    <form method="post" action="/admin/security/disable" autocomplete="off" class="inline-code-form" data-confirm="Turn off two-step login? The password alone will open the admin.">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <label for="code-off">Current code from the app</label>
+      <input type="text" id="code-off" name="code" class="code-input" inputmode="numeric" autocomplete="one-time-code" maxlength="12" required>
+      <button type="submit" class="danger">Turn off two-step login</button>
+    </form>
+  <% } else { %>
+    <p><span class="badge released">Off</span> Right now the password alone opens the admin.</p>
+    <p>With two-step login, the admin also asks for a 6-digit code from an app on your phone, so someone who learns your password still can't get in. You'll get 10 backup codes for when your phone isn't at hand.</p>
+    <form method="post" action="/admin/security/start">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <p><button type="submit" class="big">Set up two-step login</button></p>
+    </form>
+  <% } %>
+</section>
+<script src="/static/js/admin.js"></script>
+<%- include('../partials/footer') %>

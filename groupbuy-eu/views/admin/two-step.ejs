@@ -1,0 +1,17 @@
+<%- include('../partials/header') %>
+<section class="card narrow two-step-card">
+  <p class="message-emoji" aria-hidden="true">🛡️</p>
+  <h1>Enter your code</h1>
+  <p>Open your authenticator app and type the 6-digit code for <strong><%= brand.name %></strong>.</p>
+  <% if (error) { %><div class="notice bad" role="alert"><%= error %></div><% } %>
+  <form method="post" action="/admin/two-step" autocomplete="off">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <input type="hidden" name="next" value="<%= next %>">
+    <label for="code">Code</label>
+    <input type="text" id="code" name="code" class="code-input" inputmode="numeric" autocomplete="one-time-code" maxlength="12" required autofocus placeholder="123456">
+    <label class="check-row"><input type="checkbox" name="remember" value="1"> Remember this device for 30 days</label>
+    <p><button type="submit" class="big">Continue</button></p>
+  </form>
+  <p class="muted small">Lost your phone? Type one of your backup codes (like <code>k7m2-9qxt</code>) in the same box. No backup codes either? Set <code>ADMIN_TWO_STEP=off</code> in the hosting panel and restart the app; the password alone then opens the admin until you turn two-step login on again.</p>
+</section>
+<%- include('../partials/footer') %>

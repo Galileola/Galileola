@@ -55,6 +55,8 @@ export function loadConfig(env = process.env) {
     stripeWebhookSecret: env.STRIPE_WEBHOOK_SECRET,
 
     adminUser: env.ADMIN_USER || 'admin',
+    // "off" switches two-step login off (for a lost phone and lost backup codes).
+    adminTwoStep: String(env.ADMIN_TWO_STEP || '').trim().toLowerCase() === 'off' ? 'off' : 'on',
     adminPassword: env.ADMIN_PASSWORD,
     appSecret: env.APP_SECRET,
     cronSecret: env.CRON_SECRET,

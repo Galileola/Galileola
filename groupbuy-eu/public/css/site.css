@@ -584,3 +584,21 @@ table.plain th, table.plain td { padding: 6px 4px; }
 .checklist .mark { font-size: 1.2rem; line-height: 1.4; }
 .checklist .optional { color: var(--muted); font-weight: 500; font-size: .8rem; }
 .checklist p { margin: 2px 0 0; }
+
+/* Admin: two-step login */
+.nav-lock { display: inline; margin: 0; }
+.nav-lock button { background: rgba(255, 255, 255, .15); color: #fff; box-shadow: none; padding: 6px 12px; font-size: inherit; font-weight: 600; }
+.nav-lock button:hover { background: rgba(255, 255, 255, .28); }
+.two-step-card { text-align: left; }
+.code-input { font-size: 1.4rem; letter-spacing: .2em; font-variant-numeric: tabular-nums; max-width: 240px; }
+.check-row { display: flex; gap: 8px; align-items: center; font-weight: 500; }
+.check-row input { width: auto; }
+.qr { width: 220px; max-width: 100%; padding: 8px; background: #fff; border: 1px solid var(--line); border-radius: 14px; margin: 10px 0; }
+.qr svg { display: block; width: 100%; height: auto; }
+.secret { font-size: 1.05rem; letter-spacing: .08em; word-break: break-all; }
+.backup-codes { columns: 2; font-size: 1.1rem; padding-left: 1.6em; }
+.backup-codes li { margin: 4px 0; }
+.inline-code-form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px 12px; }
+.inline-code-form label { flex-basis: 100%; margin-bottom: 0; }
+.inline-code-form .code-input { font-size: 1.1rem; }
+@media print { .site-header, .site-footer, .test-banner, .row-buttons, .button { display: none !important; } }

@@ -113,3 +113,16 @@ document.querySelectorAll('[data-count]').forEach((field) => {
   field.addEventListener('input', update);
   update();
 });
+
+// Two-step login: copy or print the backup codes.
+document.querySelectorAll('[data-copy-codes]').forEach((button) =>
+  button.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(button.dataset.copyCodes);
+      button.textContent = '✅ Copied';
+    } catch {
+      button.textContent = 'Select the codes and copy them';
+    }
+  })
+);
+document.querySelectorAll('[data-print]').forEach((button) => button.addEventListener('click', () => window.print()));

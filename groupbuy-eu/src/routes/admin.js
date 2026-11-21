@@ -42,6 +42,7 @@ import { fulfilmentRoutes } from './adminFulfilment.js';
 import { customerRoutes } from './adminCustomers.js';
 import { adminAlertRoutes } from './alerts.js';
 import { goLiveChecks, isLive, liveProblems } from '../goLive.js';
+import { twoStepGate, twoStepRoutes } from './adminTwoStep.js';
 
 // Photo uploads are parsed into memory (admin only, at most 8 × 8 MB per request), checked,
 // and only then written to UPLOAD_DIR.
@@ -107,6 +108,7 @@ export function adminRoutes(app, ctx) {
 
   const auth = createAdminAuth({ config, repo, clock });
   router.use(requireAdmin(auth, { clock }));
+  router.use(twoStepGate(ctx)); // the code from the authenticator app, when two-step login is on
   // Multipart forms (with photos) are parsed before the form-token check, which reads req.body.
   // The token field comes first in those forms, so it is read even if a photo is too large.
   router.post(['/deals', '/deals/:id/photos', '/snap'], parsePhotos);
@@ -143,6 +145,7 @@ export function adminRoutes(app, ctx) {
 
   router.get('/go-live', (req, res) => res.render('admin/go-live', { title: 'Go-live checklist', checks: goLiveChecks(ctx), live: isLive(config) }));
 
+  twoStepRoutes(router, ctx);
   importRoutes(router, ctx);
   dealRoutes(router, ctx);
   brandingRoutes(router, ctx);
