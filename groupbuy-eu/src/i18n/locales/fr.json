@@ -275,6 +275,11 @@
     "withdrawnRefund": "Nous avons remboursé {amount} sur votre moyen de paiement d'origine. Le remboursement peut mettre 5 à 10 jours ouvrés à apparaître.",
     "withdrawnNoCharge": "Vous n'avez pas été débité et votre moyen de paiement enregistré a été supprimé.",
     "cancelledSubject": "Offre annulée : {name}",
-    "cancelledText": "Nous avons annulé l'achat groupé pour {name}. Nous vous prions de nous excuser pour la gêne occasionnée."
+    "cancelledText": "Nous avons annulé l'achat groupé pour {name}. Nous vous prions de nous excuser pour la gêne occasionnée.",
+    "shippedSubject": "Votre commande est en route : {name}",
+    "shippedText": "Bonne nouvelle : nous vous avons envoyé {name}.",
+    "shippedTracking": "Numéro de suivi : {tracking}",
+    "shippedTrackingLink": "Suivez votre colis : {link}",
+    "messageFooter": "Vous recevez cet e-mail car vous avez rejoint l'achat groupé pour {name}."
   }
 }

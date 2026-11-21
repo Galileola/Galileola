@@ -275,6 +275,11 @@
     "withdrawnRefund": "Reembolsámos {amount} no seu método de pagamento original. Pode demorar 5 a 10 dias úteis a aparecer.",
     "withdrawnNoCharge": "Não foi cobrado nada e o seu método de pagamento guardado foi removido.",
     "cancelledSubject": "Oferta cancelada: {name}",
-    "cancelledText": "Cancelámos a compra em grupo de {name}. Pedimos desculpa pelo incómodo."
+    "cancelledText": "Cancelámos a compra em grupo de {name}. Pedimos desculpa pelo incómodo.",
+    "shippedSubject": "A sua encomenda está a caminho: {name}",
+    "shippedText": "Boas notícias: enviámos-lhe {name}.",
+    "shippedTracking": "Número de seguimento: {tracking}",
+    "shippedTrackingLink": "Acompanhe a sua encomenda: {link}",
+    "messageFooter": "Está a receber este e-mail porque aderiu à compra em grupo de {name}."
   }
 }

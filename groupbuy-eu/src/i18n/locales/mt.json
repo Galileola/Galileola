@@ -275,6 +275,11 @@
     "withdrawnRefund": "Irrimborżajna {amount} lill-metodu tal-ħlas oriġinali tiegħek. Jista' jieħu 5–10 ijiem tax-xogħol biex jidher.",
     "withdrawnNoCharge": "Ma ġejt iddebitat xejn u l-metodu tal-ħlas issejvjat tiegħek tneħħa.",
     "cancelledSubject": "L-offerta ġiet ikkanċellata: {name}",
-    "cancelledText": "Ikkanċellajna x-xiri fi grupp għal {name}. Niskużaw ruħna għall-inkonvenjent."
+    "cancelledText": "Ikkanċellajna x-xiri fi grupp għal {name}. Niskużaw ruħna għall-inkonvenjent.",
+    "shippedSubject": "L-ordni tiegħek qiegħda fit-triq: {name}",
+    "shippedText": "Aħbar tajba: bgħatnielek {name}.",
+    "shippedTracking": "Numru tat-traċċar: {tracking}",
+    "shippedTrackingLink": "Segwi l-pakkett tiegħek: {link}",
+    "messageFooter": "Qed tirċievi din l-email għax ingħaqadt max-xiri fi grupp għal {name}."
   }
 }

@@ -275,6 +275,11 @@
     "withdrawnRefund": "Abbiamo rimborsato {amount} sul tuo metodo di pagamento originale. Possono servire 5–10 giorni lavorativi perché compaia.",
     "withdrawnNoCharge": "Non ti è stato addebitato nulla e il tuo metodo di pagamento salvato è stato rimosso.",
     "cancelledSubject": "Offerta annullata: {name}",
-    "cancelledText": "Abbiamo annullato l'acquisto di gruppo per {name}. Ci scusiamo per l'inconveniente."
+    "cancelledText": "Abbiamo annullato l'acquisto di gruppo per {name}. Ci scusiamo per l'inconveniente.",
+    "shippedSubject": "Il tuo ordine è in viaggio: {name}",
+    "shippedText": "Buone notizie: ti abbiamo spedito {name}.",
+    "shippedTracking": "Numero di tracciamento: {tracking}",
+    "shippedTrackingLink": "Segui il tuo pacco: {link}",
+    "messageFooter": "Ricevi questa email perché hai aderito all'acquisto di gruppo per {name}."
   }
 }

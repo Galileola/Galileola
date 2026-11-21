@@ -275,6 +275,11 @@
     "withdrawnRefund": "We hebben {amount} teruggestort op je oorspronkelijke betaalmethode. Het kan 5–10 werkdagen duren voordat je het ziet.",
     "withdrawnNoCharge": "Er is niets afgeschreven en je opgeslagen betaalmethode is verwijderd.",
     "cancelledSubject": "Deal geannuleerd: {name}",
-    "cancelledText": "We hebben de groepsdeal voor {name} geannuleerd. Onze excuses voor het ongemak."
+    "cancelledText": "We hebben de groepsdeal voor {name} geannuleerd. Onze excuses voor het ongemak.",
+    "shippedSubject": "Je bestelling is onderweg: {name}",
+    "shippedText": "Goed nieuws: we hebben je {name} verzonden.",
+    "shippedTracking": "Trackingnummer: {tracking}",
+    "shippedTrackingLink": "Volg je pakket: {link}",
+    "messageFooter": "Je ontvangt deze e-mail omdat je meedoet aan de groepsdeal voor {name}."
   }
 }

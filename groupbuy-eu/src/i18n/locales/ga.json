@@ -275,6 +275,11 @@
     "withdrawnRefund": "D'aisíocamar {amount} le do mhodh íocaíochta bunaidh. D'fhéadfadh sé 5–10 lá oibre a thógáil sula bhfeictear é.",
     "withdrawnNoCharge": "Níor gearradh aon rud ort agus baineadh do mhodh íocaíochta sábháilte.",
     "cancelledSubject": "Margadh curtha ar ceal: {name}",
-    "cancelledText": "Chuireamar an margadh grúpa do {name} ar ceal. Is oth linn an trioblóid."
+    "cancelledText": "Chuireamar an margadh grúpa do {name} ar ceal. Is oth linn an trioblóid.",
+    "shippedSubject": "Tá d'ordú ar an mbealach: {name}",
+    "shippedText": "Dea-scéala: sheolamar {name} chugat.",
+    "shippedTracking": "Uimhir rianaithe: {tracking}",
+    "shippedTrackingLink": "Rianaigh do bheart: {link}",
+    "messageFooter": "Tá an ríomhphost seo á fháil agat mar gur ghlac tú páirt sa mhargadh grúpa do {name}."
   }
 }

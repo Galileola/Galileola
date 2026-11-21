@@ -275,6 +275,11 @@
     "withdrawnRefund": "Olemme palauttaneet {amount} alkuperäiselle maksutavallesi. Palautuksen näkyminen voi kestää 5–10 pankkipäivää.",
     "withdrawnNoCharge": "Sinulta ei ole veloitettu mitään, ja tallennettu maksutapasi on poistettu.",
     "cancelledSubject": "Tarjous peruttu: {name}",
-    "cancelledText": "Olemme perineet ryhmäoston {name}. Pahoittelemme vaivaa."
+    "cancelledText": "Olemme perineet ryhmäoston {name}. Pahoittelemme vaivaa.",
+    "shippedSubject": "Tilauksesi on matkalla: {name}",
+    "shippedText": "Hyviä uutisia: olemme lähettäneet sinulle tuotteen {name}.",
+    "shippedTracking": "Seurantanumero: {tracking}",
+    "shippedTrackingLink": "Seuraa pakettiasi: {link}",
+    "messageFooter": "Saat tämän sähköpostin, koska liityit ryhmäostoon {name}."
   }
 }

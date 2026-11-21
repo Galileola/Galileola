@@ -275,6 +275,11 @@
     "withdrawnRefund": "Visszatérítettük a(z) {amount} összeget az eredeti fizetési módodra. 5–10 munkanapba telhet, mire megjelenik.",
     "withdrawnNoCharge": "Semmit nem vontunk le, és az elmentett fizetési módodat töröltük.",
     "cancelledSubject": "Az ajánlat törölve: {name}",
-    "cancelledText": "A(z) {name} csoportos vásárlást töröltük. Elnézést kérünk a kellemetlenségért."
+    "cancelledText": "A(z) {name} csoportos vásárlást töröltük. Elnézést kérünk a kellemetlenségért.",
+    "shippedSubject": "A rendelésed úton van: {name}",
+    "shippedText": "Jó hír: elküldtük neked a következőt: {name}.",
+    "shippedTracking": "Csomagkövetési szám: {tracking}",
+    "shippedTrackingLink": "Kövesd a csomagod: {link}",
+    "messageFooter": "Azért kapod ezt az e-mailt, mert csatlakoztál a(z) {name} csoportos vásárláshoz."
   }
 }

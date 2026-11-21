@@ -275,6 +275,11 @@
     "withdrawnRefund": "Esam atmaksājuši {amount} uz jūsu sākotnējo maksājuma veidu. Var paiet 5–10 darba dienas, līdz tas parādīsies.",
     "withdrawnNoCharge": "Jums nekas nav iekasēts, un jūsu saglabātais maksājuma veids ir dzēsts.",
     "cancelledSubject": "Piedāvājums atcelts: {name}",
-    "cancelledText": "Mēs atcēlām kopīgo pirkumu “{name}”. Atvainojamies par sagādātajām neērtībām."
+    "cancelledText": "Mēs atcēlām kopīgo pirkumu “{name}”. Atvainojamies par sagādātajām neērtībām.",
+    "shippedSubject": "Jūsu pasūtījums ir ceļā: {name}",
+    "shippedText": "Labas ziņas: mēs jums nosūtījām “{name}”.",
+    "shippedTracking": "Izsekošanas numurs: {tracking}",
+    "shippedTrackingLink": "Izsekojiet savu sūtījumu: {link}",
+    "messageFooter": "Jūs saņemat šo e-pastu, jo pievienojāties kopīgajam pirkumam “{name}”."
   }
 }

@@ -58,6 +58,13 @@ Admin creates deal ──► buyers join (SetupIntent: card / SEPA / iDEAL→SEP
 - **Order list**: the admin can download a CSV of everyone who paid (SEPA still processing
   counts), with delivery address and VAT per country. It opens correctly in Excel, and buyer
   input can't inject spreadsheet formulas.
+- **Shipping**: on the deal page the admin marks paid orders as shipped, one at a time with a
+  tracking number and link, many at once by pasting "order number, tracking number, link" lines
+  from a spreadsheet, or all at once without tracking. Each buyer gets a "your order is on its way"
+  email in their language. The order list (CSV) includes the shipping date and tracking.
+- **Messages to buyers**: the admin writes one email to everyone in a deal or only to paid orders
+  (a delivery date, a delay, pick-up details). With the AI switched on it is translated into each
+  buyer's language; otherwise it is sent as written.
 - **Withdrawal (EU 14-day right)**: an admin action. Uncharged buyers are released; paid buyers
   get a full refund and a Stripe Tax reversal.
 - **Legal pages**: `/terms` (when payment is taken, the 48-hour rule, the withdrawal right and

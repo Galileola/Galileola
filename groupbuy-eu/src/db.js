@@ -75,6 +75,9 @@ CREATE TABLE IF NOT EXISTS participants (
   reminder_sent_at     TEXT,
   paid_at              TEXT,
   refund_id            TEXT,
+  shipped_at           TEXT,                      -- the owner marked the order as sent
+  tracking_number      TEXT NOT NULL DEFAULT '',
+  tracking_url         TEXT NOT NULL DEFAULT '',
   created_at           TEXT NOT NULL,
   updated_at           TEXT NOT NULL
 );
@@ -237,6 +240,9 @@ const ADDED_COLUMNS = {
     ['source', "TEXT NOT NULL DEFAULT ''"],
     ['medium', "TEXT NOT NULL DEFAULT ''"],
     ['campaign', "TEXT NOT NULL DEFAULT ''"],
+    ['shipped_at', 'TEXT'],
+    ['tracking_number', "TEXT NOT NULL DEFAULT ''"],
+    ['tracking_url', "TEXT NOT NULL DEFAULT ''"],
   ],
 };
 

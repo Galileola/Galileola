@@ -286,6 +286,11 @@
     "withdrawnRefund": "We've refunded {amount} to your original payment method. It can take 5–10 business days to appear.",
     "withdrawnNoCharge": "You have not been charged and your saved payment method has been removed.",
     "cancelledSubject": "Deal cancelled: {name}",
-    "cancelledText": "We've cancelled the group deal for {name}. We're sorry for the inconvenience."
+    "cancelledText": "We've cancelled the group deal for {name}. We're sorry for the inconvenience.",
+    "shippedSubject": "Your order is on its way: {name}",
+    "shippedText": "Good news: we've sent your {name}.",
+    "shippedTracking": "Tracking number: {tracking}",
+    "shippedTrackingLink": "Track your parcel: {link}",
+    "messageFooter": "You're receiving this email because you joined the group deal for {name}."
   }
 }

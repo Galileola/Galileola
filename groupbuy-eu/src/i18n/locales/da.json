@@ -275,6 +275,11 @@
     "withdrawnRefund": "Vi har refunderet {amount} til din oprindelige betalingsmetode. Det kan tage 5–10 bankdage, før det kan ses.",
     "withdrawnNoCharge": "Du er ikke blevet trukket, og din gemte betalingsmetode er fjernet.",
     "cancelledSubject": "Tilbuddet er annulleret: {name}",
-    "cancelledText": "Vi har annulleret gruppekøbet af {name}. Vi beklager ulejligheden."
+    "cancelledText": "Vi har annulleret gruppekøbet af {name}. Vi beklager ulejligheden.",
+    "shippedSubject": "Din ordre er på vej: {name}",
+    "shippedText": "Gode nyheder: Vi har sendt din {name}.",
+    "shippedTracking": "Trackingnummer: {tracking}",
+    "shippedTrackingLink": "Følg din pakke: {link}",
+    "messageFooter": "Du får denne e-mail, fordi du har tilmeldt dig gruppekøbet af {name}."
   }
 }

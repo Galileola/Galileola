@@ -547,3 +547,9 @@ table.plain th, table.plain td { padding: 6px 4px; }
 .brand-preview { display: flex; align-items: center; gap: 14px; margin: 12px 0; }
 .brand-preview img { width: 72px; height: 72px; border-radius: 18px; object-fit: contain; background: #fff; box-shadow: var(--shadow); }
 .share-preview { width: 100%; height: auto; aspect-ratio: 1200 / 630; object-fit: cover; border-radius: 12px; border: 1px solid var(--line); margin: 8px 0; }
+
+/* Admin → deal: shipping */
+.ship-cell { min-width: 150px; }
+.ship-cell form { margin: 4px 0 0; }
+.ship-form { display: grid; gap: 4px; min-width: 190px; }
+.ship-form input { padding: 6px 8px; font-size: .85rem; }

@@ -311,6 +311,11 @@
     "withdrawnRefund": "Vrnili smo {amount} na vaš prvotni način plačila. Do 5–10 delovnih dni lahko traja, da bo viden.",
     "withdrawnNoCharge": "Nič vam ni bilo zaračunano, vaš shranjeni način plačila pa je bil odstranjen.",
     "cancelledSubject": "Ponudba preklicana: {name}",
-    "cancelledText": "Skupinski nakup {name} smo preklicali. Opravičujemo se za nevšečnosti."
+    "cancelledText": "Skupinski nakup {name} smo preklicali. Opravičujemo se za nevšečnosti.",
+    "shippedSubject": "Vaše naročilo je na poti: {name}",
+    "shippedText": "Dobra novica: poslali smo vam {name}.",
+    "shippedTracking": "Številka za sledenje: {tracking}",
+    "shippedTrackingLink": "Sledite svojemu paketu: {link}",
+    "messageFooter": "To e-poštno sporočilo prejemate, ker ste se pridružili skupinskemu nakupu {name}."
   }
 }

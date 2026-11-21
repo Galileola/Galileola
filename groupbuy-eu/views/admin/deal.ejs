@@ -110,10 +110,56 @@
   <% } %>
 </section>
 
-<h2 style="margin-top:24px">Buyers</h2>
+<% const orders = participants.filter((p) => ['paid', 'processing'].includes(p.status)); const unshipped = orders.filter((p) => !p.shipped_at); const active = participants.filter((p) => ['saved', 'charging', 'paid', 'processing', 'failed'].includes(p.status)); %>
+<% if (orders.length) { %>
+<section class="card" id="shipping" style="margin-top:16px">
+  <h2>📦 Shipping</h2>
+  <p><strong><%= orders.length - unshipped.length %></strong> of <%= orders.length %> paid order<%= orders.length === 1 ? "" : "s" %> shipped.</p>
+  <p class="muted small">When you mark an order as shipped, the buyer gets an email in their language with the tracking number and link, if you add them. Mark one order in the buyer table below, or many at once here.</p>
+  <% if (unshipped.length) { %>
+    <details>
+      <summary>Paste tracking numbers for many orders</summary>
+      <form method="post" action="/admin/deals/<%= deal.id %>/ship-bulk">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <label for="lines">One order per line: order number, tracking number, tracking link (the link is optional)</label>
+        <textarea id="lines" name="lines" rows="5" placeholder="<%= unshipped.slice(0, 2).map((p) => `${p.id}, JJD000390007${p.id}, https://tracking.example.com/JJD000390007${p.id}`).join(String.fromCharCode(10)) %>"></textarea>
+        <p class="muted small">The order number is the # column below (participant_id in the order list). You can paste columns straight from a spreadsheet.</p>
+        <p><button type="submit">Mark these as shipped</button></p>
+      </form>
+    </details>
+    <form method="post" action="/admin/deals/<%= deal.id %>/ship-bulk" data-confirm="Mark all <%= unshipped.length %> unshipped paid orders as shipped, without tracking numbers, and email the buyers?">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <input type="hidden" name="all" value="1">
+      <p><button type="submit" class="secondary">Mark all <%= unshipped.length %> as shipped (no tracking)</button></p>
+    </form>
+  <% } %>
+</section>
+<% } %>
+
+<% if (active.length) { %>
+<section class="card" id="message" style="margin-top:16px">
+  <h2>✉️ Message the buyers</h2>
+  <p class="muted small">For news about the deal: a delivery date, a delay, pick-up details. Each buyer gets their own email with a greeting and your shop's details.<% if (locals.aiWritingEnabled) { %> It is translated into each buyer's language by the AI; if that fails, they get your text as written.<% } else { %> It is sent as you write it; buyers chose their own language on the site, so keep it simple or write it in English.<% } %></p>
+  <form method="post" action="/admin/deals/<%= deal.id %>/message" data-confirm="Send this email now?">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <label for="msg-audience">Send to</label>
+    <select id="msg-audience" name="audience">
+      <option value="all">Everyone in the deal (<%= active.length %>)</option>
+      <% if (orders.length) { %><option value="paid">Only paid orders (<%= orders.length %>)</option><% } %>
+    </select>
+    <label for="msg-subject">Subject</label>
+    <input type="text" id="msg-subject" name="subject" maxlength="150" required>
+    <label for="msg-body">Message</label>
+    <textarea id="msg-body" name="body" rows="6" maxlength="5000" required></textarea>
+    <p><button type="submit">Send</button></p>
+  </form>
+</section>
+<% } %>
+
+<h2 style="margin-top:24px" id="buyers">Buyers</h2>
 <div class="table-scroll">
 <table>
-  <thead><tr><th>#</th><th>Buyer</th><th>Country</th><th>Method</th><th>Amount / VAT</th><th>Status</th><th>Attempts / last error</th><th>Window ends</th><th></th></tr></thead>
+  <thead><tr><th>#</th><th>Buyer</th><th>Country</th><th>Method</th><th>Amount / VAT</th><th>Status</th><th>Attempts / last error</th><th>Window ends</th><th>Shipping</th><th></th></tr></thead>
   <tbody>
   <% for (const p of participants) { %>
     <tr>
@@ -125,10 +171,30 @@
       <td><span class="badge <%= p.status %>"><%= p.status.replace(/_/g, ' ') %></span><% if (p.needs_authentication) { %><br><span class="small">needs SCA</span><% } %></td>
       <td><%= p.attempts %><% if (p.last_error_code || p.last_error_message) { %><br><span class="small error-text"><%= p.last_error_code || '' %> <%= p.last_error_message || '' %></span><% } %></td>
       <td class="small"><%= formatDate(p.grace_ends_at) %><% if (p.next_retry_at && p.status === 'failed') { %><br>retry <%= formatDate(p.next_retry_at) %><% } %></td>
+      <td class="small ship-cell">
+        <% if (p.shipped_at) { %>
+          <span class="badge paid">shipped</span> <%= formatDate(p.shipped_at) %>
+          <% if (p.tracking_number || p.tracking_url) { %><br><% if (p.tracking_url) { %><a href="<%= p.tracking_url %>" rel="noopener noreferrer" target="_blank"><%= p.tracking_number || 'Tracking' %></a><% } else { %><%= p.tracking_number %><% } %><% } %>
+          <form method="post" action="/admin/participants/<%= p.id %>/unship" data-confirm="Undo 'shipped' for order #<%= p.id %>? No email is sent.">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <button type="submit" class="linklike small">undo</button>
+          </form>
+        <% } else if (['paid', 'processing'].includes(p.status)) { %>
+          <details>
+            <summary>Mark shipped</summary>
+            <form method="post" action="/admin/participants/<%= p.id %>/ship" class="ship-form">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <input type="text" name="tracking" maxlength="100" placeholder="Tracking number" aria-label="Tracking number for order #<%= p.id %>">
+              <input type="text" name="url" maxlength="500" placeholder="Tracking link (optional)" aria-label="Tracking link for order #<%= p.id %>">
+              <button type="submit" class="small">Shipped</button>
+            </form>
+          </details>
+        <% } else { %>—<% } %>
+      </td>
       <td><%- include('participant-actions', { p }) %></td>
     </tr>
   <% } %>
-  <% if (!participants.length) { %><tr><td colspan="9" class="muted">No buyers yet.</td></tr><% } %>
+  <% if (!participants.length) { %><tr><td colspan="10" class="muted">No buyers yet.</td></tr><% } %>
   </tbody>
 </table>
 </div>

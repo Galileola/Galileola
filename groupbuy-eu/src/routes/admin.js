@@ -38,6 +38,7 @@ import { CHANNELS, shopDay } from '../analytics.js';
 import { importParsers, importRoutes } from './adminImport.js';
 import { copyPhotos, dealRoutes, dealToFormValues } from './adminDeals.js';
 import { brandingParsers, brandingRoutes } from './adminBranding.js';
+import { fulfilmentRoutes } from './adminFulfilment.js';
 
 // Photo uploads are parsed into memory (admin only, at most 8 × 8 MB per request), checked,
 // and only then written to UPLOAD_DIR.
@@ -115,6 +116,7 @@ export function adminRoutes(app, ctx) {
   importRoutes(router, ctx);
   dealRoutes(router, ctx);
   brandingRoutes(router, ctx);
+  fulfilmentRoutes(router, ctx);
 
   // New deal form. ?copy=<id> fills it in from an existing deal (Duplicate on the deal page); the
   // original's photos are copied when the new deal is created.
@@ -328,11 +330,12 @@ export function adminRoutes(app, ctx) {
     if (!deal) return next();
     const rows = repo.participantsForDeal(deal.id, ['paid', 'processing']);
     const header = ['participant_id', 'status', 'name', 'email', 'address_line1', 'address_line2', 'postal_code', 'city', 'country',
-      'amount_eur', 'vat_eur', 'vat_rate', 'payment_method', 'paid_at', 'stripe_payment_intent'];
+      'amount_eur', 'vat_eur', 'vat_rate', 'payment_method', 'paid_at', 'stripe_payment_intent', 'shipped_at', 'tracking_number', 'tracking_url'];
     const eur = (c) => (c == null ? '' : (c / 100).toFixed(2));
     const lines = [header, ...rows.map((p) => [
       p.id, p.status, p.name, p.email, p.address_line1, p.address_line2, p.postal_code, p.city, p.country,
       eur(p.amount_cents), eur(p.tax_cents), p.tax_rate_label, p.payment_method_label, p.paid_at ?? '', p.payment_intent_id,
+      p.shipped_at ?? '', p.tracking_number ?? '', p.tracking_url ?? '',
     ])].map((cols) => cols.map(csvCell).join(','));
     res.set('Content-Type', 'text/csv; charset=utf-8');
     res.set('Content-Disposition', `attachment; filename="order-${deal.slug}.csv"`);

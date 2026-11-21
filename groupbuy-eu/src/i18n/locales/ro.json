@@ -306,6 +306,11 @@
     "withdrawnRefund": "Am rambursat {amount} pe metoda ta de plată inițială. Poate dura 5–10 zile lucrătoare până apare.",
     "withdrawnNoCharge": "Nu ți s-a debitat nimic, iar metoda ta de plată salvată a fost ștearsă.",
     "cancelledSubject": "Ofertă anulată: {name}",
-    "cancelledText": "Am anulat cumpărarea în grup pentru {name}. Ne pare rău pentru neplăcere."
+    "cancelledText": "Am anulat cumpărarea în grup pentru {name}. Ne pare rău pentru neplăcere.",
+    "shippedSubject": "Comanda ta este pe drum: {name}",
+    "shippedText": "Vești bune: ți-am trimis {name}.",
+    "shippedTracking": "Număr de urmărire: {tracking}",
+    "shippedTrackingLink": "Urmărește-ți coletul: {link}",
+    "messageFooter": "Primești acest e-mail pentru că te-ai alăturat cumpărării în grup pentru {name}."
   }
 }

@@ -275,6 +275,11 @@
     "withdrawnRefund": "Tagastasime {amount} sinu algsele makseviisile. Selle ilmumine võib võtta 5–10 tööpäeva.",
     "withdrawnNoCharge": "Sinult ei ole midagi võetud ja sinu salvestatud makseviis on eemaldatud.",
     "cancelledSubject": "Pakkumine tühistati: {name}",
-    "cancelledText": "Tühistasime ühisostu „{name}”. Vabandame ebamugavuste pärast."
+    "cancelledText": "Tühistasime ühisostu „{name}”. Vabandame ebamugavuste pärast.",
+    "shippedSubject": "Sinu tellimus on teel: {name}",
+    "shippedText": "Hea uudis: saatsime sulle teele „{name}”.",
+    "shippedTracking": "Jälgimiskood: {tracking}",
+    "shippedTrackingLink": "Jälgi oma pakki: {link}",
+    "messageFooter": "Saad selle e-kirja, sest liitusid ühisostuga „{name}”."
   }
 }

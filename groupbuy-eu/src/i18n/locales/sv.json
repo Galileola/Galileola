@@ -275,6 +275,11 @@
     "withdrawnRefund": "Vi har återbetalat {amount} till ditt ursprungliga betalsätt. Det kan ta 5–10 bankdagar innan det syns.",
     "withdrawnNoCharge": "Du har inte debiterats och ditt sparade betalsätt har tagits bort.",
     "cancelledSubject": "Erbjudandet har ställts in: {name}",
-    "cancelledText": "Vi har ställt in gruppköpet av {name}. Vi ber om ursäkt för besväret."
+    "cancelledText": "Vi har ställt in gruppköpet av {name}. Vi ber om ursäkt för besväret.",
+    "shippedSubject": "Din beställning är på väg: {name}",
+    "shippedText": "Goda nyheter: vi har skickat din {name}.",
+    "shippedTracking": "Spårningsnummer: {tracking}",
+    "shippedTrackingLink": "Spåra ditt paket: {link}",
+    "messageFooter": "Du får det här mejlet eftersom du har gått med i gruppköpet av {name}."
   }
 }

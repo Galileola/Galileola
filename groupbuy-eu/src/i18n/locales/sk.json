@@ -311,6 +311,11 @@
     "withdrawnRefund": "Vrátili sme {amount} na vašu pôvodnú platobnú metódu. Môže trvať 5–10 pracovných dní, kým sa suma objaví.",
     "withdrawnNoCharge": "Nič sa vám nestrhlo a vaša uložená platobná metóda bola odstránená.",
     "cancelledSubject": "Ponuka zrušená: {name}",
-    "cancelledText": "Skupinový nákup {name} sme zrušili. Ospravedlňujeme sa za komplikácie."
+    "cancelledText": "Skupinový nákup {name} sme zrušili. Ospravedlňujeme sa za komplikácie.",
+    "shippedSubject": "Vaša objednávka je na ceste: {name}",
+    "shippedText": "Dobrá správa: {name} sme vám odoslali.",
+    "shippedTracking": "Číslo zásielky: {tracking}",
+    "shippedTrackingLink": "Sledujte svoju zásielku: {link}",
+    "messageFooter": "Tento e-mail dostávate, pretože ste sa pripojili ku skupinovému nákupu {name}."
   }
 }

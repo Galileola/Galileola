@@ -275,6 +275,11 @@
     "withdrawnRefund": "Zwróciliśmy {amount} na Twoją pierwotną metodę płatności. Może to potrwać 5–10 dni roboczych.",
     "withdrawnNoCharge": "Nic nie zostało pobrane, a Twoja zapisana metoda płatności została usunięta.",
     "cancelledSubject": "Oferta anulowana: {name}",
-    "cancelledText": "Anulowaliśmy zakup grupowy „{name}”. Przepraszamy za niedogodności."
+    "cancelledText": "Anulowaliśmy zakup grupowy „{name}”. Przepraszamy za niedogodności.",
+    "shippedSubject": "Twoje zamówienie jest w drodze: {name}",
+    "shippedText": "Dobra wiadomość: wysłaliśmy Ci „{name}”.",
+    "shippedTracking": "Numer przesyłki: {tracking}",
+    "shippedTrackingLink": "Śledź swoją przesyłkę: {link}",
+    "messageFooter": "Otrzymujesz tę wiadomość, ponieważ dołączyłeś do zakupu grupowego „{name}”."
   }
 }

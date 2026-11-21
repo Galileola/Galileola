@@ -306,6 +306,11 @@
     "withdrawnRefund": "Vratili smo {amount} na vaš izvorni način plaćanja. Može proći 5–10 radnih dana dok se ne pojavi.",
     "withdrawnNoCharge": "Ništa vam nije naplaćeno, a vaš spremljeni način plaćanja je uklonjen.",
     "cancelledSubject": "Ponuda otkazana: {name}",
-    "cancelledText": "Otkazali smo grupnu kupnju {name}. Ispričavamo se zbog neugodnosti."
+    "cancelledText": "Otkazali smo grupnu kupnju {name}. Ispričavamo se zbog neugodnosti.",
+    "shippedSubject": "Vaša je narudžba na putu: {name}",
+    "shippedText": "Dobre vijesti: poslali smo vam {name}.",
+    "shippedTracking": "Broj za praćenje: {tracking}",
+    "shippedTrackingLink": "Pratite svoj paket: {link}",
+    "messageFooter": "Primate ovu e-poruku jer ste se pridružili grupnoj kupnji {name}."
   }
 }

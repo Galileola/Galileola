@@ -193,6 +193,39 @@ ${p.refund_id ? t('email.withdrawnRefund', { amount: i18n.formatEuro(p.amount_ce
   },
 };
 
+// Shipping and the owner's messages (src/fulfilment.js).
+Object.assign(templates, {
+  shipped: (data) => {
+    const { p, business } = data;
+    const { t, name, dealLink } = helpers(data);
+    const tracking = [
+      p.tracking_number ? t('email.shippedTracking', { tracking: p.tracking_number }) : '',
+      p.tracking_url ? t('email.shippedTrackingLink', { link: p.tracking_url }) : '',
+    ].filter(Boolean).join('\n');
+    return {
+      subject: t('email.shippedSubject', { name }),
+      body: `${t('email.hi', { name: p.name })}
+
+${t('email.shippedText', { name })}
+${tracking ? `\n${tracking}\n` : ''}
+${t('email.dealPage', { link: dealLink })}${sign(business)}`,
+    };
+  },
+
+  message: (data) => {
+    const { p, business, message } = data;
+    const { t, name } = helpers(data);
+    return {
+      subject: message.subject,
+      body: `${t('email.hi', { name: p.name })}
+
+${message.body}
+
+${t('email.messageFooter', { name })}${sign(business)}`,
+    };
+  },
+});
+
 export function render(kind, data) {
   const template = templates[kind];
   if (!template) throw new Error(`Unknown email template: ${kind}`);

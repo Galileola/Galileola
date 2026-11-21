@@ -275,6 +275,11 @@
     "withdrawnRefund": "Wir haben {amount} auf Ihre ursprüngliche Zahlungsmethode erstattet. Es kann 5–10 Werktage dauern, bis der Betrag erscheint.",
     "withdrawnNoCharge": "Ihnen wurde nichts berechnet und Ihre gespeicherte Zahlungsmethode wurde entfernt.",
     "cancelledSubject": "Angebot abgesagt: {name}",
-    "cancelledText": "Wir haben das Gruppenangebot für {name} abgesagt. Wir bitten um Entschuldigung für die Unannehmlichkeiten."
+    "cancelledText": "Wir haben das Gruppenangebot für {name} abgesagt. Wir bitten um Entschuldigung für die Unannehmlichkeiten.",
+    "shippedSubject": "Ihre Bestellung ist unterwegs: {name}",
+    "shippedText": "Gute Nachricht: Wir haben {name} an Sie verschickt.",
+    "shippedTracking": "Sendungsnummer: {tracking}",
+    "shippedTrackingLink": "Sendung verfolgen: {link}",
+    "messageFooter": "Sie erhalten diese E-Mail, weil Sie beim Gruppenangebot für {name} mitmachen."
   }
 }
