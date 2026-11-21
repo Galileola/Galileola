@@ -74,7 +74,7 @@ test('live mode: orders wait until the company details and legal pages are compl
   assert.match(admin, /Company details, Terms &amp; withdrawal right, Privacy policy/);
   const checklist = await app.get('/admin/go-live', app.auth);
   assert.match(checklist, /<strong>3 of 6<\/strong> required items done/);
-  assert.match(checklist, /Still has a placeholder: \[/);
+  assert.match(checklist, /Still has \d+ placeholders, for example: \[Delivery costs/);
   assert.doesNotMatch(await app.get(`/admin/deals/${app.deal.id}`, app.auth), /Test-mode tools/);
   const tool = await fetch(`${app.url}/admin/deals/${app.deal.id}/test/expire-now`, { method: 'POST', headers: { ...app.auth, 'Content-Type': 'application/x-www-form-urlencoded' }, body: `_csrf=${hmac('test-secret-0123456789abcdef', 'admin-csrf')}` });
   assert.equal(tool.status, 404, 'test tools are gone');

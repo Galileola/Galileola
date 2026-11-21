@@ -1,6 +1,6 @@
 <section class="card" style="margin-top:24px">
   <h2>Test-mode tools</h2>
-  <p class="muted small">These move time forward for this deal so you can run the test checklist without waiting days. They exist because the app only runs with Stripe test keys.</p>
+  <p class="muted small">These move time forward for this deal so you can run the test checklist without waiting days. They only exist in test mode (no real payments).</p>
   <div style="display:flex;gap:8px;flex-wrap:wrap">
     <form method="post" action="/admin/tick">
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">

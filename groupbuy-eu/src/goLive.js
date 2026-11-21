@@ -26,7 +26,7 @@ export function goLiveChecks(ctx) {
   const { config, repo } = ctx;
   const live = isLive(config);
   const checks = [];
-  const missing = BUSINESS_FIELDS.filter((f) => isPlaceholder(config.business?.[f.key])).map((f) => f.label.toLowerCase());
+  const missing = BUSINESS_FIELDS.filter((f) => isPlaceholder(config.business?.[f.key])).map((f) => f.label);
   checks.push({
     label: 'Company details',
     ok: !missing.length,
@@ -37,12 +37,15 @@ export function goLiveChecks(ctx) {
   for (const page of LEGAL_PAGES) {
     const own = repo?.legalText?.(page, 'en');
     const text = own ? own.body : builtInText(page);
-    const placeholder = text.match(PLACEHOLDER_RE)?.[0];
+    const found = [...text.matchAll(new RegExp(PLACEHOLDER_RE.source, 'g'))].map((m) => m[0]);
+    // The template's own note "Text in [brackets] must be completed" counts, but a real example
+    // is more useful to show.
+    const example = found.find((p) => p !== '[brackets]') ?? found[0];
     checks.push({
       label: LEGAL_LABELS[page],
-      ok: !placeholder,
-      detail: placeholder
-        ? `Still has a placeholder: ${placeholder.slice(0, 90)}${placeholder.length > 90 ? '…]' : ''} Write your own text (reviewed by a lawyer) in Legal pages.`
+      ok: !found.length,
+      detail: found.length
+        ? `${found.length === 1 ? 'Still has a placeholder' : `Still has ${found.length} placeholders, for example`}: ${example.length > 90 ? `${example.slice(0, 89)}…]` : example} Write your own text (reviewed by a lawyer) in Legal pages.`
         : own ? 'Your own text.' : 'The built-in text.',
       href: `/admin/legal/${page}/en`,
       required: true,
