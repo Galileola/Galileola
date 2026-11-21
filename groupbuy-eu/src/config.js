@@ -2,7 +2,7 @@ import { isLanguage } from './i18n/index.js';
 import path from 'node:path';
 
 // Configuration, read from environment variables (see .env.example).
-// The app refuses to start with anything but Stripe TEST-mode keys.
+// The app takes Stripe TEST-mode keys only, unless PAYMENTS_MODE=live (see assertLiveModeKeys).
 
 export class ConfigError extends Error {}
 
@@ -19,6 +19,24 @@ export function assertTestModeKeys({ stripeSecretKey, stripePublishableKey }) {
   }
 }
 
+// PAYMENTS_MODE=live takes real payments: it needs live keys, the webhook secret and an email
+// server (buyers must get their confirmations and the SEPA pre-notification). The shop also
+// pauses new orders until the company details and legal pages are complete (src/goLive.js).
+export function assertLiveModeKeys({ stripeSecretKey, stripePublishableKey, stripeWebhookSecret, smtpUrl }) {
+  if (!stripeSecretKey || !/^(sk|rk)_live_/.test(stripeSecretKey)) {
+    throw new ConfigError('Refusing to start: PAYMENTS_MODE=live needs a live STRIPE_SECRET_KEY (sk_live_… or rk_live_…).');
+  }
+  if (!stripePublishableKey || !/^pk_live_/.test(stripePublishableKey)) {
+    throw new ConfigError('Refusing to start: PAYMENTS_MODE=live needs a live STRIPE_PUBLISHABLE_KEY (pk_live_…).');
+  }
+  if (!stripeWebhookSecret) {
+    throw new ConfigError('Refusing to start: PAYMENTS_MODE=live needs STRIPE_WEBHOOK_SECRET from the live-mode webhook in the Stripe Dashboard.');
+  }
+  if (!smtpUrl) {
+    throw new ConfigError('Refusing to start: PAYMENTS_MODE=live needs SMTP_URL, so buyers get their emails.');
+  }
+}
+
 export function loadConfig(env = process.env) {
   const port = Number(env.PORT || 3000);
   const config = {
@@ -30,6 +48,8 @@ export function loadConfig(env = process.env) {
     // Express "trust proxy": 1 = one reverse proxy in front (Hostinger, nginx, Caddy). 0 = none.
     trustProxy: env.TRUST_PROXY === undefined ? 1 : /^\d+$/.test(env.TRUST_PROXY) ? Number(env.TRUST_PROXY) : env.TRUST_PROXY,
 
+    // 'test' (default): Stripe test keys only. 'live': real payments (see assertLiveModeKeys).
+    paymentsMode: String(env.PAYMENTS_MODE || 'test').trim().toLowerCase() === 'live' ? 'live' : 'test',
     stripeSecretKey: env.STRIPE_SECRET_KEY,
     stripePublishableKey: env.STRIPE_PUBLISHABLE_KEY,
     stripeWebhookSecret: env.STRIPE_WEBHOOK_SECRET,
@@ -71,7 +91,8 @@ export function loadConfig(env = process.env) {
 
   config.backupDir = env.BACKUP_DIR || path.join(path.dirname(path.resolve(config.dbPath)), 'backups');
   config.uploadDir = config.uploadDir || path.join(path.dirname(path.resolve(config.dbPath)), 'uploads');
-  assertTestModeKeys(config);
+  if (config.paymentsMode === 'live') assertLiveModeKeys(config);
+  else assertTestModeKeys(config);
   if (!config.adminPassword) throw new ConfigError('ADMIN_PASSWORD is required.');
   if (!config.appSecret || config.appSecret.length < 16) {
     throw new ConfigError('APP_SECRET is required (at least 16 characters).');

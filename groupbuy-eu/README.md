@@ -3,8 +3,10 @@
 A group-buying site for the EU market. Buyers save a payment method when they join a deal. They
 are charged only if the deal reaches its minimum number of buyers before the deadline.
 
-**Stripe test mode only.** The app refuses to start unless both Stripe keys are test-mode keys,
-and it rejects live-mode webhook events.
+**Stripe test mode by default.** The app refuses to start unless both Stripe keys are test-mode
+keys, and it rejects live-mode webhook events. Real payments are a deliberate switch,
+`PAYMENTS_MODE=live` (see [Going live](#going-live)). Even then, the shop pauses new orders until
+the company details and legal pages are complete.
 
 Stack: Node.js ≥ 22.13 (built-in SQLite), Express 5, EJS templates, Stripe, Nodemailer.
 
@@ -225,15 +227,36 @@ in the admin outbox (`/admin/emails`).
   challenge. Admin "test-mode tools" move the deadline and the 48-hour window forward so the
   checklist takes minutes.
 
-## Before going live (not done here)
+## Going live
 
-- Have the terms and privacy policy reviewed. Complete every `[bracketed]` placeholder:
-  delivery costs and times, return costs, governing law, processors, retention.
-- Confirm the SEPA pre-notification wording and timing with Stripe and your lawyer.
-- Configure Stripe Tax registrations for the countries where you must collect VAT (OSS).
-- Remove the test-key guard deliberately, and the admin test-mode tools with it.
-- Use a real email provider (ideally EU-hosted) and back up the SQLite file. SQLite and the
-  in-memory join rate limit (`JOIN_RATE_LIMIT` per IP per 15 minutes) assume a single app
-  instance.
-- Sign-ups that never led to a payment are anonymised 30 days after they ended. Say so in the
-  privacy policy, together with how long you keep paid orders.
+Admin → Settings → **Go-live checklist** shows what is ready and what is still missing.
+
+1. **Company details:** fill in every field under Admin → Settings → Shop details.
+2. **Legal pages:** write your own terms, privacy policy and cookie page under Admin → Settings →
+   Legal pages (start from the built-in text). Complete every `[bracketed]` placeholder:
+   delivery costs and times, return costs, dispute resolution, processors and retention. Have
+   a lawyer review them, and confirm the SEPA pre-notification wording and timing with Stripe.
+3. **Email:** set `SMTP_URL` to a real email provider (ideally EU-hosted). Check that Admin →
+   Emails says "delivered".
+4. **Stripe, in live mode:**
+   - turn on Cards, SEPA Direct Debit and iDEAL
+   - add your VAT registrations (OSS) under Settings → Tax
+   - create a webhook to `https://<your domain>/webhooks/stripe` with the events listed in Setup
+5. **Switch on real payments:** in the hosting panel, set these, then restart the app:
+   - `PAYMENTS_MODE=live`
+   - `STRIPE_SECRET_KEY=sk_live_…` (or a restricted `rk_live_…` key)
+   - `STRIPE_PUBLISHABLE_KEY=pk_live_…`
+   - `STRIPE_WEBHOOK_SECRET` from the live webhook
+
+   The app refuses to start in live mode without live keys, the webhook secret and `SMTP_URL`.
+
+**What changes in live mode:**
+- The yellow test banner and the admin test-mode tools disappear.
+- Webhook events and Stripe objects from test mode are refused.
+- Deal pages say "closed to new buyers" while any required checklist item is missing.
+
+**Other things to keep in mind:**
+- **Backups:** back up the SQLite file and the photos (Admin → Download photos).
+- **One app instance:** SQLite and the in-memory rate limits assume a single app instance.
+- **Privacy policy:** the built-in template says that sign-ups that never led to a payment are
+  anonymised after 30 days, and how deal alerts work. Keep those points in your own version.

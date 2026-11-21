@@ -61,6 +61,7 @@ export function createApp(ctx) {
     });
     res.locals.business = config.business;
     res.locals.brand = currentBrand(config); // shop name, logo, icons, share picture (src/branding.js)
+    res.locals.testMode = config.paymentsMode !== 'live'; // the yellow "test mode" banner
     res.locals.loadStripe = false; // payment pages switch this on (Stripe.js only where needed)
     res.locals.title = 'Group Buy';
     res.locals.photoUrl = photoUrl;

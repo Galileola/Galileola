@@ -41,6 +41,7 @@ import { brandingParsers, brandingRoutes } from './adminBranding.js';
 import { fulfilmentRoutes } from './adminFulfilment.js';
 import { customerRoutes } from './adminCustomers.js';
 import { adminAlertRoutes } from './alerts.js';
+import { goLiveChecks, isLive, liveProblems } from '../goLive.js';
 
 // Photo uploads are parsed into memory (admin only, at most 8 × 8 MB per request), checked,
 // and only then written to UPLOAD_DIR.
@@ -137,8 +138,10 @@ export function adminRoutes(app, ctx) {
     const deals = repo
       .listDeals()
       .map((d) => ({ ...d, count: repo.committedCount(d.id), cover: repo.coverPhoto(d.id) }));
-    res.render('admin/index', { title: 'Admin', deals, flash: req.query.flash || '' });
+    res.render('admin/index', { title: 'Admin', deals, flash: req.query.flash || '', live: isLive(config), problems: liveProblems(ctx) });
   });
+
+  router.get('/go-live', (req, res) => res.render('admin/go-live', { title: 'Go-live checklist', checks: goLiveChecks(ctx), live: isLive(config) }));
 
   importRoutes(router, ctx);
   dealRoutes(router, ctx);
@@ -349,7 +352,7 @@ export function adminRoutes(app, ctx) {
       flash: req.query.flash || '',
       justPublished: req.query.live === '1',
       dealUrl: `${config.baseUrl}/deals/${deal.slug}`,
-      testTools: true, // Stripe test mode only (enforced at startup)
+      testTools: config.paymentsMode !== 'live', // Stripe test mode only
     });
   });
 
@@ -408,7 +411,9 @@ export function adminRoutes(app, ctx) {
   });
 
   // ---- Test-mode tools: move time forward for one deal so the checklist can be run in minutes.
+  // They don't exist with real payments (PAYMENTS_MODE=live).
   const testAction = (pathName, fn) =>
+    config.paymentsMode !== 'live' &&
     router.post(`/deals/:id/test/${pathName}`, async (req, res, next) => {
       try {
         const deal = repo.dealById(Number(req.params.id));

@@ -1,3 +1,4 @@
+import { ordersOpen } from '../goLive.js';
 import { isJoinable, publicDealState } from '../dealState.js';
 import { isCategory } from '../categories.js';
 import { HOUR } from '../util.js';
@@ -44,6 +45,8 @@ export function publicRoutes(app, ctx) {
     if (!found) return next();
     const deal = res.locals.localizeDeal(found);
     const state = publicDealState(deal, repo.committedCount(deal.id), clock.now());
+    // With real payments, new orders wait until the go-live checks pass (src/goLive.js).
+    if (!ordersOpen(ctx)) state.joinable = false;
     const photos = repo.photosForDeal(deal.id);
     res.locals.trackDealId = deal.id;
     const { lang, formatEuro, categoryFor } = res.locals;

@@ -1,3 +1,4 @@
+import { ordersOpen } from '../goLive.js';
 import { JoinError } from '../engine.js';
 import { isJoinable, publicDealState } from '../dealState.js';
 import { EU_COUNTRIES, isValidEmail } from '../util.js';
@@ -42,7 +43,7 @@ export function joinRoutes(app, ctx) {
       title: shown.product_name,
       deal: shown,
       photos: repo.photosForDeal(deal.id),
-      state: publicDealState(deal, repo.committedCount(deal.id), clock.now()),
+      state: { ...publicDealState(deal, repo.committedCount(deal.id), clock.now()), ...(ordersOpen(ctx) ? {} : { joinable: false }) },
       values,
       errors,
     });
@@ -56,6 +57,7 @@ export function joinRoutes(app, ctx) {
     // The form says which language the page was in (the visitor may have no language cookie).
     if (isLanguage(req.body.lang) && req.body.lang !== res.locals.lang) applyLanguage(req, res, req.body.lang, ctx);
     const { t, lang } = res.locals;
+    if (!ordersOpen(ctx)) return renderDeal(res, deal, req.body, { form: t('join.errClosed') }, 409);
     if (!joinLimiter.take(req.ip)) {
       return renderDeal(res, deal, req.body, { form: t('join.errTooMany') }, 429);
     }

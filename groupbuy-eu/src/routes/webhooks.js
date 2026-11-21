@@ -8,7 +8,10 @@ export function webhookRoutes(app, { config, repo, stripe, engine, clock }) {
     } catch (err) {
       return res.status(400).send('Webhook signature verification failed.');
     }
-    if (event.livemode) return res.status(400).send('Live-mode events are not accepted.');
+    // Events from the other Stripe mode (a test webhook while live, or the reverse) are refused.
+    if (Boolean(event.livemode) !== (config.paymentsMode === 'live')) {
+      return res.status(400).send(`${event.livemode ? 'Live' : 'Test'}-mode events are not accepted in ${config.paymentsMode === 'live' ? 'live' : 'test'} mode.`);
+    }
     if (!repo.recordEvent(event.id, event.type, clock.now().toISOString())) {
       return res.json({ received: true, duplicate: true });
     }

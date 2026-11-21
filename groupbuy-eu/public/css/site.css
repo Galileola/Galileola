@@ -575,3 +575,12 @@ table.plain th, table.plain td { padding: 6px 4px; }
 .alert-privacy a { color: #fff; }
 .hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
 @media (max-width: 720px) { .alert-signup { grid-template-columns: 1fr; padding: 22px 18px; } .deal-search { flex-basis: 100%; } }
+
+/* Admin: payment mode and go-live checklist */
+.mode-pill { display: inline-block; margin: 0 0 12px; padding: 4px 12px; border-radius: 999px; background: var(--sun-soft); color: #6b4e00; font-size: .85rem; font-weight: 600; }
+.mode-pill.live { background: var(--teal-soft); color: var(--ok); }
+.checklist { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.checklist li { display: grid; grid-template-columns: 30px 1fr; gap: 4px 10px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); }
+.checklist .mark { font-size: 1.2rem; line-height: 1.4; }
+.checklist .optional { color: var(--muted); font-weight: 500; font-size: .8rem; }
+.checklist p { margin: 2px 0 0; }

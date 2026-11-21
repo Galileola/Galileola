@@ -1,0 +1,23 @@
+<%- include('../partials/header') %>
+<p><a href="/admin/settings">← Settings</a></p>
+<h1>🚀 Go-live checklist</h1>
+<% const required = checks.filter((c) => c.required); const done = required.filter((c) => c.ok).length; %>
+<% if (live) { %>
+  <div class="notice <%= done === required.length ? 'ok' : 'bad' %>"><%= done === required.length ? 'Real payments are on and the shop is taking orders.' : 'Real payments are on, but new orders are paused until every required item below is done.' %></div>
+<% } else { %>
+  <div class="notice warn">Test mode: no real money is taken. When every required item is done, set <code>PAYMENTS_MODE=live</code> with your live Stripe keys and the live webhook secret in the hosting panel and restart the app. The README's "Going live" section has the steps.</div>
+<% } %>
+<p><strong><%= done %> of <%= required.length %></strong> required items done.</p>
+<ul class="checklist">
+  <% for (const c of checks) { %>
+    <li>
+      <span class="mark" aria-hidden="true"><%= c.ok ? '✅' : c.required ? '❌' : '➖' %></span>
+      <div>
+        <strong><%= c.label %></strong> <% if (!c.required) { %><span class="optional">optional</span><% } %><span class="visually-hidden"><%= c.ok ? ': done' : ': not done' %></span>
+        <p class="small"><%= c.detail %><% if (c.href && !c.ok) { %> <a href="<%= c.href %>">Fix it</a><% } %></p>
+      </div>
+    </li>
+  <% } %>
+</ul>
+<p class="muted small" style="margin-top:16px">Also before going live: have a lawyer review the terms and privacy policy, add your VAT registrations (OSS) in Stripe → Settings → Tax, turn on SEPA Direct Debit and iDEAL in Stripe's live mode, and point a live-mode webhook at <code>/webhooks/stripe</code>.</p>
+<%- include('../partials/footer') %>

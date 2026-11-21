@@ -85,7 +85,7 @@ const app = createApp(ctx);
 
 let stopScheduler = () => {};
 const server = app.listen(config.port, () => {
-  console.log(`Group buy running at ${config.baseUrl} on port ${config.port} (Stripe TEST mode)`);
+  console.log(`Group buy running at ${config.baseUrl} on port ${config.port} (${config.paymentsMode === 'live' ? 'LIVE payments' : 'Stripe TEST mode'})`);
   stopScheduler = startScheduler(ctx.engine, config.schedulerIntervalMs);
 });
 

@@ -35,6 +35,7 @@ export function createEngine(ctx) {
   const nowIso = () => clock.now().toISOString();
   let ticking = null;
   let lastPrivacyRun = 0;
+  const liveMode = config.paymentsMode === 'live';
   const background = new Set();
   const instanceId = `${process.pid}-${randomToken(6)}`;
 
@@ -167,7 +168,7 @@ export function createEngine(ctx) {
     // record the saved payment method. Safe to call more than once.
     async finalizeSetupIntent(setupIntentId) {
       const si = await stripe.setupIntents.retrieve(setupIntentId, { expand: ['payment_method', 'latest_attempt'] });
-      if (si.livemode) throw new Error('Refusing to process a live-mode SetupIntent.');
+      if (Boolean(si.livemode) !== liveMode) throw new Error(`Refusing to process a ${si.livemode ? 'live' : 'test'}-mode SetupIntent in ${liveMode ? 'live' : 'test'} mode.`);
       let p = repo.participantBySetupIntent(si.id);
       if (!p) return { p: null, si };
       if (si.status !== 'succeeded' || p.status !== 'pending_setup') return { p, si };
@@ -332,7 +333,7 @@ export function createEngine(ctx) {
     // Single place where a PaymentIntent's state is applied to the buyer (sync result, webhook,
     // return from the update page, or the scheduler's reconciliation).
     async applyPaymentIntent(pi) {
-      if (pi.livemode) throw new Error('Refusing to process a live-mode PaymentIntent.');
+      if (Boolean(pi.livemode) !== liveMode) throw new Error(`Refusing to process a ${pi.livemode ? 'live' : 'test'}-mode PaymentIntent in ${liveMode ? 'live' : 'test'} mode.`);
       const p = repo.participantByPaymentIntent(pi.id) ?? repo.participantById(Number(pi.metadata?.participant_id));
       if (!p) return null;
       if (!p.payment_intent_id) repo.updateParticipant(p.id, { payment_intent_id: pi.id }, nowIso());
