@@ -498,3 +498,17 @@ table.plain th, table.plain td { padding: 6px 4px; }
 @media (max-width: 420px) { .spend-note { grid-column: auto; } }
 #how-counted ul { margin: 10px 0 0; padding-left: 20px; }
 #how-counted li + li { margin-top: 6px; }
+
+/* Admin → Import products */
+.import-formats li { margin: 6px 0; }
+.import-table td { vertical-align: top; }
+.import-table tr.excluded td { opacity: .55; }
+.import-table tr.excluded td:first-child { opacity: 1; }
+.import-product { display: flex; gap: 10px; align-items: flex-start; min-width: 260px; }
+.import-product > div { flex: 1; min-width: 0; }
+.import-product p { margin: 4px 0 0; }
+.import-note { color: var(--orange); margin: 4px 0 0; }
+.thumb-empty { display: inline-grid; place-items: center; background: var(--violet-soft); flex: none; }
+.input-short { width: 7.5em !important; }
+.import-table select { min-width: 150px; }
+.break { word-break: break-all; }

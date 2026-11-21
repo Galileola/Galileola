@@ -35,6 +35,7 @@ import { translate } from '../i18n/index.js';
 import { MIN_PASSWORD_LENGTH, createAdminAuth, newPasswordProblem } from '../adminPassword.js';
 import { AD_CHANNELS, LINK_TYPES, RANGES, buildReport, validateAdSpend } from '../performance.js';
 import { CHANNELS, shopDay } from '../analytics.js';
+import { importParsers, importRoutes } from './adminImport.js';
 
 // Photo uploads are parsed into memory (admin only, at most 8 × 8 MB per request), checked,
 // and only then written to UPLOAD_DIR.
@@ -85,6 +86,7 @@ export function adminRoutes(app, ctx) {
   router.post('/legal/:page/:lang', express.urlencoded({ extended: false, limit: '1mb' }));
   router.post('/legal/:page/:lang/draft', express.json({ limit: '100kb' }));
   router.post('/categories/:slug/ai-names', express.json({ limit: '10kb' }));
+  importParsers(router); // Import products: the CSV upload and the (long) preview form
   router.use((req, res, next) => {
     res.set('Cache-Control', 'no-store');
     res.locals.csrfToken = csrfToken;
@@ -106,6 +108,8 @@ export function adminRoutes(app, ctx) {
       .map((d) => ({ ...d, count: repo.committedCount(d.id), cover: repo.coverPhoto(d.id) }));
     res.render('admin/index', { title: 'Admin', deals });
   });
+
+  importRoutes(router, ctx);
 
   router.get('/deals/new', (req, res) => {
     res.render('admin/new', {

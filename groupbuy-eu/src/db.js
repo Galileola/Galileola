@@ -484,6 +484,10 @@ export function createRepo(db) {
 
     // ---- admin settings
     getAdminSetting: (key) => db.prepare('SELECT * FROM admin_settings WHERE key = ?').get(key),
+    deleteAdminSetting: (key) => db.prepare('DELETE FROM admin_settings WHERE key = ?').run(key),
+    // Removes settings whose key starts with `prefix` and that were last saved before `before`.
+    deleteAdminSettingsBefore: (prefix, before) =>
+      db.prepare("DELETE FROM admin_settings WHERE substr(key, 1, length(:prefix)) = :prefix AND updated_at < :before").run({ prefix, before }),
     setAdminSetting: (key, value, now) =>
       db
         .prepare(

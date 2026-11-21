@@ -1,0 +1,20 @@
+<%- include('../partials/header') %>
+<p><a href="/admin">← Admin</a> · <a href="/admin/import">Import another file</a></p>
+<section class="card narrow">
+  <h1><%= created.length ? `🎉 ${created.length} deal${created.length === 1 ? '' : 's'} published` : 'Nothing was imported' %></h1>
+  <% if (created.length) { %>
+    <p>They're live in the shop now.<% if (photosQueued) { %> <%= photosQueued %> photo<%= photosQueued === 1 ? ' is' : 's are' %> being copied from the other site in the background. They appear on the deals within a minute or two: see the progress on the <a href="/admin/import">import page</a>.<% } %></p>
+    <ul>
+      <% for (const d of created) { %><li><a href="/admin/deals/<%= d.id %>"><%= d.product_name %></a> · <%= formatEuro(d.price_cents) %> · <%= d.min_buyers %> buyers</li><% } %>
+    </ul>
+  <% } %>
+  <% if (failed.length) { %>
+    <div class="notice bad">
+      <p><strong><%= failed.length %> product<%= failed.length === 1 ? ' was' : 's were' %> not imported:</strong></p>
+      <ul class="small"><% for (const f of failed) { %><li><strong><%= f.name || '(no name)' %></strong>: <%= f.reason %></li><% } %></ul>
+      <p class="small">Fix them in the file and import it again, or add them with the New deal form.</p>
+    </div>
+  <% } %>
+  <% if (!created.length && !failed.length) { %><p>No products were ticked.</p><% } %>
+</section>
+<%- include('../partials/footer') %>

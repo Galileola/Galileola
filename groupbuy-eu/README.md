@@ -99,6 +99,30 @@ Admin creates deal ──► buyers join (SetupIntent: card / SEPA / iDEAL→SEP
   notes typed in the description box and up to 4 of the chosen photos (shrunk to 1024 px in the
   browser). It only uses facts from those inputs and fills the form; the admin edits the draft
   before creating the deal. Uses the same `ANTHROPIC_API_KEY`.
+- **Import products** (admin, `/admin/import`): upload a CSV file of products from another shop
+  and turn them into deals.
+  - **Formats:** a Shopify product export (rows grouped by Handle, with variants and extra
+    images), a WooCommerce product export (variations are folded into their parent product), or
+    any spreadsheet saved as CSV with a header row. Commas, semicolons and tabs all work, and so do
+    UTF-8 and old Excel encodings. The spreadsheet needs a name column ("name", "title" or
+    "product"). It can also have price, description, headline, category, min_buyers, days and image
+    URL columns; **Download the template** on the import page shows them.
+  - **Options:** a group discount (% off the file's price), and the minimum buyers, the number of
+    days the deals run and the category for rows that don't set them. HTML descriptions become
+    plain paragraphs. The category is worked out from the other shop's category, type and tags.
+  - **Preview first:** every product is listed with its name, price, minimum and category, which
+    can all be changed. Products already in the shop, without a price, or unpublished in the other
+    shop start unticked. Only the ticked ones are published, as open deals. The preview is kept in
+    the database for 6 hours and can be published once.
+  - **Photos:** up to 8 per product (4 by default) are copied from the other site into
+    `UPLOAD_DIR` in the background, a few at a time. Only public addresses are fetched, and the
+    importer accepts only JPG, PNG, WebP or GIF files of up to 8 MB. Until a deal's photos are
+    copied, or if copying fails, the deal shows the first photo from the other site. The import
+    page shows the progress and any photos that failed.
+  - **Limits:** up to 300 products and 5 MB per file. Products with sizes or colours become one
+    deal with one price (the first variant's on Shopify, the lowest on WooCommerce). Imported deals
+    are translated when a visitor first opens them in another language, so a large import doesn't
+    use up the day's translation budget.
 
 ## Setup
 

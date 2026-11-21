@@ -1,0 +1,61 @@
+<%- include('../partials/header') %>
+<p><a href="/admin/import">← Import another file</a></p>
+<h1>Preview: <%= products.length %> product<%= products.length === 1 ? '' : 's' %></h1>
+<p>Read from a <strong><%= formatLabel %></strong>.
+  <% if (total > products.length) { %>The file has <%= total %> products; only the first <%= products.length %> are shown. Split the file to import the rest.<% } %>
+  <% if (options.discount) { %>Prices are <%= options.discount %>% below the file's prices.<% } %>
+  Deals run until about <strong><%= formatDate(defaultDeadline) %></strong> unless a row sets its own number of days.</p>
+<% if (skipped.length) { %>
+<details class="notice warn">
+  <summary><%= skipped.length %> row<%= skipped.length === 1 ? ' was' : 's were' %> left out</summary>
+  <ul class="small"><% for (const s of skipped.slice(0, 50)) { %><li>Line <%= s.line %>: <%= s.reason %></li><% } %><% if (skipped.length > 50) { %><li>… and <%= skipped.length - 50 %> more</li><% } %></ul>
+</details>
+<% } %>
+<div class="notice">Ticked products go live as open deals as soon as you press the button, with their name, price, minimum and category below. Untick anything you don't want. After the import you can change a deal's category and photos on its page.</div>
+
+<form method="post" action="/admin/import/confirm" data-import-form>
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <input type="hidden" name="token" value="<%= token %>">
+  <p class="row-buttons">
+    <button type="button" class="secondary" data-select="all">Tick all</button>
+    <button type="button" class="secondary" data-select="none">Untick all</button>
+    <span class="muted small" data-selected-count></span>
+  </p>
+  <div class="table-scroll">
+  <table class="import-table">
+    <thead><tr><th><span class="visually-hidden">Import</span></th><th>Product</th><th>Price, € incl. VAT</th><th>Min. buyers</th><th>Category</th></tr></thead>
+    <tbody>
+    <% for (const p of products) { %>
+      <tr class="<%= p.include ? '' : 'excluded' %>">
+        <td><input type="checkbox" name="include_<%= p.index %>" value="1" aria-label="Import <%= p.name %>" <%= p.include ? 'checked' : '' %>></td>
+        <td>
+          <div class="import-product">
+            <% if (p.thumb) { %><img class="thumb-sm" src="<%= p.thumb %>" alt="" loading="lazy" referrerpolicy="no-referrer"><% } else { %><span class="thumb-sm thumb-empty" aria-hidden="true">📦</span><% } %>
+            <div>
+              <input type="text" name="name_<%= p.index %>" value="<%= p.name %>" maxlength="120" aria-label="Product name">
+              <p class="small muted"><%= p.snippet || 'No description.' %></p>
+              <p class="small muted"><%= p.imageCount %> photo<%= p.imageCount === 1 ? '' : 's' %> · until <%= formatDate(p.deadline) %><% if (p.sourceId) { %> · <%= p.sourceId %><% } %></p>
+              <% for (const n of p.notes) { %><p class="small import-note">⚠️ <%= n %></p><% } %>
+            </div>
+          </div>
+        </td>
+        <td>
+          <input type="text" name="price_<%= p.index %>" value="<%= p.price %>" inputmode="decimal" class="input-short" aria-label="Price">
+          <% if (p.filePrice) { %><p class="small muted">File: <%= p.filePrice %></p><% } %>
+        </td>
+        <td><input type="number" name="min_<%= p.index %>" value="<%= p.minBuyers %>" min="1" max="10000" step="1" class="input-short" aria-label="Minimum buyers"></td>
+        <td>
+          <select name="cat_<%= p.index %>" aria-label="Category">
+            <% for (const c of categories) { %><option value="<%= c.slug %>" <%= p.category === c.slug ? 'selected' : '' %>><%= c.emoji %> <%= c.name %></option><% } %>
+          </select>
+          <% if (!p.categoryGuessed) { %><p class="small muted">Not worked out</p><% } %>
+        </td>
+      </tr>
+    <% } %>
+    </tbody>
+  </table>
+  </div>
+  <p><button type="submit" class="big" data-import-submit>Publish ticked products</button></p>
+</form>
+<script src="/static/js/import.js"></script>
+<%- include('../partials/footer') %>

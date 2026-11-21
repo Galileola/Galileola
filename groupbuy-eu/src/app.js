@@ -83,9 +83,10 @@ export function createApp(ctx) {
     );
   }
   // Only parses application/x-www-form-urlencoded; the Stripe webhook keeps its raw JSON body.
-  // (Admin → Legal pages posts long texts and parses its own, larger form.)
+  // (Admin → Legal pages and the import preview post long forms and parse their own.)
   const formParser = express.urlencoded({ extended: false, limit: '100kb' });
-  app.use((req, res, next) => (req.path.startsWith('/admin/legal/') ? next() : formParser(req, res, next)));
+  const ownParser = (p) => p.startsWith('/admin/legal/') || p === '/admin/import/confirm';
+  app.use((req, res, next) => (ownParser(req.path) ? next() : formParser(req, res, next)));
 
   // Routes are added step by step (see src/routes/*).
   for (const mount of ctx.routes ?? []) mount(app, ctx);
