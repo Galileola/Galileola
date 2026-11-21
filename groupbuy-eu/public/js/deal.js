@@ -6,14 +6,52 @@
   const lang = document.documentElement.lang || 'en';
   const $ = (sel) => root.querySelector(sel);
 
-  // Photo gallery: clicking a thumbnail shows it as the main photo.
-  const main = $('[data-gallery-main]');
-  root.querySelectorAll('[data-gallery-thumb]').forEach((thumb) => {
-    thumb.addEventListener('click', () => {
-      main.src = thumb.dataset.galleryThumb;
-      root.querySelectorAll('[data-gallery-thumb]').forEach((t) => t.classList.toggle('active', t === thumb));
-    });
-  });
+  // Photo gallery: swipe (or scroll) through the photos, thumbnails and arrows jump to one, and a
+  // tap opens them full screen. Without JavaScript the photos still scroll sideways.
+  const gallery = $('[data-gallery]');
+  if (gallery) {
+    const track = gallery.querySelector('[data-gallery-track]');
+    const slides = [...track.children];
+    const thumbs = [...gallery.querySelectorAll('[data-gallery-thumb]')];
+    const count = gallery.querySelector('[data-gallery-count]');
+    const steps = [...gallery.querySelectorAll('[data-gallery-step]')];
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const indexOf = (el) => Math.round(el.scrollLeft / Math.max(1, el.clientWidth));
+    const go = (el, i) => el.scrollTo({ left: i * el.clientWidth, behavior: reduce ? 'auto' : 'smooth' });
+    let current = 0;
+    const show = (i) => {
+      current = Math.max(0, Math.min(slides.length - 1, i));
+      thumbs.forEach((t, k) => t.classList.toggle('active', k === current));
+      if (count) count.textContent = `${current + 1} / ${slides.length}`;
+      steps.forEach((b) => { b.hidden = slides.length < 2 || (Number(b.dataset.galleryStep) < 0 ? current === 0 : current === slides.length - 1); });
+    };
+    track.addEventListener('scroll', () => { if (indexOf(track) !== current) show(indexOf(track)); }, { passive: true });
+    thumbs.forEach((t) => t.addEventListener('click', () => { go(track, Number(t.dataset.galleryThumb)); show(Number(t.dataset.galleryThumb)); }));
+    steps.forEach((b) => b.addEventListener('click', () => go(track, current + Number(b.dataset.galleryStep))));
+    show(0);
+
+    const box = gallery.querySelector('[data-lightbox]');
+    if (box && typeof box.showModal === 'function') {
+      const boxTrack = box.querySelector('[data-lightbox-track]');
+      slides.forEach((slide, i) =>
+        slide.addEventListener('click', () => {
+          box.showModal();
+          boxTrack.scrollTo({ left: i * boxTrack.clientWidth });
+        })
+      );
+      box.querySelector('[data-lightbox-close]').addEventListener('click', () => box.close());
+      box.querySelectorAll('[data-lightbox-step]').forEach((b) =>
+        b.addEventListener('click', () => go(boxTrack, indexOf(boxTrack) + Number(b.dataset.lightboxStep)))
+      );
+      box.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') go(boxTrack, indexOf(boxTrack) + 1);
+        if (e.key === 'ArrowLeft') go(boxTrack, indexOf(boxTrack) - 1);
+      });
+      // Closing shows the photo that was open in the page gallery too.
+      box.addEventListener('close', () => { go(track, indexOf(boxTrack)); show(indexOf(boxTrack)); });
+      box.addEventListener('click', (e) => { if (e.target === box) box.close(); });
+    }
+  }
 
   const bar = $('[data-progress]');
   const countdown = $('[data-countdown]');

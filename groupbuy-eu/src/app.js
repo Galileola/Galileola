@@ -1,7 +1,7 @@
 import express from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { photoUrl } from './photos.js';
+import { photoUrl, thumbUrl } from './photos.js';
 import { languageMiddleware } from './i18n/middleware.js';
 import { loadCategories } from './categories.js';
 import { applyBusinessSettings } from './businessSettings.js';
@@ -61,6 +61,7 @@ export function createApp(ctx) {
     res.locals.loadStripe = false; // payment pages switch this on (Stripe.js only where needed)
     res.locals.title = 'Group Buy';
     res.locals.photoUrl = photoUrl;
+    res.locals.thumbUrl = thumbUrl;
     res.locals.assistantEnabled = Boolean(ctx.assistant); // the admin router switches it off
     res.locals.isAdmin = false; // the admin router switches it on
     res.locals.baseUrl = config.baseUrl;

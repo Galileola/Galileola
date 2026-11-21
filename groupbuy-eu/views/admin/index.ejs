@@ -14,7 +14,7 @@
     <tr>
       <td>
         <div class="product-cell">
-          <% if (d.cover) { %><img class="thumb-sm" src="<%= photoUrl(d.cover.filename) %>" alt=""><% } %>
+          <% if (d.cover) { %><img class="thumb-sm" src="<%= thumbUrl(d.cover) %>" alt=""><% } %>
           <a href="/admin/deals/<%= d.id %>"><%= d.product_name %></a>
         </div>
       </td>

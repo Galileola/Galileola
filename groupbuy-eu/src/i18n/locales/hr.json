@@ -113,7 +113,11 @@
     "shareTitle": "👯 Dovedite prijatelje",
     "shareText": "Svaki novi kupac približava ponudu svima. Podijelite je s onima kojima bi se također svidjela.",
     "shareMessage": "{name} · Pridruži se grupnoj kupnji i svi ćemo platiti manje!",
-    "cancelled": "Ova je ponuda otkazana. Nikome ništa nije naplaćeno i svi spremljeni načini plaćanja su uklonjeni."
+    "cancelled": "Ova je ponuda otkazana. Nikome ništa nije naplaćeno i svi spremljeni načini plaćanja su uklonjeni.",
+    "zoomPhoto": "Otvori fotografiju {n} od {total} preko cijelog zaslona",
+    "prevPhoto": "Prethodna fotografija",
+    "nextPhoto": "Sljedeća fotografija",
+    "closePhotos": "Zatvori fotografije"
   },
   "share": {
     "native": "📤 Podijeli…",

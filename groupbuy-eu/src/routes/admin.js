@@ -135,7 +135,7 @@ export function adminRoutes(app, ctx) {
 
   // Publishes a deal from the snap page. The page sends multipart (photos already downscaled
   // in the browser, which also strips their location data) and expects JSON back.
-  router.post('/snap', (req, res) => {
+  router.post('/snap', async (req, res) => {
     res.set('Cache-Control', 'no-store');
     const { errors, deal } = validateDealInput(req.body, { now: clock.now(), defaultTaxCode: config.defaultTaxCode });
     const files = req.files ?? [];
@@ -145,11 +145,11 @@ export function adminRoutes(app, ctx) {
     if (!deal || Object.keys(errors).length) return res.status(422).json({ errors });
     const created = repo.insertDeal(deal);
     ctx.translator?.warmDeal(created); // translate it into every language in the background
-    savePhotos(created.id, files);
+    await savePhotos(created.id, files);
     res.json({ redirect: `/admin/deals/${created.id}?live=1` });
   });
 
-  router.post('/deals', (req, res) => {
+  router.post('/deals', async (req, res) => {
     const { errors, deal } = validateDealInput(req.body, { now: clock.now(), defaultTaxCode: config.defaultTaxCode });
     const photoError = req.photoError || checkPhotos(req.files);
     if (photoError) errors.photos = `${photoError} Please choose the photos again.`;
@@ -162,7 +162,7 @@ export function adminRoutes(app, ctx) {
     const created = repo.insertDeal(deal);
     ctx.translator?.warmDeal(created); // translate it into every language in the background
     if (copyFrom) copyPhotos(ctx, copyFrom.id, created.id);
-    savePhotos(created.id, req.files);
+    await savePhotos(created.id, req.files);
     res.redirect(303, `/admin/deals/${created.id}`);
   });
 
@@ -234,14 +234,14 @@ export function adminRoutes(app, ctx) {
     }
   });
 
-  const savePhotos = (dealId, files) => {
-    const now = clock.now().toISOString();
-    for (const f of files ?? []) repo.addPhoto(dealId, ctx.photos.save(f.buffer), now);
+  // Saves uploaded photos in their shop-ready form (resized, thumbnail, metadata removed).
+  const savePhotos = async (dealId, files) => {
+    for (const f of files ?? []) repo.addPhoto(dealId, await ctx.photos.store(f.buffer), clock.now().toISOString());
   };
   const backToDeal = (res, dealId, flash) =>
     res.redirect(303, `/admin/deals/${dealId}?flash=${encodeURIComponent(flash)}`);
 
-  router.post('/deals/:id/photos', (req, res, next) => {
+  router.post('/deals/:id/photos', async (req, res, next) => {
     const deal = repo.dealById(Number(req.params.id));
     if (!deal) return next();
     const files = req.files ?? [];
@@ -252,7 +252,7 @@ export function adminRoutes(app, ctx) {
     if (files.length > room) {
       return backToDeal(res, deal.id, `A deal can have up to ${MAX_PHOTOS_PER_DEAL} photos. You can add ${Math.max(0, room)} more.`);
     }
-    savePhotos(deal.id, files);
+    await savePhotos(deal.id, files);
     backToDeal(res, deal.id, files.length === 1 ? 'Photo added.' : `${files.length} photos added.`);
   });
 
@@ -276,8 +276,25 @@ export function adminRoutes(app, ctx) {
     const photo = repo.photoById(Number(req.params.id));
     if (!photo) return next();
     repo.deletePhoto(photo.id);
-    ctx.photos.remove(photo.filename);
+    ctx.photos.remove(photo.filename, photo.thumb);
     backToDeal(res, photo.deal_id, 'Photo deleted.');
+  });
+
+  router.post('/photos/:id/move', (req, res, next) => {
+    const photo = repo.photoById(Number(req.params.id));
+    if (!photo) return next();
+    const moved = repo.movePhoto(photo.id, req.body.dir === 'earlier' ? -1 : 1);
+    res.redirect(303, `/admin/deals/${photo.deal_id}${moved ? '' : `?flash=${encodeURIComponent('That photo is already at the end.')}`}#photos`);
+  });
+
+  // A short description of what the photo shows: read out by screen readers and used by search
+  // engines. Empty means the product name is used.
+  router.post('/photos/:id/alt', (req, res, next) => {
+    const photo = repo.photoById(Number(req.params.id));
+    if (!photo) return next();
+    const alt = String(req.body.alt ?? '').replace(/\s+/g, ' ').trim().slice(0, 200);
+    repo.setPhotoAlt(photo.id, alt);
+    res.redirect(303, `/admin/deals/${photo.deal_id}?flash=${encodeURIComponent('Photo description saved.')}#photos`);
   });
 
   router.get('/deals/:id', (req, res, next) => {

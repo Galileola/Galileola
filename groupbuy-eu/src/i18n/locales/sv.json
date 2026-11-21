@@ -86,7 +86,11 @@
     "shareTitle": "👯 Ta med dina vänner",
     "shareText": "Varje ny köpare tar erbjudandet närmare målet för alla. Dela det med dem som också skulle gilla det.",
     "shareMessage": "{name} · Gå med i gruppköpet så betalar vi alla mindre!",
-    "cancelled": "Det här erbjudandet har ställts in. Ingen har debiterats och alla sparade betalsätt har tagits bort."
+    "cancelled": "Det här erbjudandet har ställts in. Ingen har debiterats och alla sparade betalsätt har tagits bort.",
+    "zoomPhoto": "Öppna bild {n} av {total} i helskärm",
+    "prevPhoto": "Föregående bild",
+    "nextPhoto": "Nästa bild",
+    "closePhotos": "Stäng bilderna"
   },
   "share": { "native": "📤 Dela…", "email": "E-post", "copy": "🔗 Kopiera länk" },
   "join": {

@@ -86,7 +86,11 @@
     "shareTitle": "👯 Ġib il-ħbieb tiegħek",
     "shareText": "Kull xerrej ġdid iqarreb l-offerta għal kulħadd. Aqsamha ma' min jista' jħobbha wkoll.",
     "shareMessage": "{name} · Ingħaqad max-xiri fi grupp u lkoll inħallsu inqas!",
-    "cancelled": "Din l-offerta ġiet ikkanċellata. Ħadd ma ġie ddebitat u l-metodi tal-ħlas issejvjati kollha tneħħew."
+    "cancelled": "Din l-offerta ġiet ikkanċellata. Ħadd ma ġie ddebitat u l-metodi tal-ħlas issejvjati kollha tneħħew.",
+    "zoomPhoto": "Iftaħ ir-ritratt {n} minn {total} fuq l-iskrin kollu",
+    "prevPhoto": "Ir-ritratt ta' qabel",
+    "nextPhoto": "Ir-ritratt li jmiss",
+    "closePhotos": "Agħlaq ir-ritratti"
   },
   "share": { "native": "📤 Aqsam…", "email": "Email", "copy": "🔗 Ikkopja l-link" },
   "join": {

@@ -109,7 +109,11 @@ CREATE TABLE IF NOT EXISTS deal_photos (
   deal_id    INTEGER NOT NULL REFERENCES deals(id),
   filename   TEXT NOT NULL UNIQUE,
   position   INTEGER NOT NULL DEFAULT 0,
-  created_at TEXT NOT NULL
+  created_at TEXT NOT NULL,
+  thumb      TEXT NOT NULL DEFAULT '',   -- small WebP copy for cards and the gallery strip
+  alt        TEXT NOT NULL DEFAULT '',   -- describes the photo for screen readers and search
+  width      INTEGER,
+  height     INTEGER
 );
 CREATE INDEX IF NOT EXISTS deal_photos_deal ON deal_photos(deal_id, position, id);
 
@@ -220,6 +224,12 @@ const ADDED_COLUMNS = {
     ['seo_description', "TEXT NOT NULL DEFAULT ''"],
     ['cancelled_at', 'TEXT'],
   ],
+  deal_photos: [
+    ['thumb', "TEXT NOT NULL DEFAULT ''"],
+    ['alt', "TEXT NOT NULL DEFAULT ''"],
+    ['width', 'INTEGER'],
+    ['height', 'INTEGER'],
+  ],
   // The language the buyer used on the site; their emails are written in it.
   participants: [
     ['lang', "TEXT NOT NULL DEFAULT 'en'"],
@@ -327,16 +337,34 @@ export function createRepo(db) {
     coverPhoto: (dealId) =>
       db.prepare('SELECT * FROM deal_photos WHERE deal_id = ? ORDER BY position, id LIMIT 1').get(dealId),
     photoById: (id) => db.prepare('SELECT * FROM deal_photos WHERE id = ?').get(id),
-    addPhoto(dealId, filename, now) {
+    // filename is a file name, or { filename, thumb, width, height } from photos.store().
+    addPhoto(dealId, file, now, { alt = '' } = {}) {
+      const f = typeof file === 'string' ? { filename: file } : file;
       const { next } = db
         .prepare('SELECT COALESCE(MAX(position), 0) + 1 AS next FROM deal_photos WHERE deal_id = ?')
         .get(dealId);
-      db.prepare('INSERT INTO deal_photos (deal_id, filename, position, created_at) VALUES (?, ?, ?, ?)').run(
-        dealId,
-        filename,
-        next,
-        now
-      );
+      db.prepare(
+        'INSERT INTO deal_photos (deal_id, filename, thumb, width, height, alt, position, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+      ).run(dealId, f.filename, f.thumb ?? '', f.width ?? null, f.height ?? null, alt, next, now);
+    },
+    updatePhoto: (id, { filename, thumb, width, height }) =>
+      db.prepare('UPDATE deal_photos SET filename = ?, thumb = ?, width = ?, height = ? WHERE id = ?').run(filename, thumb ?? '', width ?? null, height ?? null, id),
+    setPhotoAlt: (id, alt) => db.prepare('UPDATE deal_photos SET alt = ? WHERE id = ?').run(alt, id),
+    photosWithoutThumbs: () => db.prepare("SELECT * FROM deal_photos WHERE thumb = '' ORDER BY id").all(),
+    // Moves a photo one place earlier (-1) or later (+1) in its deal's order.
+    movePhoto(id, step) {
+      const photo = this.photoById(id);
+      if (!photo) return false;
+      return this.transaction(() => {
+        const list = this.photosForDeal(photo.deal_id);
+        const i = list.findIndex((p) => p.id === id);
+        const j = i + (step < 0 ? -1 : 1);
+        if (j < 0 || j >= list.length) return false;
+        [list[i], list[j]] = [list[j], list[i]];
+        const set = db.prepare('UPDATE deal_photos SET position = ? WHERE id = ?');
+        list.forEach((p, k) => set.run(k + 1, p.id));
+        return true;
+      });
     },
     makeCoverPhoto(id) {
       const photo = this.photoById(id);

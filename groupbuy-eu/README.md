@@ -64,7 +64,15 @@ Admin creates deal ──► buyers join (SetupIntent: card / SEPA / iDEAL→SEP
   the model form), `/privacy` (GDPR) and `/cookies`, plus a consent banner. Stripe.js only
   loads on payment pages.
 - **Product photos**: the admin uploads up to 8 photos per deal (JPG, PNG, WebP or GIF, 8 MB
-  each) when creating it or later on the deal page, and picks the cover. The type is checked
+  each) when creating it or later on the deal page, picks the cover, changes the order with the
+  arrows and can describe each photo (for screen readers and search engines; the product name is
+  used otherwise). With [sharp](https://sharp.pixelplumbing.com) installed (an optional
+  dependency that `npm install` adds on Linux, macOS and Windows), each photo is stored as a
+  JPEG of at most 1600 px plus a 480 px WebP thumbnail. It is turned the right way up, and its
+  camera data and GPS location are removed. Older photos get these copies in the background at
+  startup; their original files stay. Without sharp, the originals are used as they are. On the
+  deal page shoppers swipe through the photos (arrows on a computer) and tap one to see it full
+  screen. The type is checked
   from the file contents. Files go to `UPLOAD_DIR` (default: `uploads` next to the database,
   so keep `DATABASE_PATH` outside the app folder) and are served at `/uploads/<random name>`.
   They aren't in the database backups: copy that folder too.

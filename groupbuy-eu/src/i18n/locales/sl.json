@@ -118,7 +118,11 @@
     "shareTitle": "👯 Pripeljite prijatelje",
     "shareText": "Vsak nov kupec približa ponudbo vsem. Delite jo s tistimi, ki jim bo tudi všeč.",
     "shareMessage": "{name} · Pridruži se skupinskemu nakupu in vsi bomo plačali manj!",
-    "cancelled": "Ta ponudba je bila preklicana. Nikogar nismo bremenili, vse shranjene načine plačila pa smo odstranili."
+    "cancelled": "Ta ponudba je bila preklicana. Nikogar nismo bremenili, vse shranjene načine plačila pa smo odstranili.",
+    "zoomPhoto": "Odpri fotografijo {n} od {total} čez cel zaslon",
+    "prevPhoto": "Prejšnja fotografija",
+    "nextPhoto": "Naslednja fotografija",
+    "closePhotos": "Zapri fotografije"
   },
   "share": {
     "native": "📤 Deli…",

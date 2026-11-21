@@ -86,7 +86,11 @@
     "shareTitle": "👯 Ota ystävät mukaan",
     "shareText": "Jokainen liittyjä tuo tarjouksen lähemmäs kaikille. Jaa se niille, jotka myös pitäisivät siitä.",
     "shareMessage": "{name} · Liity ryhmäostoon, niin maksamme kaikki vähemmän!",
-    "cancelled": "Tämä tarjous on peruttu. Keneltäkään ei veloitettu mitään, ja kaikki tallennetut maksutavat on poistettu."
+    "cancelled": "Tämä tarjous on peruttu. Keneltäkään ei veloitettu mitään, ja kaikki tallennetut maksutavat on poistettu.",
+    "zoomPhoto": "Avaa kuva {n}/{total} koko näytölle",
+    "prevPhoto": "Edellinen kuva",
+    "nextPhoto": "Seuraava kuva",
+    "closePhotos": "Sulje kuvat"
   },
   "share": { "native": "📤 Jaa…", "email": "Sähköposti", "copy": "🔗 Kopioi linkki" },
   "join": {

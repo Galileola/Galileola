@@ -62,24 +62,37 @@
 
 <section class="card" id="photos" style="margin-top:16px">
   <h2>Photos</h2>
-  <p class="muted small">The first photo is the cover on the deal list. Up to <%= maxPhotos %> photos, JPG, PNG, WebP or GIF, max 8 MB each.</p>
+  <p class="muted small">The first photo is the cover on the deal list. Use the arrows to change the order. Up to <%= maxPhotos %> photos, JPG, PNG, WebP or GIF, max 8 MB each. Photos are resized for fast pages and their location data is removed.</p>
   <% if (photos.length) { %>
     <div class="photo-grid">
       <% photos.forEach((ph, i) => { %>
         <figure class="photo-item">
-          <img src="<%= photoUrl(ph.filename) %>" alt="Photo <%= i + 1 %>" loading="lazy">
+          <img src="<%= thumbUrl(ph) %>" alt="<%= ph.alt || `Photo ${i + 1}` %>" loading="lazy">
           <figcaption>
-            <% if (i === 0) { %>
-              <span class="badge paid">Cover</span>
-            <% } else { %>
-              <form method="post" action="/admin/photos/<%= ph.id %>/cover">
+            <div class="photo-actions">
+              <% if (i === 0) { %>
+                <span class="badge paid">Cover</span>
+              <% } else { %>
+                <form method="post" action="/admin/photos/<%= ph.id %>/cover">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <button type="submit" class="small secondary">Make cover</button>
+                </form>
+              <% } %>
+              <form method="post" action="/admin/photos/<%= ph.id %>/move" class="photo-move">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                <button type="submit" class="small secondary">Make cover</button>
+                <button type="submit" name="dir" value="earlier" class="small secondary" aria-label="Move photo <%= i + 1 %> earlier" <%= i === 0 ? 'disabled' : '' %>>◀</button>
+                <button type="submit" name="dir" value="later" class="small secondary" aria-label="Move photo <%= i + 1 %> later" <%= i === photos.length - 1 ? 'disabled' : '' %>>▶</button>
               </form>
-            <% } %>
-            <form method="post" action="/admin/photos/<%= ph.id %>/delete" data-confirm="Delete this photo? This can't be undone.">
+              <form method="post" action="/admin/photos/<%= ph.id %>/delete" data-confirm="Delete this photo? This can't be undone.">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="small danger">Delete</button>
+              </form>
+            </div>
+            <form method="post" action="/admin/photos/<%= ph.id %>/alt" class="photo-alt">
               <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-              <button type="submit" class="small danger">Delete</button>
+              <label class="visually-hidden" for="alt-<%= ph.id %>">Description of photo <%= i + 1 %></label>
+              <input type="text" id="alt-<%= ph.id %>" name="alt" maxlength="200" value="<%= ph.alt %>" placeholder="Describe the photo (optional)">
+              <button type="submit" class="small secondary">Save</button>
             </form>
           </figcaption>
         </figure>

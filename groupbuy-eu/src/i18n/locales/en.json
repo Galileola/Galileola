@@ -93,7 +93,11 @@
     "shareTitle": "👯 Bring your friends",
     "shareText": "Every buyer who joins brings the deal closer for everyone. Share it with people who'd love this too.",
     "shareMessage": "{name} · Join the group deal and we all pay less!",
-    "cancelled": "This deal was cancelled. Nobody was charged and all saved payment methods were removed."
+    "cancelled": "This deal was cancelled. Nobody was charged and all saved payment methods were removed.",
+    "zoomPhoto": "Open photo {n} of {total} full screen",
+    "prevPhoto": "Previous photo",
+    "nextPhoto": "Next photo",
+    "closePhotos": "Close photos"
   },
   "share": {
     "native": "📤 Share…",

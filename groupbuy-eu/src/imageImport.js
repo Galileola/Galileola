@@ -174,8 +174,7 @@ export function createImageImporter({ photos, repo, clock, download = downloadIm
       if (repo.photosForDeal(dealId).length >= MAX_PHOTOS_PER_DEAL) return;
       try {
         const buf = await download(url);
-        const name = photos.save(buf);
-        repo.addPhoto(dealId, name, clock.now().toISOString());
+        repo.addPhoto(dealId, await photos.store(buf), clock.now().toISOString());
         stats.photosCopied += 1;
       } catch (err) {
         stats.photosFailed += 1;

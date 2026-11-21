@@ -1,5 +1,3 @@
-import fs from 'node:fs';
-import path from 'node:path';
 import { validateDealEdit } from '../deals.js';
 
 // Admin → deal page: edit, cancel, delete and duplicate a deal.
@@ -30,9 +28,8 @@ export function copyPhotos(ctx, fromDealId, toDealId) {
   let copied = 0;
   for (const ph of ctx.repo.photosForDeal(fromDealId)) {
     try {
-      const buf = fs.readFileSync(path.join(ctx.photos.dir, ph.filename));
-      const name = ctx.photos.save(buf);
-      ctx.repo.addPhoto(toDealId, name, now, { alt: ph.alt ?? '' });
+      const files = ctx.photos.duplicate(ph);
+      ctx.repo.addPhoto(toDealId, { ...files, width: ph.width, height: ph.height }, now, { alt: ph.alt ?? '' });
       copied += 1;
     } catch (err) {
       console.warn(`[duplicate] photo ${ph.filename} not copied: ${err.message}`);
@@ -107,7 +104,7 @@ export function dealRoutes(router, ctx) {
     if (!repo.deleteDeal(deal.id)) {
       return backToDeal(res, deal.id, 'Buyers have joined this deal, so it stays in the records. Cancel it instead.');
     }
-    for (const ph of photos) ctx.photos.remove(ph.filename);
+    for (const ph of photos) ctx.photos.remove(ph.filename, ph.thumb);
     res.redirect(303, `/admin?flash=${encodeURIComponent(`Deleted "${deal.product_name}".`)}`);
   });
 }

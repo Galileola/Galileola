@@ -86,7 +86,11 @@
     "shareTitle": "👯 Kutsu sõbrad kaasa",
     "shareText": "Iga liituja toob pakkumise kõigile lähemale. Jaga seda nendega, kellele see samuti meeldiks.",
     "shareMessage": "{name} · Liitu ühisostuga ja me kõik maksame vähem!",
-    "cancelled": "See pakkumine tühistati. Kelleltki ei võetud raha ja kõik salvestatud makseviisid eemaldati."
+    "cancelled": "See pakkumine tühistati. Kelleltki ei võetud raha ja kõik salvestatud makseviisid eemaldati.",
+    "zoomPhoto": "Ava foto {n}/{total} täisekraanil",
+    "prevPhoto": "Eelmine foto",
+    "nextPhoto": "Järgmine foto",
+    "closePhotos": "Sulge fotod"
   },
   "share": { "native": "📤 Jaga…", "email": "E-post", "copy": "🔗 Kopeeri link" },
   "join": {

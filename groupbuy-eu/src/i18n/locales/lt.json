@@ -118,7 +118,11 @@
     "shareTitle": "👯 Pakvieskite draugų",
     "shareText": "Kiekvienas naujas pirkėjas priartina pasiūlymą visiems. Pasidalykite su tais, kuriems jis taip pat patiktų.",
     "shareMessage": "{name} · Prisijunk prie grupinio pirkimo ir visi mokėsime mažiau!",
-    "cancelled": "Šis pasiūlymas atšauktas. Niekam nieko nenuskaičiuota, o visi išsaugoti mokėjimo būdai pašalinti."
+    "cancelled": "Šis pasiūlymas atšauktas. Niekam nieko nenuskaičiuota, o visi išsaugoti mokėjimo būdai pašalinti.",
+    "zoomPhoto": "Atidaryti nuotrauką {n} iš {total} per visą ekraną",
+    "prevPhoto": "Ankstesnė nuotrauka",
+    "nextPhoto": "Kita nuotrauka",
+    "closePhotos": "Uždaryti nuotraukas"
   },
   "share": {
     "native": "📤 Dalytis…",

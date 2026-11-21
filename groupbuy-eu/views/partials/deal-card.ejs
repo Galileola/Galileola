@@ -1,7 +1,7 @@
 <% const cat = categoryFor(d.category); %>
 <a class="deal-card" href="/deals/<%= d.slug %>" style="--i: <%= Math.min(i, 12) %>">
   <div class="deal-card-media">
-    <% if (d.cover) { %><img src="<%= photoUrl(d.cover.filename) %>" alt="" loading="lazy">
+    <% if (d.cover) { %><img src="<%= thumbUrl(d.cover) %>"<% if (d.cover.thumb) { %> srcset="<%= thumbUrl(d.cover) %> 480w, <%= photoUrl(d.cover.filename) %> <%= d.cover.width || 1600 %>w" sizes="(max-width: 640px) 92vw, 360px"<% } %> alt="" loading="lazy" decoding="async">
     <% } else if (d.image_url) { %><img src="<%= d.image_url %>" alt="" loading="lazy">
     <% } else { %><div class="placeholder tone-<%= d.id % 4 %>"><span><%= cat.emoji %></span></div><% } %>
     <span class="chip <%= d.badge === 'on' ? 'chip-on' : '' %>"><%= d.badge === 'on' ? t('card.on') : t('card.moreNeeded', { count: d.remaining }) %></span>

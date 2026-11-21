@@ -86,7 +86,11 @@
     "shareTitle": "👯 Freunde mitbringen",
     "shareText": "Jeder neue Käufer bringt das Angebot für alle näher. Teilen Sie es mit Leuten, denen es auch gefallen würde.",
     "shareMessage": "{name} · Mach beim Gruppenangebot mit, dann zahlen wir alle weniger!",
-    "cancelled": "Dieses Angebot wurde abgesagt. Niemandem wurde etwas berechnet, und alle gespeicherten Zahlungsmethoden wurden entfernt."
+    "cancelled": "Dieses Angebot wurde abgesagt. Niemandem wurde etwas berechnet, und alle gespeicherten Zahlungsmethoden wurden entfernt.",
+    "zoomPhoto": "Foto {n} von {total} im Vollbild öffnen",
+    "prevPhoto": "Vorheriges Foto",
+    "nextPhoto": "Nächstes Foto",
+    "closePhotos": "Fotos schließen"
   },
   "share": { "native": "📤 Teilen…", "email": "E-Mail", "copy": "🔗 Link kopieren" },
   "join": {

@@ -86,7 +86,11 @@
     "shareTitle": "👯 Tabhair do chairde leat",
     "shareText": "Tugann gach ceannaitheoir nua an margadh níos gaire do chách. Roinn é le daoine a mbeadh suim acu ann.",
     "shareMessage": "{name} · Bí páirteach sa mhargadh grúpa agus íocfaimid go léir níos lú!",
-    "cancelled": "Cuireadh an margadh seo ar ceal. Níor gearradh aon duine agus baineadh gach modh íocaíochta sábháilte."
+    "cancelled": "Cuireadh an margadh seo ar ceal. Níor gearradh aon duine agus baineadh gach modh íocaíochta sábháilte.",
+    "zoomPhoto": "Oscail grianghraf {n} as {total} ar lánscáileán",
+    "prevPhoto": "An grianghraf roimhe seo",
+    "nextPhoto": "An chéad ghrianghraf eile",
+    "closePhotos": "Dún na grianghraif"
   },
   "share": { "native": "📤 Roinn…", "email": "Ríomhphost", "copy": "🔗 Cóipeáil an nasc" },
   "join": {

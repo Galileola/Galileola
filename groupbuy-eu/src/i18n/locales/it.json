@@ -86,7 +86,11 @@
     "shareTitle": "👯 Porta i tuoi amici",
     "shareText": "Ogni acquirente che aderisce avvicina l'offerta per tutti. Condividila con chi potrebbe apprezzarla.",
     "shareMessage": "{name} · Partecipa all'acquisto di gruppo e paghiamo tutti meno!",
-    "cancelled": "Questa offerta è stata annullata. Non è stato addebitato nulla a nessuno e tutti i metodi di pagamento salvati sono stati rimossi."
+    "cancelled": "Questa offerta è stata annullata. Non è stato addebitato nulla a nessuno e tutti i metodi di pagamento salvati sono stati rimossi.",
+    "zoomPhoto": "Apri la foto {n} di {total} a schermo intero",
+    "prevPhoto": "Foto precedente",
+    "nextPhoto": "Foto successiva",
+    "closePhotos": "Chiudi le foto"
   },
   "share": { "native": "📤 Condividi…", "email": "Email", "copy": "🔗 Copia link" },
   "join": {

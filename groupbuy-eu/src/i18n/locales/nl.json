@@ -86,7 +86,11 @@
     "shareTitle": "👯 Neem je vrienden mee",
     "shareText": "Elke koper die meedoet, brengt de deal dichterbij voor iedereen. Deel hem met mensen die hem ook leuk vinden.",
     "shareMessage": "{name} · Doe mee met de groepsdeal, dan betalen we allemaal minder!",
-    "cancelled": "Deze deal is geannuleerd. Er is bij niemand iets afgeschreven en alle opgeslagen betaalmethoden zijn verwijderd."
+    "cancelled": "Deze deal is geannuleerd. Er is bij niemand iets afgeschreven en alle opgeslagen betaalmethoden zijn verwijderd.",
+    "zoomPhoto": "Foto {n} van {total} schermvullend openen",
+    "prevPhoto": "Vorige foto",
+    "nextPhoto": "Volgende foto",
+    "closePhotos": "Foto's sluiten"
   },
   "share": { "native": "📤 Delen…", "email": "E-mail", "copy": "🔗 Link kopiëren" },
   "join": {

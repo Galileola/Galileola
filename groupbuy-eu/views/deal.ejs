@@ -1,19 +1,43 @@
 <%- include('partials/header') %>
-<% const images = (locals.photos || []).map((p) => photoUrl(p.filename)); if (!images.length && deal.image_url) images.push(deal.image_url); %>
+<% const images = (locals.photos || []).map((p, i) => ({ src: photoUrl(p.filename), thumb: thumbUrl(p), alt: p.alt || (i === 0 ? deal.product_name : `${deal.product_name} (${i + 1})`), width: p.width, height: p.height }));
+   if (!images.length && deal.image_url) images.push({ src: deal.image_url, thumb: deal.image_url, alt: deal.product_name }); %>
 <% const cat = categoryFor(deal.category); %>
 <% const mood = state.status === 'expired' ? '' : state.minimumReached ? '' : state.count === 0 ? t('deal.moodFirst') : state.percent >= 70 ? t('deal.moodClose') : state.percent >= 50 ? t('deal.moodHalf') : t('deal.moodStart'); %>
 <div class="deal-layout" id="deal" data-slug="<%= deal.slug %>" data-reached="<%= state.minimumReached ? '1' : '0' %>">
   <section class="deal-hero">
     <% if (images.length) { %>
-      <div class="gallery">
-        <img class="gallery-main" src="<%= images[0] %>" alt="<%= deal.product_name %>" data-gallery-main>
+      <div class="gallery" data-gallery>
+        <div class="gallery-frame">
+          <div class="gallery-track" data-gallery-track>
+            <% images.forEach((img, i) => { %>
+              <button type="button" class="gallery-slide" data-gallery-open="<%= i %>" aria-label="<%= t('deal.zoomPhoto', { n: i + 1, total: images.length }) %>">
+                <img src="<%= img.src %>" alt="<%= img.alt %>"<% if (img.width && img.height) { %> width="<%= img.width %>" height="<%= img.height %>"<% } %> <%- i === 0 ? 'fetchpriority="high"' : 'loading="lazy"' %> decoding="async">
+              </button>
+            <% }) %>
+          </div>
+          <% if (images.length > 1) { %>
+            <button type="button" class="gallery-nav prev" data-gallery-step="-1" aria-label="<%= t('deal.prevPhoto') %>" hidden>‹</button>
+            <button type="button" class="gallery-nav next" data-gallery-step="1" aria-label="<%= t('deal.nextPhoto') %>" hidden>›</button>
+            <span class="gallery-count" data-gallery-count aria-hidden="true">1 / <%= images.length %></span>
+          <% } %>
+        </div>
         <% if (images.length > 1) { %>
           <div class="gallery-thumbs">
-            <% images.forEach((src, i) => { %>
-              <button type="button" class="thumb<%= i === 0 ? ' active' : '' %>" data-gallery-thumb="<%= src %>" aria-label="<%= t('deal.showPhoto', { n: i + 1, total: images.length }) %>"><img src="<%= src %>" alt="" loading="lazy"></button>
+            <% images.forEach((img, i) => { %>
+              <button type="button" class="thumb<%= i === 0 ? ' active' : '' %>" data-gallery-thumb="<%= i %>" aria-label="<%= t('deal.showPhoto', { n: i + 1, total: images.length }) %>"><img src="<%= img.thumb %>" alt="" loading="lazy"></button>
             <% }) %>
           </div>
         <% } %>
+        <dialog class="lightbox" data-lightbox aria-label="<%= deal.product_name %>">
+          <button type="button" class="lightbox-close" data-lightbox-close aria-label="<%= t('deal.closePhotos') %>">✕</button>
+          <div class="lightbox-track" data-lightbox-track>
+            <% images.forEach((img, i) => { %><figure class="lightbox-slide"><img src="<%= img.src %>" alt="<%= img.alt %>" loading="lazy" decoding="async"></figure><% }) %>
+          </div>
+          <% if (images.length > 1) { %>
+            <button type="button" class="gallery-nav prev" data-lightbox-step="-1" aria-label="<%= t('deal.prevPhoto') %>">‹</button>
+            <button type="button" class="gallery-nav next" data-lightbox-step="1" aria-label="<%= t('deal.nextPhoto') %>">›</button>
+          <% } %>
+        </dialog>
       </div>
     <% } else { %>
       <div class="placeholder big tone-<%= deal.id % 4 %>" aria-hidden="true"><span><%= cat.emoji %></span></div>

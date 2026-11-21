@@ -118,7 +118,11 @@
     "shareTitle": "👯 Přiveďte přátele",
     "shareText": "Každý nový zákazník přibližuje nabídku pro všechny. Sdílejte ji s těmi, komu se bude líbit.",
     "shareMessage": "{name} · Přidej se ke skupinovému nákupu a všichni zaplatíme méně!",
-    "cancelled": "Tato nabídka byla zrušena. Nikomu nebylo nic strženo a všechny uložené platební metody byly odstraněny."
+    "cancelled": "Tato nabídka byla zrušena. Nikomu nebylo nic strženo a všechny uložené platební metody byly odstraněny.",
+    "zoomPhoto": "Otevřít fotku {n} z {total} na celou obrazovku",
+    "prevPhoto": "Předchozí fotka",
+    "nextPhoto": "Další fotka",
+    "closePhotos": "Zavřít fotky"
   },
   "share": {
     "native": "📤 Sdílet…",

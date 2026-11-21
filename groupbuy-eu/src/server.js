@@ -9,7 +9,7 @@ import { allRoutes } from './routes/index.js';
 import { createMailer } from './mailer.js';
 import { createEngine } from './engine.js';
 import { startScheduler } from './scheduler.js';
-import { createPhotoStore } from './photos.js';
+import { createPhotoStore, optimizeStoredPhotos } from './photos.js';
 import { createAssistant } from './assistant.js';
 import { createTranslator } from './translate.js';
 import { saveSettingsFile, settingsFilePath } from './settingsFile.js';
@@ -65,6 +65,8 @@ const clock = systemClock;
 
 const ctx = { config, repo, stripe, clock, routes: allRoutes };
 ctx.photos = createPhotoStore(config.uploadDir);
+// Photos uploaded before resizing existed get shop-ready copies, in the background.
+setTimeout(() => optimizeStoredPhotos({ repo, photos: ctx.photos }).catch((err) => console.error('[photos]', err)), 5_000).unref();
 ctx.assistant = config.anthropicApiKey
   ? createAssistant({ apiKey: config.anthropicApiKey, model: config.assistantModel })
   : null;

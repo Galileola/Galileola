@@ -86,7 +86,11 @@
     "shareTitle": "👯 Tag dine venner med",
     "shareText": "Hver ny køber bringer tilbuddet tættere på for alle. Del det med dem, der også ville kunne lide det.",
     "shareMessage": "{name} · Vær med i gruppekøbet, så betaler vi alle mindre!",
-    "cancelled": "Dette tilbud er blevet annulleret. Ingen er blevet trukket, og alle gemte betalingsmetoder er fjernet."
+    "cancelled": "Dette tilbud er blevet annulleret. Ingen er blevet trukket, og alle gemte betalingsmetoder er fjernet.",
+    "zoomPhoto": "Åbn billede {n} af {total} i fuld skærm",
+    "prevPhoto": "Forrige billede",
+    "nextPhoto": "Næste billede",
+    "closePhotos": "Luk billeder"
   },
   "share": { "native": "📤 Del…", "email": "E-mail", "copy": "🔗 Kopiér link" },
   "join": {

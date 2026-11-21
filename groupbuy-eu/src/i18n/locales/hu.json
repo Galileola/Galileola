@@ -86,7 +86,11 @@
     "shareTitle": "👯 Hívd a barátaidat",
     "shareText": "Minden új vásárló közelebb hozza az ajánlatot mindenkinek. Oszd meg azokkal, akiknek szintén tetszene.",
     "shareMessage": "{name} · Csatlakozz a csoportos vásárláshoz, és mindannyian kevesebbet fizetünk!",
-    "cancelled": "Ezt az ajánlatot töröltük. Senkitől nem vontunk le semmit, és minden elmentett fizetési módot töröltünk."
+    "cancelled": "Ezt az ajánlatot töröltük. Senkitől nem vontunk le semmit, és minden elmentett fizetési módot töröltünk.",
+    "zoomPhoto": "A(z) {n}. fotó megnyitása teljes képernyőn (összesen {total})",
+    "prevPhoto": "Előző fotó",
+    "nextPhoto": "Következő fotó",
+    "closePhotos": "Fotók bezárása"
   },
   "share": { "native": "📤 Megosztás…", "email": "E-mail", "copy": "🔗 Link másolása" },
   "join": {
