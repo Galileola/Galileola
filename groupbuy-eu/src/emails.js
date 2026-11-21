@@ -226,10 +226,38 @@ ${t('email.messageFooter', { name })}${sign(business)}`,
   },
 });
 
+// Deal alerts (src/alerts.js): data = { sub, shop, baseUrl, business, deal?, lang }.
+Object.assign(templates, {
+  alertConfirm: (data) => {
+    const { business, shop, sub, baseUrl, i18n } = data;
+    const { t } = i18n;
+    return {
+      subject: t('alerts.confirmSubject', { shop }),
+      body: `${t('alerts.confirmText', { shop })}
+${baseUrl}/alerts/confirm/${sub.token}?lang=${i18n.lang}
+
+${t('alerts.confirmIgnore')}${sign(business)}`,
+    };
+  },
+
+  newDeal: (data) => {
+    const { business, sub, deal, baseUrl, i18n } = data;
+    const { t } = i18n;
+    const q = `?lang=${i18n.lang}&utm_source=deal-alert&utm_medium=email`;
+    return {
+      subject: t('alerts.newDealSubject', { name: deal.product_name }),
+      body: `${t('alerts.newDealText', { name: deal.product_name, price: i18n.formatEuro(deal.price_cents), date: i18n.formatDate(deal.deadline) })}
+${baseUrl}/deals/${deal.slug}${q}
+${deal.headline ? `\n${deal.headline}\n` : ''}
+${t('alerts.unsubscribe', { link: `${baseUrl}/alerts/unsubscribe/${sub.token}?lang=${i18n.lang}` })}${sign(business)}`,
+    };
+  },
+});
+
 export function render(kind, data) {
   const template = templates[kind];
   if (!template) throw new Error(`Unknown email template: ${kind}`);
-  const i18n = forLanguage(data.p?.lang);
+  const i18n = forLanguage(data.lang ?? data.p?.lang);
   const { subject, body } = template({ ...data, i18n });
   return { subject, body: body.replace(/[ \t]+$/gm, '').replace(/\n{3,}/g, '\n\n') };
 }

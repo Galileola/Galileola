@@ -6,7 +6,7 @@ export function createMailer({ config, repo, clock, transport }) {
   const smtp = transport ?? (config.smtpUrl ? nodemailer.createTransport(config.smtpUrl) : null);
 
   return {
-    async send({ kind, to, subject, body, dealId = null, participantId = null }) {
+    async send({ kind, to, subject, body, dealId = null, participantId = null, headers = undefined }) {
       const id = repo.insertEmail({
         kind,
         to_addr: to,
@@ -21,7 +21,7 @@ export function createMailer({ config, repo, clock, transport }) {
         return id;
       }
       try {
-        await smtp.sendMail({ from: config.mailFrom, to, subject, text: body });
+        await smtp.sendMail({ from: config.mailFrom, to, subject, text: body, ...(headers ? { headers } : {}) });
         repo.markEmail(id, { delivered: 1 });
       } catch (err) {
         repo.markEmail(id, { error: String(err.message).slice(0, 500) });

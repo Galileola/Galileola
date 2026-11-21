@@ -150,6 +150,19 @@ Admin creates deal ──► buyers join (SetupIntent: card / SEPA / iDEAL→SEP
     are translated when a visitor first opens them in another language, so a large import doesn't
     use up the day's translation budget.
 
+- **Deal search**: a search box above the deals finds them by name, headline, description and
+  category, in the visitor's language or the original, ignoring case and accents. Search result
+  pages are kept out of search engines.
+- **Deal alerts**: under the deals, shoppers leave their email address to hear about new deals.
+  - **Sign-up:** double opt-in. Nothing is sent until they confirm with the link in the first
+    email (in their language). Unconfirmed sign-ups are deleted after 30 days. Bots are caught
+    by a hidden field and a limit of 5 sign-ups per address per 15 minutes.
+  - **Sending:** on an open deal's admin page, "Email it to N subscribers" sends the deal to
+    everyone confirmed, in their language.
+  - **Unsubscribing:** every alert has an unsubscribe link and the one-click unsubscribe
+    headers that Gmail and Apple Mail show.
+  - **Admin list:** Admin → Customers → Deal alert subscribers lists and exports the subscribers.
+  - **Privacy policy:** the template now describes deal alerts and when unused data is removed.
 - **Customers** (admin): everyone who has joined a deal, by email address, with their sign-ups,
   paid orders and amount paid; a search by name, email or city; and a CSV download. A customer's
   page lists their orders and erases their data on request (GDPR Art. 17): sign-ups that never

@@ -81,7 +81,12 @@
     "newDealsOften": "Nauji pasiūlymai atsiranda nuolat.",
     "seeAll": "Visi pasiūlymai",
     "noDeals": "Šiuo metu atvirų pasiūlymų nėra.",
-    "checkBack": "Naujus pasiūlymus pridedame reguliariai. Užsukite netrukus."
+    "checkBack": "Naujus pasiūlymus pridedame reguliariai. Užsukite netrukus.",
+    "searchLabel": "Ieškoti pasiūlymų",
+    "searchPlaceholder": "Ieškoti pasiūlymų…",
+    "searchButton": "Ieškoti",
+    "searchResults": "Rezultatai pagal „{q}“",
+    "noResults": "Jūsų paieškos neatitinka nė vienas pasiūlymas."
   },
   "card": {
     "on": "🎉 Pasiūlymas įvyksta!",
@@ -317,5 +322,29 @@
     "shippedTracking": "Siuntos sekimo numeris: {tracking}",
     "shippedTrackingLink": "Sekite savo siuntą: {link}",
     "messageFooter": "Gaunate šį laišką, nes prisijungėte prie grupinio pirkimo „{name}“."
+  },
+  "alerts": {
+    "title": "🔔 Nepraleiskite nė vieno pasiūlymo",
+    "text": "Gaukite el. laišką, kai prasideda naujas grupinis pirkimas. Jokio šlamšto: atsisakysite vienu paspaudimu.",
+    "emailLabel": "Jūsų el. pašto adresas",
+    "button": "Praneškite man",
+    "privacyNote": "Jūsų el. pašto adresą naudojame tik pranešimams apie pasiūlymus.",
+    "checkTitle": "Patikrinkite pašto dėžutę",
+    "checkText": "Išsiuntėme jums el. laišką. Paspauskite jame esančią nuorodą, kad patvirtintumėte pranešimus.",
+    "tooMany": "Per daug bandymų. Bandykite vėliau.",
+    "invalidEmail": "Įveskite galiojantį el. pašto adresą.",
+    "linkInvalid": "Ši nuoroda nebegalioja.",
+    "confirmedTitle": "Užsiprenumeravote 🎉",
+    "confirmedText": "Parašysime jums, kai prasidės naujas grupinis pirkimas.",
+    "unsubscribeTitle": "Atsisakyti pranešimų apie pasiūlymus?",
+    "unsubscribeButton": "Atsisakyti",
+    "unsubscribedTitle": "Pranešimų atsisakėte",
+    "unsubscribedText": "Pranešimų apie pasiūlymus nebegausite. Bet kada galite vėl užsiprenumeruoti.",
+    "confirmSubject": "Patvirtinkite {shop} pranešimus apie pasiūlymus",
+    "confirmText": "Patvirtinkite, kad norite gauti el. laišką iš {shop} kaskart, kai prasideda naujas grupinis pirkimas:",
+    "confirmIgnore": "Jei to neprašėte, tiesiog nekreipkite dėmesio į šį laišką – nieko neįvyks.",
+    "newDealSubject": "Naujas grupinis pirkimas: {name}",
+    "newDealText": "Prasidėjo naujas grupinis pirkimas: {name} už {price}. Prisijunkite iki {date}:",
+    "unsubscribe": "Nebenorite gauti šių laiškų? Atsisakyti: {link}"
   }
 }

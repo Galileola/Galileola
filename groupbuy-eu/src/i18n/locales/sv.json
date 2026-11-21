@@ -59,7 +59,12 @@
     "newDealsOften": "Nya erbjudanden kommer hela tiden.",
     "seeAll": "Se alla erbjudanden",
     "noDeals": "Inga erbjudanden är öppna just nu.",
-    "checkBack": "Nya erbjudanden läggs till regelbundet. Titta in snart igen."
+    "checkBack": "Nya erbjudanden läggs till regelbundet. Titta in snart igen.",
+    "searchLabel": "Sök erbjudanden",
+    "searchPlaceholder": "Sök erbjudanden…",
+    "searchButton": "Sök",
+    "searchResults": "Resultat för ”{q}”",
+    "noResults": "Inga erbjudanden matchar din sökning."
   },
   "card": {
     "on": "🎉 Erbjudandet blir av!",
@@ -281,5 +286,29 @@
     "shippedTracking": "Spårningsnummer: {tracking}",
     "shippedTrackingLink": "Spåra ditt paket: {link}",
     "messageFooter": "Du får det här mejlet eftersom du har gått med i gruppköpet av {name}."
+  },
+  "alerts": {
+    "title": "🔔 Missa inga erbjudanden",
+    "text": "Få ett mejl när ett nytt gruppköp startar. Ingen spam: avregistrera dig med ett klick.",
+    "emailLabel": "Din e-postadress",
+    "button": "Meddela mig",
+    "privacyNote": "Vi använder bara din e-postadress för erbjudandeaviseringar.",
+    "checkTitle": "Titta i din inkorg",
+    "checkText": "Vi har skickat ett mejl till dig. Tryck på länken i det för att bekräfta aviseringarna.",
+    "tooMany": "För många försök. Försök igen senare.",
+    "invalidEmail": "Ange en giltig e-postadress.",
+    "linkInvalid": "Den här länken gäller inte längre.",
+    "confirmedTitle": "Du prenumererar nu 🎉",
+    "confirmedText": "Vi mejlar dig när ett nytt gruppköp startar.",
+    "unsubscribeTitle": "Avregistrera dig från erbjudandeaviseringar?",
+    "unsubscribeButton": "Avregistrera",
+    "unsubscribedTitle": "Du är avregistrerad",
+    "unsubscribedText": "Du får inga fler erbjudandeaviseringar. Du kan registrera dig igen när du vill.",
+    "confirmSubject": "Bekräfta dina erbjudandeaviseringar från {shop}",
+    "confirmText": "Bekräfta att du vill få ett mejl från {shop} varje gång ett nytt gruppköp startar:",
+    "confirmIgnore": "Om du inte har bett om detta kan du strunta i mejlet – ingenting händer.",
+    "newDealSubject": "Nytt gruppköp: {name}",
+    "newDealText": "Ett nytt gruppköp har startat: {name} för {price}. Gå med senast {date}:",
+    "unsubscribe": "Vill du inte längre få de här mejlen? Avregistrera dig: {link}"
   }
 }

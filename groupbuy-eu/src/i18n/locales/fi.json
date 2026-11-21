@@ -59,7 +59,12 @@
     "newDealsOften": "Uusia tarjouksia tulee jatkuvasti.",
     "seeAll": "Näytä kaikki tarjoukset",
     "noDeals": "Avoimia tarjouksia ei ole juuri nyt.",
-    "checkBack": "Uusia tarjouksia lisätään säännöllisesti. Palaa pian."
+    "checkBack": "Uusia tarjouksia lisätään säännöllisesti. Palaa pian.",
+    "searchLabel": "Hae tarjouksia",
+    "searchPlaceholder": "Hae tarjouksia…",
+    "searchButton": "Hae",
+    "searchResults": "Tulokset haulle ”{q}”",
+    "noResults": "Hakuasi vastaavia tarjouksia ei löytynyt."
   },
   "card": {
     "on": "🎉 Tarjous toteutuu!",
@@ -281,5 +286,29 @@
     "shippedTracking": "Seurantanumero: {tracking}",
     "shippedTrackingLink": "Seuraa pakettiasi: {link}",
     "messageFooter": "Saat tämän sähköpostin, koska liityit ryhmäostoon {name}."
+  },
+  "alerts": {
+    "title": "🔔 Älä missaa yhtään tarjousta",
+    "text": "Saat sähköpostin, kun uusi ryhmäosto alkaa. Ei roskapostia: peruutat yhdellä napsautuksella.",
+    "emailLabel": "Sähköpostiosoitteesi",
+    "button": "Ilmoita minulle",
+    "privacyNote": "Käytämme sähköpostiosoitettasi vain tarjousilmoituksiin.",
+    "checkTitle": "Tarkista sähköpostisi",
+    "checkText": "Lähetimme sinulle sähköpostin. Vahvista ilmoitukset napauttamalla siinä olevaa linkkiä.",
+    "tooMany": "Liian monta yritystä. Yritä myöhemmin uudelleen.",
+    "invalidEmail": "Anna kelvollinen sähköpostiosoite.",
+    "linkInvalid": "Tämä linkki ei ole enää voimassa.",
+    "confirmedTitle": "Tilaus vahvistettu 🎉",
+    "confirmedText": "Lähetämme sinulle sähköpostia, kun uusi ryhmäosto alkaa.",
+    "unsubscribeTitle": "Peruutetaanko tarjousilmoitukset?",
+    "unsubscribeButton": "Peruuta tilaus",
+    "unsubscribedTitle": "Tilaus peruutettu",
+    "unsubscribedText": "Et saa enää tarjousilmoituksia. Voit tilata ne uudelleen milloin tahansa.",
+    "confirmSubject": "Vahvista tarjousilmoitukset kaupasta {shop}",
+    "confirmText": "Vahvista, että haluat sähköpostin kaupasta {shop} aina, kun uusi ryhmäosto alkaa:",
+    "confirmIgnore": "Jos et pyytänyt tätä, jätä tämä viesti huomiotta – mitään ei tapahdu.",
+    "newDealSubject": "Uusi ryhmäosto: {name}",
+    "newDealText": "Uusi ryhmäosto on alkanut: {name} hintaan {price}. Liity viimeistään {date}:",
+    "unsubscribe": "Etkö halua enää näitä viestejä? Peruuta tilaus: {link}"
   }
 }

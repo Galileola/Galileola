@@ -59,7 +59,12 @@
     "newDealsOften": "Bíonn margaí nua á gcur leis an t-am ar fad.",
     "seeAll": "Féach ar gach margadh",
     "noDeals": "Níl aon mhargadh oscailte faoi láthair.",
-    "checkBack": "Cuirimid margaí nua leis go rialta. Féach arís go luath."
+    "checkBack": "Cuirimid margaí nua leis go rialta. Féach arís go luath.",
+    "searchLabel": "Cuardaigh margaí",
+    "searchPlaceholder": "Cuardaigh margaí…",
+    "searchButton": "Cuardaigh",
+    "searchResults": "Torthaí do “{q}”",
+    "noResults": "Níl aon mhargadh a mheaitseálann do chuardach."
   },
   "card": {
     "on": "🎉 Tá an margadh ar siúl!",
@@ -281,5 +286,29 @@
     "shippedTracking": "Uimhir rianaithe: {tracking}",
     "shippedTrackingLink": "Rianaigh do bheart: {link}",
     "messageFooter": "Tá an ríomhphost seo á fháil agat mar gur ghlac tú páirt sa mhargadh grúpa do {name}."
+  },
+  "alerts": {
+    "title": "🔔 Ná caill margadh ar bith",
+    "text": "Faigh ríomhphost nuair a thosaíonn margadh grúpa nua. Gan turscar: díliostáil le cliceáil amháin.",
+    "emailLabel": "Do sheoladh ríomhphoist",
+    "button": "Cuir in iúl dom",
+    "privacyNote": "Ní úsáidimid do sheoladh ríomhphoist ach le haghaidh foláirimh faoi mhargaí.",
+    "checkTitle": "Seiceáil do bhosca isteach",
+    "checkText": "Sheolamar ríomhphost chugat. Tapáil an nasc ann chun na foláirimh a dheimhniú.",
+    "tooMany": "An iomarca iarrachtaí. Bain triail eile as ar ball.",
+    "invalidEmail": "Cuir isteach seoladh ríomhphoist bailí.",
+    "linkInvalid": "Níl an nasc seo bailí a thuilleadh.",
+    "confirmedTitle": "Tá tú cláraithe 🎉",
+    "confirmedText": "Scríobhfaimid chugat nuair a thosaíonn margadh grúpa nua.",
+    "unsubscribeTitle": "Díliostáil ó fholáirimh faoi mhargaí?",
+    "unsubscribeButton": "Díliostáil",
+    "unsubscribedTitle": "Tá tú díliostáilte",
+    "unsubscribedText": "Ní bhfaighidh tú foláirimh faoi mhargaí a thuilleadh. Is féidir leat clárú arís am ar bith.",
+    "confirmSubject": "Deimhnigh do chuid foláireamh faoi mhargaí ó {shop}",
+    "confirmText": "Deimhnigh gur mhaith leat ríomhphost a fháil ó {shop} gach uair a thosaíonn margadh grúpa nua:",
+    "confirmIgnore": "Murar iarr tú é seo, déan neamhaird den ríomhphost seo agus ní tharlóidh aon rud.",
+    "newDealSubject": "Margadh grúpa nua: {name}",
+    "newDealText": "Thosaigh margadh grúpa nua: {name} ar {price}. Glac páirt roimh {date}:",
+    "unsubscribe": "Nach dteastaíonn na ríomhphoist seo uait a thuilleadh? Díliostáil: {link}"
   }
 }

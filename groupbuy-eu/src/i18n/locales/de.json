@@ -59,7 +59,12 @@
     "newDealsOften": "Es kommen ständig neue Angebote dazu.",
     "seeAll": "Alle Angebote ansehen",
     "noDeals": "Gerade sind keine Angebote offen.",
-    "checkBack": "Neue Angebote kommen regelmäßig dazu. Schauen Sie bald wieder vorbei."
+    "checkBack": "Neue Angebote kommen regelmäßig dazu. Schauen Sie bald wieder vorbei.",
+    "searchLabel": "Angebote durchsuchen",
+    "searchPlaceholder": "Angebote suchen…",
+    "searchButton": "Suchen",
+    "searchResults": "Ergebnisse für „{q}“",
+    "noResults": "Keine Angebote passen zu Ihrer Suche."
   },
   "card": {
     "on": "🎉 Angebot steht!",
@@ -281,5 +286,29 @@
     "shippedTracking": "Sendungsnummer: {tracking}",
     "shippedTrackingLink": "Sendung verfolgen: {link}",
     "messageFooter": "Sie erhalten diese E-Mail, weil Sie beim Gruppenangebot für {name} mitmachen."
+  },
+  "alerts": {
+    "title": "🔔 Kein Angebot mehr verpassen",
+    "text": "Erhalten Sie eine E-Mail, sobald ein neues Gruppenangebot startet. Kein Spam: Abmeldung mit einem Klick.",
+    "emailLabel": "Ihre E-Mail-Adresse",
+    "button": "Benachrichtigen",
+    "privacyNote": "Wir verwenden Ihre E-Mail-Adresse nur für Angebotsbenachrichtigungen.",
+    "checkTitle": "Sehen Sie in Ihr Postfach",
+    "checkText": "Wir haben Ihnen eine E-Mail geschickt. Tippen Sie auf den Link darin, um Ihre Angebotsbenachrichtigungen zu bestätigen.",
+    "tooMany": "Zu viele Versuche. Bitte versuchen Sie es später noch einmal.",
+    "invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+    "linkInvalid": "Dieser Link ist nicht mehr gültig.",
+    "confirmedTitle": "Sie sind angemeldet 🎉",
+    "confirmedText": "Wir schreiben Ihnen, sobald ein neues Gruppenangebot startet.",
+    "unsubscribeTitle": "Von Angebotsbenachrichtigungen abmelden?",
+    "unsubscribeButton": "Abmelden",
+    "unsubscribedTitle": "Sie sind abgemeldet",
+    "unsubscribedText": "Sie erhalten keine Angebotsbenachrichtigungen mehr. Sie können sich jederzeit wieder anmelden.",
+    "confirmSubject": "Bestätigen Sie Ihre Angebotsbenachrichtigungen von {shop}",
+    "confirmText": "Bitte bestätigen Sie, dass Sie von {shop} eine E-Mail erhalten möchten, sobald ein neues Gruppenangebot startet:",
+    "confirmIgnore": "Wenn Sie das nicht angefordert haben, ignorieren Sie diese E-Mail einfach – es passiert nichts.",
+    "newDealSubject": "Neues Gruppenangebot: {name}",
+    "newDealText": "Ein neues Gruppenangebot hat begonnen: {name} für {price}. Mitmachen bis {date}:",
+    "unsubscribe": "Sie möchten diese E-Mails nicht mehr erhalten? Abmelden: {link}"
   }
 }

@@ -66,7 +66,12 @@
     "newDealsOften": "New deals are added all the time.",
     "seeAll": "See all deals",
     "noDeals": "No deals are open right now.",
-    "checkBack": "New deals are added regularly. Check back soon."
+    "checkBack": "New deals are added regularly. Check back soon.",
+    "searchLabel": "Search deals",
+    "searchPlaceholder": "Search deals…",
+    "searchButton": "Search",
+    "searchResults": "Results for “{q}”",
+    "noResults": "No deals match your search."
   },
   "card": {
     "on": "🎉 Deal is on!",
@@ -292,5 +297,29 @@
     "shippedTracking": "Tracking number: {tracking}",
     "shippedTrackingLink": "Track your parcel: {link}",
     "messageFooter": "You're receiving this email because you joined the group deal for {name}."
+  },
+  "alerts": {
+    "title": "🔔 Never miss a deal",
+    "text": "Get an email when a new group deal starts. No spam: unsubscribe with one click.",
+    "emailLabel": "Your email address",
+    "button": "Notify me",
+    "privacyNote": "We only use your email address for deal alerts.",
+    "checkTitle": "Check your inbox",
+    "checkText": "We've sent you an email. Tap the link in it to confirm your deal alerts.",
+    "tooMany": "Too many attempts. Please try again later.",
+    "invalidEmail": "Please enter a valid email address.",
+    "linkInvalid": "This link is no longer valid.",
+    "confirmedTitle": "You're subscribed 🎉",
+    "confirmedText": "We'll email you when a new group deal starts.",
+    "unsubscribeTitle": "Unsubscribe from deal alerts?",
+    "unsubscribeButton": "Unsubscribe",
+    "unsubscribedTitle": "You're unsubscribed",
+    "unsubscribedText": "You won't get deal alerts any more. You can sign up again at any time.",
+    "confirmSubject": "Confirm your deal alerts from {shop}",
+    "confirmText": "Please confirm that you'd like an email from {shop} whenever a new group deal starts:",
+    "confirmIgnore": "If you didn't ask for this, just ignore this email and nothing will happen.",
+    "newDealSubject": "New group deal: {name}",
+    "newDealText": "A new group deal has started: {name} for {price}. Join by {date}:",
+    "unsubscribe": "Don't want these emails any more? Unsubscribe: {link}"
   }
 }

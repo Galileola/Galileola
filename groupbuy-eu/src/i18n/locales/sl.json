@@ -81,7 +81,12 @@
     "newDealsOften": "Nove ponudbe prihajajo ves čas.",
     "seeAll": "Oglejte si vse ponudbe",
     "noDeals": "Trenutno ni odprtih ponudb.",
-    "checkBack": "Nove ponudbe dodajamo redno. Kmalu se oglasite znova."
+    "checkBack": "Nove ponudbe dodajamo redno. Kmalu se oglasite znova.",
+    "searchLabel": "Iskanje ponudb",
+    "searchPlaceholder": "Iščite ponudbe…",
+    "searchButton": "Išči",
+    "searchResults": "Rezultati za »{q}«",
+    "noResults": "Nobena ponudba ne ustreza vašemu iskanju."
   },
   "card": {
     "on": "🎉 Ponudba se uresniči!",
@@ -317,5 +322,29 @@
     "shippedTracking": "Številka za sledenje: {tracking}",
     "shippedTrackingLink": "Sledite svojemu paketu: {link}",
     "messageFooter": "To e-poštno sporočilo prejemate, ker ste se pridružili skupinskemu nakupu {name}."
+  },
+  "alerts": {
+    "title": "🔔 Ne zamudite nobene ponudbe",
+    "text": "Prejmite e-poštno sporočilo, ko se začne nov skupinski nakup. Brez neželene pošte: odjava z enim klikom.",
+    "emailLabel": "Vaš e-poštni naslov",
+    "button": "Obvestite me",
+    "privacyNote": "Vaš e-poštni naslov uporabljamo samo za obvestila o ponudbah.",
+    "checkTitle": "Preverite svoj e-poštni predal",
+    "checkText": "Poslali smo vam e-poštno sporočilo. Tapnite povezavo v njem, da potrdite obvestila.",
+    "tooMany": "Preveč poskusov. Poskusite znova pozneje.",
+    "invalidEmail": "Vnesite veljaven e-poštni naslov.",
+    "linkInvalid": "Ta povezava ne velja več.",
+    "confirmedTitle": "Naročeni ste 🎉",
+    "confirmedText": "Pisali vam bomo, ko se začne nov skupinski nakup.",
+    "unsubscribeTitle": "Se želite odjaviti od obvestil o ponudbah?",
+    "unsubscribeButton": "Odjava",
+    "unsubscribedTitle": "Odjavljeni ste",
+    "unsubscribedText": "Obvestil o ponudbah ne boste več prejemali. Kadar koli se lahko znova prijavite.",
+    "confirmSubject": "Potrdite obvestila o ponudbah trgovine {shop}",
+    "confirmText": "Potrdite, da želite prejeti e-poštno sporočilo trgovine {shop} vsakič, ko se začne nov skupinski nakup:",
+    "confirmIgnore": "Če tega niste zahtevali, to sporočilo preprosto prezrite in nič se ne bo zgodilo.",
+    "newDealSubject": "Nov skupinski nakup: {name}",
+    "newDealText": "Začel se je nov skupinski nakup: {name} za {price}. Pridružite se do {date}:",
+    "unsubscribe": "Teh sporočil ne želite več prejemati? Odjava: {link}"
   }
 }

@@ -59,7 +59,12 @@
     "newDealsOften": "Dejjem jiżdiedu offerti ġodda.",
     "seeAll": "Ara l-offerti kollha",
     "noDeals": "M'hemmx offerti miftuħa bħalissa.",
-    "checkBack": "Inżidu offerti ġodda regolarment. Erġa' ara dalwaqt."
+    "checkBack": "Inżidu offerti ġodda regolarment. Erġa' ara dalwaqt.",
+    "searchLabel": "Fittex offerti",
+    "searchPlaceholder": "Fittex offerti…",
+    "searchButton": "Fittex",
+    "searchResults": "Riżultati għal “{q}”",
+    "noResults": "L-ebda offerta ma taqbel mat-tfittxija tiegħek."
   },
   "card": {
     "on": "🎉 L-offerta sseħħ!",
@@ -281,5 +286,29 @@
     "shippedTracking": "Numru tat-traċċar: {tracking}",
     "shippedTrackingLink": "Segwi l-pakkett tiegħek: {link}",
     "messageFooter": "Qed tirċievi din l-email għax ingħaqadt max-xiri fi grupp għal {name}."
+  },
+  "alerts": {
+    "title": "🔔 Titlef l-ebda offerta",
+    "text": "Irċievi email meta jibda xiri ġdid fi grupp. Ebda spam: tneħħi l-abbonament b'klikk waħda.",
+    "emailLabel": "L-indirizz tal-email tiegħek",
+    "button": "Għarrafni",
+    "privacyNote": "Nużaw l-indirizz tal-email tiegħek biss għall-avviżi tal-offerti.",
+    "checkTitle": "Iċċekkja l-inbox tiegħek",
+    "checkText": "Bgħatnielek email. Agħfas il-link li fiha biex tikkonferma l-avviżi.",
+    "tooMany": "Wisq tentattivi. Erġa' pprova aktar tard.",
+    "invalidEmail": "Daħħal indirizz tal-email validu.",
+    "linkInvalid": "Din il-link m'għadhiex valida.",
+    "confirmedTitle": "Issa int abbonat 🎉",
+    "confirmedText": "Nibagħtulek email meta jibda xiri ġdid fi grupp.",
+    "unsubscribeTitle": "Trid tneħħi l-abbonament mill-avviżi tal-offerti?",
+    "unsubscribeButton": "Neħħi l-abbonament",
+    "unsubscribedTitle": "L-abbonament tneħħa",
+    "unsubscribedText": "M'għadekx se tirċievi avviżi tal-offerti. Tista' terġa' tabbona meta trid.",
+    "confirmSubject": "Ikkonferma l-avviżi tal-offerti minn {shop}",
+    "confirmText": "Jekk jogħġbok ikkonferma li trid tirċievi email minn {shop} kull meta jibda xiri ġdid fi grupp:",
+    "confirmIgnore": "Jekk ma tlabtx dan, injora din l-email u ma jiġri xejn.",
+    "newDealSubject": "Xiri ġdid fi grupp: {name}",
+    "newDealText": "Beda xiri ġdid fi grupp: {name} għal {price}. Ingħaqad sa {date}:",
+    "unsubscribe": "M'għadekx trid dawn l-emails? Neħħi l-abbonament: {link}"
   }
 }

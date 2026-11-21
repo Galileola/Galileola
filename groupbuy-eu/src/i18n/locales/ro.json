@@ -78,7 +78,12 @@
     "newDealsOften": "Apar mereu oferte noi.",
     "seeAll": "Vezi toate ofertele",
     "noDeals": "Momentan nu există oferte deschise.",
-    "checkBack": "Adăugăm oferte noi în mod regulat. Revino curând."
+    "checkBack": "Adăugăm oferte noi în mod regulat. Revino curând.",
+    "searchLabel": "Caută oferte",
+    "searchPlaceholder": "Caută oferte…",
+    "searchButton": "Caută",
+    "searchResults": "Rezultate pentru „{q}”",
+    "noResults": "Nicio ofertă nu se potrivește căutării tale."
   },
   "card": {
     "on": "🎉 Oferta are loc!",
@@ -312,5 +317,29 @@
     "shippedTracking": "Număr de urmărire: {tracking}",
     "shippedTrackingLink": "Urmărește-ți coletul: {link}",
     "messageFooter": "Primești acest e-mail pentru că te-ai alăturat cumpărării în grup pentru {name}."
+  },
+  "alerts": {
+    "title": "🔔 Nu rata nicio ofertă",
+    "text": "Primește un e-mail când începe o nouă cumpărare în grup. Fără spam: te dezabonezi cu un clic.",
+    "emailLabel": "Adresa ta de e-mail",
+    "button": "Anunță-mă",
+    "privacyNote": "Folosim adresa ta de e-mail doar pentru alertele de oferte.",
+    "checkTitle": "Verifică-ți căsuța de e-mail",
+    "checkText": "Ți-am trimis un e-mail. Atinge linkul din el pentru a confirma alertele.",
+    "tooMany": "Prea multe încercări. Încearcă din nou mai târziu.",
+    "invalidEmail": "Introdu o adresă de e-mail validă.",
+    "linkInvalid": "Acest link nu mai este valabil.",
+    "confirmedTitle": "Te-ai abonat 🎉",
+    "confirmedText": "Îți scriem când începe o nouă cumpărare în grup.",
+    "unsubscribeTitle": "Te dezabonezi de la alertele de oferte?",
+    "unsubscribeButton": "Dezabonează-mă",
+    "unsubscribedTitle": "Te-ai dezabonat",
+    "unsubscribedText": "Nu vei mai primi alerte de oferte. Te poți abona din nou oricând.",
+    "confirmSubject": "Confirmă alertele de oferte de la {shop}",
+    "confirmText": "Confirmă că vrei să primești un e-mail de la {shop} de fiecare dată când începe o nouă cumpărare în grup:",
+    "confirmIgnore": "Dacă nu ai cerut asta, ignoră acest e-mail și nu se va întâmpla nimic.",
+    "newDealSubject": "Nouă cumpărare în grup: {name}",
+    "newDealText": "A început o nouă cumpărare în grup: {name} la {price}. Alătură-te până la {date}:",
+    "unsubscribe": "Nu mai vrei aceste e-mailuri? Dezabonează-te: {link}"
   }
 }

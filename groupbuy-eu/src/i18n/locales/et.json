@@ -59,7 +59,12 @@
     "newDealsOften": "Uusi pakkumisi lisandub pidevalt.",
     "seeAll": "Vaata kõiki pakkumisi",
     "noDeals": "Praegu ei ole ühtegi avatud pakkumist.",
-    "checkBack": "Uusi pakkumisi lisandub regulaarselt. Tule varsti tagasi."
+    "checkBack": "Uusi pakkumisi lisandub regulaarselt. Tule varsti tagasi.",
+    "searchLabel": "Otsi pakkumisi",
+    "searchPlaceholder": "Otsi pakkumisi…",
+    "searchButton": "Otsi",
+    "searchResults": "Tulemused: „{q}”",
+    "noResults": "Sinu otsingule ei vasta ükski pakkumine."
   },
   "card": {
     "on": "🎉 Pakkumine käib!",
@@ -281,5 +286,29 @@
     "shippedTracking": "Jälgimiskood: {tracking}",
     "shippedTrackingLink": "Jälgi oma pakki: {link}",
     "messageFooter": "Saad selle e-kirja, sest liitusid ühisostuga „{name}”."
+  },
+  "alerts": {
+    "title": "🔔 Ära jäta ühtki pakkumist vahele",
+    "text": "Saad e-kirja, kui algab uus ühisost. Rämpsposti ei tule: loobud ühe klõpsuga.",
+    "emailLabel": "Sinu e-posti aadress",
+    "button": "Teavita mind",
+    "privacyNote": "Kasutame sinu e-posti aadressi ainult pakkumiste teavitusteks.",
+    "checkTitle": "Vaata oma postkasti",
+    "checkText": "Saatsime sulle e-kirja. Puuduta selles olevat linki, et teavitused kinnitada.",
+    "tooMany": "Liiga palju katseid. Proovi hiljem uuesti.",
+    "invalidEmail": "Sisesta kehtiv e-posti aadress.",
+    "linkInvalid": "See link ei kehti enam.",
+    "confirmedTitle": "Oled liitunud 🎉",
+    "confirmedText": "Anname sulle e-kirjaga teada, kui algab uus ühisost.",
+    "unsubscribeTitle": "Kas loobuda pakkumiste teavitustest?",
+    "unsubscribeButton": "Loobu",
+    "unsubscribedTitle": "Oled teavitustest loobunud",
+    "unsubscribedText": "Sa ei saa enam pakkumiste teavitusi. Võid igal ajal uuesti liituda.",
+    "confirmSubject": "Kinnita {shop} pakkumiste teavitused",
+    "confirmText": "Palun kinnita, et soovid saada {shop} e-kirja alati, kui algab uus ühisost:",
+    "confirmIgnore": "Kui sa seda ei tellinud, jäta see kiri lihtsalt tähelepanuta – midagi ei juhtu.",
+    "newDealSubject": "Uus ühisost: {name}",
+    "newDealText": "Algas uus ühisost: {name} hinnaga {price}. Liitu hiljemalt {date}:",
+    "unsubscribe": "Ei soovi neid kirju enam saada? Loobu: {link}"
   }
 }

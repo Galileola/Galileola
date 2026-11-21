@@ -59,7 +59,12 @@
     "newDealsOften": "Der kommer hele tiden nye tilbud.",
     "seeAll": "Se alle tilbud",
     "noDeals": "Der er ingen åbne tilbud lige nu.",
-    "checkBack": "Der kommer jævnligt nye tilbud. Kig forbi igen snart."
+    "checkBack": "Der kommer jævnligt nye tilbud. Kig forbi igen snart.",
+    "searchLabel": "Søg i tilbud",
+    "searchPlaceholder": "Søg efter tilbud…",
+    "searchButton": "Søg",
+    "searchResults": "Resultater for “{q}”",
+    "noResults": "Ingen tilbud matcher din søgning."
   },
   "card": {
     "on": "🎉 Tilbuddet er i hus!",
@@ -281,5 +286,29 @@
     "shippedTracking": "Trackingnummer: {tracking}",
     "shippedTrackingLink": "Følg din pakke: {link}",
     "messageFooter": "Du får denne e-mail, fordi du har tilmeldt dig gruppekøbet af {name}."
+  },
+  "alerts": {
+    "title": "🔔 Gå ikke glip af et tilbud",
+    "text": "Få en e-mail, når et nyt gruppekøb starter. Ingen spam: afmeld med ét klik.",
+    "emailLabel": "Din e-mailadresse",
+    "button": "Giv mig besked",
+    "privacyNote": "Vi bruger kun din e-mailadresse til tilbudsbeskeder.",
+    "checkTitle": "Tjek din indbakke",
+    "checkText": "Vi har sendt dig en e-mail. Tryk på linket i den for at bekræfte dine tilbudsbeskeder.",
+    "tooMany": "For mange forsøg. Prøv igen senere.",
+    "invalidEmail": "Indtast en gyldig e-mailadresse.",
+    "linkInvalid": "Dette link er ikke længere gyldigt.",
+    "confirmedTitle": "Du er tilmeldt 🎉",
+    "confirmedText": "Vi skriver til dig, når et nyt gruppekøb starter.",
+    "unsubscribeTitle": "Afmeld tilbudsbeskeder?",
+    "unsubscribeButton": "Afmeld",
+    "unsubscribedTitle": "Du er afmeldt",
+    "unsubscribedText": "Du får ikke flere tilbudsbeskeder. Du kan tilmelde dig igen når som helst.",
+    "confirmSubject": "Bekræft dine tilbudsbeskeder fra {shop}",
+    "confirmText": "Bekræft, at du gerne vil have en e-mail fra {shop}, hver gang et nyt gruppekøb starter:",
+    "confirmIgnore": "Hvis du ikke har bedt om dette, kan du bare ignorere denne e-mail – der sker ikke noget.",
+    "newDealSubject": "Nyt gruppekøb: {name}",
+    "newDealText": "Et nyt gruppekøb er startet: {name} til {price}. Vær med senest {date}:",
+    "unsubscribe": "Vil du ikke længere have disse e-mails? Afmeld: {link}"
   }
 }

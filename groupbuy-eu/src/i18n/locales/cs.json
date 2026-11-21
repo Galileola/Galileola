@@ -81,7 +81,12 @@
     "newDealsOften": "Nové nabídky přibývají neustále.",
     "seeAll": "Zobrazit všechny nabídky",
     "noDeals": "Právě teď nejsou otevřené žádné nabídky.",
-    "checkBack": "Nové nabídky přidáváme pravidelně. Zastavte se brzy znovu."
+    "checkBack": "Nové nabídky přidáváme pravidelně. Zastavte se brzy znovu.",
+    "searchLabel": "Hledat nabídky",
+    "searchPlaceholder": "Hledat nabídky…",
+    "searchButton": "Hledat",
+    "searchResults": "Výsledky pro „{q}“",
+    "noResults": "Vašemu hledání neodpovídá žádná nabídka."
   },
   "card": {
     "on": "🎉 Nabídka se uskuteční!",
@@ -317,5 +322,29 @@
     "shippedTracking": "Číslo zásilky: {tracking}",
     "shippedTrackingLink": "Sledujte svou zásilku: {link}",
     "messageFooter": "Tento e-mail dostáváte, protože jste se připojili ke skupinovému nákupu {name}."
+  },
+  "alerts": {
+    "title": "🔔 Nepropásněte žádnou nabídku",
+    "text": "Dostanete e-mail, jakmile začne nový skupinový nákup. Žádný spam: odhlášení jedním kliknutím.",
+    "emailLabel": "Váš e-mail",
+    "button": "Upozorněte mě",
+    "privacyNote": "Váš e-mail používáme jen pro upozornění na nabídky.",
+    "checkTitle": "Zkontrolujte svou schránku",
+    "checkText": "Poslali jsme vám e-mail. Klepnutím na odkaz v něm upozornění potvrdíte.",
+    "tooMany": "Příliš mnoho pokusů. Zkuste to prosím později.",
+    "invalidEmail": "Zadejte prosím platný e-mail.",
+    "linkInvalid": "Tento odkaz už neplatí.",
+    "confirmedTitle": "Jste přihlášeni 🎉",
+    "confirmedText": "Napíšeme vám, jakmile začne nový skupinový nákup.",
+    "unsubscribeTitle": "Odhlásit se z upozornění na nabídky?",
+    "unsubscribeButton": "Odhlásit se",
+    "unsubscribedTitle": "Jste odhlášeni",
+    "unsubscribedText": "Upozornění na nabídky už nebudete dostávat. Kdykoli se můžete znovu přihlásit.",
+    "confirmSubject": "Potvrďte upozornění na nabídky od {shop}",
+    "confirmText": "Potvrďte prosím, že chcete dostávat e-mail od {shop} pokaždé, když začne nový skupinový nákup:",
+    "confirmIgnore": "Pokud jste o to nežádali, tento e-mail prostě ignorujte – nic se nestane.",
+    "newDealSubject": "Nový skupinový nákup: {name}",
+    "newDealText": "Začal nový skupinový nákup: {name} za {price}. Připojte se do {date}:",
+    "unsubscribe": "Nechcete už tyto e-maily dostávat? Odhlásit se: {link}"
   }
 }

@@ -14,7 +14,9 @@ export function publicRoutes(app, ctx) {
       .filter((d) => isJoinable(d, now))
       .map((d) => withBadges({ ...localizeDeal(d), count: repo.committedCount(d.id), cover: repo.coverPhoto(d.id) }, now));
     const category = isCategory(req.query.category) ? res.locals.categoryFor(req.query.category) : null;
-    const deals = category ? all.filter((d) => d.category === category.slug) : all;
+    const q = String(req.query.q ?? '').trim().slice(0, 100);
+    const inCategory = category ? all.filter((d) => d.category === category.slug) : all;
+    const deals = q ? inCategory.filter((d) => matchesSearch(d, q, res.locals.categoryFor(d.category).name)) : inCategory;
     const perCategory = {};
     for (const d of all) perCategory[d.category] = (perCategory[d.category] ?? 0) + 1;
     const cover = (category ? deals : all).find((d) => d.cover)?.cover;
@@ -27,6 +29,7 @@ export function publicRoutes(app, ctx) {
       fullTitle: Boolean(seo.title),
       deals,
       category,
+      q,
       perCategory,
       stats: {
         open: all.length,
@@ -75,4 +78,12 @@ export function withBadges(d, now) {
   else if (percent >= 70) badge = 'hot';
   else if (ageHours < 72) badge = 'new';
   return { ...d, percent, remaining: Math.max(0, d.min_buyers - d.count), badge };
+}
+
+// Deal search: every word of the query must appear in the deal's name, headline, description or
+// category (in the visitor's language, or the original), ignoring case and accents.
+const fold = (s) => String(s ?? '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+export function matchesSearch(deal, query, categoryName = '') {
+  const text = fold([deal.product_name, deal.headline, deal.description, categoryName].join(' '));
+  return fold(query).split(/\s+/).filter(Boolean).every((word) => text.includes(word));
 }

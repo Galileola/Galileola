@@ -557,3 +557,21 @@ table.plain th, table.plain td { padding: 6px 4px; }
 /* Admin → Customers */
 .search-form { display: flex; gap: 8px; margin: 12px 0 16px; max-width: 560px; }
 .search-form input { flex: 1; min-width: 0; }
+
+/* Home: deal search and deal alerts */
+.deals-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin: 28px 0 14px; }
+.deals-head .section-title { margin: 0; }
+.deal-search { display: flex; gap: 6px; flex: 0 1 340px; min-width: 0; }
+.deal-search input { flex: 1; min-width: 0; border-radius: 999px; padding-left: 16px; }
+.deal-search button { padding: 10px 16px; border-radius: 999px; }
+.alert-signup { margin: 34px 0 8px; padding: 26px 24px; border-radius: var(--radius); color: #fff; background: linear-gradient(120deg, #6d28d9, #db2777 60%, #f97316); box-shadow: var(--shadow); display: grid; gap: 14px 24px; grid-template-columns: 1fr minmax(260px, 420px); align-items: center; }
+.alert-signup h2 { margin: 0 0 6px; color: #fff; }
+.alert-signup p { margin: 0; }
+.alert-form { display: flex; gap: 8px; }
+.alert-form input[type=email] { flex: 1; min-width: 0; border: 0; }
+.alert-form button { background: #fff; color: var(--violet); box-shadow: none; white-space: nowrap; }
+.alert-form button:hover { background: var(--sun-soft); color: var(--violet); }
+.alert-privacy { grid-column: 1 / -1; opacity: .9; }
+.alert-privacy a { color: #fff; }
+.hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+@media (max-width: 720px) { .alert-signup { grid-template-columns: 1fr; padding: 22px 18px; } .deal-search { flex-basis: 100%; } }

@@ -59,7 +59,12 @@
     "newDealsOften": "Er komen steeds nieuwe deals bij.",
     "seeAll": "Bekijk alle deals",
     "noDeals": "Er zijn nu geen open deals.",
-    "checkBack": "Er komen regelmatig nieuwe deals bij. Kom snel terug."
+    "checkBack": "Er komen regelmatig nieuwe deals bij. Kom snel terug.",
+    "searchLabel": "Deals zoeken",
+    "searchPlaceholder": "Zoek een deal…",
+    "searchButton": "Zoeken",
+    "searchResults": "Resultaten voor ‘{q}’",
+    "noResults": "Geen deals gevonden voor je zoekopdracht."
   },
   "card": {
     "on": "🎉 Deal is rond!",
@@ -281,5 +286,29 @@
     "shippedTracking": "Trackingnummer: {tracking}",
     "shippedTrackingLink": "Volg je pakket: {link}",
     "messageFooter": "Je ontvangt deze e-mail omdat je meedoet aan de groepsdeal voor {name}."
+  },
+  "alerts": {
+    "title": "🔔 Mis geen enkele deal",
+    "text": "Krijg een e-mail zodra er een nieuwe groepsdeal start. Geen spam: afmelden met één klik.",
+    "emailLabel": "Je e-mailadres",
+    "button": "Houd me op de hoogte",
+    "privacyNote": "We gebruiken je e-mailadres alleen voor deal-meldingen.",
+    "checkTitle": "Kijk in je inbox",
+    "checkText": "We hebben je een e-mail gestuurd. Tik op de link erin om je deal-meldingen te bevestigen.",
+    "tooMany": "Te veel pogingen. Probeer het later opnieuw.",
+    "invalidEmail": "Vul een geldig e-mailadres in.",
+    "linkInvalid": "Deze link is niet meer geldig.",
+    "confirmedTitle": "Je bent aangemeld 🎉",
+    "confirmedText": "We mailen je zodra er een nieuwe groepsdeal start.",
+    "unsubscribeTitle": "Afmelden voor deal-meldingen?",
+    "unsubscribeButton": "Afmelden",
+    "unsubscribedTitle": "Je bent afgemeld",
+    "unsubscribedText": "Je krijgt geen deal-meldingen meer. Je kunt je altijd opnieuw aanmelden.",
+    "confirmSubject": "Bevestig je deal-meldingen van {shop}",
+    "confirmText": "Bevestig dat je een e-mail van {shop} wilt krijgen zodra er een nieuwe groepsdeal start:",
+    "confirmIgnore": "Heb je dit niet aangevraagd? Negeer deze e-mail dan gewoon; er gebeurt niets.",
+    "newDealSubject": "Nieuwe groepsdeal: {name}",
+    "newDealText": "Er is een nieuwe groepsdeal gestart: {name} voor {price}. Doe mee vóór {date}:",
+    "unsubscribe": "Wil je deze e-mails niet meer? Afmelden: {link}"
   }
 }

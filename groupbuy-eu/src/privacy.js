@@ -55,5 +55,8 @@ export async function anonymiseOldSignups(ctx) {
   let n = 0;
   for (const p of due) if (await anonymise(ctx, p)) n += 1;
   if (n) console.log(`[privacy] anonymised ${n} sign-up(s) that ended more than ${ERASE_AFTER_DAYS} days ago`);
+  // Deal-alert sign-ups that were never confirmed.
+  const dropped = ctx.repo.deleteUnconfirmedSubscribers?.(before) ?? 0;
+  if (dropped) console.log(`[privacy] deleted ${dropped} deal-alert sign-up(s) never confirmed within ${ERASE_AFTER_DAYS} days`);
   return n;
 }

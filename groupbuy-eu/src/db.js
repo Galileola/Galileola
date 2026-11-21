@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS deals (
   seo_title          TEXT NOT NULL DEFAULT '',       -- search result title (content language only)
   seo_description    TEXT NOT NULL DEFAULT '',       -- search result / link preview text
   cancelled_at       TEXT,                           -- the owner cancelled it (status expired)
+  announced_at       TEXT,                           -- emailed to the deal-alert subscribers
   price_cents        INTEGER NOT NULL CHECK (price_cents > 0),   -- gross, VAT included
   currency           TEXT NOT NULL DEFAULT 'eur',
   tax_code           TEXT NOT NULL,
@@ -198,6 +199,19 @@ CREATE TABLE IF NOT EXISTS ad_spend (
 );
 CREATE INDEX IF NOT EXISTS ad_spend_day ON ad_spend(day);
 
+-- Deal alerts: people who asked to be emailed when a new deal starts (double opt-in).
+CREATE TABLE IF NOT EXISTS subscribers (
+  id              INTEGER PRIMARY KEY,
+  email           TEXT NOT NULL UNIQUE,            -- lower case
+  lang            TEXT NOT NULL DEFAULT 'en',
+  token           TEXT NOT NULL UNIQUE,            -- secret for the confirm and unsubscribe links
+  status          TEXT NOT NULL DEFAULT 'pending', -- pending -> confirmed -> unsubscribed
+  created_at      TEXT NOT NULL,
+  confirm_sent_at TEXT,
+  confirmed_at    TEXT,
+  unsubscribed_at TEXT
+);
+
 CREATE TABLE IF NOT EXISTS locks (
   name       TEXT PRIMARY KEY,
   holder     TEXT NOT NULL,
@@ -227,6 +241,7 @@ const ADDED_COLUMNS = {
     ['seo_title', "TEXT NOT NULL DEFAULT ''"],
     ['seo_description', "TEXT NOT NULL DEFAULT ''"],
     ['cancelled_at', 'TEXT'],
+    ['announced_at', 'TEXT'],
   ],
   deal_photos: [
     ['thumb', "TEXT NOT NULL DEFAULT ''"],
@@ -432,6 +447,27 @@ export function createRepo(db) {
            WHERE lower(p.email) = lower(?) ORDER BY p.created_at DESC`
         )
         .all(email),
+    // ---- deal alerts (src/alerts.js)
+    subscriberByEmail: (email) => db.prepare('SELECT * FROM subscribers WHERE email = ?').get(String(email).toLowerCase()),
+    subscriberByToken: (token) => db.prepare('SELECT * FROM subscribers WHERE token = ?').get(token),
+    insertSubscriber(s) {
+      const r = db
+        .prepare('INSERT INTO subscribers (email, lang, token, status, created_at) VALUES (:email, :lang, :token, :status, :created_at)')
+        .run({ status: 'pending', ...s, email: String(s.email).toLowerCase() });
+      return db.prepare('SELECT * FROM subscribers WHERE id = ?').get(Number(r.lastInsertRowid));
+    },
+    updateSubscriber: (id, fields) => update('subscribers', id, fields),
+    deleteSubscriber: (id) => db.prepare('DELETE FROM subscribers WHERE id = ?').run(id),
+    subscribers: (status) =>
+      status
+        ? db.prepare('SELECT * FROM subscribers WHERE status = ? ORDER BY id DESC').all(status)
+        : db.prepare('SELECT * FROM subscribers ORDER BY id DESC').all(),
+    subscriberCounts: () =>
+      Object.fromEntries(db.prepare('SELECT status, COUNT(*) AS n FROM subscribers GROUP BY status').all().map((r) => [r.status, r.n])),
+    // Unconfirmed sign-ups older than `before` (never confirmed: deleted after 30 days).
+    deleteUnconfirmedSubscribers: (before) =>
+      db.prepare("DELETE FROM subscribers WHERE status = 'pending' AND created_at < ?").run(before).changes,
+
     participantsWhere: (whereSql, params = {}) =>
       db.prepare(`SELECT * FROM participants WHERE ${whereSql} ORDER BY id`).all(params),
     updateParticipant: (id, fields, now) => update('participants', id, { ...fields, updated_at: now }),

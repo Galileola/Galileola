@@ -59,7 +59,12 @@
     "newDealsOften": "Folyamatosan érkeznek új ajánlatok.",
     "seeAll": "Összes ajánlat",
     "noDeals": "Jelenleg nincs nyitott ajánlat.",
-    "checkBack": "Rendszeresen töltünk fel új ajánlatokat. Nézz vissza hamarosan."
+    "checkBack": "Rendszeresen töltünk fel új ajánlatokat. Nézz vissza hamarosan.",
+    "searchLabel": "Ajánlatok keresése",
+    "searchPlaceholder": "Ajánlatok keresése…",
+    "searchButton": "Keresés",
+    "searchResults": "Találatok erre: „{q}”",
+    "noResults": "Egy ajánlat sem felel meg a keresésednek."
   },
   "card": {
     "on": "🎉 Összejött!",
@@ -281,5 +286,29 @@
     "shippedTracking": "Csomagkövetési szám: {tracking}",
     "shippedTrackingLink": "Kövesd a csomagod: {link}",
     "messageFooter": "Azért kapod ezt az e-mailt, mert csatlakoztál a(z) {name} csoportos vásárláshoz."
+  },
+  "alerts": {
+    "title": "🔔 Ne maradj le egy ajánlatról sem",
+    "text": "Kapj e-mailt, amikor új csoportos vásárlás indul. Nincs spam: egy kattintással leiratkozhatsz.",
+    "emailLabel": "E-mail-címed",
+    "button": "Értesítést kérek",
+    "privacyNote": "Az e-mail-címedet csak az ajánlatértesítésekhez használjuk.",
+    "checkTitle": "Nézd meg a postafiókodat",
+    "checkText": "Küldtünk egy e-mailt. Az értesítések megerősítéséhez koppints a benne lévő linkre.",
+    "tooMany": "Túl sok próbálkozás. Kérjük, próbáld újra később.",
+    "invalidEmail": "Adj meg egy érvényes e-mail-címet.",
+    "linkInvalid": "Ez a link már nem érvényes.",
+    "confirmedTitle": "Feliratkoztál 🎉",
+    "confirmedText": "Írunk, amikor új csoportos vásárlás indul.",
+    "unsubscribeTitle": "Leiratkozol az ajánlatértesítésekről?",
+    "unsubscribeButton": "Leiratkozás",
+    "unsubscribedTitle": "Leiratkoztál",
+    "unsubscribedText": "Nem kapsz több ajánlatértesítést. Bármikor újra feliratkozhatsz.",
+    "confirmSubject": "Erősítsd meg a(z) {shop} ajánlatértesítéseit",
+    "confirmText": "Kérjük, erősítsd meg, hogy e-mailt szeretnél kapni a(z) {shop} oldaltól, valahányszor új csoportos vásárlás indul:",
+    "confirmIgnore": "Ha nem te kérted, egyszerűen hagyd figyelmen kívül ezt az e-mailt – semmi sem történik.",
+    "newDealSubject": "Új csoportos vásárlás: {name}",
+    "newDealText": "Új csoportos vásárlás indult: {name}, {price}. Csatlakozz eddig: {date}:",
+    "unsubscribe": "Nem szeretnél több ilyen e-mailt? Leiratkozás: {link}"
   }
 }

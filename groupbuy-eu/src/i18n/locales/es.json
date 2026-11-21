@@ -59,7 +59,12 @@
     "newDealsOften": "Añadimos ofertas nuevas constantemente.",
     "seeAll": "Ver todas las ofertas",
     "noDeals": "Ahora mismo no hay ofertas abiertas.",
-    "checkBack": "Añadimos ofertas nuevas con regularidad. Vuelve pronto."
+    "checkBack": "Añadimos ofertas nuevas con regularidad. Vuelve pronto.",
+    "searchLabel": "Buscar ofertas",
+    "searchPlaceholder": "Buscar ofertas…",
+    "searchButton": "Buscar",
+    "searchResults": "Resultados para «{q}»",
+    "noResults": "Ninguna oferta coincide con tu búsqueda."
   },
   "card": {
     "on": "🎉 ¡Oferta conseguida!",
@@ -281,5 +286,29 @@
     "shippedTracking": "Número de seguimiento: {tracking}",
     "shippedTrackingLink": "Sigue tu paquete: {link}",
     "messageFooter": "Recibes este correo porque te uniste a la compra en grupo de {name}."
+  },
+  "alerts": {
+    "title": "🔔 No te pierdas ninguna oferta",
+    "text": "Recibe un correo cuando empiece una nueva compra en grupo. Sin spam: date de baja con un clic.",
+    "emailLabel": "Tu correo electrónico",
+    "button": "Avísame",
+    "privacyNote": "Solo usamos tu correo electrónico para los avisos de ofertas.",
+    "checkTitle": "Revisa tu bandeja de entrada",
+    "checkText": "Te hemos enviado un correo. Pulsa el enlace que contiene para confirmar los avisos.",
+    "tooMany": "Demasiados intentos. Vuelve a intentarlo más tarde.",
+    "invalidEmail": "Introduce un correo electrónico válido.",
+    "linkInvalid": "Este enlace ya no es válido.",
+    "confirmedTitle": "Te has suscrito 🎉",
+    "confirmedText": "Te escribiremos cuando empiece una nueva compra en grupo.",
+    "unsubscribeTitle": "¿Darte de baja de los avisos de ofertas?",
+    "unsubscribeButton": "Darme de baja",
+    "unsubscribedTitle": "Te has dado de baja",
+    "unsubscribedText": "Ya no recibirás avisos de ofertas. Puedes volver a suscribirte cuando quieras.",
+    "confirmSubject": "Confirma tus avisos de ofertas de {shop}",
+    "confirmText": "Confirma que quieres recibir un correo de {shop} cada vez que empiece una nueva compra en grupo:",
+    "confirmIgnore": "Si no lo has pedido tú, ignora este correo y no pasará nada.",
+    "newDealSubject": "Nueva compra en grupo: {name}",
+    "newDealText": "Ha empezado una nueva compra en grupo: {name} por {price}. Únete antes del {date}:",
+    "unsubscribe": "¿Ya no quieres recibir estos correos? Darte de baja: {link}"
   }
 }

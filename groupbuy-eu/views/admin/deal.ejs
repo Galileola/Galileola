@@ -60,6 +60,21 @@
 </section>
 <% } %>
 
+<% if (deal.status === 'open') { %>
+<section class="card announce" style="margin-top:16px">
+  <h2>🔔 Email to deal-alert subscribers</h2>
+  <% if (deal.announced_at) { %><p class="small">Sent on <%= formatDate(deal.announced_at) %>.</p><% } %>
+  <% if (alertSubscribers) { %>
+    <form method="post" action="/admin/deals/<%= deal.id %>/announce" data-confirm="<%= deal.announced_at ? 'This deal was already emailed. Send it again to' : 'Email this deal to' %> <%= alertSubscribers %> subscriber(s)?">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <p><button type="submit"<%- deal.announced_at ? ' class="secondary"' : '' %>>Email it to <%= alertSubscribers %> subscriber<%= alertSubscribers === 1 ? '' : 's' %></button> <span class="muted small">In each subscriber's language, with an unsubscribe link.</span></p>
+    </form>
+  <% } else { %>
+    <p class="muted small">Nobody has confirmed a deal-alert sign-up yet. Shoppers sign up under the deals on the home page; <a href="/admin/subscribers">see the list</a>.</p>
+  <% } %>
+</section>
+<% } %>
+
 <section class="card" id="photos" style="margin-top:16px">
   <h2>Photos</h2>
   <p class="muted small">The first photo is the cover on the deal list. Use the arrows to change the order. Up to <%= maxPhotos %> photos, JPG, PNG, WebP or GIF, max 8 MB each. Photos are resized for fast pages and their location data is removed.</p>

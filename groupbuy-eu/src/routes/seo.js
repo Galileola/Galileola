@@ -21,6 +21,7 @@ export function seoRoutes(app, ctx) {
           'Disallow: /join/',
           'Disallow: /pay/',
           'Disallow: /api/',
+          'Disallow: /alerts/',
           'Disallow: /webhooks/',
           '',
           `Sitemap: ${config.baseUrl}/sitemap.xml`,

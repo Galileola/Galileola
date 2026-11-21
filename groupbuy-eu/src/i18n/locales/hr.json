@@ -78,7 +78,12 @@
     "newDealsOften": "Nove ponude stalno pristižu.",
     "seeAll": "Pogledajte sve ponude",
     "noDeals": "Trenutačno nema otvorenih ponuda.",
-    "checkBack": "Redovito dodajemo nove ponude. Svratite uskoro ponovno."
+    "checkBack": "Redovito dodajemo nove ponude. Svratite uskoro ponovno.",
+    "searchLabel": "Pretraži ponude",
+    "searchPlaceholder": "Pretraži ponude…",
+    "searchButton": "Traži",
+    "searchResults": "Rezultati za „{q}”",
+    "noResults": "Nijedna ponuda ne odgovara vašem pretraživanju."
   },
   "card": {
     "on": "🎉 Ponuda se ostvaruje!",
@@ -312,5 +317,29 @@
     "shippedTracking": "Broj za praćenje: {tracking}",
     "shippedTrackingLink": "Pratite svoj paket: {link}",
     "messageFooter": "Primate ovu e-poruku jer ste se pridružili grupnoj kupnji {name}."
+  },
+  "alerts": {
+    "title": "🔔 Ne propustite nijednu ponudu",
+    "text": "Primite e-poruku kad započne nova grupna kupnja. Bez neželjene pošte: odjava jednim klikom.",
+    "emailLabel": "Vaša adresa e-pošte",
+    "button": "Obavijestite me",
+    "privacyNote": "Vašu adresu e-pošte koristimo samo za obavijesti o ponudama.",
+    "checkTitle": "Provjerite svoju poštu",
+    "checkText": "Poslali smo vam e-poruku. Dodirnite poveznicu u njoj kako biste potvrdili obavijesti.",
+    "tooMany": "Previše pokušaja. Pokušajte ponovno kasnije.",
+    "invalidEmail": "Unesite valjanu adresu e-pošte.",
+    "linkInvalid": "Ova poveznica više ne vrijedi.",
+    "confirmedTitle": "Pretplaćeni ste 🎉",
+    "confirmedText": "Javit ćemo vam se kad započne nova grupna kupnja.",
+    "unsubscribeTitle": "Odjaviti se s obavijesti o ponudama?",
+    "unsubscribeButton": "Odjavi se",
+    "unsubscribedTitle": "Odjavljeni ste",
+    "unsubscribedText": "Više nećete primati obavijesti o ponudama. Možete se ponovno prijaviti u bilo kojem trenutku.",
+    "confirmSubject": "Potvrdite obavijesti o ponudama od {shop}",
+    "confirmText": "Potvrdite da želite primati e-poruku od {shop} svaki put kad započne nova grupna kupnja:",
+    "confirmIgnore": "Ako to niste zatražili, jednostavno zanemarite ovu e-poruku i ništa se neće dogoditi.",
+    "newDealSubject": "Nova grupna kupnja: {name}",
+    "newDealText": "Započela je nova grupna kupnja: {name} za {price}. Pridružite se do {date}:",
+    "unsubscribe": "Ne želite više ove e-poruke? Odjava: {link}"
   }
 }

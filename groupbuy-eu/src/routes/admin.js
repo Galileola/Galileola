@@ -40,6 +40,7 @@ import { copyPhotos, dealRoutes, dealToFormValues } from './adminDeals.js';
 import { brandingParsers, brandingRoutes } from './adminBranding.js';
 import { fulfilmentRoutes } from './adminFulfilment.js';
 import { customerRoutes } from './adminCustomers.js';
+import { adminAlertRoutes } from './alerts.js';
 
 // Photo uploads are parsed into memory (admin only, at most 8 × 8 MB per request), checked,
 // and only then written to UPLOAD_DIR.
@@ -144,6 +145,7 @@ export function adminRoutes(app, ctx) {
   brandingRoutes(router, ctx);
   fulfilmentRoutes(router, ctx);
   customerRoutes(router, ctx);
+  adminAlertRoutes(router, ctx);
 
   // New deal form. ?copy=<id> fills it in from an existing deal (Duplicate on the deal page); the
   // original's photos are copied when the new deal is created.
@@ -342,6 +344,7 @@ export function adminRoutes(app, ctx) {
       counts,
       committed: repo.committedCount(deal.id),
       participantTotal: repo.participantCount(deal.id),
+      alertSubscribers: repo.subscriberCounts().confirmed ?? 0,
       summary: summarize(participants),
       flash: req.query.flash || '',
       justPublished: req.query.live === '1',

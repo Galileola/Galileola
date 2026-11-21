@@ -1,0 +1,14 @@
+<%- include('partials/header') %>
+<section class="card narrow message-card">
+  <p class="message-emoji" aria-hidden="true"><%= done ? '👋' : '🔔' %></p>
+  <% if (done) { %>
+    <h1><%= t('alerts.unsubscribedTitle') %></h1>
+    <p><%= t('alerts.unsubscribedText') %></p>
+  <% } else { %>
+    <h1><%= t('alerts.unsubscribeTitle') %></h1>
+    <form method="post" action="/alerts/unsubscribe/<%= token %>">
+      <p><button type="submit"><%= t('alerts.unsubscribeButton') %></button></p>
+    </form>
+  <% } %>
+</section>
+<%- include('partials/footer') %>

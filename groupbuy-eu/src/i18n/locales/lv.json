@@ -59,7 +59,12 @@
     "newDealsOften": "Jauni piedāvājumi parādās visu laiku.",
     "seeAll": "Skatīt visus piedāvājumus",
     "noDeals": "Pašlaik nav atvērtu piedāvājumu.",
-    "checkBack": "Jaunus piedāvājumus pievienojam regulāri. Ieskatieties drīz atkal."
+    "checkBack": "Jaunus piedāvājumus pievienojam regulāri. Ieskatieties drīz atkal.",
+    "searchLabel": "Meklēt piedāvājumus",
+    "searchPlaceholder": "Meklēt piedāvājumus…",
+    "searchButton": "Meklēt",
+    "searchResults": "Rezultāti vaicājumam “{q}”",
+    "noResults": "Jūsu meklējumam neatbilst neviens piedāvājums."
   },
   "card": {
     "on": "🎉 Piedāvājums notiek!",
@@ -281,5 +286,29 @@
     "shippedTracking": "Izsekošanas numurs: {tracking}",
     "shippedTrackingLink": "Izsekojiet savu sūtījumu: {link}",
     "messageFooter": "Jūs saņemat šo e-pastu, jo pievienojāties kopīgajam pirkumam “{name}”."
+  },
+  "alerts": {
+    "title": "🔔 Nepalaidiet garām nevienu piedāvājumu",
+    "text": "Saņemiet e-pastu, kad sākas jauns kopīgais pirkums. Bez surogātpasta: atteikšanās ar vienu klikšķi.",
+    "emailLabel": "Jūsu e-pasta adrese",
+    "button": "Paziņot man",
+    "privacyNote": "Jūsu e-pasta adresi izmantojam tikai paziņojumiem par piedāvājumiem.",
+    "checkTitle": "Pārbaudiet savu pastkastīti",
+    "checkText": "Mēs jums nosūtījām e-pastu. Pieskarieties tajā esošajai saitei, lai apstiprinātu paziņojumus.",
+    "tooMany": "Pārāk daudz mēģinājumu. Lūdzu, mēģiniet vēlāk.",
+    "invalidEmail": "Lūdzu, ievadiet derīgu e-pasta adresi.",
+    "linkInvalid": "Šī saite vairs nav derīga.",
+    "confirmedTitle": "Jūs esat pierakstījies 🎉",
+    "confirmedText": "Mēs jums rakstīsim, kad sāksies jauns kopīgais pirkums.",
+    "unsubscribeTitle": "Atteikties no paziņojumiem par piedāvājumiem?",
+    "unsubscribeButton": "Atteikties",
+    "unsubscribedTitle": "Jūs esat atteicies",
+    "unsubscribedText": "Jūs vairs nesaņemsiet paziņojumus par piedāvājumiem. Jebkurā laikā varat pierakstīties atkal.",
+    "confirmSubject": "Apstipriniet {shop} paziņojumus par piedāvājumiem",
+    "confirmText": "Lūdzu, apstipriniet, ka vēlaties saņemt e-pastu no {shop} ikreiz, kad sākas jauns kopīgais pirkums:",
+    "confirmIgnore": "Ja jūs to nepieprasījāt, vienkārši ignorējiet šo e-pastu – nekas nenotiks.",
+    "newDealSubject": "Jauns kopīgais pirkums: {name}",
+    "newDealText": "Sācies jauns kopīgais pirkums: {name} par {price}. Pievienojieties līdz {date}:",
+    "unsubscribe": "Vairs nevēlaties šos e-pastus? Atteikties: {link}"
   }
 }
