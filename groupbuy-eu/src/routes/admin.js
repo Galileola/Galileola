@@ -37,6 +37,7 @@ import { AD_CHANNELS, LINK_TYPES, RANGES, buildReport, validateAdSpend } from '.
 import { CHANNELS, shopDay } from '../analytics.js';
 import { importParsers, importRoutes } from './adminImport.js';
 import { copyPhotos, dealRoutes, dealToFormValues } from './adminDeals.js';
+import { brandingParsers, brandingRoutes } from './adminBranding.js';
 
 // Photo uploads are parsed into memory (admin only, at most 8 × 8 MB per request), checked,
 // and only then written to UPLOAD_DIR.
@@ -88,6 +89,7 @@ export function adminRoutes(app, ctx) {
   router.post('/legal/:page/:lang/draft', express.json({ limit: '100kb' }));
   router.post('/categories/:slug/ai-names', express.json({ limit: '10kb' }));
   importParsers(router); // Import products: the CSV upload and the (long) preview form
+  brandingParsers(router); // Branding: logo and share picture uploads
   router.use((req, res, next) => {
     res.set('Cache-Control', 'no-store');
     res.locals.csrfToken = csrfToken;
@@ -112,6 +114,7 @@ export function adminRoutes(app, ctx) {
 
   importRoutes(router, ctx);
   dealRoutes(router, ctx);
+  brandingRoutes(router, ctx);
 
   // New deal form. ?copy=<id> fills it in from an existing deal (Duplicate on the deal page); the
   // original's photos are copied when the new deal is created.

@@ -1,5 +1,6 @@
 import { isJoinable } from '../dealState.js';
-import { LANGUAGES } from '../i18n/index.js';
+import { LANGUAGES, translate } from '../i18n/index.js';
+import { currentBrand, webManifest } from '../branding.js';
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -27,6 +28,19 @@ export function seoRoutes(app, ctx) {
         ].join('\n')
       );
   });
+
+  // The web app manifest, so phones can add the shop to the home screen with its icon.
+  app.get('/manifest.webmanifest', (req, res) => {
+    const brand = currentBrand(config);
+    const lang = config.contentLanguage ?? 'en';
+    res
+      .type('application/manifest+json')
+      .set('Cache-Control', 'public, max-age=3600')
+      .send(JSON.stringify(webManifest(brand, { lang, description: translate(lang, 'home.lead') }), null, 2));
+  });
+  // Browsers and phones ask for these at the root even when the page names other files.
+  app.get('/favicon.ico', (req, res) => res.redirect(301, currentBrand(config).icons.favicon));
+  app.get(['/apple-touch-icon.png', '/apple-touch-icon-precomposed.png'], (req, res) => res.redirect(301, currentBrand(config).icons.appleTouch));
 
   // Every page in every language, each listing its other languages (hreflang).
   app.get('/sitemap.xml', (req, res) => {

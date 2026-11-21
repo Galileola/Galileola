@@ -1,7 +1,7 @@
   </main>
   <footer class="site-footer">
     <div class="site-footer-inner">
-      <p class="footer-brand"><span class="brand-mark" aria-hidden="true"></span><%= business.name.startsWith('[') ? 'Group Buy' : business.name %></p>
+      <p class="footer-brand"><% if (brand.logo) { %><img class="brand-logo" src="<%= brand.logo %>" alt="" width="24" height="24"><% } else { %><span class="brand-mark" aria-hidden="true"></span><% } %><%= brand.name %></p>
       <p><%= business.name %> · <%= business.address %> · <%= t('footer.vat', { id: business.vatId }) %></p>
       <p>
         <a href="/terms"><%= t('footer.terms') %></a> ·

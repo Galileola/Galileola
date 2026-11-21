@@ -13,6 +13,7 @@ import { createPhotoStore, optimizeStoredPhotos } from './photos.js';
 import { createAssistant } from './assistant.js';
 import { createTranslator } from './translate.js';
 import { saveSettingsFile, settingsFilePath } from './settingsFile.js';
+import { currentBrand } from './branding.js';
 
 let config;
 try {
@@ -74,7 +75,7 @@ ctx.translator = createTranslator({
   assistant: ctx.assistant,
   repo,
   clock,
-  shopName: () => (config.business.name.startsWith('[') ? 'the shop' : config.business.name),
+  shopName: () => currentBrand(config).name,
   contentLanguage: config.contentLanguage,
   dailyLimit: config.translationDailyLimit,
 });

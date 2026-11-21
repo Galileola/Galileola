@@ -1,0 +1,78 @@
+<%- include('../partials/header') %>
+<p><a href="/admin/settings">← Settings</a></p>
+<h1>🎨 Branding &amp; search</h1>
+<% if (flash) { %><div class="notice"><%= flash %></div><% } %>
+
+<div class="grid branding-grid">
+  <section class="card">
+    <h2>Logo</h2>
+    <p class="muted small">Shown beside the shop name, in the browser tab and as the app icon when someone adds the shop to their phone's home screen. A square image of at least 512 × 512 px works best.</p>
+    <div class="brand-preview">
+      <% if (shown.logo) { %><img src="<%= shown.logo %>" alt="Current logo" width="72" height="72"><% } else { %><img src="<%= shown.icons.icon192 %>" alt="Standard icon" width="72" height="72"><% } %>
+      <span><strong><%= shown.name %></strong><br><span class="muted small"><%= shown.logo ? 'Your logo' : 'The standard icon' %></span></span>
+    </div>
+    <form method="post" action="/admin/branding/logo" enctype="multipart/form-data" class="upload-form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <input type="file" name="image" accept="image/png,image/jpeg,image/webp,image/gif" class="file-input" aria-label="Choose a logo" required>
+      <button type="submit">Upload logo</button>
+    </form>
+    <% if (shown.logo) { %>
+      <form method="post" action="/admin/branding/logo/delete" data-confirm="Remove the logo and use the standard icon again?">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <button type="submit" class="small danger">Remove logo</button>
+      </form>
+    <% } %>
+  </section>
+
+  <section class="card">
+    <h2>Share picture</h2>
+    <p class="muted small">Shown when someone shares a link to the shop on WhatsApp, Facebook, X and so on. Deal pages use the deal's own photo. 1200 × 630 px is ideal; other sizes are cropped to fit.</p>
+    <img class="share-preview" src="<%= shown.shareImage %>" alt="Current share picture" width="1200" height="630">
+    <form method="post" action="/admin/branding/share" enctype="multipart/form-data" class="upload-form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <input type="file" name="image" accept="image/png,image/jpeg,image/webp,image/gif" class="file-input" aria-label="Choose a share picture" required>
+      <button type="submit">Upload picture</button>
+    </form>
+    <% if (shown.customShareImage) { %>
+      <form method="post" action="/admin/branding/share/delete">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <button type="submit" class="small danger">Use the standard picture</button>
+      </form>
+    <% } %>
+  </section>
+</div>
+
+<section class="card narrow" style="margin-top:16px">
+  <form method="post" action="/admin/branding">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <h2>Name and search engines</h2>
+    <label for="shopName">Shop name</label>
+    <input type="text" id="shopName" name="shopName" maxlength="<%= limits.shopName %>" value="<%= values.shopName || '' %>" placeholder="<%= business.name.startsWith('[') ? 'Group Buy' : business.name %>">
+    <p class="muted small">Shown at the top of every page, in browser tabs and in search results. Empty: your company name from Shop details.</p>
+    <% if (errors.shopName) { %><p class="error-text"><%= errors.shopName %></p><% } %>
+
+    <label for="homeTitle">Home page title in search results</label>
+    <input type="text" id="homeTitle" name="homeTitle" maxlength="<%= limits.homeTitle %>" value="<%= values.homeTitle || '' %>" data-count="60" placeholder="<%= shown.name %> – group deals across the EU">
+    <p class="muted small" data-count-for="homeTitle"></p>
+    <% if (errors.homeTitle) { %><p class="error-text"><%= errors.homeTitle %></p><% } %>
+
+    <label for="homeDescription">Home page description in search results</label>
+    <textarea id="homeDescription" name="homeDescription" maxlength="<%= limits.homeDescription %>" rows="3" data-count="155"><%= values.homeDescription || '' %></textarea>
+    <p class="muted small" data-count-for="homeDescription"></p>
+    <p class="muted small">Both are for the shop's main language; the other languages use the translated slogan. Empty: the slogan "Buy together. Pay less." and the line under it.</p>
+    <% if (errors.homeDescription) { %><p class="error-text"><%= errors.homeDescription %></p><% } %>
+
+    <h3>Search engine verification</h3>
+    <p class="muted small">To see how people find the shop, add it to <a href="https://search.google.com/search-console" rel="noopener" target="_blank">Google Search Console</a> and <a href="https://www.bing.com/webmasters" rel="noopener" target="_blank">Bing Webmaster Tools</a>. Choose the "HTML tag" method, paste the code (or the whole tag) here and save, then press Verify there. Then submit your sitemap: <code><%= sitemapUrl %></code></p>
+    <label for="googleVerification">Google verification code</label>
+    <input type="text" id="googleVerification" name="googleVerification" value="<%= values.googleVerification || '' %>" placeholder='<meta name="google-site-verification" content="…">'>
+    <% if (errors.googleVerification) { %><p class="error-text"><%= errors.googleVerification %></p><% } %>
+    <label for="bingVerification">Bing verification code</label>
+    <input type="text" id="bingVerification" name="bingVerification" value="<%= values.bingVerification || '' %>" placeholder='<meta name="msvalidate.01" content="…">'>
+    <% if (errors.bingVerification) { %><p class="error-text"><%= errors.bingVerification %></p><% } %>
+
+    <p><button type="submit">Save</button></p>
+  </form>
+</section>
+<script src="/static/js/admin.js"></script>
+<%- include('../partials/footer') %>

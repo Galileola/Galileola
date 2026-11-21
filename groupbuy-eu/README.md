@@ -107,6 +107,17 @@ Admin creates deal ──► buyers join (SetupIntent: card / SEPA / iDEAL→SEP
   notes typed in the description box and up to 4 of the chosen photos (shrunk to 1024 px in the
   browser). It only uses facts from those inputs and fills the form; the admin edits the draft
   before creating the deal. Uses the same `ANTHROPIC_API_KEY`.
+- **Branding & search** (admin, Settings → Branding & search):
+  - the shop name (the company name from Shop details is used until one is set)
+  - a logo, shown in the header and also made into the browser-tab icon and the app icon for
+    phones' home screens
+  - the picture shown when a link to the shop is shared (deal pages use their own photo)
+  - the home page's title and description in search results (in the shop's main language)
+  - the verification codes for Google Search Console and Bing Webmaster Tools
+
+  Without any of these the shop uses its standard icon and a standard share picture. Every page
+  links a web app manifest (`/manifest.webmanifest`), so phones can add the shop to the home
+  screen. The home page describes the shop and its deal search for search engines (schema.org).
 - **Import products** (admin, `/admin/import`): upload a CSV file of products from another shop
   and turn them into deals.
   - **Formats:** a Shopify product export (rows grouped by Handle, with variants and extra

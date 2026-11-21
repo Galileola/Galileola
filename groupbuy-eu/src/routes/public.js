@@ -18,9 +18,13 @@ export function publicRoutes(app, ctx) {
     const perCategory = {};
     for (const d of all) perCategory[d.category] = (perCategory[d.category] ?? 0) + 1;
     const cover = (category ? deals : all).find((d) => d.cover)?.cover;
-    res.locals.meta = homeMeta({ t, cover, baseUrl: ctx.config.baseUrl, business: ctx.config.business });
+    const { brand, lang } = res.locals;
+    const mainLanguage = lang === (ctx.config.contentLanguage ?? 'en');
+    const seo = mainLanguage && !category ? { title: brand.homeTitle, description: brand.homeDescription } : {};
+    res.locals.meta = homeMeta({ t, cover, baseUrl: ctx.config.baseUrl, business: ctx.config.business, brand, seo });
     res.render('home', {
-      title: category ? t('home.titleCategory', { category: category.name }) : t('home.title'),
+      title: seo.title || (category ? t('home.titleCategory', { category: category.name }) : t('home.title')),
+      fullTitle: Boolean(seo.title),
       deals,
       category,
       perCategory,
@@ -45,7 +49,7 @@ export function publicRoutes(app, ctx) {
     res.locals.meta = dealMeta({
       deal, photos, state, lang, formatEuro, baseUrl: ctx.config.baseUrl, business: ctx.config.business, categoryName: categoryFor(deal.category).name, seo,
     });
-    res.render('deal', { title: seo.title || deal.product_name, deal, photos, state, values: {}, errors: {} });
+    res.render('deal', { title: seo.title || deal.product_name, fullTitle: Boolean(seo.title), deal, photos, state, values: {}, errors: {} });
   });
 
   app.get('/api/deals/:slug', (req, res) => {

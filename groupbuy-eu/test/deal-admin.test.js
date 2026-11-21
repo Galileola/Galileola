@@ -106,7 +106,7 @@ test('admin: edit a deal, and its search title shows in the page head', async (t
   assert.equal(saved.slug, deal.slug, 'the address stays the same');
 
   const page = await app.get(`/deals/${deal.slug}`, {});
-  assert.match(page, /<title>Oak desk lamp – 10% off together · Test Shop<\/title>/);
+  assert.match(page, /<title>Oak desk lamp – 10% off together<\/title>/, "the owner's title as it is");
   assert.match(page, /og:title" content="Oak desk lamp – 10% off together"/);
   assert.match(page, /name="description" content="Join the group deal for a solid oak desk lamp."/);
 

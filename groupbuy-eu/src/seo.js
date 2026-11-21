@@ -55,14 +55,23 @@ export function dealMeta({ deal, photos = [], state, baseUrl, lang, business, ca
   };
 }
 
-// The home page: the slogan, and the first deal photo as the preview picture.
-export function homeMeta({ t, cover, baseUrl, business }) {
+// The home page: the owner's search title and description (Admin → Branding, in the shop's main
+// language) or the slogan, the first deal photo or the share picture, and schema.org data for the
+// shop (its name, logo and the deal search).
+export function homeMeta({ t, cover, baseUrl, business, brand, seo = {} }) {
   const org = organization(business, baseUrl);
+  if (org && brand?.logo) org.logo = baseUrl + brand.logo;
+  const site = {
+    '@type': 'WebSite',
+    name: brand?.name,
+    url: `${baseUrl}/`,
+    potentialAction: { '@type': 'SearchAction', target: `${baseUrl}/?q={search_term_string}`, 'query-input': 'required name=search_term_string' },
+  };
   return {
     type: 'website',
-    title: `${t('home.heroLine1')} ${t('home.heroLine2')}`,
-    description: shorten(t('home.lead')),
-    image: cover ? baseUrl + photoUrl(cover.filename) : '',
-    jsonLd: org ? { '@context': 'https://schema.org', ...org } : null,
+    title: plain(seo.title) || `${t('home.heroLine1')} ${t('home.heroLine2')}`,
+    description: shorten(seo.description) || shorten(t('home.lead')),
+    image: brand?.customShareImage ? baseUrl + brand.shareImage : cover ? baseUrl + photoUrl(cover.filename) : '',
+    jsonLd: { '@context': 'https://schema.org', '@graph': org ? [site, org] : [site] },
   };
 }

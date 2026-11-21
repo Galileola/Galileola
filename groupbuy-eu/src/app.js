@@ -5,6 +5,7 @@ import { photoUrl, thumbUrl } from './photos.js';
 import { languageMiddleware } from './i18n/middleware.js';
 import { loadCategories } from './categories.js';
 import { applyBusinessSettings } from './businessSettings.js';
+import { applyBranding, currentBrand } from './branding.js';
 import { analyticsMiddleware, createAnalytics } from './analytics.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -16,6 +17,7 @@ export function createApp(ctx) {
   // Settings the owner changes in the admin: categories and the company details.
   loadCategories(ctx.repo);
   applyBusinessSettings(config, ctx.repo);
+  if (ctx.repo?.getAdminSetting) applyBranding(config, ctx.repo);
   // Visit statistics for Admin → Performance (no cookies; see src/analytics.js).
   if (ctx.analytics === undefined && ctx.repo?.insertVisit) ctx.analytics = createAnalytics({ repo: ctx.repo, clock: ctx.clock, config });
 
@@ -58,6 +60,7 @@ export function createApp(ctx) {
       ].join('; '),
     });
     res.locals.business = config.business;
+    res.locals.brand = currentBrand(config); // shop name, logo, icons, share picture (src/branding.js)
     res.locals.loadStripe = false; // payment pages switch this on (Stripe.js only where needed)
     res.locals.title = 'Group Buy';
     res.locals.photoUrl = photoUrl;
