@@ -55,6 +55,8 @@ export function loadConfig(env = process.env) {
     stripeWebhookSecret: env.STRIPE_WEBHOOK_SECRET,
 
     adminUser: env.ADMIN_USER || 'admin',
+    // Where "Forgot your password?" sends the reset link (empty: the shop's contact email).
+    adminEmail: env.ADMIN_EMAIL || '',
     // "off" switches two-step login off (for a lost phone and lost backup codes).
     adminTwoStep: String(env.ADMIN_TWO_STEP || '').trim().toLowerCase() === 'off' ? 'off' : 'on',
     adminPassword: env.ADMIN_PASSWORD,

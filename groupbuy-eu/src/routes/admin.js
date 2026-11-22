@@ -44,6 +44,8 @@ import { adminAlertRoutes } from './alerts.js';
 import { goLiveChecks, isLive, liveProblems } from '../goLive.js';
 import { twoStepGate, twoStepRoutes } from './adminTwoStep.js';
 import { loginRoutes, logoutRoutes, requireAdmin } from './adminLogin.js';
+import { passwordResetRoutes } from './adminForgot.js';
+import { maskEmail, resetAddress } from '../passwordReset.js';
 import { createAdminSessions } from '../adminSession.js';
 
 // Photo uploads are parsed into memory (admin only, at most 8 × 8 MB per request), checked,
@@ -82,6 +84,7 @@ export function adminRoutes(app, ctx) {
     next();
   });
   loginRoutes(router, ctx, { auth, sessions }); // the login page, open to everyone
+  passwordResetRoutes(router, ctx, { auth, sessions }); // "Forgot your password?", open to everyone
   router.use(requireAdmin(sessions)); // every other admin page needs a login
   router.use(twoStepGate(ctx)); // the code from the authenticator app, when two-step login is on
   // Multipart forms (with photos) are parsed before the form-token check, which reads req.body.
@@ -365,7 +368,15 @@ export function adminRoutes(app, ctx) {
   // Change the admin password in the browser (never sent anywhere but this server, over HTTPS).
   const passwordLimiter = createRateLimiter({ windowMs: 15 * 60_000, max: 10, clock });
   const passwordPage = (res, status, locals) =>
-    res.status(status).render('admin/password', { title: 'Change password', minLength: MIN_PASSWORD_LENGTH, adminUser: config.adminUser, error: '', done: false, ...locals });
+    res.status(status).render('admin/password', {
+      title: 'Change password',
+      minLength: MIN_PASSWORD_LENGTH,
+      adminUser: config.adminUser,
+      resetTo: ctx.mailer?.delivers ? maskEmail(resetAddress(config)) : '',
+      error: '',
+      done: false,
+      ...locals,
+    });
 
   router.get('/password', (req, res) => passwordPage(res, 200, {}));
 

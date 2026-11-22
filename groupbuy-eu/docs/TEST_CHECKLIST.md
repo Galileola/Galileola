@@ -172,3 +172,7 @@ app's logic, not Stripe itself. The manual run above is what confirms the real i
       browser completely and open `/admin` again. Expected: still logged in.
 - [ ] Log in on two devices, then change the password on one (Settings → Password). Expected: that
       device stays logged in; the other one shows the login page on its next click.
+- [ ] On the login page, tap **Forgot your password?**, then **Email me a reset link**. Expected:
+      an email at the address shown (first letter and domain). Open its link, choose a new
+      password and save. Expected: you're in the admin with "Your new password is saved", and the
+      old password no longer works. Opening the same link again says it no longer works.

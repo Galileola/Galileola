@@ -89,6 +89,7 @@ STRIPE_WEBHOOK_SECRET=whsec_<from step A6>
 APP_SECRET=<random>
 ADMIN_USER=admin
 ADMIN_PASSWORD=<random or a strong password>
+ADMIN_EMAIL=<you@yourdomain.com>
 CRON_SECRET=<random>
 DATABASE_PATH=/home/<u123456789>/groupbuy-data/groupbuy.sqlite
 BACKUP_DIR=/home/<u123456789>/groupbuy-data/backups
@@ -113,6 +114,9 @@ Notes on these values:
 - **Stripe keys:** use test keys until you go live. With the default `PAYMENTS_MODE=test` the
   app refuses to start with live keys. To take real payments, follow the README's "Going live"
   section and Admin → Settings → Go-live checklist.
+- **`ADMIN_EMAIL`:** where "Forgot your password?" on the admin login page sends the reset
+  link. Optional: without it the link goes to `BUSINESS_EMAIL` (the customer contact email). It
+  needs `SMTP_URL` too.
 - **Company details** can also be filled in later in Admin → Settings → Shop details.
 - **After changing variables**, restart the app in hPanel so it picks them up.
 
@@ -190,6 +194,7 @@ off-site copies first: **Admin → Download database backup** and **Download pho
 | Deals stay "open" after the deadline | The every-minute cron job isn't running. Check its log in hPanel and that `CRON_SECRET` matches |
 | Webhook shows 400 in Stripe | `STRIPE_WEBHOOK_SECRET` doesn't match the endpoint's signing secret; restart after fixing |
 | No emails arrive | Check **Admin → Email outbox** for the error text; usually `SMTP_URL` encoding or port |
+| Forgot the admin password | **Forgot your password?** on the login page emails a reset link (needs `SMTP_URL`). No access to that email: set a new `ADMIN_PASSWORD` and restart |
 | Payment form doesn't appear | Browser console: look for "Content Security Policy" errors and report the blocked domain |
 | Old behaviour after a redeploy | Restart the app in hPanel |
 | Lost the phone and the backup codes for two-step login | Set `ADMIN_TWO_STEP=off`, restart, log in with the password and set two-step login up again |

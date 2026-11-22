@@ -1,0 +1,25 @@
+<%- include('../partials/header') %>
+<section class="card narrow login-card">
+  <p class="message-emoji" aria-hidden="true">🔑</p>
+  <% if (expired) { %>
+    <h1>This link no longer works</h1>
+    <p>A reset link works once, for 30 minutes, and only the newest one works. Ask for a new one.</p>
+    <p><a class="button" href="/admin/forgot">Get a new link</a></p>
+    <p><a href="/admin/login">← Back to the login page</a></p>
+  <% } else { %>
+    <h1>Choose a new password</h1>
+    <% if (error) { %><div class="notice bad" role="alert"><%= error %></div><% } %>
+    <form method="post" action="/admin/reset" autocomplete="on">
+      <input type="hidden" name="token" value="<%= token %>">
+      <input type="text" name="username" value="<%= adminUser %>" autocomplete="username" hidden>
+      <label for="new_password">New password</label>
+      <input type="password" id="new_password" name="new_password" autocomplete="new-password" minlength="<%= minLength %>" maxlength="200" required autofocus>
+      <p class="muted small">At least <%= minLength %> characters. Tip: let your browser or password manager suggest a strong one and save it.</p>
+      <label for="repeat_password">New password again</label>
+      <input type="password" id="repeat_password" name="repeat_password" autocomplete="new-password" minlength="<%= minLength %>" maxlength="200" required>
+      <p><button type="submit" class="big">Save and log in</button></p>
+    </form>
+    <p class="muted small">Every device where the admin is open will be logged out.</p>
+  <% } %>
+</section>
+<%- include('../partials/footer') %>

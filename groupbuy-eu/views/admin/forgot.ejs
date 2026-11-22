@@ -1,0 +1,23 @@
+<%- include('../partials/header') %>
+<section class="card narrow login-card">
+  <p class="message-emoji" aria-hidden="true">🔑</p>
+  <h1>Forgot your password?</h1>
+  <% if (error) { %><div class="notice bad" role="alert"><%= error %></div><% } %>
+  <% if (sent) { %>
+    <div class="notice ok" role="status">Email sent to <strong><%= masked %></strong>. Open the link in it to choose a new password. It works once, for 30 minutes.</div>
+    <p class="muted small">Nothing after a few minutes? Look in the spam folder, or come back here and ask for a new link (only the newest one works).</p>
+  <% } else if (emailing && masked) { %>
+    <p>We'll email you a link to choose a new password. It goes to the shop's admin email, <strong><%= masked %></strong>.</p>
+    <form method="post" action="/admin/forgot">
+      <p><button type="submit" class="big">Email me a reset link</button></p>
+    </form>
+  <% } else if (!emailing) { %>
+    <div class="notice warn">This shop can't send emails yet (<code>SMTP_URL</code> isn't set), so a reset link can't be emailed. Use the hosting panel instead, as described below.</div>
+  <% } else { %>
+    <div class="notice warn">There's no email address to send a reset link to. Set <code>ADMIN_EMAIL</code>, or the customer contact email in Settings → Shop details. Until then, use the hosting panel, as described below.</div>
+  <% } %>
+  <h2>No access to that email?</h2>
+  <p class="muted small">Set a new <code>ADMIN_PASSWORD</code> in Hostinger (Websites → your shop's website → Environment variables) and restart the app. You can then log in with that password; it replaces the one changed in the admin.</p>
+  <p><a href="/admin/login">← Back to the login page</a></p>
+</section>
+<%- include('../partials/footer') %>

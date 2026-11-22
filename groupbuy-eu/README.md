@@ -178,6 +178,12 @@ Admin creates deal ──► buyers join (SetupIntent: card / SEPA / iDEAL→SEP
   on the server as well as in the browser, so a copied login cookie stops working too. Changing
   the password (in the admin or with a new `ADMIN_PASSWORD`) logs out every other device. After
   10 wrong passwords from one address in 15 minutes, that address is refused for 15 minutes.
+- **Forgot your password?** (admin login page): emails a link to choose a new password to
+  `ADMIN_EMAIL`, or else to the customer contact email. The link works once, for 30 minutes,
+  and only the newest one works; the outbox keeps the email without the link. At most 3 emails
+  per visitor every 15 minutes. Two-step login still asks for the code afterwards. Without
+  email (`SMTP_URL`), the page explains the other way: a new `ADMIN_PASSWORD` in the hosting
+  panel.
 - **Two-step login** (Admin → Settings → Two-step login): after the password, the admin asks
   for a 6-digit code from an authenticator app (Google Authenticator, Microsoft Authenticator,
   1Password, Bitwarden, Authy …). It uses the standard TOTP codes (RFC 6238).
