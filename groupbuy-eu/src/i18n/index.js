@@ -45,7 +45,19 @@ export const ENGLISH_NAMES = {
 export const LANGUAGE_COOKIE = 'gb_lang';
 
 const known = new Set(LANGUAGE_CODES);
+// A language the code has a dictionary for (whether or not the shop offers it).
 export const isLanguage = (code) => typeof code === 'string' && known.has(code);
+
+// The languages the shop offers to visitors (Admin → Settings → Languages, src/shopLanguages.js):
+// the language menu, the language picked from the browser, search engines' links and the deal
+// translations. Every dictionary stays in the code, so a language switched off can come back at
+// any time; buyers who joined in it keep getting their emails in it.
+let offered = new Set(LANGUAGE_CODES);
+export function setShopLanguages(codes, required = [DEFAULT_LANGUAGE]) {
+  offered = new Set([...(codes ?? []), ...required].filter(isLanguage));
+}
+export const shopLanguages = () => LANGUAGES.filter((l) => offered.has(l.code));
+export const isShopLanguage = (code) => isLanguage(code) && offered.has(code);
 
 // Locale used for numbers and dates. en-IE writes euro amounts the European way (€49.00).
 const INTL_LOCALE = { en: 'en-IE', pt: 'pt-PT' };
@@ -221,18 +233,19 @@ export function fromAcceptLanguage(header) {
   // Norwegian readers are closest to Danish; Ukrainian and Belarusian readers usually read Russian.
   const alias = { nb: 'da', nn: 'da', no: 'da', uk: 'ru', be: 'ru' };
   for (const w of wanted) {
-    const code = isLanguage(w.lang) ? w.lang : alias[w.lang];
-    if (code) return code;
+    const code = isShopLanguage(w.lang) ? w.lang : alias[w.lang];
+    if (isShopLanguage(code)) return code;
   }
   return null;
 }
 
 // ?lang=xx (a choice from the language menu, remembered in a cookie) > cookie > browser > English.
+// Only languages the shop offers count.
 export function pickLanguage(req) {
   const q = typeof req.query?.lang === 'string' ? req.query.lang.toLowerCase() : '';
-  if (isLanguage(q)) return { lang: q, chosen: true };
+  if (isShopLanguage(q)) return { lang: q, chosen: true };
   const fromCookie = cookieValue(req.headers?.cookie, LANGUAGE_COOKIE);
-  if (isLanguage(fromCookie)) return { lang: fromCookie, chosen: false };
+  if (isShopLanguage(fromCookie)) return { lang: fromCookie, chosen: false };
   return { lang: fromAcceptLanguage(req.headers?.['accept-language']) ?? DEFAULT_LANGUAGE, chosen: false };
 }
 

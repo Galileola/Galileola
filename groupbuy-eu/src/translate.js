@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import { ENGLISH_NAMES, LANGUAGE_CODES } from './i18n/index.js';
+import { ENGLISH_NAMES, LANGUAGE_CODES, shopLanguages } from './i18n/index.js';
 
 // Translations of the shop's own content (deal names and descriptions, the legal pages) into the
 // visitor's language, made by Claude and kept in the database. A page never waits for one: it
@@ -187,7 +187,7 @@ export function createTranslator({
 
     // Ask for every language at once, e.g. right after a deal is created.
     warmDeal(deal) {
-      for (const lang of LANGUAGE_CODES) this.deal(deal, lang);
+      for (const { code } of shopLanguages()) this.deal(deal, code);
     },
 
     // Resolves when no translation is running (tests).

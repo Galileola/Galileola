@@ -126,3 +126,13 @@ document.querySelectorAll('[data-copy-codes]').forEach((button) =>
   })
 );
 document.querySelectorAll('[data-print]').forEach((button) => button.addEventListener('click', () => window.print()));
+
+// Languages: quick picks tick exactly the listed languages (the always-on ones stay ticked).
+document.querySelectorAll('[data-lang-set]').forEach((button) =>
+  button.addEventListener('click', () => {
+    const codes = button.dataset.langSet.split(' ').filter(Boolean);
+    document.querySelectorAll('.language-choice input[type=checkbox][name=lang]:not(:disabled)').forEach((box) => {
+      box.checked = codes.includes(box.value);
+    });
+  })
+);

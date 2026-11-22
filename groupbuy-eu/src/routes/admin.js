@@ -1,7 +1,8 @@
 import express from 'express';
 import { applyLanguage } from '../i18n/middleware.js';
 import Anthropic from '@anthropic-ai/sdk';
-import { ENGLISH_NAMES, LANGUAGES, isLanguage } from '../i18n/index.js';
+import { ENGLISH_NAMES, LANGUAGES, isLanguage, isShopLanguage, shopLanguages } from '../i18n/index.js';
+import { requiredLanguages, saveShopLanguages, savedShopLanguages } from '../shopLanguages.js';
 import { LEGAL_PAGES, MAX_LEGAL_TEXT, htmlToLegalText } from '../legalText.js';
 import { LEGAL_PAGE_INFO, englishLegalHtml } from './legal.js';
 import multer from 'multer';
@@ -496,6 +497,24 @@ export function adminRoutes(app, ctx) {
   // ---- Settings: one page that links to everything the owner can set up.
   router.get('/settings', (req, res) => res.render('admin/settings', { title: 'Settings' }));
 
+  // ---- Languages the shop offers (src/shopLanguages.js)
+  const languagesPage = (res, status, extra = {}) => {
+    const required = requiredLanguages(config);
+    res.status(status).render('admin/languages', {
+      title: 'Languages',
+      rows: LANGUAGES.map((l) => ({ ...l, english: ENGLISH_NAMES[l.code], on: isShopLanguage(l.code), required: required.includes(l.code) }))
+        .sort((a, b) => a.english.localeCompare(b.english)),
+      chosenYet: savedShopLanguages(repo) !== null,
+      saved: false,
+      ...extra,
+    });
+  };
+  router.get('/languages', (req, res) => languagesPage(res, 200, { saved: req.query.saved === '1' }));
+  router.post('/languages', (req, res) => {
+    saveShopLanguages(repo, config, req.body.lang, clock.now().toISOString());
+    res.redirect(303, '/admin/languages?saved=1');
+  });
+
   // ---- Shop details: company name, address, VAT number… (src/businessSettings.js)
   const businessPage = (res, status, extra = {}) => {
     const current = {};
@@ -555,15 +574,16 @@ export function adminRoutes(app, ctx) {
 
   const categoryEditor = (req, res, status, extra = {}) => {
     const c = categoryFor(req.params.slug);
+    const languages = shopLanguages();
     const defaults = Object.fromEntries(
-      LANGUAGES.map((l) => [l.code, c.builtIn ? categoryName({ ...c, names: {} }, l.code, (key) => translate(l.code, key)) : c.names.en || c.name])
+      languages.map((l) => [l.code, c.builtIn ? categoryName({ ...c, names: {} }, l.code, (key) => translate(l.code, key)) : c.names.en || c.name])
     );
     res.status(status).render('admin/category-edit', {
       title: `Category: ${categoryName(c, 'en', englishT)}`,
       c,
-      languages: LANGUAGES,
+      languages,
       defaults,
-      values: { emoji: c.emoji, hint: c.hint, ...Object.fromEntries(LANGUAGES.map((l) => [`name_${l.code}`, c.names[l.code] ?? ''])) },
+      values: { emoji: c.emoji, hint: c.hint, ...Object.fromEntries(languages.map((l) => [`name_${l.code}`, c.names[l.code] ?? ''])) },
       aiEnabled: Boolean(ctx.assistant),
       added: req.query.added === '1',
       saved: req.query.saved === '1',
@@ -582,8 +602,9 @@ export function adminRoutes(app, ctx) {
     if (!isCategory(slug)) return next();
     const c = categoryFor(slug);
     const emoji = String(req.body.emoji ?? '').trim();
-    const names = {};
-    for (const l of LANGUAGES) {
+    // Names for languages the shop doesn't offer right now aren't in the form: keep them.
+    const names = Object.fromEntries(Object.entries(c.names ?? {}).filter(([code]) => !isShopLanguage(code)));
+    for (const l of shopLanguages()) {
       const v = String(req.body[`name_${l.code}`] ?? '').replace(/\s+/g, ' ').trim();
       if (v) names[l.code] = v.slice(0, 40);
     }
@@ -603,7 +624,7 @@ export function adminRoutes(app, ctx) {
     res.set('Cache-Control', 'no-store');
     if (!ctx.assistant) return res.status(503).json({ error: 'Translating needs ANTHROPIC_API_KEY in the environment variables.' });
     const english = String(req.body.name ?? '').trim().slice(0, 40) || categoryName(categoryFor(slug), 'en', englishT);
-    const others = LANGUAGES.filter((l) => l.code !== 'en');
+    const others = shopLanguages().filter((l) => l.code !== 'en');
     const schema = { type: 'object', properties: Object.fromEntries(others.map((l) => [l.code, { type: 'string' }])), required: others.map((l) => l.code), additionalProperties: false };
     try {
       const result = await ctx.assistant.reply({
@@ -643,7 +664,7 @@ export function adminRoutes(app, ctx) {
     res.render('admin/legal', {
       title: 'Legal pages',
       pages: LEGAL_PAGES.map((slug) => ({ slug, name: LEGAL_NAMES[slug] })),
-      languages: LANGUAGES,
+      languages: shopLanguages(),
       saved,
       autoTranslation: Boolean(ctx.assistant),
     });

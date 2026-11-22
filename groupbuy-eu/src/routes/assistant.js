@@ -3,7 +3,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { buildSystemPrompt, cleanHistory } from '../assistant.js';
 import { isJoinable } from '../dealState.js';
 import { createRateLimiter } from '../rateLimit.js';
-import { ENGLISH_NAMES, isLanguage } from '../i18n/index.js';
+import { ENGLISH_NAMES, isShopLanguage } from '../i18n/index.js';
 import { applyLanguage } from '../i18n/middleware.js';
 
 // POST /api/assistant  { messages: [{ role: 'user' | 'assistant', content }] } -> { reply }
@@ -15,7 +15,7 @@ export function assistantRoutes(app, ctx) {
 
   app.post('/api/assistant', express.json({ limit: '64kb' }), async (req, res) => {
     res.set('Cache-Control', 'no-store');
-    if (isLanguage(req.body?.lang) && req.body.lang !== res.locals.lang) applyLanguage(req, res, req.body.lang, ctx);
+    if (isShopLanguage(req.body?.lang) && req.body.lang !== res.locals.lang) applyLanguage(req, res, req.body.lang, ctx);
     const { t, lang } = res.locals;
     if (!ctx.assistant) return res.status(503).json({ error: t('assistant.unavailable') });
 

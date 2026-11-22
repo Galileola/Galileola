@@ -1,5 +1,5 @@
 import { isJoinable } from '../dealState.js';
-import { LANGUAGES, translate } from '../i18n/index.js';
+import { shopLanguages, translate } from '../i18n/index.js';
 import { currentBrand, webManifest } from '../branding.js';
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -57,6 +57,7 @@ export function seoRoutes(app, ctx) {
   // Every page in every language, each listing its other languages (hreflang).
   app.get('/sitemap.xml', (req, res) => {
     const now = clock.now();
+    const languages = shopLanguages();
     const deals = repo.listPublicDeals().filter((d) => isJoinable(d, now));
     const newest = deals.map((d) => d.created_at).sort().at(-1);
     const pages = [
@@ -70,10 +71,10 @@ export function seoRoutes(app, ctx) {
     const out = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">'];
     for (const page of pages) {
       const alternates = [
-        ...LANGUAGES.map((l) => `    <xhtml:link rel="alternate" hreflang="${l.code}" href="${esc(url(page.path, l.code))}"/>`),
+        ...languages.map((l) => `    <xhtml:link rel="alternate" hreflang="${l.code}" href="${esc(url(page.path, l.code))}"/>`),
         `    <xhtml:link rel="alternate" hreflang="x-default" href="${esc(url(page.path, 'en'))}"/>`,
       ].join('\n');
-      for (const l of LANGUAGES) {
+      for (const l of languages) {
         out.push('  <url>', `    <loc>${esc(url(page.path, l.code))}</loc>`);
         if (page.lastmod) out.push(`    <lastmod>${esc(new Date(page.lastmod).toISOString().slice(0, 10))}</lastmod>`);
         out.push(`    <priority>${page.priority}</priority>`, alternates, '  </url>');

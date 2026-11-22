@@ -3,7 +3,7 @@ import { JoinError } from '../engine.js';
 import { isJoinable, publicDealState } from '../dealState.js';
 import { EU_COUNTRIES, isValidEmail } from '../util.js';
 import { createRateLimiter } from '../rateLimit.js';
-import { isLanguage, translate } from '../i18n/index.js';
+import { isShopLanguage, translate } from '../i18n/index.js';
 import { applyLanguage } from '../i18n/middleware.js';
 
 const english = (key) => translate('en', key);
@@ -55,7 +55,7 @@ export function joinRoutes(app, ctx) {
     const deal = repo.dealBySlug(req.params.slug);
     if (!deal) return next();
     // The form says which language the page was in (the visitor may have no language cookie).
-    if (isLanguage(req.body.lang) && req.body.lang !== res.locals.lang) applyLanguage(req, res, req.body.lang, ctx);
+    if (isShopLanguage(req.body.lang) && req.body.lang !== res.locals.lang) applyLanguage(req, res, req.body.lang, ctx);
     const { t, lang } = res.locals;
     if (!ordersOpen(ctx)) return renderDeal(res, deal, req.body, { form: t('join.errClosed') }, 409);
     if (!joinLimiter.take(req.ip)) {

@@ -91,6 +91,12 @@ Admin creates deal ──► buyers join (SetupIntent: card / SEPA / iDEAL→SEP
   stays off until `ANTHROPIC_API_KEY` is set; `ASSISTANT_RATE_LIMIT` and
   `ASSISTANT_DAILY_LIMIT` cap usage. If the model declines a message, the API's server-side
   fallback answers on another model.
+- **Languages** (Admin → Settings → Languages): tick which of the 25 languages the shop offers.
+  Only those appear in the language menu, the sitemap and search engines' language links, the
+  browser's language is matched against them (anything else gets English), and new deals are
+  translated only into them. English, and `CONTENT_LANGUAGE` if it's another, are always on. Every
+  dictionary stays in the code, so a language can be switched on again at any time; category names
+  typed for a language that is off are kept. Until the page is saved, all 25 are offered.
 - **Categories**: every deal has one of 12 standard categories (Electronics, Home & Kitchen,
   Fashion, Beauty & Health, Sports & Outdoors, Toys & Kids, Food & Drinks, Garden & DIY, Pets,
   Books & Hobbies, Car & Motorbike, Other). The home page has a chip for each one with its number of
