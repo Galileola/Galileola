@@ -40,7 +40,9 @@ export function applyLanguage(req, res, lang, ctx = {}) {
     // its own, so routes set res.locals.canonicalPath (e.g. the deal page).
     langUrl: (code) => {
       const u = new URL(req.originalUrl || '/', 'http://local');
-      const base = req.method === 'GET' ? u.pathname : res.locals.canonicalPath || '/';
+      // "/.//evil.example" resolves to the path "//evil.example", which a browser would read as a
+      // link to another site: keep a single leading slash.
+      const base = (req.method === 'GET' ? u.pathname : res.locals.canonicalPath || '/').replace(/^[/\\]+/, '/');
       const params = req.method === 'GET' ? u.searchParams : new URLSearchParams();
       for (const p of TRACKING_PARAMS) params.delete(p); // an ad's tags belong to the visit, not the page
       params.set('lang', code);
