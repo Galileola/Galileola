@@ -11,6 +11,7 @@ import { publicRoutes } from '../src/routes/public.js';
 import { adminRoutes, MAX_LOGIN_FAILURES } from '../src/routes/admin.js';
 import { createPhotoStore } from '../src/photos.js';
 import { anonymiseOldSignups } from '../src/privacy.js';
+import { adminLogin } from './support/admin.js';
 
 const PNG = Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), Buffer.alloc(24)]);
 
@@ -30,7 +31,7 @@ async function startApp() {
   const server = createApp(ctx).listen(0);
   await new Promise((resolve) => server.once('listening', resolve));
   const base = `http://127.0.0.1:${server.address().port}`;
-  const auth = { Authorization: 'Basic ' + Buffer.from('admin:secret-pw').toString('base64') };
+  const auth = await adminLogin(base);
   const csrf = hmac(config.appSecret, 'admin-csrf');
   const get = async (p) => (await fetch(base + p, { headers: auth })).text();
   const post = (p, fields = {}) =>
@@ -42,7 +43,7 @@ async function startApp() {
     repo.updateParticipant(p.id, { status, amount_cents: 4900, stripe_customer_id: `cus_${p.id}`, ...extra }, clock.now().toISOString());
     return repo.participantById(p.id);
   };
-  return { base, repo, ctx, get, post, addDeal, join, deleted, config, advance: (ms) => { nowMs += ms; }, close: () => server.close() };
+  return { base, auth, repo, ctx, get, post, addDeal, join, deleted, config, advance: (ms) => { nowMs += ms; }, close: () => server.close() };
 }
 
 test('admin: customers by email, search, details and CSV', async (t) => {
@@ -68,7 +69,7 @@ test('admin: customers by email, search, details and CSV', async (t) => {
   assert.match(person, /Main St 1, 10111 Tallinn, EE/);
   assert.match(person, /from 1 sign-up that never led to a payment/);
 
-  const csv = await (await fetch(`${app.base}/admin/customers.csv`, { headers: { Authorization: 'Basic ' + Buffer.from('admin:secret-pw').toString('base64') } })).text();
+  const csv = await (await fetch(`${app.base}/admin/customers.csv`, { headers: app.auth })).text();
   assert.match(csv, /"email","name","sign_ups","paid_orders","paid_eur"/);
   assert.match(csv, /"anna@example.com","Anna Tamm","2","1","49.00"/);
 });
@@ -108,15 +109,16 @@ test('erasing a person keeps paid orders; old sign-ups are anonymised automatica
 test('admin login: too many wrong passwords lock that address out for 15 minutes', async (t) => {
   const app = await startApp();
   t.after(app.close);
-  const wrong = { Authorization: 'Basic ' + Buffer.from('admin:nope').toString('base64') };
-  const right = { Authorization: 'Basic ' + Buffer.from('admin:secret-pw').toString('base64') };
-  assert.equal((await fetch(`${app.base}/admin`)).status, 401, 'no password: not counted');
-  for (let i = 0; i < MAX_LOGIN_FAILURES; i++) assert.equal((await fetch(`${app.base}/admin`, { headers: wrong })).status, 401);
-  const locked = await fetch(`${app.base}/admin`, { headers: right });
+  const login = (password) =>
+    fetch(`${app.base}/admin/login`, { method: 'POST', body: new URLSearchParams({ username: 'admin', password }), redirect: 'manual' });
+  assert.equal((await login('')).status, 422, 'an empty password: not counted');
+  for (let i = 0; i < MAX_LOGIN_FAILURES; i++) assert.equal((await login('nope')).status, 401);
+  const locked = await login('secret-pw');
   assert.equal(locked.status, 429, 'even the right password waits');
+  assert.match(await locked.text(), /Too many wrong passwords/);
   assert.ok(Number(locked.headers.get('retry-after')) > 800);
   app.advance(15 * 60_000 + 1000);
-  assert.equal((await fetch(`${app.base}/admin`, { headers: right })).status, 200);
+  assert.equal((await login('secret-pw')).status, 303);
 });
 
 test('admin: download every photo as one ZIP', async (t) => {
@@ -124,7 +126,7 @@ test('admin: download every photo as one ZIP', async (t) => {
   t.after(app.close);
   const photos = createPhotoStore(app.config.uploadDir);
   const names = [photos.save(PNG), photos.save(PNG)];
-  const res = await fetch(`${app.base}/admin/photos.zip`, { headers: { Authorization: 'Basic ' + Buffer.from('admin:secret-pw').toString('base64') } });
+  const res = await fetch(`${app.base}/admin/photos.zip`, { headers: app.auth });
   assert.equal(res.headers.get('content-type'), 'application/zip');
   const zip = Buffer.from(await res.arrayBuffer());
   assert.equal(zip.readUInt32LE(0), 0x04034b50);

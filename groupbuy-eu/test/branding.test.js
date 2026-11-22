@@ -11,6 +11,7 @@ import { seoRoutes } from '../src/routes/seo.js';
 import { adminRoutes } from '../src/routes/admin.js';
 import { createPhotoStore, loadSharp } from '../src/photos.js';
 import { verificationCode } from '../src/branding.js';
+import { adminLogin } from './support/admin.js';
 
 const sharp = await loadSharp();
 
@@ -32,7 +33,7 @@ async function startApp({ business } = {}) {
   const server = createApp({ config, repo, clock: systemClock, photos: createPhotoStore(config.uploadDir), routes: [seoRoutes, publicRoutes, adminRoutes] }).listen(0);
   await new Promise((resolve) => server.once('listening', resolve));
   const base = `http://127.0.0.1:${server.address().port}`;
-  const auth = { Authorization: 'Basic ' + Buffer.from('admin:secret-pw').toString('base64') };
+  const auth = await adminLogin(base);
   const csrf = hmac(config.appSecret, 'admin-csrf');
   const post = (p, fields) =>
     fetch(base + p, { method: 'POST', headers: { ...auth, 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ _csrf: csrf, ...fields }), redirect: 'manual' });

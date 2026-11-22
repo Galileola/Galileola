@@ -12,6 +12,7 @@ import { adminRoutes } from '../src/routes/admin.js';
 import { createPhotoStore } from '../src/photos.js';
 import { createTranslator } from '../src/translate.js';
 import { ENGLISH_NAMES } from '../src/i18n/index.js';
+import { adminLogin } from './support/admin.js';
 
 const codeFor = Object.fromEntries(Object.entries(ENGLISH_NAMES).map(([code, name]) => [name, code]));
 
@@ -64,7 +65,7 @@ async function startApp(assistant) {
       headline: 'Light that folds', social_post: '', price_cents: 4990, tax_code: 'txcd_99999999', min_buyers: 5,
       deadline: new Date(Date.now() + 5 * 864e5).toISOString(), created_at: new Date().toISOString(),
     });
-  return { get, repo, translator, addDeal, close: () => server.close() };
+  return { base, get, repo, translator, addDeal, close: () => server.close() };
 }
 
 test('the page language follows the browser, the menu choice and its cookie', async (t) => {
@@ -89,7 +90,7 @@ test('the page language follows the browser, the menu choice and its cookie', as
   assert.match(ru.html, /Домашние животные/);
   assert.match(ru.html, /href="\/\?category=pets&amp;lang=et"/, 'the menu keeps the current page');
 
-  const admin = await app.get('/admin', { 'Accept-Language': 'de', Authorization: 'Basic ' + Buffer.from('admin:secret-pw').toString('base64') });
+  const admin = await app.get('/admin', { 'Accept-Language': 'de', ...(await adminLogin(app.base)) });
   assert.equal(admin.status, 200);
   assert.match(admin.html, /<html lang="en">/, 'the admin stays in English');
   assert.doesNotMatch(admin.html, /data-lang-menu/);

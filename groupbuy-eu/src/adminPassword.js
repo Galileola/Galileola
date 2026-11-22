@@ -50,10 +50,6 @@ export function createAdminAuth({ config, repo, clock }) {
   // Identifies the ADMIN_PASSWORD a stored hash replaced, without storing anything that reveals
   // it (keyed with APP_SECRET, which isn't in the database).
   const envMark = hmac(config.appSecret, `admin-env-password:${config.adminPassword}`);
-  // Browsers send the login with every admin request; remember good ones for a few minutes so
-  // scrypt doesn't run on each page.
-  const recent = new Map();
-  const cacheKey = (user, pass) => crypto.createHash('sha256').update(`${user}\0${pass}`).digest('base64');
 
   function stored() {
     const row = repo.getAdminSetting(KEY);
@@ -76,20 +72,15 @@ export function createAdminAuth({ config, repo, clock }) {
     // Checks a login (user and password).
     check(user, pass) {
       const userOk = safeEqual(user, config.adminUser);
-      const key = cacheKey(user, pass);
-      if (userOk && (recent.get(key) ?? 0) > Date.now()) return true;
-      const ok = passwordOk(pass) && userOk;
-      if (ok) {
-        if (recent.size > 50) recent.clear();
-        recent.set(key, Date.now() + 5 * 60_000);
-      }
-      return ok;
+      return passwordOk(pass) && userOk;
     },
     checkPassword: passwordOk,
     change(newPassword) {
       repo.setAdminSetting(KEY, JSON.stringify({ hash: hashPassword(newPassword), env: envMark }), clock.now().toISOString());
-      recent.clear();
     },
+    // Changes whenever the user name or the password changes (in the admin or in the hosting
+    // panel), so logins made with the old password end (src/adminSession.js).
+    version: () => hmac(config.appSecret, `admin-login:${config.adminUser}\0${stored()?.hash ?? `env:${envMark}`}`).slice(0, 22),
   };
 }
 

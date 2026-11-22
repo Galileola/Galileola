@@ -13,6 +13,7 @@ import { adminRoutes } from '../src/routes/admin.js';
 import { createPhotoStore } from '../src/photos.js';
 import { createMailer } from '../src/mailer.js';
 import { anonymiseOldSignups } from '../src/privacy.js';
+import { adminLogin } from './support/admin.js';
 
 test('search: every word, any order, without accents or case', () => {
   const deal = { product_name: 'Crème brûlée torch', headline: 'Kitchen gadget', description: 'Refillable butane.' };
@@ -40,7 +41,7 @@ async function startApp() {
   const server = createApp(ctx).listen(0);
   await new Promise((resolve) => server.once('listening', resolve));
   const base = `http://127.0.0.1:${server.address().port}`;
-  const auth = { Authorization: 'Basic ' + Buffer.from('admin:secret-pw').toString('base64') };
+  const auth = await adminLogin(base);
   const form = (p, fields, headers = {}) =>
     fetch(base + p, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', ...headers }, body: new URLSearchParams(fields), redirect: 'manual' });
   const admin = (p, fields = {}) => form(p, { _csrf: hmac(config.appSecret, 'admin-csrf'), ...fields }, auth);

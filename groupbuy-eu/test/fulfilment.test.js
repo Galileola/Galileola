@@ -11,6 +11,7 @@ import { adminRoutes } from '../src/routes/admin.js';
 import { createPhotoStore } from '../src/photos.js';
 import { createMailer } from '../src/mailer.js';
 import { cleanTracking, parseTrackingLines, validateMessage } from '../src/fulfilment.js';
+import { adminLogin } from './support/admin.js';
 
 const inDays = (n) => new Date(Date.now() + n * 86400000).toISOString();
 
@@ -41,7 +42,7 @@ async function startApp({ assistant = null } = {}) {
   const server = createApp(ctx).listen(0);
   await new Promise((resolve) => server.once('listening', resolve));
   const base = `http://127.0.0.1:${server.address().port}`;
-  const auth = { Authorization: 'Basic ' + Buffer.from('admin:secret-pw').toString('base64') };
+  const auth = await adminLogin(base);
   const post = (p, fields = {}) =>
     fetch(base + p, { method: 'POST', headers: { ...auth, 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ _csrf: hmac(config.appSecret, 'admin-csrf'), ...fields }), redirect: 'manual' });
   const deal = repo.insertDeal({ slug: 'lamp-1', product_name: 'Oak lamp', description: '', image_url: '', price_cents: 4900, tax_code: 'txcd_99999999', min_buyers: 2, deadline: inDays(3), created_at: new Date().toISOString() });

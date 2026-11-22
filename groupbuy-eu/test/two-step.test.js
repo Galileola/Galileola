@@ -9,6 +9,7 @@ import { hmac } from '../src/util.js';
 import { adminRoutes } from '../src/routes/admin.js';
 import { createPhotoStore } from '../src/photos.js';
 import { base32Decode, base32Encode, matchTotp, totp, otpauthUrl } from '../src/twoStep.js';
+import { adminLogin } from './support/admin.js';
 
 test('codes follow RFC 6238 (the standard authenticator apps use)', () => {
   const secret = base32Encode(Buffer.from('12345678901234567890'));
@@ -42,20 +43,30 @@ async function startApp({ adminTwoStep = 'on' } = {}) {
   const server = createApp(ctx).listen(0);
   await new Promise((resolve) => server.once('listening', resolve));
   const base = `http://127.0.0.1:${server.address().port}`;
-  const auth = { Authorization: 'Basic ' + Buffer.from('admin:secret-pw').toString('base64') };
   const csrf = hmac(config.appSecret, 'admin-csrf');
-  let cookie = '';
+  let session = ''; // the login (gb_admin)
+  let cookie = ''; // the passed code (gb_admin_2fa)
   const keep = (res) => {
-    const set = res.headers.getSetCookie?.() ?? [];
-    for (const c of set) if (c.startsWith('gb_admin_2fa=')) cookie = c.split(';')[0];
+    for (const c of res.headers.getSetCookie?.() ?? []) {
+      const pair = c.split(';')[0];
+      const value = pair.endsWith('=') ? '' : pair;
+      if (c.startsWith('gb_admin_2fa=')) cookie = value;
+      else if (c.startsWith('gb_admin=')) session = value;
+    }
     return res;
   };
-  const get = async (p) => keep(await fetch(base + p, { headers: { ...auth, Cookie: cookie }, redirect: 'manual' }));
+  const headers = () => ({ Cookie: [session, cookie].filter(Boolean).join('; ') });
+  // Logged in for 30 days, so the long clock jumps below only test the code's cookie.
+  const login = async () => { session = (await adminLogin(base, 'secret-pw', { remember: true })).Cookie; };
+  await login();
+  const get = async (p) => keep(await fetch(base + p, { headers: headers(), redirect: 'manual' }));
   const post = async (p, fields = {}) =>
-    keep(await fetch(base + p, { method: 'POST', headers: { ...auth, Cookie: cookie, 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ _csrf: csrf, ...fields }), redirect: 'manual' }));
+    keep(await fetch(base + p, { method: 'POST', headers: { ...headers(), 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ _csrf: csrf, ...fields }), redirect: 'manual' }));
   return {
-    repo, ctx, get, post,
+    repo, ctx, get, post, login,
     get cookie() { return cookie; },
+    get session() { return session; },
+    // Another browser that has logged in with the password, but not passed the code.
     forget: () => { cookie = ''; },
     advance: (ms) => { nowMs += ms; },
     code: (secret) => totp(secret, nowMs),
@@ -87,9 +98,9 @@ test('two-step login: set up, then every admin page asks for the code once per d
   assert.match(await (await app.get('/admin/settings')).text(), /Two-step login/);
   const { secret, backup } = await turnOn(app);
   assert.equal((await app.get('/admin')).status, 200);
-  assert.match(await (await app.get('/admin')).text(), /🔒 Lock/);
+  assert.match(await (await app.get('/admin')).text(), /🚪 Log out/);
 
-  // Another browser (no cookie): the password alone isn't enough.
+  // Another browser (no code cookie): the password alone isn't enough.
   app.forget();
   const r = await app.get('/admin/deals/new?x=1');
   assert.equal(r.status, 303);
@@ -108,25 +119,35 @@ test('two-step login: set up, then every admin page asks for the code once per d
 
   // The device is remembered for 12 hours, or 30 days when ticked.
   app.advance(13 * 3600_000);
-  assert.equal((await app.get('/admin')).status, 303);
+  assert.equal((await app.get('/admin')).headers.get('location'), '/admin/two-step?next=%2Fadmin');
   const remember = await app.post('/admin/two-step', { code: app.code(secret), remember: '1' });
   assert.match(remember.headers.getSetCookie().join(), /Max-Age=2592000; Secure/);
   app.advance(29 * 24 * 3600_000);
   assert.equal((await app.get('/admin')).status, 200);
 
-  // Lock asks for the code again on this device.
-  await app.post('/admin/two-step/lock');
-  assert.equal((await app.get('/admin')).status, 303);
+  // Log out ends the login and forgets the code on this device: the next login needs both again.
+  const out = await app.post('/admin/logout');
+  assert.equal(out.status, 303);
+  assert.equal(out.headers.get('location'), '/admin/login?out=1');
+  assert.equal(app.session, '');
+  assert.equal(app.cookie, '');
+  assert.match((await app.get('/admin')).headers.get('location'), /^\/admin\/login\?next=/);
+  await app.login();
+  assert.match((await app.get('/admin')).headers.get('location'), /^\/admin\/two-step/);
 
   // A backup code works once, and says how many are left.
   const used = await app.post('/admin/two-step', { code: backup[0].toUpperCase() });
   assert.match(decodeURIComponent(used.headers.get('location')), /Backup code used: 9 left/);
-  await app.post('/admin/two-step/lock');
+  app.forget();
   assert.equal((await app.post('/admin/two-step', { code: backup[0] })).status, 401);
   assert.equal((await app.post('/admin/two-step', { code: backup[1] })).status, 303);
 
+  // Log out also works from the code page (for someone without their phone).
+  app.forget();
+  assert.equal((await app.post('/admin/logout')).headers.get('location'), '/admin/login?out=1');
+  await app.login();
+
   // Only paths inside the admin are followed after the code.
-  await app.post('/admin/two-step/lock');
   app.advance(60_000);
   const evil = await app.post('/admin/two-step', { code: app.code(secret), next: '//evil.example/admin' });
   assert.equal(evil.headers.get('location'), '/admin');
@@ -143,7 +164,7 @@ test('two-step login: wrong codes lock out, new backup codes and turning it off 
   assert.match(await (await app.post('/admin/security/backup-codes', { code: '000000' })).text(), /no new backup codes were made/);
   const fresh = await (await app.post('/admin/security/backup-codes', { code: app.code(secret) })).text();
   assert.match(fresh, /New backup codes made/);
-  await app.post('/admin/two-step/lock');
+  app.forget();
   assert.equal((await app.post('/admin/two-step', { code: backup[0] })).status, 401, 'old backup codes stop working');
   const newCode = fresh.match(/<li><code>([a-z0-9-]{9})<\/code><\/li>/)[1];
   assert.equal((await app.post('/admin/two-step', { code: newCode })).status, 303);
@@ -154,7 +175,7 @@ test('two-step login: wrong codes lock out, new backup codes and turning it off 
   assert.equal(off.status, 303);
   app.forget();
   assert.equal((await app.get('/admin')).status, 200, 'the password alone works again');
-  assert.doesNotMatch(await (await app.get('/admin')).text(), /🔒 Lock/);
+  assert.match(await (await app.get('/admin')).text(), /🚪 Log out/);
 });
 
 test('ADMIN_TWO_STEP=off in the hosting panel lets the password alone in (lost phone)', async (t) => {
@@ -168,7 +189,8 @@ test('ADMIN_TWO_STEP=off in the hosting panel lets the password alone in (lost p
   const server = createApp({ ...app.ctx, config, twoStep: undefined, routes: [adminRoutes] }).listen(0);
   await new Promise((resolve) => server.once('listening', resolve));
   t.after(() => server.close());
-  const res = await fetch(`http://127.0.0.1:${server.address().port}/admin/security`, { headers: { Authorization: 'Basic ' + Buffer.from('admin:secret-pw').toString('base64') }, redirect: 'manual' });
+  const base = `http://127.0.0.1:${server.address().port}`;
+  const res = await fetch(`${base}/admin/security`, { headers: await adminLogin(base), redirect: 'manual' });
   assert.equal(res.status, 200);
   assert.match(await res.text(), /switched off in the hosting panel/);
 });

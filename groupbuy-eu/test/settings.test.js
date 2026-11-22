@@ -12,6 +12,7 @@ import { adminRoutes } from '../src/routes/admin.js';
 import { createPhotoStore } from '../src/photos.js';
 import { allCategories, categoryFor } from '../src/categories.js';
 import { snapSchema } from '../src/snap.js';
+import { adminLogin } from './support/admin.js';
 
 async function startApp({ assistant = null, dbFile } = {}) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'gb-settings-'));
@@ -25,7 +26,7 @@ async function startApp({ assistant = null, dbFile } = {}) {
   const server = createApp(ctx).listen(0);
   await new Promise((resolve) => server.once('listening', resolve));
   const base = `http://127.0.0.1:${server.address().port}`;
-  const auth = { Authorization: 'Basic ' + Buffer.from('admin:secret-pw').toString('base64') };
+  const auth = await adminLogin(base);
   const csrf = hmac(config.appSecret, 'admin-csrf');
   const get = async (p, headers = {}) => (await fetch(base + p, { headers })).text();
   const post = (p, fields) =>

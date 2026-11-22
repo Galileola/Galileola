@@ -43,6 +43,8 @@ import { customerRoutes } from './adminCustomers.js';
 import { adminAlertRoutes } from './alerts.js';
 import { goLiveChecks, isLive, liveProblems } from '../goLive.js';
 import { twoStepGate, twoStepRoutes } from './adminTwoStep.js';
+import { loginRoutes, logoutRoutes, requireAdmin } from './adminLogin.js';
+import { createAdminSessions } from '../adminSession.js';
 
 // Photo uploads are parsed into memory (admin only, at most 8 × 8 MB per request), checked,
 // and only then written to UPLOAD_DIR.
@@ -60,44 +62,8 @@ const parsePhotos = (req, res, next) =>
     next(err);
   });
 
-// HTTP Basic login for the admin. `auth` checks the user and password (see adminPassword.js).
-// After MAX_LOGIN_FAILURES wrong passwords from one address within LOCKOUT_MS, that address is
-// refused for LOCKOUT_MS, so the password can't be guessed by trying many.
-export const MAX_LOGIN_FAILURES = 10;
-export const LOCKOUT_MS = 15 * 60_000;
-
-export function requireAdmin(auth, { clock = { now: () => new Date() } } = {}) {
-  const failures = new Map(); // ip -> { count, first, lockedUntil }
-  return (req, res, next) => {
-    const now = clock.now().getTime();
-    const ip = req.ip || 'unknown';
-    const f = failures.get(ip);
-    if (f?.lockedUntil > now) {
-      res.set('Retry-After', String(Math.ceil((f.lockedUntil - now) / 1000)));
-      return res.status(429).send('Too many wrong passwords. Try again in 15 minutes.');
-    }
-    const [scheme, encoded] = (req.headers.authorization || '').split(' ');
-    if (scheme === 'Basic' && encoded) {
-      const decoded = Buffer.from(encoded, 'base64').toString('utf8');
-      const i = decoded.indexOf(':');
-      if (i > 0 && auth.check(decoded.slice(0, i), decoded.slice(i + 1))) {
-        failures.delete(ip);
-        return next();
-      }
-      // A wrong user name or password.
-      const entry = f && now - f.first < LOCKOUT_MS ? f : { count: 0, first: now, lockedUntil: 0 };
-      entry.count += 1;
-      if (entry.count >= MAX_LOGIN_FAILURES) {
-        entry.lockedUntil = now + LOCKOUT_MS;
-        console.warn(`[admin] ${entry.count} wrong passwords from ${ip}: locked out for 15 minutes`);
-      }
-      failures.set(ip, entry);
-      if (failures.size > 10_000) for (const [k, v] of failures) if (v.lockedUntil < now && now - v.first > LOCKOUT_MS) failures.delete(k);
-    }
-    res.set('WWW-Authenticate', 'Basic realm="Group Buy admin", charset="UTF-8"');
-    res.status(401).send('Authentication required');
-  };
-}
+// The login page, "Log out" and the login check live in adminLogin.js.
+export { LOCKOUT_MS, MAX_LOGIN_FAILURES, requireAdmin } from './adminLogin.js';
 
 const pick = (obj, keys) => Object.fromEntries(keys.map((k) => [k, obj?.[k] ?? '']));
 
@@ -107,7 +73,16 @@ export function adminRoutes(app, ctx) {
   const csrfToken = hmac(config.appSecret, 'admin-csrf');
 
   const auth = createAdminAuth({ config, repo, clock });
-  router.use(requireAdmin(auth, { clock }));
+  const sessions = createAdminSessions({ config, repo, clock, auth });
+  router.use((req, res, next) => {
+    res.set('Cache-Control', 'no-store');
+    res.locals.assistantEnabled = false;
+    res.locals.isAdmin = true;
+    applyLanguage(req, res, 'en', ctx); // the admin is in English
+    next();
+  });
+  loginRoutes(router, ctx, { auth, sessions }); // the login page, open to everyone
+  router.use(requireAdmin(sessions)); // every other admin page needs a login
   router.use(twoStepGate(ctx)); // the code from the authenticator app, when two-step login is on
   // Multipart forms (with photos) are parsed before the form-token check, which reads req.body.
   // The token field comes first in those forms, so it is read even if a photo is too large.
@@ -122,11 +97,7 @@ export function adminRoutes(app, ctx) {
   importParsers(router); // Import products: the CSV upload and the (long) preview form
   brandingParsers(router); // Branding: logo and share picture uploads
   router.use((req, res, next) => {
-    res.set('Cache-Control', 'no-store');
-    res.locals.csrfToken = csrfToken;
-    res.locals.assistantEnabled = false;
-    res.locals.isAdmin = true;
-    applyLanguage(req, res, 'en', ctx); // the admin is in English
+    res.locals.csrfToken = csrfToken; // only on pages behind the login
     res.locals.aiWritingEnabled = Boolean(ctx.assistant);
     res.locals.photoAccept = PHOTO_ACCEPT;
     res.locals.maxPhotos = MAX_PHOTOS_PER_DEAL;
@@ -145,6 +116,7 @@ export function adminRoutes(app, ctx) {
 
   router.get('/go-live', (req, res) => res.render('admin/go-live', { title: 'Go-live checklist', checks: goLiveChecks(ctx), live: isLive(config) }));
 
+  logoutRoutes(router, ctx, { sessions });
   twoStepRoutes(router, ctx);
   importRoutes(router, ctx);
   dealRoutes(router, ctx);
@@ -406,6 +378,9 @@ export function adminRoutes(app, ctx) {
     const problem = newPasswordProblem({ current, next, repeat });
     if (problem) return passwordPage(res, 422, { error: problem });
     auth.change(next);
+    // Logins made with the old password end on every device; this one gets a new login.
+    sessions.endAll();
+    res.append('Set-Cookie', sessions.start({ remember: req.adminSession.remember }));
     passwordPage(res, 200, { done: true });
   });
 

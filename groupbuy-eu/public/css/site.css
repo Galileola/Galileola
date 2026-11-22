@@ -586,9 +586,9 @@ table.plain th, table.plain td { padding: 6px 4px; }
 .checklist p { margin: 2px 0 0; }
 
 /* Admin: two-step login */
-.nav-lock { display: inline; margin: 0; }
-.nav-lock button { background: rgba(255, 255, 255, .15); color: #fff; box-shadow: none; padding: 6px 12px; font-size: inherit; font-weight: 600; }
-.nav-lock button:hover { background: rgba(255, 255, 255, .28); }
+.nav-logout { display: inline; margin: 0; }
+.nav-logout button { background: rgba(255, 255, 255, .15); color: #fff; box-shadow: none; padding: 6px 12px; font-size: inherit; font-weight: 600; }
+.nav-logout button:hover { background: rgba(255, 255, 255, .28); }
 .two-step-card { text-align: left; }
 .code-input { font-size: 1.4rem; letter-spacing: .2em; font-variant-numeric: tabular-nums; max-width: 240px; }
 .check-row { display: flex; gap: 8px; align-items: center; font-weight: 500; }

@@ -9,6 +9,7 @@ import { systemClock, hmac } from '../src/util.js';
 import { publicRoutes } from '../src/routes/public.js';
 import { adminRoutes } from '../src/routes/admin.js';
 import { MAIN_SIZE, THUMB_SIZE, createPhotoStore, loadSharp, optimizeStoredPhotos } from '../src/photos.js';
+import { adminLogin } from './support/admin.js';
 
 const sharp = await loadSharp();
 const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), 'gb-photos-'));
@@ -102,7 +103,7 @@ test('admin: reorder photos, describe them, and the shop shows the gallery with 
   await new Promise((resolve) => server.once('listening', resolve));
   t.after(() => server.close());
   const base = `http://127.0.0.1:${server.address().port}`;
-  const auth = { Authorization: 'Basic ' + Buffer.from('admin:secret-pw').toString('base64') };
+  const auth = await adminLogin(base);
   const post = (p, fields) =>
     fetch(base + p, { method: 'POST', headers: { ...auth, 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ _csrf: hmac(config.appSecret, 'admin-csrf'), ...fields }), redirect: 'manual' });
 

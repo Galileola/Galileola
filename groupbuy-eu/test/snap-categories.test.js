@@ -14,6 +14,7 @@ import { categorySlugs } from '../src/categories.js';
 import { publicRoutes, withBadges } from '../src/routes/public.js';
 import { adminRoutes } from '../src/routes/admin.js';
 import { hmac, systemClock } from '../src/util.js';
+import { adminLogin } from './support/admin.js';
 
 // Smallest buffer that passes the type check (PNG signature + a few bytes).
 const PNG = Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), Buffer.alloc(24)]);
@@ -97,7 +98,7 @@ async function startApp(assistant) {
   const server = createApp(ctx).listen(0);
   await new Promise((resolve) => server.once('listening', resolve));
   const base = `http://127.0.0.1:${server.address().port}`;
-  const auth = { Authorization: 'Basic ' + Buffer.from('admin:secret-pw').toString('base64') };
+  const auth = await adminLogin(base);
   const csrf = hmac(config.appSecret, 'admin-csrf');
   return { base, auth, csrf, repo, config, close: () => server.close() };
 }

@@ -173,15 +173,18 @@ Admin creates deal ──► buyers join (SetupIntent: card / SEPA / iDEAL→SEP
 - **Data that is no longer needed**: sign-ups that were never charged (the deal didn't go ahead,
   the buyer withdrew before paying or never finished joining) are anonymised automatically 30
   days after they ended (checked hourly by the scheduler). Mention this in your privacy policy.
-- **Admin login**: after 10 wrong passwords from one address in 15 minutes, that address is
-  refused for 15 minutes.
+- **Admin login**: `/admin` opens a login page (user name and password). A login lasts 12
+  hours, or 30 days when "Keep me logged in" is ticked. **🚪 Log out** in the admin menu ends it
+  on the server as well as in the browser, so a copied login cookie stops working too. Changing
+  the password (in the admin or with a new `ADMIN_PASSWORD`) logs out every other device. After
+  10 wrong passwords from one address in 15 minutes, that address is refused for 15 minutes.
 - **Two-step login** (Admin → Settings → Two-step login): after the password, the admin asks
   for a 6-digit code from an authenticator app (Google Authenticator, Microsoft Authenticator,
   1Password, Bitwarden, Authy …). It uses the standard TOTP codes (RFC 6238).
   - **Setting it up:** scan a QR code, then type the first code to confirm. You get 10 one-time
     backup codes for when the phone isn't at hand.
   - **Remembering a device:** a passed code is remembered on that device for 12 hours, or for
-    30 days when "Remember this device" is ticked. 🔒 Lock in the admin menu asks for it again.
+    30 days when "Remember this device" is ticked. Log out forgets it on that device too.
   - **Protection:** each code works once, and 5 wrong codes in 15 minutes lock that address
     out for 15 minutes.
   - **Changes:** turning it off or making new backup codes needs a current code.

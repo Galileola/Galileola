@@ -12,6 +12,7 @@ import { createPhotoStore } from '../src/photos.js';
 import { createMailer } from '../src/mailer.js';
 import { createEngine } from '../src/engine.js';
 import { validateDealEdit } from '../src/deals.js';
+import { adminLogin } from './support/admin.js';
 
 const PNG = Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), Buffer.alloc(24)]);
 const inDays = (n) => new Date(Date.now() + n * 86400000).toISOString();
@@ -62,7 +63,7 @@ async function startApp() {
   const server = createApp(ctx).listen(0);
   await new Promise((resolve) => server.once('listening', resolve));
   const base = `http://127.0.0.1:${server.address().port}`;
-  const auth = { Authorization: 'Basic ' + Buffer.from('admin:secret-pw').toString('base64') };
+  const auth = await adminLogin(base);
   const csrf = hmac(config.appSecret, 'admin-csrf');
   const get = async (p, headers = auth) => (await fetch(base + p, { headers })).text();
   const post = (p, fields = {}) =>
@@ -79,7 +80,7 @@ async function startApp() {
     repo.updateParticipant(p.id, { status, payment_method_id: 'pm_1' }, new Date().toISOString());
     return repo.participantById(p.id);
   };
-  return { base, repo, get, post, addDeal, addBuyer, detached, dir, config, close: () => server.close() };
+  return { base, auth, repo, get, post, addDeal, addBuyer, detached, dir, config, close: () => server.close() };
 }
 
 test('admin: edit a deal, and its search title shows in the page head', async (t) => {
@@ -182,7 +183,7 @@ test('admin: duplicate fills in the new deal form and copies the photos', async 
 
   const body = new FormData();
   for (const [k, v] of Object.entries({ _csrf: hmac(app.config.appSecret, 'admin-csrf'), copy_photos_from: String(deal.id), product_name: 'Oak lamp', headline: 'Warm light', category: 'home', price: '49.00', min_buyers: '3', tax_code: 'txcd_99999999', deadline_iso: inDays(5) })) body.append(k, v);
-  const r = await fetch(`${app.base}/admin/deals`, { method: 'POST', headers: { Authorization: 'Basic ' + Buffer.from('admin:secret-pw').toString('base64') }, body, redirect: 'manual' });
+  const r = await fetch(`${app.base}/admin/deals`, { method: 'POST', headers: app.auth, body, redirect: 'manual' });
   assert.equal(r.status, 303);
   const copy = app.repo.listDeals().find((d) => d.id !== deal.id);
   assert.equal(copy.headline, 'Warm light');

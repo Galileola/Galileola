@@ -1,0 +1,19 @@
+<%- include('../partials/header') %>
+<section class="card narrow login-card">
+  <p class="message-emoji" aria-hidden="true">🔐</p>
+  <h1>Log in to the admin</h1>
+  <% if (notice) { %><div class="notice ok" role="status"><%= notice %></div><% } %>
+  <% if (error) { %><div class="notice bad" role="alert"><%= error %></div><% } %>
+  <form method="post" action="/admin/login" autocomplete="on">
+    <input type="hidden" name="next" value="<%= next %>">
+    <label for="username">User name</label>
+    <input type="text" id="username" name="username" value="<%= username %>" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="200" required<%= username ? '' : ' autofocus' %>>
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" autocomplete="current-password" maxlength="1000" required<%= username ? ' autofocus' : '' %>>
+    <label class="check-row"><input type="checkbox" name="remember" value="1"> Keep me logged in on this device for 30 days</label>
+    <p><button type="submit" class="big">Log in</button></p>
+  </form>
+  <p class="muted small">Without the tick, the login ends after 12 hours. On a shared computer, leave it unticked and use <strong>Log out</strong> in the admin menu when you're done.</p>
+  <p class="muted small">Forgot the password? Set a new <code>ADMIN_PASSWORD</code> in the hosting panel (Websites → your shop's website → Environment variables) and restart the app.</p>
+</section>
+<%- include('../partials/footer') %>

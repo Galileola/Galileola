@@ -13,6 +13,7 @@ import { seoRoutes } from '../src/routes/seo.js';
 import { createPhotoStore } from '../src/photos.js';
 import { cleanTag, createAnalytics, deviceType, isBot, shopDay, visitSource } from '../src/analytics.js';
 import { buildReport, validateAdSpend } from '../src/performance.js';
+import { adminLogin } from './support/admin.js';
 
 const PHONE = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1';
 const DESKTOP = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36';
@@ -34,7 +35,7 @@ async function startApp() {
   const server = createApp(ctx).listen(0);
   await new Promise((resolve) => server.once('listening', resolve));
   const base = `http://127.0.0.1:${server.address().port}`;
-  const auth = { Authorization: 'Basic ' + Buffer.from('admin:secret-pw').toString('base64') };
+  const auth = await adminLogin(base);
   const csrf = hmac(config.appSecret, 'admin-csrf');
   const visit = (p, headers = {}) => fetch(base + p, { headers: { 'User-Agent': DESKTOP, ...headers } }).then((r) => r.text());
   const post = (p, fields) =>
@@ -181,8 +182,10 @@ test('page views are recorded without cookies; the dashboard shows sources, camp
   assert.equal((await app.post(`/admin/performance/spend/${id}/delete?days=30`, {})).status, 303);
   assert.equal(repo.adSpendBetween('2026-11-01', '2026-11-30').length, 0);
 
-  // Without the admin password, no dashboard.
-  assert.equal((await fetch(`${app.base}/admin/performance`)).status, 401);
+  // Without the admin password, no dashboard: the login page instead.
+  const loggedOut = await fetch(`${app.base}/admin/performance`, { redirect: 'manual' });
+  assert.equal(loggedOut.status, 303);
+  assert.match(loggedOut.headers.get('location'), /^\/admin\/login\?next=/);
 });
 
 test('the daily key changes, so visitors cannot be followed across days; old visits are deleted', () => {

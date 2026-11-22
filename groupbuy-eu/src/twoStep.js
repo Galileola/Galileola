@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 import qrcode from 'qrcode-generator';
-import { hmac, safeEqual } from './util.js';
+import { hmac, readCookie, safeEqual } from './util.js';
 
 // Two-step login for the admin (Admin → Settings → Two-step login).
 //
@@ -102,14 +102,6 @@ function newBackupCode() {
   return `${s.slice(0, 4)}-${s.slice(4)}`;
 }
 const normaliseBackup = (code) => String(code ?? '').toLowerCase().replace(/[^a-z0-9]/g, '');
-
-export function readCookie(req, name = COOKIE) {
-  for (const part of String(req.headers.cookie || '').split(';')) {
-    const i = part.indexOf('=');
-    if (i > 0 && part.slice(0, i).trim() === name) return decodeURIComponent(part.slice(i + 1).trim());
-  }
-  return '';
-}
 
 // The app's secret is stored encrypted (AES-256-GCM with a key derived from APP_SECRET), so a
 // copy of the database alone doesn't reveal it. Changing APP_SECRET makes it unreadable: then use
@@ -238,7 +230,7 @@ export function createTwoStep({ config, repo, clock }) {
     passed(req) {
       const s = stored();
       if (!s) return true;
-      const [exp, sig] = readCookie(req).split('.');
+      const [exp, sig] = readCookie(req, COOKIE).split('.');
       if (!exp || !sig || Number(exp) < clock.now().getTime()) return false;
       return safeEqual(sig, hmac(config.appSecret, `admin-2fa:${exp}:${version(s)}`));
     },

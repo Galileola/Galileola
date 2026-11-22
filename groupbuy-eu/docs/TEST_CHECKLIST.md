@@ -161,3 +161,14 @@ app's logic, not Stripe itself. The manual run above is what confirms the real i
       to the new chip on the home page.
 - [ ] Copy the post from the share kit and paste it somewhere. Expected: the post ends with the
       deal link.
+
+## Admin login and Log out
+
+- [ ] Open `/admin/settings` in a private window. Expected: the login page. Log in. Expected: you
+      land on Settings, not the deals list.
+- [ ] Tap **🚪 Log out** at the end of the admin menu. Expected: "You are logged out." Press the
+      browser's Back button and reload. Expected: the login page again, not the admin.
+- [ ] On a phone, log in with **Keep me logged in on this device for 30 days** ticked, close the
+      browser completely and open `/admin` again. Expected: still logged in.
+- [ ] Log in on two devices, then change the password on one (Settings → Password). Expected: that
+      device stays logged in; the other one shows the login page on its next click.

@@ -12,6 +12,7 @@ import { adminRoutes } from '../src/routes/admin.js';
 import { createPhotoStore } from '../src/photos.js';
 import { createTranslator } from '../src/translate.js';
 import { renderLegalText, htmlToLegalText } from '../src/legalText.js';
+import { adminLogin } from './support/admin.js';
 
 test('legal text formatting: headings, lists, notes, tables, links, and nothing unsafe', () => {
   const html = renderLegalText(`# Terms
@@ -51,7 +52,7 @@ async function startApp(assistant = null) {
   const server = createApp(ctx).listen(0);
   await new Promise((resolve) => server.once('listening', resolve));
   const base = `http://127.0.0.1:${server.address().port}`;
-  const auth = { Authorization: 'Basic ' + Buffer.from('admin:secret-pw').toString('base64') };
+  const auth = await adminLogin(base);
   const csrf = hmac(config.appSecret, 'admin-csrf');
   const get = async (p, headers = {}) => {
     const r = await fetch(base + p, { headers });

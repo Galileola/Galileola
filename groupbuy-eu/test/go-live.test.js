@@ -13,6 +13,7 @@ import { webhookRoutes } from '../src/routes/webhooks.js';
 import { adminRoutes } from '../src/routes/admin.js';
 import { createPhotoStore } from '../src/photos.js';
 import { PLACEHOLDER_RE, goLiveChecks, liveProblems } from '../src/goLive.js';
+import { adminLogin } from './support/admin.js';
 
 const base = { ADMIN_PASSWORD: 'pw', APP_SECRET: 'a-long-app-secret-123', DATABASE_PATH: ':memory:' };
 
@@ -50,7 +51,7 @@ async function startApp({ live = true, business } = {}) {
   const server = createApp(ctx).listen(0);
   await new Promise((resolve) => server.once('listening', resolve));
   const url = `http://127.0.0.1:${server.address().port}`;
-  const auth = { Authorization: 'Basic ' + Buffer.from('admin:a-long-secret-pw').toString('base64') };
+  const auth = await adminLogin(url, 'a-long-secret-pw');
   const deal = repo.insertDeal({ slug: 'lamp-1', product_name: 'Oak lamp', description: '', image_url: '', price_cents: 4900, tax_code: 'txcd_99999999', min_buyers: 2, deadline: new Date(Date.now() + 3 * 86400000).toISOString(), created_at: new Date().toISOString() });
   const get = async (p, headers = {}) => (await fetch(url + p, { headers })).text();
   return { url, auth, repo, ctx, deal, get, close: () => server.close() };

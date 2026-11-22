@@ -22,6 +22,7 @@ import {
   templateCsv,
 } from '../src/productImport.js';
 import { ImageFetchError, createImageImporter, downloadImage, isPrivateAddress } from '../src/imageImport.js';
+import { adminLogin } from './support/admin.js';
 
 const PNG = Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), Buffer.alloc(24)]);
 const JPG = Buffer.concat([Buffer.from([0xff, 0xd8, 0xff, 0xe0]), Buffer.alloc(24)]);
@@ -231,7 +232,7 @@ async function startApp() {
   const server = createApp(ctx).listen(0);
   await new Promise((resolve) => server.once('listening', resolve));
   const base = `http://127.0.0.1:${server.address().port}`;
-  const auth = { Authorization: 'Basic ' + Buffer.from('admin:secret-pw').toString('base64') };
+  const auth = await adminLogin(base);
   const csrf = hmac(config.appSecret, 'admin-csrf');
   const upload = (csv, fields = {}, token = csrf) => {
     const form = new FormData();
@@ -338,7 +339,8 @@ test('admin import: bad files and missing form tokens are refused', async (t) =>
   assert.equal(empty.status, 422);
   const forged = await app.upload('name,price\nLamp,9\n', {}, 'wrong-token');
   assert.equal(forged.status, 403);
-  const unauth = await fetch(`${app.base}/admin/import`);
-  assert.equal(unauth.status, 401);
+  const unauth = await fetch(`${app.base}/admin/import`, { redirect: 'manual' });
+  assert.equal(unauth.status, 303);
+  assert.equal(unauth.headers.get('location'), '/admin/login?next=%2Fadmin%2Fimport');
   assert.equal(app.repo.listDeals().length, 0);
 });

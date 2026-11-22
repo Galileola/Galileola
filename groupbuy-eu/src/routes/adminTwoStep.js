@@ -1,5 +1,6 @@
 import { createTwoStep } from '../twoStep.js';
 import { currentBrand } from '../branding.js';
+import { safeNext } from './adminLogin.js';
 
 // Two-step login (src/twoStep.js): the code page after the password, and Admin → Settings →
 // Two-step login to turn it on or off and get new backup codes.
@@ -8,19 +9,17 @@ const MAX_WRONG_CODES = 5;
 const WRONG_CODE_WINDOW_MS = 15 * 60_000;
 
 // Runs right after the password check: with two-step login on, every admin page needs a passed
-// second step in this browser (the code page itself excepted).
+// second step in this browser (the code page and "Log out" excepted).
 export function twoStepGate(ctx) {
   const twoStep = (ctx.twoStep ??= createTwoStep(ctx));
   return (req, res, next) => {
     res.locals.twoStepOn = twoStep.enabled();
-    if (!res.locals.twoStepOn || req.path === '/two-step' || twoStep.passed(req)) return next();
+    if (!res.locals.twoStepOn || req.path === '/two-step' || req.path === '/logout' || twoStep.passed(req)) return next();
     const back = req.method === 'GET' ? req.originalUrl : '/admin';
     res.set('Cache-Control', 'no-store');
     res.redirect(303, `/admin/two-step?next=${encodeURIComponent(back)}`);
   };
 }
-
-const safeNext = (value) => (/^\/admin(\/|\?|$)/.test(String(value ?? '')) && !String(value).includes('//') ? String(value) : '/admin');
 
 export function twoStepRoutes(router, ctx) {
   const { config, clock } = ctx;
@@ -65,12 +64,6 @@ export function twoStepRoutes(router, ctx) {
       ? `Backup code used: ${result.backupLeft} left.${result.backupLeft <= 3 ? ' Get new ones in Settings → Two-step login.' : ''}`
       : '';
     res.redirect(303, flash ? `/admin/security?flash=${encodeURIComponent(flash)}` : next);
-  });
-
-  // Ask for the code again in this browser (the password stays saved by the browser).
-  router.post('/two-step/lock', (req, res) => {
-    res.append('Set-Cookie', twoStep.clearCookie());
-    res.redirect(303, '/admin/two-step');
   });
 
   // ---- settings

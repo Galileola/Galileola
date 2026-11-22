@@ -62,6 +62,21 @@ export function hmac(secret, value) {
   return crypto.createHmac('sha256', secret).update(value).digest('base64url');
 }
 
+// The value of one cookie from the request, or ''.
+export function readCookie(req, name) {
+  for (const part of String(req.headers.cookie || '').split(';')) {
+    const i = part.indexOf('=');
+    if (i > 0 && part.slice(0, i).trim() === name) {
+      try {
+        return decodeURIComponent(part.slice(i + 1).trim());
+      } catch {
+        return '';
+      }
+    }
+  }
+  return '';
+}
+
 export function safeEqual(a, b) {
   const ab = Buffer.from(String(a));
   const bb = Buffer.from(String(b));

@@ -122,7 +122,8 @@ Notes on these values:
 2. Open the app's **logs** in hPanel. Expected:
    - `[db] /home/<u…>/groupbuy-data/groupbuy.sqlite …` with **no WARNING** below it.
    - `Group buy running at https://<yourdomain> … (Stripe TEST mode)`.
-3. Open `https://<yourdomain>/admin` and log in with `ADMIN_USER` / `ADMIN_PASSWORD`.
+3. Open `https://<yourdomain>/admin` and log in on the login page with `ADMIN_USER` / `ADMIN_PASSWORD`.
+   **🚪 Log out** is at the end of the admin menu.
 4. Admin → Settings → **Two-step login**: set it up with an authenticator app on your phone and
    keep the backup codes somewhere safe. If you ever lose both, set `ADMIN_TWO_STEP=off` here in
    the environment variables and restart; the password alone then works until you set it up
