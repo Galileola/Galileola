@@ -74,7 +74,7 @@ test('live mode: orders wait until the company details and legal pages are compl
   assert.match(admin, /Real payments are on, but the shop isn&#39;t taking new orders yet|Real payments are on, but the shop isn't taking new orders yet/);
   assert.match(admin, /Company details, Terms &amp; withdrawal right, Privacy policy/);
   const checklist = await app.get('/admin/go-live', app.auth);
-  assert.match(checklist, /<strong>4 of 7<\/strong> required items done/);
+  assert.match(checklist, /<strong>5 of 8<\/strong> required items done/);
   assert.match(checklist, /Two-step login[\s\S]*?Recommended/);
   assert.match(checklist, /Still has \d+ placeholders, for example: \[Delivery costs/);
   assert.doesNotMatch(await app.get(`/admin/deals/${app.deal.id}`, app.auth), /Test-mode tools/);

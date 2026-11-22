@@ -13,6 +13,7 @@ import { createPhotoStore } from '../src/photos.js';
 import { allRoutes } from '../src/routes/index.js';
 import { ImageFetchError, downloadImage, isPrivateAddress } from '../src/imageImport.js';
 import { renderLegalText } from '../src/legalText.js';
+import { goLiveChecks, liveProblems } from '../src/goLive.js';
 import { createFakeStripe } from './support/fakeStripe.js';
 import { adminLogin } from './support/admin.js';
 
@@ -341,6 +342,18 @@ test('security: uploads must really be photos, and are saved under random names'
   assert.ok(photo, 'the real photo was saved');
   assert.match(photo.filename, /^[a-f0-9]{24}\.(png|webp|jpg)$/);
   assert.ok(!fs.existsSync('/tmp/owned.png'));
+});
+
+test('security: the example secrets from .env.example (public on GitHub) stop real orders', async (t) => {
+  const shop = await startShop();
+  t.after(shop.close);
+  const secrets = () => goLiveChecks(shop.ctx).find((c) => c.label === 'Secrets');
+  assert.equal(secrets().ok, true);
+  Object.assign(shop.ctx.config, { appSecret: 'change-me-to-a-long-random-string', cronSecret: 'change-me-too' });
+  assert.equal(secrets().ok, false);
+  assert.match(secrets().detail, /APP_SECRET, CRON_SECRET/);
+  shop.ctx.config.paymentsMode = 'live';
+  assert.ok(liveProblems(shop.ctx).some((p) => p.label === 'Secrets'), 'live mode pauses orders');
 });
 
 test('security: copying product photos never reaches this server or private networks (SSRF)', async () => {

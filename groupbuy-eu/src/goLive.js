@@ -79,6 +79,20 @@ export function goLiveChecks(ctx) {
     href: '/admin/password',
     required: true,
   });
+  // The examples in .env.example are public (the code is on GitHub): anyone could use them.
+  const examples = [
+    ['APP_SECRET', config.appSecret],
+    ['CRON_SECRET', config.cronSecret],
+    ['ADMIN_PASSWORD', passwordChangedInAdmin(config, repo) ? '' : config.adminPassword],
+  ].filter(([, value]) => isExampleSecret(value)).map(([name]) => name);
+  checks.push({
+    label: 'Secrets',
+    ok: !examples.length,
+    detail: examples.length
+      ? `${examples.join(', ')} still ${examples.length === 1 ? 'has its example value' : 'have their example values'} from .env.example. Set long random values in the hosting panel and restart the app.`
+      : 'Not the example values.',
+    required: true,
+  });
   const twoStep = repo?.getAdminSetting?.('admin_two_step');
   checks.push({
     label: 'Two-step login',
@@ -121,6 +135,9 @@ export function goLiveChecks(ctx) {
   });
   return checks;
 }
+
+// Values copied from .env.example: "change-me", "change-me-too", "change-me-to-a-long-random-string".
+export const isExampleSecret = (value) => /^change[-_ ]?me/i.test(String(value ?? '').trim());
 
 // Problems that stop new orders while real payments are on (none in test mode).
 export function liveProblems(ctx) {
