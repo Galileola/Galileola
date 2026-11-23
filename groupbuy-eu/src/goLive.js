@@ -5,7 +5,8 @@ import { BUSINESS_FIELDS, isPlaceholder } from './businessSettings.js';
 import { LEGAL_PAGES } from './legalText.js';
 import { loadSharp } from './photos.js';
 import { MIN_PASSWORD_LENGTH, passwordChangedInAdmin } from './adminPassword.js';
-import { ENGLISH_NAMES, shopLanguages } from './i18n/index.js';
+import { ENGLISH_NAMES, mainLanguage, shopLanguages } from './i18n/index.js';
+import { builtInTranslationView } from './routes/legal.js';
 
 // Admin → Settings → Go-live checklist, and the safety net for real payments: with
 // PAYMENTS_MODE=live the shop only takes new orders while every required check passes (complete
@@ -13,7 +14,10 @@ import { ENGLISH_NAMES, shopLanguages } from './i18n/index.js';
 
 const viewsDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'views', 'legal');
 const builtIn = {};
-const builtInText = (page) => (builtIn[page] ??= fs.readFileSync(path.join(viewsDir, `${page}-body.ejs`), 'utf8').replace(/<%[\s\S]*?%>/g, ''));
+const stripEjs = (file) => fs.readFileSync(file, 'utf8').replace(/<%[\s\S]*?%>/g, '');
+const builtInText = (page) => (builtIn[page] ??= stripEjs(path.join(viewsDir, `${page}-body.ejs`)));
+// A built-in translation, e.g. 'legal/terms-body.et.ejs' (see builtInTranslationView).
+const builtInFile = (view) => (builtIn[view] ??= stripEjs(path.join(viewsDir, '..', view)));
 
 // "[Delivery costs: …]" is a placeholder; "[stripe.com](https://stripe.com)" is a link.
 export const PLACEHOLDER_RE = /\[[^\]\n]{3,}\](?!\()/;
@@ -37,27 +41,35 @@ export function goLiveChecks(ctx) {
     required: true,
   });
   const placeholders = (text) => [...text.matchAll(new RegExp(PLACEHOLDER_RE.source, 'g'))].map((m) => m[0]);
+  const languages = shopLanguages().map((l) => l.code);
   for (const page of LEGAL_PAGES) {
-    const own = repo?.legalText?.(page, 'en');
-    const found = placeholders(own ? own.body : builtInText(page));
-    // The owner's texts in the shop's other languages must be complete too. (Built-in
-    // translations are only shown while the English text is the built-in one, which fails above.)
-    const unfinished = shopLanguages()
-      .filter((l) => l.code !== 'en')
-      .map((l) => ({ code: l.code, found: placeholders(repo?.legalText?.(page, l.code)?.body ?? '') }))
-      .filter((l) => l.found.length);
+    const ownEnglish = repo?.legalText?.(page, 'en');
+    // The text visitors in each language the shop offers see (src/routes/legal.js): the owner's
+    // text for that language; else, while the English text is the built-in one, the built-in
+    // translation; else the English text (translated automatically, [placeholders] and all).
+    const seen = (code) => {
+      const own = code !== 'en' ? repo?.legalText?.(page, code) : null;
+      if (own) return { text: own.body, own: true };
+      const view = !ownEnglish ? builtInTranslationView(page, code) : null;
+      if (view) return { text: builtInFile(view), own: false };
+      return { text: ownEnglish ? ownEnglish.body : builtInText(page), own: Boolean(ownEnglish) };
+    };
+    const results = languages.map((code) => ({ code, ...seen(code) }));
+    const unfinished = results.map((r) => ({ ...r, found: placeholders(r.text) })).filter((r) => r.found.length);
+    // English first when it's unfinished: the other languages are made from it.
+    const first = unfinished.find((r) => r.code === 'en') ?? unfinished[0];
     // The template's own note "Text in [brackets] must be completed" counts, but a real example
     // is more useful to show.
-    const all = found.length ? found : unfinished[0]?.found ?? [];
+    const all = first?.found ?? [];
     const example = all.find((p) => p !== '[brackets]') ?? all[0];
-    const where = found.length ? '' : unfinished.length ? ` (${unfinished.map((l) => ENGLISH_NAMES[l.code]).join(', ')})` : '';
+    const where = !first || first.code === 'en' ? '' : ` (${unfinished.map((r) => ENGLISH_NAMES[r.code]).join(', ')})`;
     checks.push({
       label: LEGAL_LABELS[page],
-      ok: !all.length,
+      ok: !unfinished.length,
       detail: all.length
         ? `${all.length === 1 ? 'Still has a placeholder' : `Still has ${all.length} placeholders, for example`}${where}: ${example.length > 90 ? `${example.slice(0, 89)}…]` : example} Write your own text (reviewed by a lawyer) in Legal pages.`
-        : own ? 'Your own text.' : 'The built-in text.',
-      href: `/admin/legal/${page}/${found.length || !unfinished.length ? 'en' : unfinished[0].code}`,
+        : results.some((r) => r.own) ? 'Your own text.' : 'The built-in text.',
+      href: `/admin/legal/${page}/${first?.code ?? (languages.includes('en') ? 'en' : mainLanguage())}`,
       required: true,
     });
   }

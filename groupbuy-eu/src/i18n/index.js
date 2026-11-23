@@ -53,9 +53,14 @@ export const isLanguage = (code) => typeof code === 'string' && known.has(code);
 // translations. Every dictionary stays in the code, so a language switched off can come back at
 // any time; buyers who joined in it keep getting their emails in it.
 let offered = new Set(LANGUAGE_CODES);
+let main = DEFAULT_LANGUAGE;
+// required[0] is the shop's main language: always offered, and the one visitors get when they
+// haven't chosen a language and their browser's isn't offered.
 export function setShopLanguages(codes, required = [DEFAULT_LANGUAGE]) {
   offered = new Set([...(codes ?? []), ...required].filter(isLanguage));
+  main = required.find(isLanguage) ?? DEFAULT_LANGUAGE;
 }
+export const mainLanguage = () => main;
 export const shopLanguages = () => LANGUAGES.filter((l) => offered.has(l.code));
 export const isShopLanguage = (code) => isLanguage(code) && offered.has(code);
 
@@ -239,14 +244,14 @@ export function fromAcceptLanguage(header) {
   return null;
 }
 
-// ?lang=xx (a choice from the language menu, remembered in a cookie) > cookie > browser > English.
-// Only languages the shop offers count.
+// ?lang=xx (a choice from the language menu, remembered in a cookie) > cookie > browser > the
+// shop's main language. Only languages the shop offers count.
 export function pickLanguage(req) {
   const q = typeof req.query?.lang === 'string' ? req.query.lang.toLowerCase() : '';
   if (isShopLanguage(q)) return { lang: q, chosen: true };
   const fromCookie = cookieValue(req.headers?.cookie, LANGUAGE_COOKIE);
   if (isShopLanguage(fromCookie)) return { lang: fromCookie, chosen: false };
-  return { lang: fromAcceptLanguage(req.headers?.['accept-language']) ?? DEFAULT_LANGUAGE, chosen: false };
+  return { lang: fromAcceptLanguage(req.headers?.['accept-language']) ?? main, chosen: false };
 }
 
 // Helpers for code outside a request (emails, background work).

@@ -1,5 +1,5 @@
 import { isJoinable } from '../dealState.js';
-import { shopLanguages, translate } from '../i18n/index.js';
+import { mainLanguage, shopLanguages, translate } from '../i18n/index.js';
 import { currentBrand, webManifest } from '../branding.js';
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -72,7 +72,7 @@ export function seoRoutes(app, ctx) {
     for (const page of pages) {
       const alternates = [
         ...languages.map((l) => `    <xhtml:link rel="alternate" hreflang="${l.code}" href="${esc(url(page.path, l.code))}"/>`),
-        `    <xhtml:link rel="alternate" hreflang="x-default" href="${esc(url(page.path, 'en'))}"/>`,
+        `    <xhtml:link rel="alternate" hreflang="x-default" href="${esc(url(page.path, mainLanguage()))}"/>`,
       ].join('\n');
       for (const l of languages) {
         out.push('  <url>', `    <loc>${esc(url(page.path, l.code))}</loc>`);

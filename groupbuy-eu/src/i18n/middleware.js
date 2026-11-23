@@ -1,6 +1,7 @@
 import {
   LANGUAGES,
   shopLanguages,
+  mainLanguage,
   LANGUAGE_COOKIE,
   countryList,
   dateFormatter,
@@ -32,6 +33,7 @@ export function applyLanguage(req, res, lang, ctx = {}) {
     categories: allCategories().map(localCategory),
     categoryFor: (slug) => localCategory(categoryFor(slug)),
     languages: shopLanguages(),
+    mainLanguage: mainLanguage(),
     currentLanguage: LANGUAGES.find((l) => l.code === lang),
     stripeLocale: stripeLocale(lang),
     ogLocale: ogLocale(lang),

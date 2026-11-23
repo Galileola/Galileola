@@ -77,8 +77,10 @@ export function loadConfig(env = process.env) {
     // AI shopping assistant (chat on the public pages). Off until ANTHROPIC_API_KEY is set.
     anthropicApiKey: env.ANTHROPIC_API_KEY || '',
     assistantModel: env.ASSISTANT_MODEL || 'claude-opus-5-5',
-    // The language deals are written in (they're translated into the others with the same key).
-    contentLanguage: isLanguage(env.CONTENT_LANGUAGE) ? env.CONTENT_LANGUAGE : 'en',
+    // The shop's main language: deals are written in it (and translated into the shop's other
+    // languages with the same key), and visitors whose browser language the shop doesn't offer
+    // get it. Estonian unless CONTENT_LANGUAGE names another.
+    contentLanguage: isLanguage(env.CONTENT_LANGUAGE) ? env.CONTENT_LANGUAGE : 'et',
     translationDailyLimit: Number(env.TRANSLATION_DAILY_LIMIT || 500), // Claude translation requests per day
     assistantRateLimit: Number(env.ASSISTANT_RATE_LIMIT || 30), // messages per IP per 15 minutes
     assistantDailyLimit: Number(env.ASSISTANT_DAILY_LIMIT || 1000), // messages per day, whole site

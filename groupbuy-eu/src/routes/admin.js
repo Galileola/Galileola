@@ -2,7 +2,7 @@ import express from 'express';
 import { applyLanguage } from '../i18n/middleware.js';
 import Anthropic from '@anthropic-ai/sdk';
 import { ENGLISH_NAMES, LANGUAGES, isLanguage, isShopLanguage, shopLanguages } from '../i18n/index.js';
-import { requiredLanguages, saveShopLanguages, savedShopLanguages } from '../shopLanguages.js';
+import { mainLanguageOf, requiredLanguages, saveShopLanguages, savedShopLanguages } from '../shopLanguages.js';
 import { LEGAL_PAGES, MAX_LEGAL_TEXT, htmlToLegalText } from '../legalText.js';
 import { LEGAL_PAGE_INFO, builtInTranslationHtml, englishLegalHtml, usesBuiltInTranslation } from './legal.js';
 import multer from 'multer';
@@ -203,7 +203,7 @@ export function adminRoutes(app, ctx) {
     }
     try {
       const result = await ctx.assistant.reply({
-        system: describeSystemPrompt(config.business),
+        system: describeSystemPrompt(config.business, ENGLISH_NAMES[mainLanguageOf(config)]),
         messages: describeMessages(input),
         effort: 'medium',
         maxTokens: 8000,
@@ -237,7 +237,7 @@ export function adminRoutes(app, ctx) {
     }
     try {
       const result = await ctx.assistant.reply({
-        system: snapSystemPrompt(config.business),
+        system: snapSystemPrompt(config.business, ENGLISH_NAMES[mainLanguageOf(config)]),
         messages: snapMessages(input),
         effort: 'medium',
         maxTokens: 8000,
@@ -504,6 +504,7 @@ export function adminRoutes(app, ctx) {
     const required = requiredLanguages(config);
     res.status(status).render('admin/languages', {
       title: 'Languages',
+      main: { code: required[0], english: ENGLISH_NAMES[required[0]] },
       rows: LANGUAGES.map((l) => ({ ...l, english: ENGLISH_NAMES[l.code], on: isShopLanguage(l.code), required: required.includes(l.code) }))
         .sort((a, b) => a.english.localeCompare(b.english)),
       chosenYet: savedShopLanguages(repo) !== null,

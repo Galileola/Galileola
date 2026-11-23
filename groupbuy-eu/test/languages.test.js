@@ -8,18 +8,20 @@ import { openDb, createRepo } from '../src/db.js';
 import { createPhotoStore } from '../src/photos.js';
 import { allRoutes } from '../src/routes/index.js';
 import { LANGUAGES, pickLanguage, shopLanguages } from '../src/i18n/index.js';
+import { goLiveChecks } from '../src/goLive.js';
 import { createFakeStripe } from './support/fakeStripe.js';
 import { adminLogin } from './support/admin.js';
 
 // Admin → Settings → Languages: the shop offers only the languages the owner ticks.
 
-async function startShop(dbFile) {
+async function startShop(dbFile, extra = {}) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'gb-langs-'));
   const config = {
     port: 0, baseUrl: 'https://shop.test', adminUser: 'admin', adminPassword: 'secret-pw', appSecret: 'test-secret-0123456789abcdef',
     stripePublishableKey: 'pk_test_1', defaultTaxCode: 'txcd_99999999', uploadDir: path.join(dir, 'uploads'), trustProxy: false,
     quietEmails: true, contentLanguage: 'en',
     business: { name: 'Test Shop', address: 'Street 1', email: 'shop@example.com', vatId: 'EE1', registration: 'R1', supervisoryAuthority: 'DPA', phone: '+372 5555 5555' },
+    ...extra,
   };
   const repo = createRepo(openDb(dbFile ?? path.join(dir, 'db.sqlite')));
   const ctx = { config, repo, clock: { now: () => new Date() }, stripe: createFakeStripe(), photos: createPhotoStore(config.uploadDir), routes: allRoutes, mailer: { send: async () => {} } };
@@ -34,7 +36,7 @@ async function startShop(dbFile) {
     server.closeAllConnections();
     server.close();
   };
-  return { base, repo, close };
+  return { base, repo, config, close };
 }
 
 const menu = (html) => [...html.matchAll(/<li><a href="[^"]*\?lang=(\w+)" hreflang=/g)].map((m) => m[1]);
@@ -131,4 +133,39 @@ test('languages: category names for languages switched off are kept', async (t) 
   assert.doesNotMatch(page, /name="name_de"/);
   assert.equal(names().et, 'Lemmikloomad');
   assert.equal(names().de, 'Haustiere', 'the German name is still there for when German is switched on again');
+});
+
+test('languages: an Estonian-only shop (Estonian main language, English switched off)', async (t) => {
+  const shop = await startShop(undefined, { contentLanguage: 'et' });
+  t.after(shop.close);
+  const headers = await adminLogin(shop.base);
+  const before = await (await fetch(`${shop.base}/admin/languages`, { headers })).text();
+  assert.match(before, /value="et" checked disabled/, 'the main language is always on');
+  assert.match(before, /data-lang-set="et">Only Estonian</);
+  await saveLanguages(shop, ['et']);
+  assert.deepEqual(shopLanguages().map((l) => l.code), ['et']);
+  const after = await (await fetch(`${shop.base}/admin/languages`, { headers })).text();
+  assert.match(after, /value="en">/, 'English is off and can be switched on again');
+
+  // Every visitor gets Estonian: no choice, an English browser, a link to English.
+  for (const opts of [{}, { headers: { 'Accept-Language': 'en-GB,en;q=0.9' } }]) {
+    assert.match(await (await fetch(`${shop.base}/`, opts)).text(), /<html lang="et"/);
+  }
+  const en = await fetch(`${shop.base}/?lang=en`);
+  const home = await en.text();
+  assert.match(home, /<html lang="et"/);
+  assert.ok(!en.headers.getSetCookie().some((c) => c.startsWith('gb_lang=en')));
+  assert.doesNotMatch(home, /data-lang-menu/, 'no language menu with one language');
+  assert.deepEqual([...home.matchAll(/hreflang="([\w-]+)" href="[^"]*\?lang=(\w+)"/g)].map((m) => `${m[1]}=${m[2]}`), ['et=et', 'x-default=et']);
+  const sitemap = await (await fetch(`${shop.base}/sitemap.xml`)).text();
+  assert.deepEqual([...new Set([...sitemap.matchAll(/\?lang=(\w+)/g)].map((m) => m[1]))], ['et']);
+
+  // Going live needs the Estonian legal pages complete, not the English ones.
+  const terms = () => goLiveChecks({ config: shop.config, repo: shop.repo }).find((c) => c.label === 'Terms & withdrawal right');
+  assert.equal(terms().ok, false);
+  assert.match(terms().detail, /\(Estonian\)/);
+  assert.equal(terms().href, '/admin/legal/terms/et');
+  shop.repo.saveLegalText('terms', 'et', '# Tingimused\n\nTarnime 5 päeva jooksul Eestisse.', new Date().toISOString());
+  assert.equal(terms().ok, true);
+  assert.equal(terms().detail, 'Your own text.');
 });

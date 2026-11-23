@@ -20,7 +20,7 @@
     <meta name="description" content="<%= description %>">
     <link rel="canonical" href="<%= pageUrl %>">
     <% for (const l of languages) { %><link rel="alternate" hreflang="<%= l.code %>" href="<%= baseUrl + langUrl(l.code) %>">
-    <% } %><link rel="alternate" hreflang="x-default" href="<%= baseUrl + langUrl('en') %>">
+    <% } %><link rel="alternate" hreflang="x-default" href="<%= baseUrl + langUrl(mainLanguage) %>">
     <meta property="og:site_name" content="<%= brandName %>">
     <meta property="og:type" content="<%= m.type || 'website' %>">
     <meta property="og:title" content="<%= m.title || title %>">
@@ -49,13 +49,13 @@
         <% if (locals.adminNav !== false) { %><nav aria-label="Admin"><a href="/admin">Deals</a><a href="/admin/snap" class="nav-snap">📸 Snap a deal</a><a href="/admin/performance">📊 Performance</a><a href="/admin/customers">👥 Customers</a><a href="/admin/emails">Emails</a><a href="/admin/settings">⚙️ Settings</a><a href="/">Shop</a><form method="post" action="/admin/logout" class="nav-logout"><input type="hidden" name="_csrf" value="<%= locals.csrfToken %>"><button type="submit">🚪 Log out</button></form></nav><% } %>
       <% } else { %>
         <nav class="shop-nav"><a href="/#categories"><%= t('nav.categories') %></a><a href="/#deals"><%= t('nav.deals') %></a><a href="/#how"><%= t('nav.how') %></a></nav>
-        <details class="lang-menu" data-lang-menu>
+        <% if (languages.length > 1) { %><details class="lang-menu" data-lang-menu>
             <summary aria-label="<%= t('layout.language') %>: <%= currentLanguage.name %>"><span aria-hidden="true">🌐</span> <span class="lang-code"><%= lang.toUpperCase() %></span></summary>
             <ul>
               <% for (const l of languages) { %><li><a href="<%= langUrl(l.code) %>" hreflang="<%= l.code %>" lang="<%= l.code %>"<%- l.code === lang ? ' aria-current="true"' : '' %>><%= l.name %></a></li>
               <% } %>
             </ul>
-        </details>
+        </details><% } %>
       <% } %>
     </div>
   </header>

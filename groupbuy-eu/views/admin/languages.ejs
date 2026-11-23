@@ -3,19 +3,19 @@
 <section class="card narrow">
   <h1>🌐 Languages</h1>
   <% if (saved) { %><div class="notice ok">Saved. The language menu now shows <%= rows.filter((r) => r.on).length %> language<%= rows.filter((r) => r.on).length === 1 ? '' : 's' %>.</div><% } %>
-  <p>Tick the languages your shop offers. Only these appear in the language menu, new deals are translated only into these, and a visitor whose browser uses another language sees the shop in English.</p>
+  <p>Tick the languages your shop offers. Only these appear in the language menu (with one language there is no menu), new deals are translated only into these, and a visitor whose browser uses another language sees the shop in <%= main.english %>, its main language.</p>
   <p class="muted small">You can switch a language on again at any time. Buyers who joined in a language you switch off still get their emails in it.<% if (!chosenYet) { %> Until you save this page, the shop offers every language.<% } %></p>
   <form method="post" action="/admin/languages" class="language-choice">
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <p class="row-buttons">
       <button type="button" class="secondary small" data-lang-set="">Untick all</button>
-      <button type="button" class="secondary small" data-lang-set="et ru en lv fi">Estonian, Russian, English, Latvian, Finnish</button>
+      <button type="button" class="secondary small" data-lang-set="<%= main.code %>">Only <%= main.english %></button>
     </p>
     <div class="language-grid">
       <% for (const r of rows) { %>
         <label class="check">
           <input type="checkbox" name="lang" value="<%= r.code %>"<%= r.on ? ' checked' : '' %><%= r.required ? ' disabled' : '' %>>
-          <span><strong><%= r.english %></strong> <span class="muted" lang="<%= r.code %>"><%= r.name %></span><% if (r.required) { %><br><span class="muted small">Always on: <%= r.code === 'en' ? 'the admin and the built-in texts are in English' : 'your deals are written in it' %></span><% } %></span>
+          <span><strong><%= r.english %></strong> <span class="muted" lang="<%= r.code %>"><%= r.name %></span><% if (r.required) { %><br><span class="muted small">Always on: the shop's main language, your deals are written in it</span><% } %></span>
         </label>
         <% if (r.required) { %><input type="hidden" name="lang" value="<%= r.code %>"><% } %>
       <% } %>

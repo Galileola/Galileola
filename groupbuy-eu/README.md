@@ -111,11 +111,15 @@ Admin creates deal ──► buyers join (SetupIntent: card / SEPA / iDEAL→SEP
   `ASSISTANT_DAILY_LIMIT` cap usage. If the model declines a message, the API's server-side
   fallback answers on another model.
 - **Languages** (Admin → Settings → Languages): tick which of the 25 languages the shop offers.
-  Only those appear in the language menu, the sitemap and search engines' language links, the
-  browser's language is matched against them (anything else gets English), and new deals are
-  translated only into them. English, and `CONTENT_LANGUAGE` if it's another, are always on. Every
-  dictionary stays in the code, so a language can be switched on again at any time; category names
-  typed for a language that is off are kept. Until the page is saved, all 25 are offered.
+  Only those appear in the language menu (hidden when there is only one), the sitemap and search
+  engines' language links, the browser's language is matched against them (anything else gets the
+  shop's main language), and new deals are translated only into them. The main language,
+  `CONTENT_LANGUAGE` (Estonian unless set), is always on: deals are written in it, and the AI deal
+  writer writes in it. English can be switched off; the admin stays in English. "Only Estonian"
+  makes an Estonian-only shop. Every dictionary stays in the code, so a language can be switched on
+  again at any time; category names typed for a language that is off are kept. Until the page is
+  saved, all 25 are offered. The go-live check looks at the legal text visitors see in each offered
+  language, so an Estonian-only shop needs complete Estonian legal pages.
 - **Categories**: every deal has one of 12 standard categories (Electronics, Home & Kitchen,
   Fashion, Beauty & Health, Sports & Outdoors, Toys & Kids, Food & Drinks, Garden & DIY, Pets,
   Books & Hobbies, Car & Motorbike, Other). The home page has a chip for each one with its number of
