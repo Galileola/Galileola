@@ -9,6 +9,7 @@ import { assistantRoutes } from './assistant.js';
 import { seoRoutes } from './seo.js';
 import { alertRoutes } from './alerts.js';
 import { withdrawRoutes } from './withdraw.js';
+import { downloadRoutes } from './download.js';
 
 // Order matters only in that the webhook route must see the raw body (it uses express.raw itself).
 export const allRoutes = [
@@ -21,6 +22,7 @@ export const allRoutes = [
   withdrawRoutes,
   joinRoutes,
   payRoutes,
+  downloadRoutes,
   assistantRoutes,
   adminRoutes,
 ];

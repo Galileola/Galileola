@@ -7,6 +7,8 @@
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <input type="hidden" name="deadline_iso" id="deadline_iso">
 
+    <%- include('kind-fields') %>
+
     <label for="product_name">Product</label>
     <input type="text" id="product_name" name="product_name" maxlength="120" required value="<%= values.product_name || '' %>">
     <% if (errors.product_name) { %><p class="error-text"><%= errors.product_name %></p><% } %>
@@ -59,7 +61,11 @@
     <% if (errors.deadline) { %><p class="error-text"><%= errors.deadline %></p><% } %>
 
     <label for="tax_code">Stripe Tax product code</label>
-    <input type="text" id="tax_code" name="tax_code" value="<%= values.tax_code || '' %>" <%= locked ? 'disabled' : '' %>>
+    <input type="text" id="tax_code" name="tax_code" list="tax-codes" value="<%= values.tax_code || '' %>" data-goods-code="<%= goodsTaxCode %>" data-digital-code="<%= digitalTaxCode %>" <%= locked ? 'disabled' : '' %>>
+    <datalist id="tax-codes">
+      <option value="<%= goodsTaxCode %>">Physical goods (the shop's default)</option>
+      <% for (const [code, label] of digitalTaxCodes) { %><option value="<%= code %>"><%= label %></option><% } %>
+    </datalist>
     <% if (errors.tax_code) { %><p class="error-text"><%= errors.tax_code %></p><% } %>
 
     <details class="small">

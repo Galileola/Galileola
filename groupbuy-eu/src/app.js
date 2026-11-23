@@ -104,7 +104,7 @@ export function createApp(ctx) {
     res.locals.baseUrl = config.baseUrl;
     // Buyers' private pages (their links hold a secret) and the admin stay out of search engines
     // and link previews.
-    res.locals.noindex = /^\/(join|pay|admin|api|alerts)(\/|$)/.test(req.path) || Boolean(req.query.q);
+    res.locals.noindex = /^\/(join|pay|download|admin|api|alerts)(\/|$)/.test(req.path) || Boolean(req.query.q);
     res.locals.meta = null; // link preview and search details; pages set their own (src/seo.js)
     next();
   });

@@ -74,6 +74,10 @@ export function loadConfig(env = process.env) {
     // Product photos. Default: an "uploads" folder next to the database, so it is outside the
     // app folder whenever DATABASE_PATH is (Hostinger replaces the app folder on redeploy).
     uploadDir: env.UPLOAD_DIR || '',
+    // Files of digital products (src/digital.js). Never served as a folder: each download is
+    // checked against the buyer's order. Default: a "files" folder next to the database.
+    filesDir: env.FILES_DIR || '',
+    downloadRateLimit: Number(env.DOWNLOAD_RATE_LIMIT || 30), // downloads per order per 15 minutes
 
     // AI shopping assistant (chat on the public pages). Off until ANTHROPIC_API_KEY is set.
     anthropicApiKey: env.ANTHROPIC_API_KEY || '',
@@ -101,6 +105,12 @@ export function loadConfig(env = process.env) {
 
   config.backupDir = env.BACKUP_DIR || path.join(path.dirname(path.resolve(config.dbPath)), 'backups');
   config.uploadDir = config.uploadDir || path.join(path.dirname(path.resolve(config.dbPath)), 'uploads');
+  config.filesDir = config.filesDir || path.join(path.dirname(path.resolve(config.dbPath)), 'files');
+  const files = path.resolve(config.filesDir);
+  const uploads = path.resolve(config.uploadDir);
+  if (files === uploads || files.startsWith(uploads + path.sep)) {
+    throw new ConfigError('FILES_DIR must not be UPLOAD_DIR or a folder inside it: product photos are public, the files of digital products are not.');
+  }
   if (config.paymentsMode === 'live') assertLiveModeKeys(config);
   else assertTestModeKeys(config);
   if (!config.adminPassword) throw new ConfigError('ADMIN_PASSWORD is required.');

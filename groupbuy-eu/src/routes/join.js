@@ -3,14 +3,17 @@ import { JoinError } from '../engine.js';
 import { isJoinable, publicDealState } from '../dealState.js';
 import { EU_COUNTRIES, isValidEmail } from '../util.js';
 import { isDeliveryCountry } from '../deliveryCountries.js';
+import { describeFiles, isDigital, isDigitalCountry, isEstonianPostcode } from '../digital.js';
 import { createRateLimiter } from '../rateLimit.js';
 import { isShopLanguage, translate } from '../i18n/index.js';
 import { applyLanguage } from '../i18n/middleware.js';
 
 const english = (key) => translate('en', key);
 
-// `t` translates the error messages (English by default).
-export function validateJoinInput(body, t = english) {
+// `t` translates the error messages (English by default). For a digital product (src/digital.js)
+// the buyer must live in Estonia, whatever countries the shop delivers goods to, and must ask for
+// the download as soon as they have paid (and confirm that they then lose the right of withdrawal).
+export function validateJoinInput(body, t = english, { digital = false } = {}) {
   const v = (k, max = 200) => String(body[k] ?? '').trim().slice(0, max);
   const input = {
     email: v('email', 254).toLowerCase(),
@@ -20,14 +23,21 @@ export function validateJoinInput(body, t = english) {
     postal_code: v('postal_code', 20),
     city: v('city', 100),
     country: v('country', 2).toUpperCase(),
+    download_consent: digital && body.download_consent === 'yes',
   };
   const errors = {};
   if (!isValidEmail(input.email)) errors.email = t('join.errEmail');
   if (!input.name) errors.name = t('join.errName');
   if (!input.address_line1) errors.address_line1 = t('join.errStreet');
   if (!input.postal_code) errors.postal_code = t('join.errPostcode');
+  else if (digital && !isEstonianPostcode(input.postal_code)) errors.postal_code = t('join.errPostcodeEe');
   if (!input.city) errors.city = t('join.errCity');
-  if (!EU_COUNTRIES[input.country] || !isDeliveryCountry(input.country)) errors.country = t('join.errCountry');
+  if (digital) {
+    if (!isDigitalCountry(input.country)) errors.country = t('join.errDigitalCountry');
+    if (!input.download_consent) errors.download_consent = t('join.errConsent');
+  } else if (!EU_COUNTRIES[input.country] || !isDeliveryCountry(input.country)) {
+    errors.country = t('join.errCountry');
+  }
   if (body.accept_terms !== 'yes') errors.accept_terms = t('join.errTerms');
   return { input, errors };
 }
@@ -36,6 +46,9 @@ export function joinRoutes(app, ctx) {
   const { repo, engine, stripe, clock, config } = ctx;
   // Each join creates a Stripe Customer, a tax calculation and a SetupIntent: limit per IP.
   const joinLimiter = createRateLimiter({ windowMs: 15 * 60_000, max: config.joinRateLimit ?? 10, clock });
+  // A download can't be bought before it has its files.
+  const notReady = (deal) => isDigital(deal) && repo.fileCount(deal.id) === 0;
+  const dealFiles = (deal, lang) => (isDigital(deal) ? describeFiles(repo.filesForDeal(deal.id), lang) : []);
 
   const renderDeal = (res, deal, values, errors, status = 422) => {
     const shown = res.locals.localizeDeal(deal);
@@ -44,7 +57,9 @@ export function joinRoutes(app, ctx) {
       title: shown.product_name,
       deal: shown,
       photos: repo.photosForDeal(deal.id),
-      state: { ...publicDealState(deal, repo.committedCount(deal.id), clock.now()), ...(ordersOpen(ctx) ? {} : { joinable: false }) },
+      state: { ...publicDealState(deal, repo.committedCount(deal.id), clock.now()), ...(ordersOpen(ctx) && !notReady(deal) ? {} : { joinable: false }) },
+      files: dealFiles(deal, res.locals.lang),
+      notReady: notReady(deal),
       values,
       errors,
     });
@@ -59,10 +74,11 @@ export function joinRoutes(app, ctx) {
     if (isShopLanguage(req.body.lang) && req.body.lang !== res.locals.lang) applyLanguage(req, res, req.body.lang, ctx);
     const { t, lang } = res.locals;
     if (!ordersOpen(ctx)) return renderDeal(res, deal, req.body, { form: t('join.errClosed') }, 409);
+    if (notReady(deal)) return renderDeal(res, deal, req.body, { form: t('deal.notReady') }, 409);
     if (!joinLimiter.take(req.ip)) {
       return renderDeal(res, deal, req.body, { form: t('join.errTooMany') }, 429);
     }
-    const { input, errors } = validateJoinInput(req.body, t);
+    const { input, errors } = validateJoinInput(req.body, t, { digital: isDigital(deal) });
     if (Object.keys(errors).length) return renderDeal(res, deal, req.body, errors);
     try {
       const p = await engine.startJoin(deal, { ...input, lang });

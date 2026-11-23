@@ -1,5 +1,6 @@
 import { render } from './emails.js';
 import { ENGLISH_NAMES } from './i18n/index.js';
+import { isDigital } from './digital.js';
 
 // After a deal: marking orders as shipped (with a tracking number and link, and a "your order is
 // on its way" email in the buyer's language), and messages from the owner to a deal's buyers.
@@ -41,11 +42,13 @@ export async function emailBuyer(ctx, kind, deal, p, extra = {}) {
 export async function markShipped(ctx, p, { tracking = '', url = '' } = {}) {
   const { repo, clock } = ctx;
   if (!SHIPPABLE.includes(p.status)) return 'Only paid orders can be marked as shipped.';
+  const deal = repo.dealById(p.deal_id);
+  if (isDigital(deal)) return 'This is a download: buyers get their files by link as soon as they have paid, so there is nothing to ship.';
   const t = cleanTracking({ tracking, url });
   if (t.error) return t.error;
   const now = clock.now().toISOString();
   repo.updateParticipant(p.id, { shipped_at: p.shipped_at || now, tracking_number: t.number, tracking_url: t.link }, now);
-  await emailBuyer(ctx, 'shipped', repo.dealById(p.deal_id), repo.participantById(p.id));
+  await emailBuyer(ctx, 'shipped', deal, repo.participantById(p.id));
   return '';
 }
 

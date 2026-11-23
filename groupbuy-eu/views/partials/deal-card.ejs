@@ -8,7 +8,7 @@
     <% if (d.badge && d.badge !== 'on') { %><span class="ribbon ribbon-<%= d.badge %>"><%= plain(t('card.' + d.badge)) %></span><% } %>
   </div>
   <div class="deal-card-body">
-    <p class="card-cat"><%= cat.name %></p>
+    <p class="card-cat"><%= cat.name %><% if (d.kind === 'digital') { %> · <span class="card-digital"><%= t('card.digital') %></span><% } %></p>
     <h3><%= d.product_name %></h3>
     <% if (d.headline) { %><p class="card-headline"><%= d.headline %></p><% } %>
     <div class="progress" role="img" aria-label="<%= t('card.progressLabel', { count: d.count, min: d.min_buyers }) %>"><span style="width: <%= d.percent %>%"></span></div>

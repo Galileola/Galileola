@@ -3,6 +3,7 @@ import { anonymiseOldSignups } from './privacy.js';
 import { isJoinable } from './dealState.js';
 import { randomToken, addMs, iso, HOUR, GRACE_WINDOW_MS } from './util.js';
 import { calculateVat, createSetupIntentFactory, extractSavedMethod, stripeErrorInfo, describePaymentMethod } from './stripeHelpers.js';
+import { isDigital } from './digital.js';
 
 const MINUTE = 60_000;
 // Automatic retries for declined cards, measured from the first attempt (all inside the 48h window).
@@ -98,6 +99,8 @@ export function createEngine(ctx) {
         country: input.country,
         lang: input.lang || 'en',
         terms_accepted_at: n,
+        // A download: the buyer asked for it as soon as they have paid (src/digital.js).
+        download_consent_at: isDigital(deal) && input.download_consent ? n : null,
       };
       if (p) {
         repo.updateParticipant(p.id, fields, n);
@@ -113,6 +116,8 @@ export function createEngine(ctx) {
         city: p.city,
         country: p.country,
       };
+      // Downloads aren't shipped: the address is the buyer's (billing) address.
+      const shipping = isDigital(deal) ? {} : { shipping: { name: p.name, address } };
       let customerId = p.stripe_customer_id;
       if (!customerId) {
         const customer = await stripe.customers.create(
@@ -120,14 +125,14 @@ export function createEngine(ctx) {
             email: p.email,
             name: p.name,
             address,
-            shipping: { name: p.name, address },
+            ...shipping,
             metadata: { participant_id: String(p.id), deal_id: String(deal.id) },
           },
           { idempotencyKey: `customer-${p.id}` }
         );
         customerId = customer.id;
       } else {
-        await stripe.customers.update(customerId, { name: p.name, address, shipping: { name: p.name, address } });
+        await stripe.customers.update(customerId, { name: p.name, address, ...shipping });
       }
       repo.updateParticipant(p.id, { stripe_customer_id: customerId }, n);
 
@@ -292,10 +297,14 @@ export function createEngine(ctx) {
               off_session: true,
               ...mandateParam(p),
               description: `${deal.product_name} (group deal #${deal.id})`,
-              shipping: {
-                name: p.name,
-                address: { line1: p.address_line1, line2: p.address_line2 || undefined, postal_code: p.postal_code, city: p.city, country: p.country },
-              },
+              ...(isDigital(deal)
+                ? {}
+                : {
+                    shipping: {
+                      name: p.name,
+                      address: { line1: p.address_line1, line2: p.address_line2 || undefined, postal_code: p.postal_code, city: p.city, country: p.country },
+                    },
+                  }),
               metadata: { deal_id: String(deal.id), participant_id: String(p.id), tax_calculation: p.tax_calculation_id ?? '' },
             },
             { idempotencyKey: `charge-${p.id}` }
@@ -394,10 +403,14 @@ export function createEngine(ctx) {
         console.error(`[tax] could not record tax transaction for participant ${p.id}:`, err.message);
         repo.updateParticipant(p.id, { last_error_message: `tax record failed: ${err.message}` }, nowIso());
       }
+      const deal = repo.dealById(p.deal_id);
+      // A download is available as soon as the payment has gone through: the "paid" email carries
+      // the link (src/digital.js).
+      if (isDigital(deal)) repo.updateParticipant(p.id, { delivered_at: nowIso() }, nowIso());
       p = repo.participantById(p.id);
       await releaseMethod(p); // paid: nothing more will be charged, so don't keep the method
-      await email('paid', repo.dealById(p.deal_id), p);
-      return p;
+      await email('paid', deal, p);
+      return repo.participantById(p.id);
     },
 
     async markProcessing(participantId) {

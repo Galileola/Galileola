@@ -1,0 +1,24 @@
+<%- include('partials/header') %>
+<%# A buyer's downloads (src/routes/download.js): only shown with their personal link. %>
+<section class="card narrow stack">
+  <h1><%= t('download.title') %></h1>
+  <% if (ok) { %>
+    <p><%= t('download.intro', { name: deal.product_name }) %></p>
+    <ul class="download-list">
+      <% for (const f of files) { %>
+        <li>
+          <span><span class="file-name"><%= f.name %></span><br><span class="muted small"><%= f.label %> · <%= f.size %></span></span>
+          <a class="button" href="/download/<%= p.token %>/<%= f.id %>" download><%= t('download.button') %></a>
+        </li>
+      <% } %>
+    </ul>
+  <% } else if (ended) { %>
+    <div class="notice"><%= t('download.ended') %></div>
+  <% } else if (p.status === 'processing') { %>
+    <div class="notice"><%= t('download.afterDebit') %></div>
+  <% } else { %>
+    <div class="notice"><%= t('download.notReady') %></div>
+  <% } %>
+  <p><a href="/join/<%= p.token %>/done"><%= deal.product_name %></a></p>
+</section>
+<%- include('partials/footer') %>

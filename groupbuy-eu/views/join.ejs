@@ -23,7 +23,8 @@
     <button type="submit" id="setup-submit"><%= t('setup.submit') %></button>
   </form>
 </section>
-<%# Before the buyer is bound by saving the payment method (Directive 2011/83/EU, Art. 6(1)(l)). %>
-<%- include('partials/guarantee-notice') %>
+<%# Before the buyer is bound by saving the payment method (Directive 2011/83/EU, Art. 6(1)(l)).
+    The notice is about goods: downloads (src/digital.js) don't show it. %>
+<% if (deal.kind !== 'digital') { %><%- include('partials/guarantee-notice') %><% } %>
 <script src="<%= asset('/static/js/setup.js') %>"></script>
 <%- include('partials/footer') %>

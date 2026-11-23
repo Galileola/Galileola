@@ -25,7 +25,8 @@ export async function calculateVat(stripe, deal, participant, { idempotencyKey }
           city: participant.city,
           country: participant.country,
         },
-        address_source: 'shipping',
+        // Downloads (src/digital.js) are taxed where the buyer lives: their billing address.
+        address_source: deal.kind === 'digital' ? 'billing' : 'shipping',
       },
     },
     idempotencyKey ? { idempotencyKey } : undefined

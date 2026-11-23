@@ -2,6 +2,7 @@ import crypto from 'node:crypto';
 import { isValidEmail } from './util.js';
 import { isPlaceholder } from './businessSettings.js';
 import { render } from './emails.js';
+import { isDigital } from './digital.js';
 
 // The online withdrawal function (Article 11a of Directive 2011/83/EU as amended by Directive
 // (EU) 2023/2673, applying since 19 June 2026): a "Withdraw from contract here" link on every page
@@ -52,7 +53,8 @@ function shopAddress(config) {
 
 // Records the withdrawal, acts on the order where it safely can, and sends the acknowledgement.
 // participant: the order from the buyer's own link, or null. Returns { withdrawal, outcome }, where
-// outcome is 'cancelled', 'refund', 'review' or 'ended'.
+// outcome is 'cancelled', 'refund', 'review', 'ended' or 'digital' (a download the buyer asked to get
+// at once, already available: no right of withdrawal, src/digital.js).
 export async function submitWithdrawal(ctx, { participant = null, input, lang = 'en' }) {
   const { repo, engine, mailer, clock, config } = ctx;
   const p = participant ? repo.participantById(participant.id) : null;
@@ -83,9 +85,15 @@ export async function submitWithdrawal(ctx, { participant = null, input, lang = 
       } catch (err) {
         change = { note: `Could not be cancelled automatically (${err.message}). Please handle it.` };
       }
+    } else if (p.status === 'paid' && isDigital(deal) && p.delivered_at && p.download_consent_at) {
+      // The buyer asked for the download as soon as they had paid and confirmed that they then lose
+      // the right of withdrawal (Directive 2011/83/EU, Art. 16(m)). The owner decides; a refund is
+      // still possible as a gesture of goodwill.
+      outcome = 'digital';
+      change = { note: `Download made available on ${p.delivered_at} at the buyer's request (consent given ${p.download_consent_at}), so there is no right of withdrawal. Reply to the buyer; refund only as a gesture of goodwill.` };
     } else if (p.status === 'paid') {
       outcome = 'refund';
-      change = { note: 'Paid order: refund it here once the goods are back (or right away).' };
+      change = { note: isDigital(deal) ? 'Paid download: refund it here.' : 'Paid order: refund it here once the goods are back (or right away).' };
     } else if (ENDED.includes(p.status)) {
       outcome = 'ended';
       change = { status: 'done', note: `The order had already ended (${p.status}).` };

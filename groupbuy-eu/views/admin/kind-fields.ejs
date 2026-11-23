@@ -1,0 +1,9 @@
+<%# New deal and Edit deal: goods or a digital download (src/digital.js). %>
+<% const kind = values.kind === 'digital' ? 'digital' : 'goods'; const lockedKind = locals.locked; %>
+<fieldset class="kind-choice" data-kind-choice>
+  <legend>What are you selling?</legend>
+  <label class="check"><input type="radio" name="kind" value="goods" <%= kind === 'goods' ? 'checked' : '' %> <%= lockedKind ? 'disabled' : '' %>> <span>📦 Physical product, delivered to the buyers</span></label>
+  <label class="check"><input type="radio" name="kind" value="digital" <%= kind === 'digital' ? 'checked' : '' %> <%= lockedKind ? 'disabled' : '' %>> <span>⬇️ Digital download (PDF, e-book, audio, video, ZIP…), sold only to buyers in Estonia</span></label>
+  <p class="muted small" data-digital-hint <%= kind === 'digital' ? '' : 'hidden' %>>After you create it, upload the files on the deal page; buyers can order it once it has at least one file. Each buyer gets a personal download link by email as soon as their payment has gone through. When ordering they ask for the download straight away and confirm that they then lose the 14-day right of withdrawal.</p>
+  <% if (errors.kind) { %><p class="error-text"><%= errors.kind %></p><% } %>
+</fieldset>

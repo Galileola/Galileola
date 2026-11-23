@@ -146,3 +146,21 @@ document.querySelectorAll('[data-lang-set]').forEach((button) =>
     });
   })
 );
+
+// New deal / Edit deal: goods or a digital download. Switching swaps the Stripe Tax code while it
+// is still the other kind's default, and shows what happens with a download.
+const kindChoice = document.querySelector('[data-kind-choice]');
+if (kindChoice) {
+  const tax = document.getElementById('tax_code');
+  const hint = kindChoice.querySelector('[data-digital-hint]');
+  kindChoice.addEventListener('change', (e) => {
+    if (e.target.name !== 'kind') return;
+    const digital = e.target.value === 'digital';
+    if (hint) hint.hidden = !digital;
+    if (tax && !tax.disabled) {
+      const from = digital ? tax.dataset.goodsCode : tax.dataset.digitalCode;
+      const to = digital ? tax.dataset.digitalCode : tax.dataset.goodsCode;
+      if (!tax.value.trim() || tax.value.trim() === from) tax.value = to;
+    }
+  });
+}

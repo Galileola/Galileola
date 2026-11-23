@@ -36,6 +36,8 @@ export function applyLanguage(req, res, lang, ctx = {}) {
     formatDate: (d) => (d ? dateFormatter(lang).format(new Date(d)) : ''),
     // Only the countries the shop delivers to (Admin → Settings → Delivery countries).
     countries: countryList(lang).filter(([code]) => isDeliveryCountry(code)),
+    // One EU country's name in this language (downloads are sold only in Estonia: src/digital.js).
+    countryName: (code) => countryList(lang).find(([c]) => c === code)?.[1] ?? code,
     // The EU harmonised notice on the legal guarantee for this language (src/guaranteeNotice.js).
     guaranteeNotice: guaranteeNotice(lang),
     categories: allCategories().map(localCategory),

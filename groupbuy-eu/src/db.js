@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS deals (
   seo_description    TEXT NOT NULL DEFAULT '',       -- search result / link preview text
   cancelled_at       TEXT,                           -- the owner cancelled it (status expired)
   announced_at       TEXT,                           -- emailed to the deal-alert subscribers
+  kind               TEXT NOT NULL DEFAULT 'goods',  -- goods | digital (downloads, src/digital.js)
   price_cents        INTEGER NOT NULL CHECK (price_cents > 0),   -- gross, VAT included
   currency           TEXT NOT NULL DEFAULT 'eur',
   tax_code           TEXT NOT NULL,
@@ -80,6 +81,13 @@ CREATE TABLE IF NOT EXISTS participants (
   tracking_number      TEXT NOT NULL DEFAULT '',
   tracking_url         TEXT NOT NULL DEFAULT '',
   erased_at            TEXT,                      -- personal data removed (src/privacy.js)
+  -- Digital products (src/digital.js): when the buyer asked for the download as soon as they have
+  -- paid (and confirmed that they then lose the right of withdrawal), when it was made available,
+  -- and how often it was downloaded.
+  download_consent_at  TEXT,
+  delivered_at         TEXT,
+  download_count       INTEGER NOT NULL DEFAULT 0,
+  last_download_at     TEXT,
   created_at           TEXT NOT NULL,
   updated_at           TEXT NOT NULL
 );
@@ -121,6 +129,20 @@ CREATE TABLE IF NOT EXISTS deal_photos (
   height     INTEGER
 );
 CREATE INDEX IF NOT EXISTS deal_photos_deal ON deal_photos(deal_id, position, id);
+
+-- The files of a digital product (src/digital.js). The files live in FILES_DIR under random names
+-- and are only sent to buyers whose payment has gone through (/download/<token>).
+CREATE TABLE IF NOT EXISTS deal_files (
+  id            INTEGER PRIMARY KEY,
+  deal_id       INTEGER NOT NULL REFERENCES deals(id),
+  filename      TEXT NOT NULL UNIQUE,             -- the stored name, e.g. 3f…9a.pdf
+  original_name TEXT NOT NULL,                    -- the name buyers see, e.g. Guide.pdf
+  content_type  TEXT NOT NULL,
+  size_bytes    INTEGER NOT NULL,
+  position      INTEGER NOT NULL DEFAULT 0,
+  created_at    TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS deal_files_deal ON deal_files(deal_id, position, id);
 
 -- Leases so only one process runs the scheduler at a time (e.g. an old copy still running
 -- after a redeploy on managed hosting).
@@ -261,6 +283,7 @@ const ADDED_COLUMNS = {
     ['seo_description', "TEXT NOT NULL DEFAULT ''"],
     ['cancelled_at', 'TEXT'],
     ['announced_at', 'TEXT'],
+    ['kind', "TEXT NOT NULL DEFAULT 'goods'"],
   ],
   deal_photos: [
     ['thumb', "TEXT NOT NULL DEFAULT ''"],
@@ -279,6 +302,10 @@ const ADDED_COLUMNS = {
     ['tracking_number', "TEXT NOT NULL DEFAULT ''"],
     ['tracking_url', "TEXT NOT NULL DEFAULT ''"],
     ['erased_at', 'TEXT'],
+    ['download_consent_at', 'TEXT'],
+    ['delivered_at', 'TEXT'],
+    ['download_count', 'INTEGER NOT NULL DEFAULT 0'],
+    ['last_download_at', 'TEXT'],
   ],
 };
 
@@ -336,11 +363,11 @@ export function createRepo(db) {
       const r = db
         .prepare(
           `INSERT INTO deals (slug, product_name, description, image_url, category, headline, social_post,
-             seo_title, seo_description, price_cents, currency, tax_code, min_buyers, deadline, created_at)
+             seo_title, seo_description, price_cents, currency, tax_code, min_buyers, deadline, kind, created_at)
            VALUES (:slug, :product_name, :description, :image_url, :category, :headline, :social_post,
-             :seo_title, :seo_description, :price_cents, 'eur', :tax_code, :min_buyers, :deadline, :created_at)`
+             :seo_title, :seo_description, :price_cents, 'eur', :tax_code, :min_buyers, :deadline, :kind, :created_at)`
         )
-        .run({ category: 'other', headline: '', social_post: '', seo_title: '', seo_description: '', ...d });
+        .run({ category: 'other', headline: '', social_post: '', seo_title: '', seo_description: '', kind: 'goods', ...d });
       return this.dealById(Number(r.lastInsertRowid));
     },
     dealById: (id) => db.prepare('SELECT * FROM deals WHERE id = ?').get(id),
@@ -356,6 +383,7 @@ export function createRepo(db) {
       return this.transaction(() => {
         if (this.participantCount(id) > 0) return false;
         db.prepare('DELETE FROM deal_photos WHERE deal_id = ?').run(id);
+        db.prepare('DELETE FROM deal_files WHERE deal_id = ?').run(id);
         db.prepare('UPDATE page_views SET deal_id = NULL WHERE deal_id = ?').run(id);
         db.prepare('UPDATE emails SET deal_id = NULL WHERE deal_id = ?').run(id);
         return db.prepare('DELETE FROM deals WHERE id = ?').run(id).changes === 1;
@@ -418,16 +446,38 @@ export function createRepo(db) {
     },
     deletePhoto: (id) => db.prepare('DELETE FROM deal_photos WHERE id = ?').run(id),
 
+    // ---- files of digital products (src/digital.js)
+    filesForDeal: (dealId) => db.prepare('SELECT * FROM deal_files WHERE deal_id = ? ORDER BY position, id').all(dealId),
+    fileCount: (dealId) => db.prepare('SELECT COUNT(*) AS n FROM deal_files WHERE deal_id = ?').get(dealId).n,
+    fileById: (id) => db.prepare('SELECT * FROM deal_files WHERE id = ?').get(id),
+    addFile(dealId, f, now) {
+      const { next } = db
+        .prepare('SELECT COALESCE(MAX(position), 0) + 1 AS next FROM deal_files WHERE deal_id = ?')
+        .get(dealId);
+      const r = db
+        .prepare(
+          `INSERT INTO deal_files (deal_id, filename, original_name, content_type, size_bytes, position, created_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?)`
+        )
+        .run(dealId, f.filename, f.original_name, f.content_type, f.size_bytes, next, now);
+      return db.prepare('SELECT * FROM deal_files WHERE id = ?').get(Number(r.lastInsertRowid));
+    },
+    deleteFile: (id) => db.prepare('DELETE FROM deal_files WHERE id = ?').run(id),
+    recordDownload: (participantId, now) =>
+      db
+        .prepare('UPDATE participants SET download_count = download_count + 1, last_download_at = ? WHERE id = ?')
+        .run(now, participantId),
+
     // ---- participants
     insertParticipant(p) {
       const r = db
         .prepare(
           `INSERT INTO participants (deal_id, token, email, name, address_line1, address_line2, postal_code, city, country,
-             lang, terms_accepted_at, created_at, updated_at)
+             lang, terms_accepted_at, download_consent_at, created_at, updated_at)
            VALUES (:deal_id, :token, :email, :name, :address_line1, :address_line2, :postal_code, :city, :country,
-             :lang, :terms_accepted_at, :created_at, :created_at)`
+             :lang, :terms_accepted_at, :download_consent_at, :created_at, :created_at)`
         )
-        .run({ lang: 'en', ...p });
+        .run({ lang: 'en', download_consent_at: null, ...p });
       return this.participantById(Number(r.lastInsertRowid));
     },
     participantById: (id) => db.prepare('SELECT * FROM participants WHERE id = ?').get(id),

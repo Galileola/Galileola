@@ -18,6 +18,7 @@ export function dealToFormValues(deal) {
     price: (deal.price_cents / 100).toFixed(2),
     min_buyers: String(deal.min_buyers),
     tax_code: deal.tax_code,
+    kind: deal.kind,
     deadline_iso: deal.deadline,
   };
 }
@@ -96,15 +97,18 @@ export function dealRoutes(router, ctx) {
     }
   });
 
-  // Delete a deal nobody ever started joining (a mistake or a test). Its photos are removed too.
+  // Delete a deal nobody ever started joining (a mistake or a test). Its photos (and the files of a
+  // download) are removed too.
   router.post('/deals/:id/delete', (req, res, next) => {
     const deal = repo.dealById(Number(req.params.id));
     if (!deal) return next();
     const photos = repo.photosForDeal(deal.id);
+    const files = repo.filesForDeal(deal.id);
     if (!repo.deleteDeal(deal.id)) {
       return backToDeal(res, deal.id, 'Buyers have joined this deal, so it stays in the records. Cancel it instead.');
     }
     for (const ph of photos) ctx.photos.remove(ph.filename, ph.thumb);
+    for (const f of files) ctx.files?.remove(f.filename);
     res.redirect(303, `/admin?flash=${encodeURIComponent(`Deleted "${deal.product_name}".`)}`);
   });
 }

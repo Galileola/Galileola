@@ -23,13 +23,19 @@ function helpers({ deal, p, baseUrl, i18n }) {
     withdrawalLink: `${baseUrl}/terms${q}#withdrawal`,
     // The online withdrawal function, opened for this buyer's order (src/withdrawals.js).
     withdrawLink: `${baseUrl}/withdraw?order=${encodeURIComponent(p.token)}&lang=${i18n.lang}`,
+    // Digital products (src/digital.js): the buyer's personal download page.
+    digital: deal.kind === 'digital',
+    downloadLink: `${baseUrl}/download/${p.token}${q}`,
   };
 }
 
 export const templates = {
   joined: (data) => {
     const { deal, p, business, i18n } = data;
-    const { t, name, amount, method, dealLink, termsLink, withdrawLink } = helpers(data);
+    const { t, name, amount, method, dealLink, termsLink, withdrawLink, digital } = helpers(data);
+    // A download: confirms, on a durable medium, that the buyer asked for it as soon as they have
+    // paid and knows they then lose the right of withdrawal (Directive 2011/83/EU, Art. 8(7)).
+    const withdrawal = digital && p.download_consent_at ? t('email.digitalConsentJoined') : t('email.withdrawalRight', { link: termsLink });
     const intro =
       deal.status === 'open'
         ? `${t('email.joinedOpen', { name })}
@@ -47,7 +53,7 @@ ${intro}
 ${method}
 ${t('email.dealPage', { link: dealLink })}
 
-${t('email.withdrawalRight', { link: termsLink })}
+${withdrawal}
 ${t('withdraw.emailHere', { link: withdrawLink })}${sign(business)}`,
     };
   },
@@ -75,7 +81,22 @@ ${t('email.reachedIfFails')}${sign(business)}`,
 
   paid: (data) => {
     const { p, business } = data;
-    const { t, name, amount, method, withdrawalLink, withdrawLink } = helpers(data);
+    const { t, name, amount, method, withdrawalLink, withdrawLink, digital, downloadLink } = helpers(data);
+    if (digital) {
+      // The download is available now; with the buyer's consent the right of withdrawal has ended,
+      // which this email confirms (Directive 2011/83/EU, Art. 8(7) and 16(m)).
+      return {
+        subject: t('email.paidSubject', { name }),
+        body: `${t('email.hi', { name: p.name })}
+
+${t('email.paidText', { amount, name })}
+${method}
+
+${t('email.downloadReady', { link: downloadLink })}
+
+${p.download_consent_at ? t('email.digitalConsentPaid') : `${t('email.withdrawalRight', { link: withdrawalLink })}\n${t('withdraw.emailHere', { link: withdrawLink })}`}${sign(business)}`,
+      };
+    }
     return {
       subject: t('email.paidSubject', { name }),
       body: `${t('email.hi', { name: p.name })}
@@ -91,13 +112,13 @@ ${t('withdraw.emailHere', { link: withdrawLink })}${sign(business)}`,
 
   processing: (data) => {
     const { p, business } = data;
-    const { t, name, amount } = helpers(data);
+    const { t, name, amount, digital } = helpers(data);
     return {
       subject: t('email.processingSubject', { name }),
       body: `${t('email.hi', { name: p.name })}
 
 ${t('email.processingText', { amount, name })}
-${t('email.processingTime')}${sign(business)}`,
+${t('email.processingTime')}${digital ? `\n${t('download.afterDebit')}` : ''}${sign(business)}`,
     };
   },
 
@@ -270,7 +291,7 @@ Object.assign(templates, {
       `${t('withdraw.email')}: ${w.email}`,
       w.message ? `${t('withdraw.messageLabel')}: ${w.message}` : '',
     ].filter(Boolean);
-    const next = { cancelled: 'withdraw.doneCancelled', refund: 'withdraw.doneRefund', review: 'withdraw.doneReview', ended: 'withdraw.doneEnded' }[outcome];
+    const next = { cancelled: 'withdraw.doneCancelled', refund: 'withdraw.doneRefund', review: 'withdraw.doneReview', ended: 'withdraw.doneEnded', digital: 'withdraw.doneDigital' }[outcome];
     return {
       subject: t('withdraw.emailSubject', { reference: w.reference }),
       body: `${t('email.hi', { name: w.name })}

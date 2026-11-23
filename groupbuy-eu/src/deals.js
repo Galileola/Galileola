@@ -1,5 +1,6 @@
 import { MAX_DEAL_DURATION_MS, parseEuroToCents, slugify, iso } from './util.js';
 import { DEFAULT_CATEGORY, isCategory } from './categories.js';
+import { DEFAULT_DIGITAL_TAX_CODE, KINDS } from './digital.js';
 
 export const MAX_HEADLINE = 120;
 export const MAX_SOCIAL_POST = 2000;
@@ -18,7 +19,9 @@ export function validateDealInput(body, { now, defaultTaxCode }) {
   const headline = String(body.headline ?? '').replace(/\s+/g, ' ').trim();
   const social_post = String(body.social_post ?? '').replace(/\r\n?/g, '\n').trim();
   const category = String(body.category ?? '').trim() || DEFAULT_CATEGORY;
-  const tax_code = String(body.tax_code ?? '').trim() || defaultTaxCode;
+  // goods (delivered) or digital (downloads, sold only in Estonia: src/digital.js).
+  const kind = String(body.kind ?? '').trim() || 'goods';
+  const tax_code = String(body.tax_code ?? '').trim() || (kind === 'digital' ? DEFAULT_DIGITAL_TAX_CODE : defaultTaxCode);
   const price_cents = parseEuroToCents(body.price);
   const min_buyers = Number(body.min_buyers);
 
@@ -28,6 +31,7 @@ export function validateDealInput(body, { now, defaultTaxCode }) {
   if (headline.length > MAX_HEADLINE) errors.headline = `Keep the headline under ${MAX_HEADLINE} characters.`;
   if (social_post.length > MAX_SOCIAL_POST) errors.social_post = `Keep the social media post under ${MAX_SOCIAL_POST} characters.`;
   if (!isCategory(category)) errors.category = 'Choose a category from the list.';
+  if (!KINDS.includes(kind)) errors.kind = 'Choose physical goods or a digital download.';
   const seo_title = String(body.seo_title ?? '').replace(/\s+/g, ' ').trim();
   const seo_description = String(body.seo_description ?? '').replace(/\s+/g, ' ').trim();
   if (seo_title.length > MAX_SEO_TITLE) errors.seo_title = `Keep the search title under ${MAX_SEO_TITLE} characters (about 60 show in Google).`;
@@ -75,6 +79,7 @@ export function validateDealInput(body, { now, defaultTaxCode }) {
       price_cents,
       tax_code,
       min_buyers,
+      kind,
       deadline: iso(deadline),
       created_at: iso(now),
     },
@@ -82,7 +87,7 @@ export function validateDealInput(body, { now, defaultTaxCode }) {
 }
 
 // Admin → Edit deal. Texts, photos and the category can always change. While a deal is open and
-// nobody has joined, so can the price, minimum, tax code and deadline. Once someone has joined,
+// nobody has joined, so can the price, minimum, tax code, kind (goods or download) and deadline. Once someone has joined,
 // they agreed to that price and minimum, so those stay; the deadline can only move later.
 // After a deal has closed (charging, ready to order, expired) only the texts change.
 // Returns { errors, changes, locked } where changes holds the columns to update.
@@ -94,6 +99,7 @@ export function validateDealEdit(body, deal, { now, joined }) {
     price: locked ? (deal.price_cents / 100).toFixed(2) : body.price,
     min_buyers: locked ? String(deal.min_buyers) : body.min_buyers,
     tax_code: locked ? deal.tax_code : body.tax_code,
+    kind: locked ? deal.kind : body.kind || deal.kind,
     deadline_iso: open ? body.deadline_iso || body.deadline || deal.deadline : deal.deadline,
   };
   const { errors, deal: valid } = validateDealInput(input, { now, defaultTaxCode: deal.tax_code });
@@ -118,7 +124,7 @@ export function validateDealEdit(body, deal, { now, joined }) {
     seo_title: v.seo_title,
     seo_description: v.seo_description,
   };
-  if (!locked) Object.assign(changes, { price_cents: v.price_cents, min_buyers: v.min_buyers, tax_code: v.tax_code });
+  if (!locked) Object.assign(changes, { price_cents: v.price_cents, min_buyers: v.min_buyers, tax_code: v.tax_code, kind: v.kind });
   if (open && !sameDeadline) changes.deadline = iso(newDeadline);
   return { errors, changes, locked };
 }

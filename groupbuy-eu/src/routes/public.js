@@ -3,6 +3,7 @@ import { isJoinable, publicDealState } from '../dealState.js';
 import { isCategory } from '../categories.js';
 import { HOUR } from '../util.js';
 import { dealMeta, homeMeta } from '../seo.js';
+import { describeFiles, isDigital } from '../digital.js';
 
 export function publicRoutes(app, ctx) {
   const { repo, clock } = ctx;
@@ -12,7 +13,7 @@ export function publicRoutes(app, ctx) {
     const { localizeDeal, t } = res.locals;
     const all = repo
       .listPublicDeals()
-      .filter((d) => isJoinable(d, now))
+      .filter((d) => isJoinable(d, now) && !(isDigital(d) && repo.fileCount(d.id) === 0)) // downloads need their files first
       .map((d) => withBadges({ ...localizeDeal(d), count: repo.committedCount(d.id), cover: repo.coverPhoto(d.id) }, now));
     const category = isCategory(req.query.category) ? res.locals.categoryFor(req.query.category) : null;
     const q = String(req.query.q ?? '').trim().slice(0, 100);
@@ -47,6 +48,10 @@ export function publicRoutes(app, ctx) {
     const state = publicDealState(deal, repo.committedCount(deal.id), clock.now());
     // With real payments, new orders wait until the go-live checks pass (src/goLive.js).
     if (!ordersOpen(ctx)) state.joinable = false;
+    // A download can't be bought before it has its files (src/digital.js).
+    const files = isDigital(deal) ? describeFiles(repo.filesForDeal(deal.id), res.locals.lang) : [];
+    const notReady = isDigital(deal) && !files.length;
+    if (notReady) state.joinable = false;
     const photos = repo.photosForDeal(deal.id);
     res.locals.trackDealId = deal.id;
     const { lang, formatEuro, categoryFor } = res.locals;
@@ -55,7 +60,7 @@ export function publicRoutes(app, ctx) {
     res.locals.meta = dealMeta({
       deal, photos, state, lang, formatEuro, baseUrl: ctx.config.baseUrl, business: ctx.config.business, categoryName: categoryFor(deal.category).name, seo,
     });
-    res.render('deal', { title: seo.title || deal.product_name, fullTitle: Boolean(seo.title), deal, photos, state, values: {}, errors: {} });
+    res.render('deal', { title: seo.title || deal.product_name, fullTitle: Boolean(seo.title), deal, photos, state, files, notReady, values: {}, errors: {} });
   });
 
   app.get('/api/deals/:slug', (req, res) => {

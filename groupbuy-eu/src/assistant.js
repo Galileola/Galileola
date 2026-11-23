@@ -85,6 +85,7 @@ export function buildSystemPrompt({ business, baseUrl, deals, siteLanguage = 'En
 - Anyone who joins after the minimum is reached is charged straight away.
 - The price is the same for every EU country. Only the VAT share inside it depends on the delivery country.
 - ${deliveryTo.length ? `The shop delivers only to: ${deliveryTo.join(', ')}.` : 'Delivery is to EU countries only.'}
+- Some deals are digital downloads (PDFs, e-books and other files). They are sold only to buyers who live in Estonia (an Estonian address is needed), work the same group-buy way, and the buyer gets a personal download link by email as soon as their payment has gone through. When ordering, the buyer asks for the download straight away and confirms that they then lose the 14-day right of withdrawal; until the download is available they can still withdraw.
 - Consumers have a 14-day right of withdrawal after receiving the goods: ${baseUrl}/terms#withdrawal. Before payment is collected, a buyer can also leave a deal by contacting the shop; their saved payment method is removed and nothing is charged.
 - Terms: ${baseUrl}/terms · Privacy policy: ${baseUrl}/privacy
 ${testMode ? '- The site is in test mode at the moment: no real payments are taken, and only Stripe test cards and test IBANs work.\n' : ''}</how_the_shop_works>
@@ -113,6 +114,7 @@ function describeDeal(d, baseUrl) {
   return [
     `- ${d.product_name}`,
     `  Category: ${categoryFor(d.category).name}`,
+    d.kind === 'digital' ? '  Type: digital download, only for buyers in Estonia (the link is emailed once the payment has gone through)' : '',
     d.headline ? `  Headline: ${d.headline}` : '',
     `  Price: ${formatEuro(d.price_cents)} including VAT`,
     `  Buyers: ${progress}`,

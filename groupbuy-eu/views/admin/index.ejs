@@ -23,7 +23,7 @@
       <td>
         <div class="product-cell">
           <% if (d.cover) { %><img class="thumb-sm" src="<%= thumbUrl(d.cover) %>" alt=""><% } %>
-          <a href="/admin/deals/<%= d.id %>"><%= d.product_name %></a>
+          <a href="/admin/deals/<%= d.id %>"><%= d.product_name %></a><% if (d.kind === 'digital') { %> <span class="badge digital" title="Digital download, sold only in Estonia">⬇️ download</span><% } %>
         </div>
       </td>
       <td class="nowrap"><% const c = categoryFor(d.category); %><span aria-hidden="true"><%= c.emoji %></span> <%= c.name %></td>

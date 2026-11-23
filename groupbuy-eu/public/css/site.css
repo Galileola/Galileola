@@ -229,6 +229,7 @@ tr:last-child td { border-bottom: 0; }
 .badge.processing, .badge.charging { background: var(--warn-soft); color: var(--warn); }
 .badge.failed, .badge.late_failed, .badge.unpaid { background: var(--bad-soft); color: var(--bad); }
 .badge.released, .badge.expired, .badge.withdrawn { background: #f1f5f9; color: var(--muted); }
+.badge.digital { background: var(--accent-soft); color: var(--accent-ink); }
 .product-cell { display: flex; align-items: center; gap: 10px; min-width: 150px; }
 .table-scroll { overflow-x: auto; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
 .table-scroll table { box-shadow: none; }
@@ -680,3 +681,17 @@ main:focus { outline: none; }
 
 .join-card { border-top: 4px solid var(--accent); }
 .legal { border-top: 4px solid var(--accent); }
+
+/* Digital products (downloads, src/digital.js) */
+.digital-pill { display: inline-flex; align-items: center; gap: 6px; margin: 0 0 6px; padding: 4px 12px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-ink); font-weight: 600; font-size: .85rem; }
+.digital-files { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
+.digital-files h2 { font-size: 1.05rem; margin: 0 0 8px; }
+.digital-files ul { margin: 0 0 8px; padding-left: 1.2em; }
+.digital-files li { margin: 4px 0; overflow-wrap: anywhere; }
+.file-name { font-weight: 600; overflow-wrap: anywhere; }
+.card-digital { color: var(--accent-ink); }
+.download-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.download-list li { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; }
+.download-list .button { flex: none; }
+.kind-choice { border: 0; padding: 0; margin: 0 0 12px; }
+.kind-choice legend { font-weight: 600; margin-bottom: 6px; }

@@ -43,11 +43,22 @@
       <div class="placeholder big tone-<%= deal.id % 4 %>" aria-hidden="true"><span><%= cat.emoji %></span></div>
     <% } %>
     <a class="cat-pill" href="/?category=<%= cat.slug %>#deals"><%= cat.name %></a>
+    <% const digital = deal.kind === 'digital'; %>
+    <% if (digital) { %><p class="digital-pill"><span aria-hidden="true">⬇️</span> <%= t('deal.digitalBadge') %></p><% } %>
     <h1><%= deal.product_name %></h1>
     <% if (deal.headline) { %><p class="deal-headline"><%= deal.headline %></p><% } %>
     <p class="price-tag big"><%= formatEuro(deal.price_cents) %> <small><%= t('price.inclVat') %></small></p>
-    <p class="muted small vat-note"><%= t('deal.vatNote') %></p>
+    <p class="muted small vat-note"><%= digital ? t('deal.vatNoteDigital') : t('deal.vatNote') %></p>
     <% if (deal.description) { %><div class="stack description"><% for (const para of deal.description.split(/(?:\r?\n\s*){2,}/)) { %><p><%= para %></p><% } %></div><% } %>
+    <% if (digital && (locals.files || []).length) { %>
+      <section class="digital-files" aria-labelledby="files-title">
+        <h2 id="files-title"><%= t('deal.filesTitle') %></h2>
+        <ul>
+          <% for (const f of files) { %><li><span class="file-name"><%= f.name %></span> <span class="muted small"><%= f.label %> · <%= f.size %></span></li><% } %>
+        </ul>
+        <p class="muted small"><%= t('deal.digitalNote') %></p>
+      </section>
+    <% } %>
   </section>
 
   <section class="card join-card">
@@ -70,13 +81,16 @@
 
     <% if (state.joinable) { %>
       <%- include('partials/join-form') %>
+    <% } else if (locals.notReady && state.status !== 'expired') { %>
+      <div class="notice"><%= t('deal.notReady') %></div>
     <% } else if (state.status !== 'expired') { %>
       <div class="notice"><%= plain(t('deal.closed')) %></div>
     <% } %>
   </section>
 </div>
 
-<%- include('partials/guarantee-notice') %>
+<%# The EU notice on the legal guarantee is about goods; downloads don't show it. %>
+<% if (!digital) { %><%- include('partials/guarantee-notice') %><% } %>
 
 <% if (state.joinable) { %>
   <section class="card share-card">

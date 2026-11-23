@@ -18,8 +18,9 @@
     <input type="text" id="name" name="name" autocomplete="name" required value="<%= values.name || '' %>">
     <% if (errors.name) { %><p class="error-text"><%= errors.name %></p><% } %>
   </div>
+  <% const digital = deal.kind === 'digital'; %>
   <fieldset style="border:0;padding:0;margin:0">
-    <legend class="small muted"><%= t('join.addressLegend') %></legend>
+    <legend class="small muted"><%= digital ? t('join.addressLegendDigital') : t('join.addressLegend') %></legend>
     <label for="address_line1"><%= t('join.street') %></label>
     <input type="text" id="address_line1" name="address_line1" autocomplete="address-line1" required value="<%= values.address_line1 || '' %>">
     <% if (errors.address_line1) { %><p class="error-text"><%= errors.address_line1 %></p><% } %>
@@ -28,7 +29,7 @@
     <div class="row">
       <div>
         <label for="postal_code"><%= t('join.postcode') %></label>
-        <input type="text" id="postal_code" name="postal_code" autocomplete="postal-code" required value="<%= values.postal_code || '' %>">
+        <input type="text" id="postal_code" name="postal_code" autocomplete="postal-code" required value="<%= values.postal_code || '' %>"<% if (digital) { %> inputmode="numeric" maxlength="5" pattern="[0-9]{5}"<% } %>>
         <% if (errors.postal_code) { %><p class="error-text"><%= errors.postal_code %></p><% } %>
       </div>
       <div>
@@ -37,6 +38,13 @@
         <% if (errors.city) { %><p class="error-text"><%= errors.city %></p><% } %>
       </div>
     </div>
+    <% if (digital) { %>
+      <%# Downloads are sold only to buyers in Estonia (src/digital.js). %>
+      <label for="country"><%= t('join.country') %></label>
+      <select id="country" name="country" autocomplete="country" required>
+        <option value="EE" selected><%= countryName('EE') %></option>
+      </select>
+    <% } else { %>
     <label for="country"><%= t('join.country') %></label>
     <select id="country" name="country" autocomplete="country" required>
       <option value=""><%= t('join.choose') %></option>
@@ -44,8 +52,16 @@
         <option value="<%= code %>" <%= values.country === code || countries.length === 1 ? 'selected' : '' %>><%= cname %></option>
       <% } %>
     </select>
+    <% } %>
     <% if (errors.country) { %><p class="error-text"><%= errors.country %></p><% } %>
   </fieldset>
+  <% if (digital) { %>
+    <label class="check">
+      <input type="checkbox" name="download_consent" value="yes" <%= values.download_consent === 'yes' ? 'checked' : '' %>>
+      <span><%= t('join.consentDigital') %></span>
+    </label>
+    <% if (errors.download_consent) { %><p class="error-text"><%= errors.download_consent %></p><% } %>
+  <% } %>
   <label class="check">
     <input type="checkbox" name="accept_terms" value="yes" <%= values.accept_terms === 'yes' ? 'checked' : '' %>>
     <span><%- th('join.acceptHtml') %></span>

@@ -10,6 +10,7 @@ import { createMailer } from './mailer.js';
 import { createEngine } from './engine.js';
 import { startScheduler } from './scheduler.js';
 import { createPhotoStore, optimizeStoredPhotos } from './photos.js';
+import { createFileStore } from './digital.js';
 import { createAssistant } from './assistant.js';
 import { createTranslator } from './translate.js';
 import { saveSettingsFile, settingsFilePath } from './settingsFile.js';
@@ -50,6 +51,10 @@ console.log(`[photos] ${config.uploadDir}`);
 if (path.resolve(config.uploadDir).startsWith(appRoot + path.sep)) {
   console.warn('[photos] WARNING: UPLOAD_DIR is inside the app folder. Product photos are lost on redeploy.');
 }
+console.log(`[files] ${config.filesDir} (digital products, private)`);
+if (path.resolve(config.filesDir).startsWith(appRoot + path.sep)) {
+  console.warn('[files] WARNING: FILES_DIR is inside the app folder. The files of digital products are lost on redeploy.');
+}
 console.log(
   config.anthropicApiKey
     ? `[assistant] on (${config.assistantModel})`
@@ -66,6 +71,8 @@ const clock = systemClock;
 
 const ctx = { config, repo, stripe, clock, routes: allRoutes };
 ctx.photos = createPhotoStore(config.uploadDir);
+ctx.files = createFileStore(config.filesDir);
+ctx.files.cleanIncoming(); // uploads a dropped connection left half-done
 // Photos uploaded before resizing existed get shop-ready copies, in the background.
 setTimeout(() => optimizeStoredPhotos({ repo, photos: ctx.photos }).catch((err) => console.error('[photos]', err)), 5_000).unref();
 ctx.assistant = config.anthropicApiKey

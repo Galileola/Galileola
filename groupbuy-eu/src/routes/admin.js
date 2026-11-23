@@ -43,6 +43,8 @@ import { brandingParsers, brandingRoutes } from './adminBranding.js';
 import { fulfilmentRoutes } from './adminFulfilment.js';
 import { customerRoutes } from './adminCustomers.js';
 import { withdrawalRoutes } from './adminWithdrawals.js';
+import { fileParsers, fileRoutes } from './adminFiles.js';
+import { DEFAULT_DIGITAL_TAX_CODE, DIGITAL_TAX_CODES, FILE_ACCEPT, MAX_FILE_BYTES, MAX_FILES_PER_DEAL, copyFiles, formatSize, isDigital } from '../digital.js';
 import { adminAlertRoutes } from './alerts.js';
 import { goLiveChecks, isLive, liveProblems } from '../goLive.js';
 import { twoStepGate, twoStepRoutes } from './adminTwoStep.js';
@@ -102,11 +104,16 @@ export function adminRoutes(app, ctx) {
   router.post('/categories/:slug/ai-names', express.json({ limit: '10kb' }));
   importParsers(router); // Import products: the CSV upload and the (long) preview form
   brandingParsers(router); // Branding: logo and share picture uploads
+  fileParsers(router, ctx); // the files of digital products (written to FILES_DIR as they arrive)
   router.use((req, res, next) => {
     res.locals.csrfToken = csrfToken; // only on pages behind the login
     res.locals.aiWritingEnabled = Boolean(ctx.assistant);
     res.locals.photoAccept = PHOTO_ACCEPT;
     res.locals.maxPhotos = MAX_PHOTOS_PER_DEAL;
+    // Digital products (src/digital.js): the Stripe Tax codes the deal forms suggest.
+    res.locals.goodsTaxCode = config.defaultTaxCode;
+    res.locals.digitalTaxCode = DEFAULT_DIGITAL_TAX_CODE;
+    res.locals.digitalTaxCodes = DIGITAL_TAX_CODES;
     if (req.method === 'POST' && !safeEqual(req.body?._csrf ?? '', csrfToken)) {
       return next(new HttpError(403, 'Invalid form token. Reload the page and try again.'));
     }
@@ -128,6 +135,7 @@ export function adminRoutes(app, ctx) {
   dealRoutes(router, ctx);
   brandingRoutes(router, ctx);
   fulfilmentRoutes(router, ctx);
+  fileRoutes(router, ctx);
   customerRoutes(router, ctx);
   withdrawalRoutes(router, ctx);
   adminAlertRoutes(router, ctx);
@@ -181,8 +189,10 @@ export function adminRoutes(app, ctx) {
     const created = repo.insertDeal(deal);
     ctx.translator?.warmDeal(created); // translate it into every language in the background
     if (copyFrom) copyPhotos(ctx, copyFrom.id, created.id);
+    if (copyFrom && isDigital(created)) copyFiles(ctx, copyFrom.id, created.id);
     await savePhotos(created.id, req.files);
-    res.redirect(303, `/admin/deals/${created.id}`);
+    // A new download needs its files before buyers can order it: the deal page asks for them.
+    res.redirect(303, `/admin/deals/${created.id}${isDigital(created) && !repo.fileCount(created.id) ? '#files' : ''}`);
   });
 
   // Drafts a product description with Claude. Nothing is saved: the draft goes into the form.
@@ -325,6 +335,12 @@ export function adminRoutes(app, ctx) {
       title: deal.product_name,
       deal,
       photos: repo.photosForDeal(deal.id),
+      // Digital products: the files buyers get (src/digital.js).
+      digital: isDigital(deal),
+      files: repo.filesForDeal(deal.id).map((f) => ({ ...f, size: formatSize(f.size_bytes, 'en') })),
+      fileAccept: FILE_ACCEPT,
+      maxFiles: MAX_FILES_PER_DEAL,
+      maxFileSize: formatSize(MAX_FILE_BYTES, 'en'),
       participants,
       counts,
       committed: repo.committedCount(deal.id),

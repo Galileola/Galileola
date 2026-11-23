@@ -9,7 +9,8 @@
   </div>
 <% } %>
 <% if (flash) { %><div class="notice"><%= flash %></div><% } %>
-<h1><%= deal.product_name %> <span class="badge <%= deal.status %>"><%= deal.status.replace(/_/g, ' ') %></span></h1>
+<h1><%= deal.product_name %> <span class="badge <%= deal.status %>"><%= deal.status.replace(/_/g, ' ') %></span><% if (digital) { %> <span class="badge digital">⬇️ download</span><% } %></h1>
+<% if (digital && !files.length) { %><div class="notice warn">This download has no files yet, so it isn't in the deal list and nobody can order it. <a href="#files">Upload the files</a>.</div><% } %>
 <p>Public page: <a href="/deals/<%= deal.slug %>">/deals/<%= deal.slug %></a></p>
 <p class="row-buttons"><a class="button" href="/admin/deals/<%= deal.id %>/edit">✏️ Edit deal</a> <a class="button secondary" href="/admin/deals/new?copy=<%= deal.id %>">⧉ Duplicate</a></p>
 <% if (deal.headline) { %><p class="deal-headline"><%= deal.headline %></p><% } %>
@@ -40,7 +41,9 @@
     <p>Failed, inside 48h window: <%= summary.openFailures %> · <%= formatEuro(summary.openFailuresCents) %></p>
     <p>Unpaid, your cost: <strong><%= summary.yourCostCount %></strong> · <%= formatEuro(summary.yourCostCents) %></p>
     <p class="muted small">VAT in collected amounts: <%= formatEuro(summary.vatCents) %></p>
-    <% if (deal.status === 'ready_to_order') { %>
+    <% if (deal.status === 'ready_to_order' && digital) { %>
+      <div class="notice ok">Paid orders: <strong><%= summary.orderQuantity %></strong>. Each buyer got their download link as soon as their payment went through; SEPA debits still processing get it once they have.</div>
+    <% } else if (deal.status === 'ready_to_order') { %>
       <div class="notice ok">Order quantity: <strong><%= summary.orderQuantity %></strong> paid units (including SEPA debits still processing).</div>
     <% } %>
     <% if (summary.orderQuantity > 0) { %>
@@ -71,6 +74,44 @@
     </form>
   <% } else { %>
     <p class="muted small">Nobody has confirmed a deal-alert sign-up yet. Shoppers sign up under the deals on the home page; <a href="/admin/subscribers">see the list</a>.</p>
+  <% } %>
+</section>
+<% } %>
+
+<% if (digital) { %>
+<section class="card" id="files" style="margin-top:16px">
+  <h2>⬇️ Files for download</h2>
+  <p class="muted small">Buyers get these files with a personal link, by email and on their order page, as soon as their payment has gone through. The files can't be reached any other way. Sold only to buyers in Estonia. Up to <%= maxFiles %> files, at most <%= maxFileSize %> each: PDF, EPUB, ZIP, Word, Excel, PowerPoint, MP3, M4A, WAV, MP4, MOV, JPG or PNG. Buyers who have already paid get the files that are here when they download, so you can upload a corrected version and then remove the old one.</p>
+  <% if (files.length) { %>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>File</th><th>Size</th><th>Added</th><th><span class="visually-hidden">Actions</span></th></tr></thead>
+      <tbody>
+      <% for (const f of files) { %>
+        <tr>
+          <td><a href="/admin/files/<%= f.id %>"><%= f.original_name %></a></td>
+          <td><%= f.size %></td>
+          <td class="small"><%= formatDate(f.created_at) %></td>
+          <td>
+            <form method="post" action="/admin/files/<%= f.id %>/delete" data-confirm="Remove &quot;<%= f.original_name %>&quot;? Buyers who have paid can no longer download it.">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <button type="submit" class="small danger">Remove</button>
+            </form>
+          </td>
+        </tr>
+      <% } %>
+      </tbody>
+    </table>
+    </div>
+  <% } else { %>
+    <p class="notice warn">No files yet: buyers can't order this download until you upload at least one.</p>
+  <% } %>
+  <% if (files.length < maxFiles) { %>
+    <form method="post" action="/admin/deals/<%= deal.id %>/files" enctype="multipart/form-data" class="upload-form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <input type="file" name="files" multiple accept="<%= fileAccept %>" class="file-input" aria-label="Choose files for download">
+      <button type="submit">Upload files</button>
+    </form>
   <% } %>
 </section>
 <% } %>
@@ -126,7 +167,14 @@
 </section>
 
 <% const orders = participants.filter((p) => ['paid', 'processing'].includes(p.status)); const unshipped = orders.filter((p) => !p.shipped_at); const active = participants.filter((p) => ['saved', 'charging', 'paid', 'processing', 'failed'].includes(p.status)); %>
-<% if (orders.length) { %>
+<% if (orders.length && digital) { %>
+<section class="card" id="shipping" style="margin-top:16px">
+  <h2>⬇️ Downloads</h2>
+  <% const delivered = orders.filter((p) => p.delivered_at && p.status === 'paid'); %>
+  <p><strong><%= delivered.length %></strong> of <%= orders.length %> paid order<%= orders.length === 1 ? '' : 's' %> can download the files<%= orders.length > delivered.length ? ' (the others are SEPA debits still processing: they get the link once the debit has gone through)' : '' %>. Downloads so far: <strong><%= orders.reduce((n, p) => n + (p.download_count || 0), 0) %></strong>.</p>
+  <p class="muted small">Nothing to ship: the download link is emailed automatically. If a buyer lost the email, use "Resend link" in the buyer table below.</p>
+</section>
+<% } else if (orders.length) { %>
 <section class="card" id="shipping" style="margin-top:16px">
   <h2>📦 Shipping</h2>
   <p><strong><%= orders.length - unshipped.length %></strong> of <%= orders.length %> paid order<%= orders.length === 1 ? "" : "s" %> shipped.</p>
@@ -174,7 +222,7 @@
 <h2 style="margin-top:24px" id="buyers">Buyers</h2>
 <div class="table-scroll">
 <table>
-  <thead><tr><th>#</th><th>Buyer</th><th>Country</th><th>Method</th><th>Amount / VAT</th><th>Status</th><th>Attempts / last error</th><th>Window ends</th><th>Shipping</th><th><span class="visually-hidden">Actions</span></th></tr></thead>
+  <thead><tr><th>#</th><th>Buyer</th><th>Country</th><th>Method</th><th>Amount / VAT</th><th>Status</th><th>Attempts / last error</th><th>Window ends</th><th><%= digital ? 'Download' : 'Shipping' %></th><th><span class="visually-hidden">Actions</span></th></tr></thead>
   <tbody>
   <% for (const p of participants) { %>
     <tr>
@@ -187,7 +235,20 @@
       <td><%= p.attempts %><% if (p.last_error_code || p.last_error_message) { %><br><span class="small error-text"><%= p.last_error_code || '' %> <%= p.last_error_message || '' %></span><% } %></td>
       <td class="small"><%= formatDate(p.grace_ends_at) %><% if (p.next_retry_at && p.status === 'failed') { %><br>retry <%= formatDate(p.next_retry_at) %><% } %></td>
       <td class="small ship-cell">
-        <% if (p.shipped_at) { %>
+        <% if (digital) { %>
+          <% if (p.delivered_at && p.status === 'paid') { %>
+            <span class="badge paid">available</span> <%= formatDate(p.delivered_at) %><br><%= p.download_count %> download<%= p.download_count === 1 ? '' : 's' %><%= p.last_download_at ? ', last ' + formatDate(p.last_download_at) : '' %>
+            <form method="post" action="/admin/participants/<%= p.id %>/resend-download" data-confirm="Email the download link to <%= p.email %> again?">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <button type="submit" class="linklike small">Resend link</button>
+            </form>
+          <% } else if (p.delivered_at) { %>
+            <span class="muted">was available from <%= formatDate(p.delivered_at) %> (<%= p.download_count %> download<%= p.download_count === 1 ? '' : 's' %>)</span>
+          <% } else if (p.status === 'processing') { %>
+            <span class="muted">after the debit</span>
+          <% } else { %>—<% } %>
+          <% if (p.download_consent_at) { %><br><span class="muted">asked for it at once, <%= formatDate(p.download_consent_at) %></span><% } %>
+        <% } else if (p.shipped_at) { %>
           <span class="badge paid">shipped</span> <%= formatDate(p.shipped_at) %>
           <% if (p.tracking_number || p.tracking_url) { %><br><% if (p.tracking_url) { %><a href="<%= p.tracking_url %>" rel="noopener noreferrer" target="_blank"><%= p.tracking_number || 'Tracking' %></a><% } else { %><%= p.tracking_number %><% } %><% } %>
           <form method="post" action="/admin/participants/<%= p.id %>/unship" data-confirm="Undo 'shipped' for order #<%= p.id %>? No email is sent.">

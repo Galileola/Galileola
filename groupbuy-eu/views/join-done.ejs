@@ -18,6 +18,13 @@
     <%- include('partials/share', { shareUrl: baseUrl + '/deals/' + deal.slug + '?lang=' + lang, shareText: t('done.shareMessage', { name: deal.product_name }) }) %>
   <% } else if (p.status === 'charging') { %>
     <div class="notice"><%= t('done.charging', { amount }) %></div>
+  <% } else if (p.status === 'paid' && deal.kind === 'digital') { %>
+    <div class="celebrate" data-confetti-on-load>
+      <p class="celebrate-emoji" aria-hidden="true">⬇️</p>
+      <p class="celebrate-title"><%= t('done.downloadTitle') %></p>
+      <p class="muted"><%= t('done.paidText', { amount }) %></p>
+    </div>
+    <p><a class="button big" href="/download/<%= p.token %>"><%= t('done.downloadButton') %></a></p>
   <% } else if (p.status === 'paid') { %>
     <div class="celebrate" data-confetti-on-load>
       <p class="celebrate-emoji" aria-hidden="true">🛍️</p>
@@ -26,6 +33,7 @@
     </div>
   <% } else if (p.status === 'processing') { %>
     <div class="notice ok"><%- th('done.processingHtml', { amount }) %></div>
+    <% if (deal.kind === 'digital') { %><p><%= t('download.afterDebit') %></p><% } %>
   <% } else if (p.status === 'failed') { %>
     <div class="notice bad"><%- th('done.failedHtml', { link: '/pay/' + p.token, date: formatDate(p.grace_ends_at) }) %></div>
   <% } else if (p.status === 'released') { %>

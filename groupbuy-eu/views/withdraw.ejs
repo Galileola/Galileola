@@ -5,7 +5,7 @@
     <p class="message-emoji" aria-hidden="true">📨</p>
     <h1><%= t('withdraw.doneTitle') %></h1>
     <div class="notice ok" role="status"><%= t('withdraw.doneReceived', { date: formatDate(w.created_at), email: w.email }) %></div>
-    <p><strong><%= { cancelled: t('withdraw.doneCancelled'), refund: t('withdraw.doneRefund'), review: t('withdraw.doneReview'), ended: t('withdraw.doneEnded') }[done.outcome] %></strong></p>
+    <p><strong><%= { cancelled: t('withdraw.doneCancelled'), refund: t('withdraw.doneRefund'), review: t('withdraw.doneReview'), ended: t('withdraw.doneEnded'), digital: t('withdraw.doneDigital') }[done.outcome] %></strong></p>
     <dl class="withdrawal-summary">
       <dt><%= t('withdraw.reference') %></dt><dd><code><%= w.reference %></code></dd>
       <dt><%= t('withdraw.order') %></dt><dd><%= w.order_text %></dd>
