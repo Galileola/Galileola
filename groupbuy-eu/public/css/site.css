@@ -10,7 +10,7 @@
 
 :root {
   --ink: #0f172a; --ink-2: #334155; --muted: #64748b; --faint: #94a3b8;
-  --bg: #f6f7f9; --card: #fff; --subtle: #f8fafc; --line: #e2e8f0; --line-strong: #cbd5e1;
+  --bg: #f4f1fb; --card: #fff; --subtle: #f8fafc; --line: #e2e8f0; --line-strong: #cbd5e1;
   /* Triad: dominant violet, secondary green, accent orange (120° apart). */
   --accent: #7c3aed; --accent-hover: #6d28d9; --accent-ink: #5b21b6; --accent-soft: #f5f3ff; --accent-line: #ddd6fe; --accent-deep: #2e1065;
   --second: #16a34a; --second-ink: #15803d; --second-soft: #f0fdf4; --second-line: #bbf7d0;
@@ -634,3 +634,49 @@ table.plain th { background: transparent; }
 .skip-link { position: absolute; left: 12px; top: -60px; z-index: 100; padding: 10px 16px; border-radius: 0 0 var(--radius-xs) var(--radius-xs); background: var(--accent); color: #fff; font-weight: 650; text-decoration: none; transition: top .15s; }
 .skip-link:focus { top: 0; color: #fff; }
 main:focus { outline: none; }
+
+/* ---- Colour surfaces: the triad fills the big areas, not only the accents (60 / 30 / 10).
+   Violet: header, home hero, page tint, deal-alert box, footer. Green: the steps, progress.
+   Orange: the hero's main button and highlight, the logo mark, urgency labels. */
+:root { --violet-900: #4c1d95; --violet-800: #5b21b6; --orange-300: #fdba74; --orange-400: #fb923c; }
+
+.site-header { background: var(--violet-900); border-bottom: 1px solid rgba(255, 255, 255, .08); backdrop-filter: none; -webkit-backdrop-filter: none; }
+.site-header nav a { color: #ede9fe; }
+.site-header nav a:hover { background: rgba(255, 255, 255, .12); color: #fff; }
+.brand, .brand:hover { color: #fff; }
+.brand-mark { background: var(--orange-400); box-shadow: inset 0 0 0 7px var(--orange-400), inset 0 0 0 10px var(--violet-900); }
+.footer-brand .brand-mark { background: var(--orange-400); box-shadow: inset 0 0 0 5px var(--orange-400), inset 0 0 0 8px #1a0b3d; }
+.lang-menu summary { background: transparent; color: #fff; border-color: rgba(255, 255, 255, .35); }
+.lang-menu summary svg { color: #ddd6fe; }
+.lang-menu summary:hover, .lang-menu[open] summary { border-color: #fff; color: #fff; }
+.site-header nav a.nav-snap { background: rgba(255, 255, 255, .16); color: #fff; }
+.site-header nav a.nav-snap:hover { background: rgba(255, 255, 255, .26); }
+.nav-logout button { background: transparent; color: #fff; border-color: rgba(255, 255, 255, .35); }
+.nav-logout button:hover { background: rgba(255, 255, 255, .12); color: #fff; }
+
+.hero {
+  border: 0; color: #fff; box-shadow: 0 24px 48px -24px rgba(76, 29, 149, .55);
+  background-color: var(--violet-800);
+  background-image: radial-gradient(520px 320px at 95% 5%, rgba(251, 146, 60, .28), transparent 70%), radial-gradient(560px 320px at 0% 110%, rgba(22, 163, 74, .22), transparent 70%), linear-gradient(135deg, #7c3aed 0%, #5b21b6 55%, #4c1d95 100%);
+}
+.hero h1 { color: #fff; }
+.hero .deal-card { color: var(--ink); }
+.hero .hl { color: var(--orange-300); }
+.hero .lead { color: #ede9fe; }
+.hero .eyebrow { background: rgba(255, 255, 255, .14); color: #fff; }
+.hero .button { background: var(--third-ink); }
+.hero .button:hover { background: #9a3412; }
+.hero .button.secondary { background: transparent; color: #fff; border-color: rgba(255, 255, 255, .45); box-shadow: none; }
+.hero .button.secondary:hover { background: rgba(255, 255, 255, .1); border-color: #fff; color: #fff; }
+.hero .button:focus-visible { outline-color: #fff; }
+.hero-stats { border-top-color: rgba(255, 255, 255, .2); }
+.hero-stats li { color: #ddd6fe; }
+.hero-stats strong { color: #fff; }
+.hero-stats .hot strong { color: var(--orange-300); }
+
+.step { background: var(--second-soft); border-color: var(--second-line); }
+.step .num { background: var(--second-ink); color: #fff; }
+.step p { color: #3f5a49; }
+
+.join-card { border-top: 4px solid var(--accent); }
+.legal { border-top: 4px solid var(--accent); }
