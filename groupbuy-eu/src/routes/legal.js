@@ -6,7 +6,7 @@ import { renderLegalText } from '../legalText.js';
 // The legal pages. For the visitor's language the shop shows, in this order:
 //  1. the text the owner wrote for that language in the admin (Admin → Legal pages);
 //  2. while the owner still uses the built-in English text: its built-in translation,
-//     views/legal/<page>-body.<lang>.ejs (Estonian, Finnish, Latvian and Russian so far);
+//     views/legal/<page>-body.<lang>.ejs (Estonian and Russian);
 //  3. otherwise the English text (the owner's, or the built-in views/legal/*-body.ejs),
 //     translated by Claude and kept in the database (only when ANTHROPIC_API_KEY is set);
 //  4. otherwise the English text itself.

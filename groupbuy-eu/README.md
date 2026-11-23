@@ -70,8 +70,8 @@ Admin creates deal ──► buyers join (SetupIntent: card / SEPA / iDEAL→SEP
 - **Withdrawal (EU 14-day right)**: an admin action. Uncharged buyers are released; paid buyers
   get a full refund and a Stripe Tax reversal.
 - **Legal pages**: `/terms` (when payment is taken, the 48-hour rule, the withdrawal right and
-  the model form), `/privacy` (GDPR) and `/cookies`. Estonian, Finnish, Latvian and Russian
-  visitors read built-in translations (`views/legal/*-body.<lang>.ejs`) while the English text is
+  the model form, following Estonian law), `/privacy` (GDPR) and `/cookies`. Estonian and Russian visitors read
+  built-in translations (`views/legal/*-body.<lang>.ejs`) while the English text is
   the built-in one; the admin's legal page editor starts from them. Stripe.js only loads on
   payment pages.
 - **Online withdrawal function** (Article 11a of Directive 2011/83/EU, as amended by Directive

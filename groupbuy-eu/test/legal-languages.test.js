@@ -12,11 +12,11 @@ import { goLiveChecks } from '../src/goLive.js';
 import { createFakeStripe } from './support/fakeStripe.js';
 import { adminLogin } from './support/admin.js';
 
-// The legal pages and the cookie notice in the visitor's language (Estonian, Finnish, Latvian
-// and Russian have built-in translations of the built-in English pages).
+// The legal pages and the cookie notice in the visitor's language (Estonian and Russian have
+// built-in translations of the built-in English pages, all following Estonian law).
 
 const views = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'views', 'legal');
-const TRANSLATED = ['et', 'fi', 'lv', 'ru'];
+const TRANSLATED = ['et', 'ru'];
 const PAGES = ['terms', 'privacy', 'cookies'];
 
 async function startShop(extra = {}) {
@@ -39,13 +39,11 @@ async function startShop(extra = {}) {
 
 const article = (html) => html.match(/<article class="legal" lang="(\w+)">([\s\S]*?)<\/article>/);
 
-test('legal pages: Estonian, Finnish, Latvian and Russian visitors read them in their language', async (t) => {
+test('legal pages: Estonian and Russian visitors read them in their language', async (t) => {
   const shop = await startShop();
   t.after(shop.close);
   const headings = {
     et: ['Müügitingimused', 'Privaatsuspoliitika', 'Küpsised'],
-    fi: ['Myynti- ja toimitusehdot', 'Tietosuojaseloste', 'Evästeet'],
-    lv: ['Pārdošanas noteikumi', 'Privātuma politika', 'Sīkdatnes'],
     ru: ['Условия продажи', 'Политика конфиденциальности', 'Cookies'],
   };
   for (const lang of TRANSLATED) {
@@ -62,9 +60,13 @@ test('legal pages: Estonian, Finnish, Latvian and Russian visitors read them in 
     const terms = await shop.get(`/terms?lang=${lang}`);
     assert.match(terms, /id="withdrawal"/);
     assert.match(terms, /id="payment"/);
-    assert.match(terms, /Narva mnt 5, 10117 Tallinn, Estonia, shop@example\.com/);
+    assert.match(terms, /Narva mnt 5, 10117 Tallinn, Estonia, \+372 5555 5555, shop@example\.com/);
+    // The online withdrawal function (Estonian model instructions, note 3) and the delivery countries.
+    assert.match(terms, /<a href="https:\/\/shop\.test\/withdraw">https:\/\/shop\.test\/withdraw<\/a>/);
+    assert.match(terms, /Tarnime järgmistesse riikidesse: [^.<]*Eesti|Мы доставляем в следующие страны: [^.<]*Эстония/);
   }
-  // A language without a translation still says that the page is in English.
+  // A language without a translation (Finnish too) still says that the page is in English.
+  assert.match(await shop.get('/terms?lang=fi'), /<article class="legal" lang="en">\s*<p class="notice small" lang="fi">/);
   assert.match(await shop.get('/terms?lang=de'), /<article class="legal" lang="en">\s*<p class="notice small" lang="de">/);
   // ?original=1 shows the English text.
   assert.match(await shop.get('/terms?lang=et&original=1'), /<h1>Terms and conditions<\/h1>/);
@@ -106,10 +108,10 @@ test('legal pages: the owner\'s own texts win over the built-in translations', a
 
   // Own English text: the built-in translations (of the built-in English) stop showing.
   shop.repo.saveLegalText('privacy', 'en', '# Our privacy policy\n\nOur own text.', new Date().toISOString());
-  const fi = await shop.get('/privacy?lang=fi');
-  assert.equal(article(fi)[1], 'en');
-  assert.match(article(fi)[2], /<h1>Our privacy policy<\/h1>/);
-  assert.match(fi, /<p class="notice small" lang="fi">/, 'says, in Finnish, that the page is in English');
+  const ru = await shop.get('/privacy?lang=ru');
+  assert.equal(article(ru)[1], 'en');
+  assert.match(article(ru)[2], /<h1>Our privacy policy<\/h1>/);
+  assert.match(ru, /<p class="notice small" lang="ru">/, 'says, in Russian, that the page is in English');
 });
 
 test('go-live: an own text in another shop language with [brackets] left is not finished', async (t) => {

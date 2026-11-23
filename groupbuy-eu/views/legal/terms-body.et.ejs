@@ -28,13 +28,14 @@
   </ul>
 
   <h2>5. Tarne</h2>
-  <p>[Eeldatav tarneaeg pärast pakkumise lõppu, riigid, kuhu tarnite (ainult EL), ja vedaja.] Tellime kauba pärast 48-tunnise makseaja lõppu.</p>
+  <p>Tarnime järgmistesse riikidesse: <%= (locals.countries || []).map((c) => c[1]).join(', ') %>. [Eeldatav tarneaeg pärast pakkumise lõppu ja vedaja.] Tellime kauba pärast 48-tunnise makseaja lõppu.</p>
 
   <h2 id="withdrawal">6. Taganemisõigus</h2>
   <p>Kui olete tarbija, on Teil järgmine taganemisõigus. Juhend ja vorm järgivad justiitsministri 17.12.2013 määruse nr 41 lisasid 1 ja 2 (lisa 2 justiits- ja digiministri 14.07.2026 määruse nr 26 sõnastuses).</p>
   <h3>Taganemisõigus</h3>
   <p>Teil on õigus põhjust avaldamata taganeda kõnesolevast lepingust 14 päeva jooksul. Taganemistähtaeg lõpeb 14 päeva möödumisel alates päevast, mil Teie või Teie nimetatud kolmas isik, kes ei ole kauba vedaja, on saanud asja füüsiliselt enda valdusesse.</p>
   <p>Taganemisõiguse kasutamiseks teavitage meid (<%= business.name %>, <%= business.address %>, <%= business.phone %>, <%= business.email %>) oma otsusest taganeda kõnesolevast lepingust ühemõttelise avaldusega (nt posti või e-postiga saadetud kiri). Võite selleks kasutada lisatud taganemisavalduse tüüpvormi, kuid see ei ole kohustuslik.</p>
+  <p>Teil on õigus lepingust taganeda ka interneti teel aadressil <a href="<%= baseUrl %>/withdraw"><%= baseUrl %>/withdraw</a>. Kui kasutate seda võimalust, saadame Teile viivitamata püsival andmekandjal (näiteks e-kirjaga) kinnituse Teie taganemisavalduse kättesaamise, sealhulgas selle sisu ning selle esitamise kuupäeva ja kellaaja kohta.</p>
   <p>Teil on õigus lepingust taganeda ka interneti teel aadressil <a href="<%= baseUrl %>/withdraw"><%= baseUrl %>/withdraw</a>. Kui kasutate seda võimalust, saadame Teile viivitamata püsival andmekandjal (näiteks e-kirjaga) kinnituse Teie taganemisavalduse kättesaamise, sealhulgas selle sisu ning selle esitamise kuupäeva ja kellaaja kohta.</p>
   <p>Taganemisõiguse kasutamise tähtajast kinnipidamiseks piisab, kui saadate teate taganemisõiguse kasutamise kohta ära enne taganemistähtaja lõppu.</p>
   <h3>Lepingust taganemise tagajärjed</h3>
