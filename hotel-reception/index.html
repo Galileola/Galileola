@@ -1,0 +1,1457 @@
+<title>Hotel Reception Assistant</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Josefin+Sans:wght@500;600;700&display=swap">
+<style>
+/* Layout: a header band (hotel name, clock, three tabs) over one view at a time.
+   Views are two-column grids that stack to one column under 900px.
+   Rooms are drawn as brass-edged key tags; dates, times and folio numbers use the mono face. */
+:root{
+  --ground:#edf1ef; --panel:#ffffff; --panel-2:#f5f8f6; --ink:#16211e; --muted:#5a6a65; --line:#d3dcd8;
+  --lobby:#1e4d43; --lobby-ink:#ffffff; --lobby-soft:#dcebe6;
+  --brass:#946a1f; --brass-soft:#f4ead6;
+  --ok:#2a774a; --ok-soft:#ddf0e4; --warn:#955a05; --warn-soft:#fbecd2; --bad:#ad352c; --bad-soft:#f9e0dc; --info:#2b5a99; --info-soft:#e0e9f7;
+  --shadow:0 1px 2px rgba(16,33,28,.06),0 4px 14px rgba(16,33,28,.06);
+  --f-display:"Josefin Sans","Avenir Next","Futura","Century Gothic",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#0f1513; --panel:#161e1b; --panel-2:#1b2521; --ink:#e4ebe8; --muted:#97a7a1; --line:#2b3733;
+  --lobby:#5aae97; --lobby-ink:#06120e; --lobby-soft:#1b3029;
+  --brass:#d6aa5c; --brass-soft:#33280f;
+  --ok:#6cc18e; --ok-soft:#15291e; --warn:#e3a84d; --warn-soft:#32250e; --bad:#f08276; --bad-soft:#3a1916; --info:#86aeea; --info-soft:#172338;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25);
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --ground:#0f1513; --panel:#161e1b; --panel-2:#1b2521; --ink:#e4ebe8; --muted:#97a7a1; --line:#2b3733;
+  --lobby:#5aae97; --lobby-ink:#06120e; --lobby-soft:#1b3029;
+  --brass:#d6aa5c; --brass-soft:#33280f;
+  --ok:#6cc18e; --ok-soft:#15291e; --warn:#e3a84d; --warn-soft:#32250e; --bad:#f08276; --bad-soft:#3a1916; --info:#86aeea; --info-soft:#172338;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--ground);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+h2,h3{margin:0;text-wrap:balance}
+
+/* Header */
+.top{background:var(--panel);border-bottom:1px solid var(--line)}
+.top-in{display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px;padding-block:14px}
+.brand{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1 1 260px}
+.eyebrow{font-family:var(--f-display);font-weight:600;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--brass)}
+.hotel-name{font-family:var(--f-display);font-weight:700;font-size:24px;letter-spacing:.06em;text-transform:uppercase;line-height:1.15;overflow-wrap:anywhere}
+.brand-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.clock{font-family:var(--f-mono);font-size:13px;color:var(--muted);white-space:nowrap}
+.tabs{display:flex;gap:4px;background:var(--panel-2);border:1px solid var(--line);border-radius:999px;padding:4px;flex-wrap:wrap}
+.tab{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:999px;text-decoration:none;color:var(--muted);font-weight:500;font-size:14px;white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-current="page"]{background:var(--lobby);color:var(--lobby-ink)}
+.tab:focus-visible,.btn:focus-visible,.rtag:focus-visible,.chip-btn:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+.badge{font-family:var(--f-mono);font-size:11px;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--bad);color:#fff;display:inline-flex;align-items:center;justify-content:center}
+.tab[aria-current="page"] .badge{background:var(--lobby-ink);color:var(--lobby)}
+
+main{padding-block:20px 48px}
+.view{display:flex;flex-direction:column;gap:16px}
+
+/* Generic pieces */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);min-width:0}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:14px 16px;border-bottom:1px solid var(--line)}
+.card-body{padding:14px 16px}
+.h-label{font-family:var(--f-display);font-weight:600;font-size:13px;letter-spacing:.16em;text-transform:uppercase}
+.sub{font-size:13px;color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:8px 14px;font-weight:500;cursor:pointer;min-height:38px}
+.btn:hover{border-color:var(--muted)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.primary{background:var(--lobby);border-color:var(--lobby);color:var(--lobby-ink)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent}
+.btn.sm{padding:5px 10px;min-height:32px;font-size:13px}
+.btn.danger{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 40%,var(--line))}
+.btn.icon{width:42px;padding:0}
+.btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn.listening{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:500;padding:2px 8px;border-radius:999px;background:var(--panel-2);color:var(--muted);border:1px solid var(--line);white-space:nowrap}
+.chip.ok{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.chip.warn{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.chip.bad{background:var(--bad-soft);color:var(--bad);border-color:transparent}
+.chip.info{background:var(--info-soft);color:var(--info);border-color:transparent}
+.chip.brass{background:var(--brass-soft);color:var(--brass);border-color:transparent}
+.chip-btn{cursor:pointer;font:inherit;font-size:13px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--ink)}
+.chip-btn:hover{border-color:var(--lobby);color:var(--lobby)}
+.chip-btn[aria-pressed="true"]{background:var(--lobby-soft);border-color:var(--lobby);color:var(--ink)}
+.empty{padding:18px 16px;color:var(--muted);font-size:14px}
+.note{font-size:13px;color:var(--muted)}
+.notice{display:flex;gap:10px;align-items:flex-start;padding:10px 14px;border-radius:8px;background:var(--brass-soft);color:var(--ink);font-size:14px}
+.notice b{color:var(--brass)}
+
+/* Room key tag */
+.rtag{position:relative;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--f-mono);font-weight:500;line-height:1;border:1.5px solid var(--brass);background:var(--brass-soft);color:var(--ink);border-radius:6px 6px 14px 14px;padding:10px 6px 5px;min-width:46px}
+.rtag::before{content:"";position:absolute;top:3px;left:50%;width:6px;height:6px;margin-left:-3px;border-radius:50%;border:1.5px solid var(--brass);background:var(--panel)}
+.rtag.sm{font-size:13px;min-width:42px;padding:9px 5px 4px}
+.rtag.none{border-style:dashed;color:var(--muted);background:transparent}
+
+/* Guest chat */
+.guest-grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:start}
+.chat{display:flex;flex-direction:column}
+.chat-tools{display:flex;gap:6px;flex-wrap:wrap}
+.chat-log{display:flex;flex-direction:column;gap:10px;padding:16px;height:min(58vh,560px);min-height:300px;overflow-y:auto;background:var(--panel-2)}
+.msg{max-width:min(78%,560px);padding:10px 14px;border-radius:14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.msg.bot{align-self:flex-start;background:var(--panel);border:1px solid var(--line);border-bottom-left-radius:4px}
+.msg.me{align-self:flex-end;background:var(--lobby);color:var(--lobby-ink);border-bottom-right-radius:4px}
+.msg .who{display:block;font-family:var(--f-display);font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);margin-bottom:2px}
+.msg.err{border-color:var(--bad)}
+.welcome-langs{display:block;margin-top:6px;font-size:13px;color:var(--muted)}
+.dots{display:inline-flex;gap:4px;padding:4px 0}
+.dots i{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:blink 1.2s infinite both}
+.dots i:nth-child(2){animation-delay:.2s}.dots i:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.dots i{animation:none;opacity:.6}}
+.chat-card{align-self:flex-start;width:min(100%,420px);background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.chat-card .cc-title{display:flex;align-items:center;gap:8px;padding:9px 14px;font-weight:600;font-size:14px;background:var(--ok-soft);color:var(--ok)}
+.chat-card.info .cc-title{background:var(--info-soft);color:var(--info)}
+.chat-card dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0;padding:10px 14px;font-size:14px}
+.chat-card dt{color:var(--muted)}
+.chat-card dd{margin:0;overflow-wrap:anywhere}
+.chat-card .form{padding:12px 14px}
+.quick{display:flex;gap:6px;flex-wrap:wrap;padding:10px 16px 0}
+.composer{display:flex;gap:8px;padding:12px 16px;align-items:flex-end}
+.composer textarea{flex:1;min-width:0;resize:none;border:1px solid var(--line);border-radius:10px;padding:9px 12px;background:var(--panel);max-height:140px;min-height:42px}
+.composer textarea:focus{outline:2px solid var(--lobby);outline-offset:-1px;border-color:var(--lobby)}
+.fine{padding:0 16px 14px;font-size:12px;color:var(--muted)}
+.glance{display:flex;flex-direction:column}
+.glance .card-body{display:flex;flex-direction:column;gap:14px}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0;font-size:14px}
+.facts dt{color:var(--muted)}
+.facts dd{margin:0;overflow-wrap:anywhere}
+.rates{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none;font-size:14px}
+.rates li{display:flex;justify-content:space-between;gap:10px;padding-bottom:6px;border-bottom:1px dashed var(--line)}
+.rates li:last-child{border-bottom:0}
+
+/* Front desk */
+.summary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.tile .k{font-size:12px;color:var(--muted);letter-spacing:.04em}
+.tile .v{font-family:var(--f-mono);font-size:26px;font-weight:500;font-variant-numeric:tabular-nums;line-height:1.2}
+.tile .v small{font-size:14px;color:var(--muted)}
+.tile.alert .v{color:var(--bad)}
+.desk-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.desk-actions .spacer{flex:1}
+.desk-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:16px;align-items:start}
+.list{display:flex;flex-direction:column}
+.item{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 16px;border-top:1px solid var(--line)}
+.item:first-child{border-top:0}
+.item .main{min-width:0;display:flex;flex-direction:column;gap:3px}
+.item .line1{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.item .title{font-weight:600}
+.item .detail{font-size:14px;overflow-wrap:anywhere}
+.item .meta{font-size:12px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap}
+.item .acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.item.done{opacity:.65}
+.item.urgent{background:var(--bad-soft)}
+.subhead{padding:10px 16px;font-family:var(--f-display);font-weight:600;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);background:var(--panel-2);border-top:1px solid var(--line)}
+.subhead:first-child{border-top:0}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.board{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:12px;padding:16px}
+.room{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px 10px;border-radius:10px;border:1px solid var(--line);background:var(--panel);cursor:pointer;text-align:center;font:inherit;color:inherit}
+.room:hover{border-color:var(--muted)}
+.room[aria-pressed="true"]{outline:2px solid var(--lobby);outline-offset:1px}
+.room .rtag{font-size:18px;min-width:64px;padding:13px 8px 7px}
+.room .rt{font-size:12px;color:var(--muted);overflow-wrap:anywhere}
+.room .st{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
+.room.s-occ{background:var(--info-soft)}
+.room.s-ooo{background:var(--bad-soft)}
+.legend{display:flex;gap:6px;flex-wrap:wrap}
+.room-panel{margin:0 16px 16px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--panel-2);display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.room-panel .who{flex:1 1 220px;min-width:0;font-size:14px}
+.table-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:9px 12px;border-top:1px solid var(--line);vertical-align:middle;white-space:nowrap}
+th{font-weight:500;color:var(--muted);font-size:12px;letter-spacing:.04em;border-top:0;background:var(--panel-2)}
+td.wrap-cell{white-space:normal;min-width:160px}
+td.num,th.num{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* Forms */
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.field.wide{grid-column:1/-1}
+.field label{font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.03em}
+.field input,.field select,.field textarea{border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--panel);min-height:38px;width:100%;min-width:0}
+.field textarea{resize:vertical;min-height:72px}
+.field input:focus,.field select:focus,.field textarea:focus{outline:2px solid var(--lobby);outline-offset:-1px;border-color:var(--lobby)}
+.field input:disabled,.field select:disabled,.field textarea:disabled{background:var(--panel-2);color:var(--muted)}
+.form-actions{grid-column:1/-1;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.form-msg{font-size:13px}
+.form-msg.err{color:var(--bad)}
+.form-msg.ok{color:var(--ok)}
+.avail{grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap}
+.hotel-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+.rt-rows{display:flex;flex-direction:column;gap:10px}
+.rt-row{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1.5fr) 80px 90px minmax(0,1.3fr) auto;gap:8px;align-items:end;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--panel-2)}
+.save-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--ground);padding:10px 16px;border-radius:10px;font-size:14px;max-width:calc(100% - 32px);box-shadow:var(--shadow);z-index:20}
+
+@media (max-width:900px){
+  .guest-grid,.desk-grid,.hotel-grid{grid-template-columns:minmax(0,1fr)}
+  .summary{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .rt-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:560px){
+  .summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hotel-name{font-size:20px}
+  .msg{max-width:88%}
+  .item{grid-template-columns:auto minmax(0,1fr)}
+  .item .acts{grid-column:1/-1;justify-content:flex-start}
+  .chat-log{height:56vh}
+}
+</style>
+
+<header class="top">
+  <div class="wrap top-in">
+    <div class="brand">
+      <div class="eyebrow">Reception</div>
+      <div class="brand-row">
+        <div class="hotel-name" id="hotelName">Hotel</div>
+        <span class="chip brass" id="exampleChip" hidden>Example hotel</span>
+      </div>
+    </div>
+    <div class="clock" id="clock"></div>
+    <nav class="tabs" aria-label="Views">
+      <a href="#guest" class="tab" data-view="guest">Guest chat</a>
+      <a href="#desk" class="tab" data-view="desk">Front desk <span class="badge" id="deskBadge" hidden></span></a>
+      <a href="#hotel" class="tab" data-view="hotel">Hotel info</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- Guest chat -->
+  <section class="view" id="view-guest">
+    <div class="guest-grid">
+      <div class="card chat">
+        <div class="card-head">
+          <div>
+            <div class="h-label">Guest chat</div>
+            <div class="sub" id="aiStatus">Connecting to the assistant…</div>
+          </div>
+          <div class="chat-tools">
+            <button class="btn ghost sm" id="ttsBtn" type="button" hidden aria-pressed="false">Read aloud: off</button>
+            <button class="btn ghost sm" id="newChatBtn" type="button">New guest</button>
+          </div>
+        </div>
+        <div class="chat-log" id="chatLog" aria-live="polite"></div>
+        <div class="quick" id="quick"></div>
+        <form class="composer" id="composer" autocomplete="off">
+          <textarea id="msg" rows="1" placeholder="Type a message in any language…" aria-label="Message"></textarea>
+          <button type="button" class="btn icon" id="micBtn" hidden aria-label="Speak your message">
+            <svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+          </button>
+          <button type="submit" class="btn primary" id="sendBtn">Send</button>
+        </form>
+        <div class="fine">Conversations are not saved. Bookings and requests go straight to the front desk.</div>
+      </div>
+      <aside class="card glance">
+        <div class="card-head"><div class="h-label">At a glance</div></div>
+        <div class="card-body" id="glance"></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Front desk -->
+  <section class="view" id="view-desk" hidden>
+    <div class="summary" id="summary"></div>
+    <div class="desk-actions">
+      <button class="btn primary" id="newBookingBtn" type="button">New booking</button>
+      <button class="btn" id="newRequestBtn" type="button">New request</button>
+      <span class="spacer"></span>
+      <span id="exampleTools"></span>
+    </div>
+    <div class="card" id="deskFormCard" hidden>
+      <div class="card-head"><div class="h-label" id="deskFormTitle">New booking</div><button class="btn ghost sm" id="deskFormClose" type="button">Close</button></div>
+      <div class="card-body" id="deskFormBody"></div>
+    </div>
+    <div class="desk-grid">
+      <section class="card">
+        <div class="card-head">
+          <div class="h-label">Requests</div>
+          <div class="filters" id="reqFilters">
+            <button class="chip-btn" type="button" data-f="open" aria-pressed="true">Open</button>
+            <button class="chip-btn" type="button" data-f="done" aria-pressed="false">Done</button>
+            <button class="chip-btn" type="button" data-f="all" aria-pressed="false">All</button>
+          </div>
+        </div>
+        <div class="list" id="reqList"></div>
+      </section>
+      <section class="card">
+        <div class="card-head"><div class="h-label">Today</div><div class="sub mono" id="todayLabel"></div></div>
+        <div class="list" id="todayList"></div>
+      </section>
+    </div>
+    <section class="card">
+      <div class="card-head">
+        <div class="h-label">Rooms</div>
+        <div class="legend">
+          <span class="chip ok">Ready</span><span class="chip info">Occupied</span><span class="chip warn">Needs cleaning</span><span class="chip brass">Inspect</span><span class="chip bad">Out of order</span>
+        </div>
+      </div>
+      <div class="board" id="roomBoard"></div>
+      <div id="roomPanel"></div>
+    </section>
+    <section class="card">
+      <div class="card-head">
+        <div class="h-label">Bookings</div>
+        <div class="filters">
+          <button class="chip-btn" type="button" id="showPastBtn" aria-pressed="false">Show past and cancelled</button>
+        </div>
+      </div>
+      <div class="table-wrap"><table id="bookTable"></table></div>
+    </section>
+  </section>
+
+  <!-- Hotel info -->
+  <section class="view" id="view-hotel" hidden>
+    <div class="notice" id="hotelNotice" hidden></div>
+    <form id="hotelForm" autocomplete="off">
+      <div class="hotel-grid">
+        <section class="card">
+          <div class="card-head"><div class="h-label">The hotel</div></div>
+          <div class="card-body form">
+            <div class="field wide"><label for="p-name">Hotel name</label><input id="p-name" name="name"></div>
+            <div class="field wide"><label for="p-address">Address</label><input id="p-address" name="address"></div>
+            <div class="field"><label for="p-phone">Reception phone</label><input id="p-phone" name="phone"></div>
+            <div class="field"><label for="p-email">Reception email</label><input id="p-email" name="email"></div>
+            <div class="field"><label for="p-checkIn">Check-in from</label><input id="p-checkIn" name="checkIn" type="time"></div>
+            <div class="field"><label for="p-checkOut">Check-out until</label><input id="p-checkOut" name="checkOut" type="time"></div>
+            <div class="field"><label for="p-frontDesk">Reception hours</label><input id="p-frontDesk" name="frontDesk"></div>
+            <div class="field"><label for="p-currency">Currency</label><input id="p-currency" name="currency" maxlength="3"></div>
+            <div class="field"><label for="p-wifiName">Wi-Fi network</label><input id="p-wifiName" name="wifiName"></div>
+            <div class="field"><label for="p-wifiPass">Wi-Fi password</label><input id="p-wifiPass" name="wifiPass"></div>
+          </div>
+        </section>
+        <section class="card">
+          <div class="card-head"><div class="h-label">What guests ask about</div></div>
+          <div class="card-body form">
+            <div class="field wide"><label for="p-breakfast">Breakfast</label><textarea id="p-breakfast" name="breakfast" rows="2"></textarea></div>
+            <div class="field wide"><label for="p-parking">Parking</label><textarea id="p-parking" name="parking" rows="2"></textarea></div>
+            <div class="field wide"><label for="p-amenities">Facilities and services</label><textarea id="p-amenities" name="amenities" rows="3"></textarea></div>
+            <div class="field wide"><label for="p-policies">House rules and policies</label><textarea id="p-policies" name="policies" rows="4"></textarea></div>
+            <div class="field wide"><label for="p-nearby">Nearby and getting here</label><textarea id="p-nearby" name="nearby" rows="3"></textarea></div>
+            <div class="field wide"><label for="p-notes">Anything else the assistant should know</label><textarea id="p-notes" name="notes" rows="3" placeholder="Events this week, renovation notices, local tips…"></textarea></div>
+          </div>
+        </section>
+      </div>
+      <section class="card" style="margin-top:16px">
+        <div class="card-head">
+          <div><div class="h-label">Rooms and rates</div><div class="sub">Price per night. List the room numbers for each type, separated by commas.</div></div>
+          <button class="btn sm" type="button" id="addRtBtn">Add room type</button>
+        </div>
+        <div class="card-body"><div class="rt-rows" id="rtRows"></div></div>
+      </section>
+      <div class="save-bar" style="margin-top:16px">
+        <button class="btn primary" type="submit" id="saveHotelBtn">Save hotel info</button>
+        <button class="btn ghost" type="button" id="revertHotelBtn">Discard changes</button>
+        <span class="form-msg" id="hotelMsg"></span>
+      </div>
+    </form>
+  </section>
+</main>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+"use strict";
+/* ---------- helpers ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  if (attrs) for (const [k, v] of Object.entries(attrs)) {
+    if (v == null || v === false) continue;
+    if (k === "class") el.className = v;
+    else if (k === "text") el.textContent = v;
+    else if (k.startsWith("on") && typeof v === "function") el.addEventListener(k.slice(2), v);
+    else if (v === true) el.setAttribute(k, "");
+    else el.setAttribute(k, String(v));
+  }
+  for (const kid of kids.flat(Infinity)) {
+    if (kid == null || kid === false) continue;
+    el.append(kid.nodeType ? kid : String(kid));
+  }
+  return el;
+}
+const pad = (n) => String(n).padStart(2, "0");
+const isoDay = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const today = () => isoDay(new Date());
+const parseDay = (s) => { const [y, m, d] = String(s).split("-").map(Number); return new Date(y, m - 1, d); };
+const validDay = (s) => typeof s === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s) && isoDay(parseDay(s)) === s;
+const addDays = (s, n) => { const d = parseDay(s); d.setDate(d.getDate() + n); return isoDay(d); };
+const nightsBetween = (a, b) => Math.round((parseDay(b) - parseDay(a)) / 86400000);
+const fmtDay = (s) => validDay(s) ? parseDay(s).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }) : "—";
+const fmtShort = (s) => validDay(s) ? parseDay(s).toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : "—";
+const nowHM = () => { const d = new Date(); return `${pad(d.getHours())}:${pad(d.getMinutes())}`; };
+const money = (n, cur) => `${Number(n || 0).toLocaleString("en-GB", { maximumFractionDigits: 2 })} ${cur || ""}`.trim();
+function ago(ms) {
+  const m = Math.max(0, Math.round((Date.now() - Number(ms || 0)) / 60000));
+  if (m < 1) return "just now";
+  if (m < 60) return `${m} min ago`;
+  const hh = Math.floor(m / 60);
+  if (hh < 24) return `${hh} h ago`;
+  return `${Math.floor(hh / 24)} d ago`;
+}
+function code(prefix, used) {
+  const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  for (let t = 0; t < 50; t++) {
+    const b = new Uint8Array(4); crypto.getRandomValues(b);
+    const c = prefix + Array.from(b, (x) => A[x % A.length]).join("");
+    if (!used.has(c)) return c;
+  }
+  return prefix + Date.now().toString(36).toUpperCase().slice(-5);
+}
+const roomId = (n) => String(n).trim().replace(/[^A-Za-z0-9_-]/g, "");
+const splitRooms = (s) => String(s || "").split(/[,;\s]+/).map(roomId).filter(Boolean);
+const natural = (a, b) => String(a).localeCompare(String(b), undefined, { numeric: true });
+let toastTimer;
+function toast(text) {
+  const t = $("#toast"); t.textContent = text; t.hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, 3800);
+}
+function lsGet(k) { try { return JSON.parse(localStorage.getItem(k) || "null"); } catch { return null; } }
+function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+
+/* ---------- hotel profile ---------- */
+const DEFAULT_PROFILE = {
+  name: "Juniper House Hotel",
+  address: "12 Example Street, Old Town",
+  phone: "+1 555 0100",
+  email: "reception@example.com",
+  checkIn: "15:00",
+  checkOut: "11:00",
+  frontDesk: "Open 24 hours",
+  currency: "EUR",
+  wifiName: "Juniper-Guest",
+  wifiPass: "welcome2026",
+  breakfast: "Buffet breakfast 07:00–10:30 on weekdays and 08:00–11:00 at weekends, in the garden room. Included in every rate.",
+  parking: "Courtyard parking for 15 EUR per night. Ask reception for a permit. No height limit.",
+  amenities: "Sauna (16:00–22:00, free for guests), luggage storage, next-day laundry service, bicycles to borrow, iron and ironing board on request, cots for babies free of charge.",
+  policies: "Quiet hours 22:00–07:00. No smoking anywhere in the building. Pets up to 10 kg welcome for 15 EUR per night. Free cancellation until 48 hours before arrival. Late check-out until 13:00 for 20 EUR, subject to availability. Early check-in from 12:00 for 20 EUR when the room is ready. Payment at reception on arrival; we accept cards and cash.",
+  nearby: "Old Town square: 5 minutes on foot. Railway station: 10 minutes by taxi. Airport: 20 minutes by taxi, about 20 EUR. Nearest pharmacy: corner of Market Street, open until 21:00.",
+  notes: "",
+  roomTypes: [
+    { id: "single", name: "Single", beds: "One single bed, shower", maxGuests: 1, price: 69, rooms: "101, 102" },
+    { id: "double", name: "Double", beds: "Queen bed, shower", maxGuests: 2, price: 95, rooms: "103, 104, 201, 202" },
+    { id: "twin", name: "Twin", beds: "Two single beds, shower", maxGuests: 2, price: 95, rooms: "105, 203" },
+    { id: "family", name: "Family suite", beds: "King bed and a sofa bed, bath", maxGuests: 4, price: 149, rooms: "301, 302" },
+  ],
+};
+const PROFILE_TEXT_FIELDS = ["name", "address", "phone", "email", "checkIn", "checkOut", "frontDesk", "currency", "wifiName", "wifiPass", "breakfast", "parking", "amenities", "policies", "nearby", "notes"];
+function slug(s) { return String(s || "").toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "room"; }
+function normalizeProfile(raw) {
+  const p = {};
+  for (const k of PROFILE_TEXT_FIELDS) p[k] = typeof raw?.[k] === "string" ? raw[k].slice(0, 4000) : (raw ? "" : DEFAULT_PROFILE[k]);
+  if (!p.name) p.name = "Hotel";
+  if (!p.currency) p.currency = "EUR";
+  const list = Array.isArray(raw?.roomTypes) ? raw.roomTypes : DEFAULT_PROFILE.roomTypes;
+  const seen = new Set();
+  p.roomTypes = list.slice(0, 30).map((t) => {
+    let id = slug(t?.id || t?.name);
+    while (seen.has(id)) id += "-2";
+    seen.add(id);
+    return {
+      id,
+      name: String(t?.name || "Room").slice(0, 80),
+      beds: String(t?.beds || "").slice(0, 200),
+      maxGuests: Math.max(1, Math.min(20, Math.round(Number(t?.maxGuests) || 1))),
+      price: Math.max(0, Number(t?.price) || 0),
+      rooms: splitRooms(t?.rooms).join(", "),
+    };
+  });
+  return p;
+}
+
+/* ---------- state + storage ---------- */
+const S = {
+  mode: "connecting",          // "db" | "local"
+  db: null,
+  profile: normalizeProfile(null),
+  profileSaved: false,
+  bookings: [], requests: [], rooms: {},
+  loaded: { profile: false, bookings: false, requests: false, rooms: false },
+  canEditProfile: true,
+  stalled: false,
+};
+let readyResolve; const ready = new Promise((r) => { readyResolve = r; });
+const LOCAL_KEY = "hotel-reception-local-v1";
+function startLocal() {
+  if (S.mode !== "connecting") return;
+  S.mode = "local";
+  const saved = lsGet(LOCAL_KEY);
+  if (saved) {
+    if (saved.profile) { S.profile = normalizeProfile(saved.profile); S.profileSaved = true; }
+    S.bookings = Array.isArray(saved.bookings) ? saved.bookings : [];
+    S.requests = Array.isArray(saved.requests) ? saved.requests : [];
+    S.rooms = saved.rooms && typeof saved.rooms === "object" ? saved.rooms : {};
+  }
+  Object.keys(S.loaded).forEach((k) => (S.loaded[k] = true));
+  readyResolve();
+  renderAll();
+  fillHotelForm(false);
+}
+function saveLocal() {
+  lsSet(LOCAL_KEY, { profile: S.profileSaved ? S.profile : null, bookings: S.bookings, requests: S.requests, rooms: S.rooms });
+}
+function dbErrorText(e) {
+  const c = e && e.code;
+  if (c === "invalid_argument") return "You don't have permission to change this. Ask the owner for Contributor access.";
+  if (c === "quota_exceeded") return "Storage is full. Delete old bookings or requests first.";
+  if (c === "resource_exhausted") return "Too many changes at once. Wait a moment and try again.";
+  if (c === "revoked") return "Access to this page's data was withdrawn.";
+  return "Couldn't save. Check your connection and try again.";
+}
+const W = {
+  async addBooking(b) {
+    await ready;
+    if (S.mode === "db") { const ref = await S.db.collection("bookings").add(b); return ref.id; }
+    const id = "b" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    S.bookings.push({ id, ...b }); saveLocal(); renderAll(); return id;
+  },
+  async patchBooking(id, patch) {
+    await ready;
+    if (S.mode === "db") return S.db.doc("bookings/" + id).update(patch);
+    const b = S.bookings.find((x) => x.id === id); if (b) Object.assign(b, patch); saveLocal(); renderAll();
+  },
+  async addRequest(r) {
+    await ready;
+    if (S.mode === "db") { const ref = await S.db.collection("requests").add(r); return ref.id; }
+    const id = "r" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    S.requests.push({ id, ...r }); saveLocal(); renderAll(); return id;
+  },
+  async patchRequest(id, patch) {
+    await ready;
+    if (S.mode === "db") return S.db.doc("requests/" + id).update(patch);
+    const r = S.requests.find((x) => x.id === id); if (r) Object.assign(r, patch); saveLocal(); renderAll();
+  },
+  async setRoom(num, data) {
+    await ready;
+    const id = roomId(num); if (!id) return;
+    if (S.mode === "db") return S.db.doc("rooms/" + id).set(data);
+    S.rooms[id] = data; saveLocal(); renderAll();
+  },
+  async saveProfile(p) {
+    await ready;
+    if (S.mode === "db") return S.db.doc("hotel/profile").set({ ...p, updatedAt: Date.now() });
+    S.profile = normalizeProfile(p); S.profileSaved = true; saveLocal(); renderAll();
+  },
+  async removeExamples() {
+    await ready;
+    const bs = S.bookings.filter((x) => x.example), rs = S.requests.filter((x) => x.example);
+    const rooms = Object.entries(S.rooms).filter(([, v]) => v && v.example).map(([k]) => k);
+    if (S.mode === "db") {
+      for (const b of bs) await S.db.doc("bookings/" + b.id).delete();
+      for (const r of rs) await S.db.doc("requests/" + r.id).delete();
+      for (const k of rooms) await S.db.doc("rooms/" + k).delete();
+      return;
+    }
+    S.bookings = S.bookings.filter((x) => !x.example);
+    S.requests = S.requests.filter((x) => !x.example);
+    rooms.forEach((k) => delete S.rooms[k]);
+    saveLocal(); renderAll();
+  },
+};
+async function attempt(fn, okText) {
+  try { const r = await fn(); if (okText) toast(okText); return r; }
+  catch (e) { toast(dbErrorText(e)); return undefined; }
+}
+
+/* ---------- hotel logic ---------- */
+const LIVE = (b) => b.status === "booked" || b.status === "in";
+function roomTypeById(id) { return S.profile.roomTypes.find((t) => t.id === id); }
+function roomTypeOfRoom(n) { return S.profile.roomTypes.find((t) => splitRooms(t.rooms).includes(n)); }
+function allRooms() { return [...new Set(S.profile.roomTypes.flatMap((t) => splitRooms(t.rooms)))].sort(natural); }
+function hk(n) { return (S.rooms[n] && S.rooms[n].status) || "clean"; }
+function roomBusy(n, a, b) { return S.bookings.some((x) => x.room === n && LIVE(x) && x.checkIn < b && a < x.checkOut); }
+function freeRooms(rt, a, b) { return splitRooms(rt.rooms).filter((n) => hk(n) !== "ooo" && !roomBusy(n, a, b)); }
+function checkStay(checkIn, checkOut) {
+  if (!validDay(checkIn)) throw new Error("check_in must be a real date written as YYYY-MM-DD.");
+  if (!validDay(checkOut)) throw new Error("check_out must be a real date written as YYYY-MM-DD.");
+  if (checkIn < today()) throw new Error(`check_in ${checkIn} is in the past. Today is ${today()}.`);
+  const nights = nightsBetween(checkIn, checkOut);
+  if (nights < 1) throw new Error("check_out must be at least one day after check_in.");
+  if (nights > 30) throw new Error("Stays longer than 30 nights are arranged directly with reception.");
+  return nights;
+}
+function availability(checkIn, checkOut, guests) {
+  const nights = checkStay(checkIn, checkOut);
+  const g = Math.max(1, Math.round(Number(guests) || 1));
+  return {
+    check_in: checkIn, check_out: checkOut, nights, guests: g, currency: S.profile.currency,
+    options: S.profile.roomTypes.map((t) => ({
+      room_type_id: t.id, name: t.name, beds: t.beds, max_guests: t.maxGuests,
+      fits_party: t.maxGuests >= g,
+      price_per_night: t.price, total_price: t.price * nights,
+      rooms_free: freeRooms(t, checkIn, checkOut).length,
+    })),
+  };
+}
+async function createBooking({ roomTypeId, checkIn, checkOut, guests, guest, contact, notes, room, source }) {
+  const nights = checkStay(checkIn, checkOut);
+  const rt = roomTypeById(roomTypeId);
+  if (!rt) throw new Error(`Unknown room type "${roomTypeId}". Use one of: ${S.profile.roomTypes.map((t) => t.id).join(", ")}.`);
+  const g = Math.max(1, Math.round(Number(guests) || 1));
+  if (g > rt.maxGuests) throw new Error(`${rt.name} takes at most ${rt.maxGuests} guest(s).`);
+  const name = String(guest || "").trim();
+  if (name.length < 2) throw new Error("The guest's full name is needed.");
+  const free = freeRooms(rt, checkIn, checkOut);
+  const chosen = room && free.includes(room) ? room : free[0];
+  if (!chosen) throw new Error(`No ${rt.name} rooms are free for ${checkIn} to ${checkOut}.`);
+  const b = {
+    ref: code("F-", new Set(S.bookings.map((x) => x.ref))),
+    guest: name.slice(0, 120), contact: String(contact || "").trim().slice(0, 160),
+    guests: g, roomType: rt.id, roomTypeName: rt.name, room: chosen,
+    checkIn, checkOut, nights, rate: rt.price, total: rt.price * nights, currency: S.profile.currency,
+    status: "booked", notes: String(notes || "").trim().slice(0, 500), source: source || "desk", createdAt: Date.now(),
+  };
+  const id = await W.addBooking(b);
+  return { id, ...b };
+}
+const REQ_TYPES = {
+  housekeeping: "Housekeeping", maintenance: "Maintenance", wakeup: "Wake-up call", taxi: "Taxi",
+  food: "Food and drink", luggage: "Luggage", checkout: "Late check-out", booking: "Booking change",
+  question: "Question", urgent: "Urgent", other: "Other",
+};
+async function createRequest({ type, room, guest, detail, time, source }) {
+  const t = REQ_TYPES[type] ? type : "other";
+  const r = roomId(room || "");
+  if (r && !allRooms().includes(r)) throw new Error(`There is no room ${r} in this hotel. Ask the guest to check their room number.`);
+  const req = {
+    ref: code("R-", new Set(S.requests.map((x) => x.ref))),
+    type: t, room: r, guest: String(guest || "").trim().slice(0, 120),
+    detail: String(detail || "").trim().slice(0, 600), time: String(time || "").trim().slice(0, 40),
+    status: "new", source: source || "desk", createdAt: Date.now(), updatedAt: Date.now(),
+  };
+  const id = await W.addRequest(req);
+  return { id, ...req };
+}
+
+/* ---------- capabilities ---------- */
+const AI = { sample: null, tools: false, state: "connecting", tts: null, ttsOn: false, dict: null };
+async function boot() {
+  renderAll();
+  const c = window.claude;
+  if (!c || typeof c.use !== "function") { AI.state = "basic"; renderAiStatus(); startLocal(); return; }
+
+  c.use("sample").then(async (s) => {
+    if (!s) { AI.state = "basic"; renderAiStatus(); return; }
+    AI.sample = s;
+    try { const lim = await s.limits(); AI.tools = !!(lim && lim.tools); } catch { AI.tools = false; }
+    if (AI.state === "connecting") AI.state = "on";
+    renderAiStatus();
+  });
+  c.use("tts").then((t) => {
+    if (!t) return;
+    AI.tts = t;
+    const b = $("#ttsBtn"); b.hidden = false;
+    t.onState(({ state }) => { b.dataset.speaking = state === "speaking" ? "1" : ""; });
+  });
+  c.use("dictation").then((d) => { if (d) setupDictation(d); });
+  c.use("user").then(async (u) => {
+    if (!u) return;
+    try { S.canEditProfile = !!(await u.canEdit()); } catch {}
+    fillHotelForm(false);
+  });
+
+  const stall = setTimeout(() => { if (!S.loaded.bookings) { S.stalled = true; renderDesk(); } }, 10000);
+  const db = await c.use("db");
+  if (!db) { clearTimeout(stall); startLocal(); return; }
+  S.db = db; S.mode = "db"; readyResolve();
+  const fail = (e) => { if (e && e.code === "revoked") toast("Access to this page's data was withdrawn."); };
+  const done = (k) => { S.loaded[k] = true; if (Object.values(S.loaded).every(Boolean)) { clearTimeout(stall); S.stalled = false; } };
+  db.doc("hotel/profile").onSnapshot((snap) => {
+    if (snap.exists) { S.profile = normalizeProfile(snap.data()); S.profileSaved = true; }
+    else { S.profile = normalizeProfile(null); S.profileSaved = false; }
+    done("profile"); renderAll(); fillHotelForm(false);
+  }, fail);
+  db.collection("bookings").where("checkOut", ">=", addDays(today(), -45)).onSnapshot((q) => {
+    S.bookings = q.docs.map((d) => ({ id: d.id, ...d.data() })); done("bookings"); renderAll();
+  }, fail);
+  db.collection("requests").where("createdAt", ">=", Date.now() - 21 * 86400000).onSnapshot((q) => {
+    S.requests = q.docs.map((d) => ({ id: d.id, ...d.data() })); done("requests"); renderAll();
+  }, fail);
+  db.collection("rooms").onSnapshot((q) => {
+    const m = {}; q.docs.forEach((d) => { m[d.id] = d.data(); }); S.rooms = m; done("rooms"); renderAll();
+  }, fail);
+}
+
+/* ---------- routing ---------- */
+const VIEWS = ["guest", "desk", "hotel"];
+function route() {
+  const v = VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "guest";
+  for (const name of VIEWS) $("#view-" + name).hidden = name !== v;
+  document.querySelectorAll(".tab").forEach((a) => { if (a.dataset.view === v) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
+}
+window.addEventListener("hashchange", route);
+
+/* ---------- header ---------- */
+function renderHeader() {
+  $("#hotelName").textContent = S.profile.name;
+  $("#exampleChip").hidden = S.profileSaved || !S.loaded.profile;
+  const d = new Date();
+  $("#clock").textContent = d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }) + " · " + nowHM();
+  const open = S.requests.filter((r) => r.status !== "done").length;
+  const b = $("#deskBadge"); b.hidden = !open; b.textContent = open;
+}
+setInterval(() => { renderHeader(); }, 30000);
+
+/* ---------- guest chat ---------- */
+const CHAT = { turns: [], busy: false, ctl: null, lastText: "", cut: 0 };
+const log = () => $("#chatLog");
+function scrollLog() { const l = log(); l.scrollTop = l.scrollHeight; }
+function bubble(from, text) {
+  const el = h("div", { class: "msg " + (from === "me" ? "me" : "bot") });
+  if (from !== "me") el.append(h("span", { class: "who", text: "Reception" }));
+  const body = h("span", { class: "body" });
+  if (text == null) body.append(h("span", { class: "dots", "aria-label": "Writing" }, h("i"), h("i"), h("i")));
+  else body.textContent = text;
+  el.append(body);
+  log().append(el); scrollLog();
+  return el;
+}
+function setBubbleText(el, text) { const b = el.querySelector(".body"); b.textContent = text; }
+function setBubbleDots(el) { const b = el.querySelector(".body"); b.replaceChildren(h("span", { class: "dots", "aria-label": "Writing" }, h("i"), h("i"), h("i"))); }
+function welcome() {
+  const el = bubble("bot", `Welcome to ${S.profile.name}. I can book a room, pass a request to housekeeping or answer questions about the hotel. Write in any language.`);
+  el.append(h("span", { class: "welcome-langs", text: "Tere tulemast · Добро пожаловать · Willkommen · Tervetuloa · Bienvenue" }));
+}
+function cardBeforePending(el) {
+  const pending = log().querySelector(".msg.pending");
+  if (pending) log().insertBefore(el, pending); else log().append(el);
+  scrollLog();
+}
+function bookingCard(b) {
+  return h("div", { class: "chat-card" },
+    h("div", { class: "cc-title", text: `Booked · ${b.ref}` }),
+    h("dl", null,
+      h("dt", { text: "Guest" }), h("dd", { text: b.guest }),
+      h("dt", { text: "Room" }), h("dd", { text: `${b.roomTypeName}, room ${b.room}` }),
+      h("dt", { text: "Stay" }), h("dd", { class: "mono", text: `${fmtShort(b.checkIn)} → ${fmtShort(b.checkOut)} · ${b.nights} night${b.nights > 1 ? "s" : ""}` }),
+      h("dt", { text: "Total" }), h("dd", { class: "mono", text: `${money(b.total, b.currency)} · pay at reception` })));
+}
+function requestCard(r) {
+  return h("div", { class: "chat-card info" },
+    h("div", { class: "cc-title", text: `Sent to the front desk · ${r.ref}` }),
+    h("dl", null,
+      h("dt", { text: "Request" }), h("dd", { text: REQ_TYPES[r.type] || "Request" }),
+      r.room ? [h("dt", { text: "Room" }), h("dd", { class: "mono", text: r.room })] : null,
+      r.time ? [h("dt", { text: "Time" }), h("dd", { class: "mono", text: r.time })] : null,
+      r.detail ? [h("dt", { text: "Details" }), h("dd", { text: r.detail })] : null));
+}
+
+function profileForPrompt() {
+  const p = S.profile;
+  const lines = [
+    `Hotel: ${p.name}`, `Address: ${p.address}`, `Reception phone: ${p.phone}`, `Reception email: ${p.email}`,
+    `Reception hours: ${p.frontDesk}`, `Check-in from ${p.checkIn}. Check-out until ${p.checkOut}.`,
+    `Wi-Fi network: ${p.wifiName}. Wi-Fi password: ${p.wifiPass}.`,
+    `Breakfast: ${p.breakfast}`, `Parking: ${p.parking}`, `Facilities and services: ${p.amenities}`,
+    `House rules and policies: ${p.policies}`, `Nearby and getting here: ${p.nearby}`,
+    `Room types (price per night in ${p.currency}):`,
+    ...p.roomTypes.map((t) => `- ${t.name} (room_type_id "${t.id}"): ${t.beds}; up to ${t.maxGuests} guest(s); ${t.price} ${p.currency} per night; rooms ${t.rooms}`),
+  ];
+  if (p.notes) lines.push(`Other notes from the staff: ${p.notes}`);
+  return lines.join("\n");
+}
+function calendarForPrompt() {
+  const out = []; const t = today();
+  for (let i = 0; i < 21; i++) {
+    const d = addDays(t, i);
+    out.push(`${parseDay(d).toLocaleDateString("en-GB", { weekday: "short" })} ${d}${i === 0 ? " (today)" : i === 1 ? " (tomorrow)" : ""}`);
+  }
+  return out.join(", ");
+}
+function rulesTurn() {
+  const toolsRules = AI.tools ? [
+    "BOOKINGS: you need arrival date, departure date, number of guests, room type, the guest's full name and a phone number or email. Call check_availability before you offer rooms or quote prices for dates. Before make_booking, sum up the booking (room type, dates, nights, total price) and wait for the guest to say yes. Payment is taken at reception on arrival; never ask for card details.",
+    "SERVICE REQUESTS (towels, cleaning, repairs, wake-up calls, taxis, luggage, food, late check-out): get the room number, and the time for wake-up calls and taxis, then call create_request and tell the guest it has been passed to staff. Don't promise times the hotel information doesn't give.",
+    "EXISTING BOOKINGS: use find_booking with the guest's surname or folio number (like F-ABCD). For cancellations or changes, take the details with create_request type \"booking\" so staff can confirm.",
+    "UNKNOWN ANSWERS: if the answer isn't in the hotel information, say a receptionist will check, and call create_request type \"question\" with the guest's question and room if known.",
+    "EMERGENCIES (fire, medical, safety threat): tell the guest to call 112 now and that you are alerting staff; call create_request type \"urgent\".",
+    "Write nothing before calling a tool. Write your reply to the guest only after you have the tool results.",
+  ] : [
+    "You cannot make bookings or send requests yourself here. When the guest wants to book, end your reply with the tag [FORM:booking]. When they want a service (housekeeping, maintenance, wakeup, taxi, food, luggage, checkout) end with [FORM:request:TYPE], for example [FORM:request:taxi]. When the answer isn't in the hotel information, say a receptionist will check and end with [FORM:request:question]. The page shows the matching form; the tag is hidden from the guest.",
+    "EMERGENCIES (fire, medical, safety threat): tell the guest to call 112 now and end with [FORM:request:urgent].",
+  ];
+  return [
+    `You are the reception assistant of ${S.profile.name}, chatting with a guest on the reception tablet or the hotel website.`,
+    `Today is ${parseDay(today()).toLocaleDateString("en-GB", { weekday: "long" })} ${today()}, local time ${nowHM()}.`,
+    `Next days: ${calendarForPrompt()}. Use this list to turn words like "tomorrow" or "on Friday" into YYYY-MM-DD dates.`,
+    "",
+    "HOW TO REPLY",
+    "- Reply in the language of the guest's latest message.",
+    "- Be warm, brief and practical: one to four short sentences, plain text, no Markdown, no headings. A short list is fine only when offering room options.",
+    "- Use only the HOTEL INFORMATION below for facts. Never invent prices, times, services, rooms or policies.",
+    "- Never ask for or repeat card numbers, ID or passport numbers.",
+    ...toolsRules.map((r) => "- " + r),
+    "",
+    "HOTEL INFORMATION",
+    profileForPrompt(),
+    "",
+    "The conversation with the guest follows.",
+  ].join("\n");
+}
+function makeTools() {
+  const mark = () => { CHAT.cut = CHAT.lastText.length; if (CHAT.pending) setBubbleDots(CHAT.pending); };
+  return [
+    {
+      name: "check_availability",
+      description: "Check which room types are free for a stay. Returns the number of nights and, for each room type: id, name, beds, max guests, whether it fits the party, price per night, total price and rooms free.",
+      inputSchema: { type: "object", properties: {
+        check_in: { type: "string", description: "Arrival date, YYYY-MM-DD" },
+        check_out: { type: "string", description: "Departure date, YYYY-MM-DD" },
+        guests: { type: "integer", description: "Number of guests" } }, required: ["check_in", "check_out"] },
+      execute: (i) => { mark(); return availability(String(i.check_in || ""), String(i.check_out || ""), Number(i.guests) || 1); },
+    },
+    {
+      name: "make_booking",
+      description: "Book a room. Only call after the guest has confirmed your summary of room type, dates and total price. Returns the folio number, room number and total price.",
+      inputSchema: { type: "object", properties: {
+        room_type_id: { type: "string", description: "room_type_id from check_availability" },
+        check_in: { type: "string", description: "YYYY-MM-DD" },
+        check_out: { type: "string", description: "YYYY-MM-DD" },
+        guests: { type: "integer" },
+        guest_name: { type: "string", description: "Full name of the guest" },
+        contact: { type: "string", description: "Phone number or email" },
+        notes: { type: "string", description: "Special wishes, arrival time, etc." } },
+        required: ["room_type_id", "check_in", "check_out", "guests", "guest_name", "contact"] },
+      execute: async (i, ctx) => {
+        mark();
+        const contact = String(i.contact || "").trim();
+        if (contact.length < 5) throw new Error("A phone number or email for the guest is needed.");
+        if (ctx && ctx.signal && ctx.signal.aborted) throw new Error("Cancelled.");
+        const b = await createBooking({ roomTypeId: String(i.room_type_id || ""), checkIn: String(i.check_in || ""), checkOut: String(i.check_out || ""), guests: i.guests, guest: i.guest_name, contact, notes: i.notes, source: "assistant" });
+        cardBeforePending(bookingCard(b));
+        return { folio: b.ref, room: b.room, room_type: b.roomTypeName, check_in: b.checkIn, check_out: b.checkOut, nights: b.nights, total_price: b.total, currency: b.currency, payment: "at reception on arrival", check_in_from: S.profile.checkIn, check_out_until: S.profile.checkOut };
+      },
+    },
+    {
+      name: "find_booking",
+      description: "Look up existing bookings by the guest's surname or folio number. Returns up to 3 matches with folio, name, room type, room, dates and status.",
+      inputSchema: { type: "object", properties: { query: { type: "string", description: "Surname or folio number" } }, required: ["query"] },
+      execute: (i) => {
+        mark();
+        const q = String(i.query || "").trim().toLowerCase();
+        if (q.length < 3) throw new Error("Give at least 3 letters of the surname, or the folio number.");
+        const hits = S.bookings.filter((b) => b.status !== "cancelled" && (String(b.ref || "").toLowerCase() === q || String(b.guest || "").toLowerCase().includes(q))).slice(0, 3);
+        return { matches: hits.map((b) => ({ folio: b.ref, guest: b.guest, room_type: b.roomTypeName, room: b.room, check_in: b.checkIn, check_out: b.checkOut, status: b.status === "in" ? "checked in" : b.status === "out" ? "checked out" : "booked" })) };
+      },
+    },
+    {
+      name: "create_request",
+      description: "Send a request or question to the front desk staff. Returns a reference number.",
+      inputSchema: { type: "object", properties: {
+        type: { type: "string", enum: Object.keys(REQ_TYPES) },
+        room: { type: "string", description: "Room number, if known" },
+        guest_name: { type: "string" },
+        details: { type: "string", description: "What exactly is needed, in English for the staff" },
+        time: { type: "string", description: "When, for wake-up calls and taxis, e.g. 06:30 tomorrow" } },
+        required: ["type", "details"] },
+      execute: async (i) => {
+        mark();
+        const r = await createRequest({ type: String(i.type || "other"), room: i.room, guest: i.guest_name, detail: i.details, time: i.time, source: "assistant" });
+        cardBeforePending(requestCard(r));
+        return { reference: r.ref, status: "sent to the front desk" };
+      },
+    },
+  ];
+}
+function renderAiStatus() {
+  const el = $("#aiStatus");
+  el.textContent = AI.state === "on" ? "Claude replies in the guest's language"
+    : AI.state === "connecting" ? "Connecting to the assistant…"
+    : AI.state === "denied" ? "Basic mode: Claude is turned off for this page. Answers come from the hotel info, in English."
+    : "Basic mode: answers come from the hotel info, in English.";
+  renderQuick();
+}
+const QUICK = [
+  { label: "Book a room", say: "I'd like to book a room." },
+  { label: "Extra towels", say: "Could I have some extra towels, please?" },
+  { label: "Wake-up call", say: "I'd like a wake-up call." },
+  { label: "Order a taxi", say: "Can you order me a taxi?" },
+  { label: "Late check-out", say: "Is late check-out possible?" },
+  { label: "Wi-Fi", say: "What's the Wi-Fi password?" },
+  { label: "Breakfast", say: "When is breakfast?" },
+];
+function renderQuick() {
+  const q = $("#quick"); q.replaceChildren();
+  for (const item of QUICK) q.append(h("button", { class: "chip-btn", type: "button", onclick: () => send(item.say) }, item.label));
+}
+function setBusy(b) {
+  CHAT.busy = b;
+  const s = $("#sendBtn"); s.textContent = b ? "Stop" : "Send"; s.classList.toggle("primary", !b);
+  document.querySelectorAll("#quick .chip-btn").forEach((x) => { x.disabled = b; });
+}
+async function send(textIn) {
+  const text = String(textIn || "").trim();
+  if (!text || CHAT.busy) return;
+  bubble("me", text);
+  CHAT.turns.push({ role: "user", content: text });
+  if (CHAT.turns.length > 24) CHAT.turns = CHAT.turns.slice(-24);
+  while (CHAT.turns.length && CHAT.turns[0].role !== "user") CHAT.turns.shift();
+  if (AI.sample && AI.state === "on") return aiReply();
+  basicReply(text);
+}
+async function aiReply() {
+  setBusy(true);
+  const pending = bubble("bot", null); pending.classList.add("pending"); CHAT.pending = pending;
+  const ctl = new AbortController(); CHAT.ctl = ctl; CHAT.lastText = ""; CHAT.cut = 0;
+  const shown = (t) => t.slice(CHAT.cut).replace(/\[FORM:[^\]]*\]/g, "").trim();
+  const opts = {
+    modelTier: "quick", cache: false, signal: ctl.signal,
+    onText: ({ text }) => { CHAT.lastText = text; const s = shown(text); if (s) setBubbleText(pending, s); scrollLog(); },
+  };
+  if (AI.tools) opts.tools = makeTools();
+  try {
+    const { text, truncated } = await AI.sample([{ role: "user", content: rulesTurn() }, ...CHAT.turns], opts);
+    const raw = text.slice(CHAT.cut);
+    const reply = shown(text) || text.replace(/\[FORM:[^\]]*\]/g, "").trim() || "Done.";
+    setBubbleText(pending, reply + (truncated ? " …" : ""));
+    CHAT.turns.push({ role: "assistant", content: reply });
+    const m = raw.match(/\[FORM:(booking|request:([a-z]+))\]/);
+    if (m) cardBeforePending(m[1] === "booking" ? formCard("booking") : formCard("request", REQ_TYPES[m[2]] ? m[2] : "other"));
+    speak(reply);
+  } catch (e) {
+    const c = e && e.code;
+    if (c === "cancelled") {
+      const keep = e.text ? shown(e.text) : "";
+      if (keep) { setBubbleText(pending, keep + " …"); CHAT.turns.push({ role: "assistant", content: keep }); } else pending.remove();
+    } else if (c === "not_granted" || c === "sampling_disabled" || c === "capability_disabled" || c === "capability_removed" || c === "not_declared") {
+      pending.remove();
+      AI.state = c === "not_granted" ? "denied" : "basic"; renderAiStatus();
+      const last = [...CHAT.turns].reverse().find((t) => t.role === "user");
+      if (last) basicReply(last.content);
+    } else {
+      pending.classList.add("err");
+      setBubbleText(pending, c === "rate_limited"
+        ? "I'm handling a lot of messages right now. Please try again in a minute, or ask at the desk."
+        : "Sorry, something went wrong on my side. Please send your message again, or ask at the desk.");
+      CHAT.turns.pop();
+    }
+  } finally {
+    pending.classList.remove("pending");
+    CHAT.pending = null; CHAT.ctl = null; setBusy(false); scrollLog();
+  }
+}
+function speak(text) {
+  if (!AI.tts || !AI.ttsOn || !text) return;
+  AI.tts.speak(text.slice(0, 1900)).catch(() => {});
+}
+
+/* Basic mode: keyword answers from the hotel info */
+const INTENTS = [
+  { id: "urgent", re: /\b(fire|emergency|ambulance|bleeding|heart attack|unconscious)\b|пожар|скорая|помогите|tulekahju|kiirabi|appi/i },
+  { id: "wifi", re: /wi-?fi|wlan|internet|password|пароль|интернет|вай-?фай|parool|salasana/i },
+  { id: "breakfast", re: /breakfast|завтрак|hommikus(öö|oo)k|frühstück|aamiai/i },
+  { id: "checkout", re: /check[\s-]?out|late (check|departure)|выезд|выселен|väljaregistr|lahkumi/i },
+  { id: "checkin", re: /check[\s-]?in|arriv|early|заселен|заезд|registreeri|saabu/i },
+  { id: "parking", re: /park|\bcar\b|парков|машин|parkimi|parkla/i },
+  { id: "towels", re: /towel|clean|housekeep|sheets|pillow|blanket|toilet paper|полотенц|уборк|подушк|одеял|rätik|korista|padi|tekk/i, req: "housekeeping" },
+  { id: "repair", re: /broken|not working|doesn'?t work|repair|fix|leak|heating|air ?con|не работает|слома|протек|katki|ei tööta|remont/i, req: "maintenance" },
+  { id: "wakeup", re: /wake|будиль|разбуд|äratus/i, req: "wakeup" },
+  { id: "taxi", re: /taxi|\bcab\b|такси|takso/i, req: "taxi" },
+  { id: "luggage", re: /luggage|baggage|suitcase|багаж|чемодан|pagas|kohver/i, req: "luggage" },
+  { id: "food", re: /room service|food|hungry|drink|еда|поесть|напит|süüa|toit|jook/i, req: "food" },
+  { id: "pets", re: /\bpets?\b|\bdog\b|\bcat\b|собак|кошк|животн|koer|kass|lemmik/i },
+  { id: "smoking", re: /smok|курит|курен|suits/i },
+  { id: "amenities", re: /sauna|gym|pool|spa|laundry|bike|bicycle|iron|cot\b|сауна|прачеч|велосипед|утюг|saun|pesu|jalgratas|triikraud/i },
+  { id: "address", re: /address|where are|directions|airport|station|pharmacy|адрес|аэропорт|вокзал|аптек|aadress|lennujaam|jaam|apteek/i },
+  { id: "book", re: /\bbook|reserv|\broom\b|availab|price|rate|cost|how much|брон|номер|цен|свобод|сколько|broneer|tuba|hind|vaba|kui palju/i },
+  { id: "hours", re: /reception|front desk|open|ресепшн|администрат|vastuvõtt/i },
+  { id: "thanks", re: /thank|спасибо|aitäh|tänan|danke|kiitos/i },
+  { id: "greet", re: /\b(hi|hello|hey|good (morning|afternoon|evening))\b|привет|здравствуй|добр(ый|ое|ой)|\btere\b|hommikust|hallo|\bmoi\b|\bhei\b/i },
+];
+function basicAnswer(text) {
+  const p = S.profile;
+  const it = INTENTS.find((x) => x.re.test(text));
+  const id = it ? it.id : "";
+  switch (id) {
+    case "urgent": return { text: `If anyone is in danger, call 112 now. I've alerted the front desk${p.phone ? `; you can also call reception on ${p.phone}` : ""}.`, urgent: true };
+    case "wifi": return { text: `Wi-Fi network: ${p.wifiName}\nPassword: ${p.wifiPass}` };
+    case "breakfast": return { text: p.breakfast || "Please ask at the desk about breakfast." };
+    case "checkout": return { text: `Check-out is until ${p.checkOut}.` + (/late/i.test(p.policies) ? " " + sentenceWith(p.policies, /late/i) : "") + " To ask for a late check-out, fill in the form below.", form: "request", type: "checkout" };
+    case "checkin": return { text: `Check-in is from ${p.checkIn}.` + (/early/i.test(p.policies) ? " " + sentenceWith(p.policies, /early/i) : "") };
+    case "parking": return { text: p.parking || "Please ask at the desk about parking." };
+    case "pets": return { text: sentenceWith(p.policies, /pet|dog|cat/i) || "Please ask at the desk about pets." };
+    case "smoking": return { text: sentenceWith(p.policies, /smok/i) || "Please ask at the desk." };
+    case "amenities": return { text: p.amenities || "Please ask at the desk." };
+    case "address": return { text: [p.address && `We're at ${p.address}.`, p.nearby].filter(Boolean).join("\n") };
+    case "hours": return { text: `Reception: ${p.frontDesk}.` + (p.phone ? ` Phone ${p.phone}.` : "") };
+    case "book": return { text: "Our rooms, per night:\n" + p.roomTypes.map((t) => `${t.name}: ${money(t.price, p.currency)} (up to ${t.maxGuests})`).join("\n") + "\nChoose your dates below to see what's free.", form: "booking" };
+    case "thanks": return { text: "You're welcome. Enjoy your stay!" };
+    case "greet": return { text: "Hello! How can I help? You can ask about the hotel, book a room or request a service." };
+    default:
+      if (it && it.req) return { text: "I'll pass that to the staff. Please add your room number below.", form: "request", type: it.req };
+      return { text: "I don't have that in the hotel information. Send it to the front desk and a receptionist will help you.", form: "request", type: "question", detail: text };
+  }
+}
+function sentenceWith(text, re) { return (String(text).match(/[^.!?]+[.!?]?/g) || []).filter((s) => re.test(s)).map((s) => s.trim()).join(" "); }
+function basicReply(text) {
+  const a = basicAnswer(text);
+  bubble("bot", a.text);
+  CHAT.turns.push({ role: "assistant", content: a.text });
+  if (a.form) log().append(formCard(a.form, a.type, a.detail));
+  if (a.urgent) createRequest({ type: "urgent", detail: "Emergency message from the guest chat: " + text, source: "guest-form" })
+    .then((r) => { log().append(requestCard(r)); scrollLog(); })
+    .catch(() => { bubble("bot", "I couldn't reach the front desk from here. Please go to reception or call 112."); });
+  scrollLog();
+  speak(a.text);
+}
+function formCard(kind, type, detail) {
+  const card = h("div", { class: "chat-card info" });
+  card.append(h("div", { class: "cc-title", text: kind === "booking" ? "Book a room" : REQ_TYPES[type] || "Request" }));
+  const body = h("div");
+  card.append(body);
+  const onDone = (res) => { card.replaceWith(kind === "booking" ? bookingCard(res) : requestCard(res)); scrollLog(); };
+  body.append(kind === "booking" ? bookingForm({ source: "guest-form", onDone, compact: true }) : requestForm({ type, detail, source: "guest-form", onDone, compact: true }));
+  return card;
+}
+
+/* Dictation */
+function setupDictation(d) {
+  AI.dict = d;
+  const btn = $("#micBtn"), box = $("#msg");
+  btn.hidden = false;
+  let base = "";
+  d.onPartial(({ text }) => { box.value = base + text; });
+  d.onFinal(({ text }) => { base = base + text + " "; box.value = base; });
+  d.onState(({ state }) => {
+    const on = state !== "idle";
+    btn.classList.toggle("listening", on);
+    btn.setAttribute("aria-label", on ? "Stop listening" : "Speak your message");
+  });
+  btn.addEventListener("click", () => {
+    if (d.active()) { d.stop().catch(() => {}); return; }
+    base = box.value ? box.value.trimEnd() + " " : "";
+    d.start().catch((e) => { if (e && e.code === "not_granted") btn.hidden = true; });
+  });
+}
+
+/* Chat wiring */
+$("#composer").addEventListener("submit", (e) => {
+  e.preventDefault();
+  if (CHAT.busy) { CHAT.ctl && CHAT.ctl.abort(); return; }
+  const box = $("#msg"); const t = box.value; box.value = ""; autosize();
+  if (AI.dict && AI.dict.active()) AI.dict.stop().catch(() => {});
+  send(t);
+});
+$("#msg").addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); $("#composer").requestSubmit(); }
+});
+function autosize() { const b = $("#msg"); b.style.height = "auto"; b.style.height = Math.min(140, b.scrollHeight + 2) + "px"; }
+$("#msg").addEventListener("input", autosize);
+$("#newChatBtn").addEventListener("click", () => {
+  if (CHAT.ctl) CHAT.ctl.abort();
+  if (AI.tts) AI.tts.stop().catch(() => {});
+  CHAT.turns = []; log().replaceChildren(); welcomeName = S.profile.name; welcome(); $("#msg").value = "";
+});
+$("#ttsBtn").addEventListener("click", () => {
+  AI.ttsOn = !AI.ttsOn;
+  const b = $("#ttsBtn"); b.setAttribute("aria-pressed", String(AI.ttsOn)); b.textContent = "Read aloud: " + (AI.ttsOn ? "on" : "off");
+  if (!AI.ttsOn && AI.tts) AI.tts.stop().catch(() => {});
+});
+
+/* ---------- glance panel ---------- */
+function renderGlance() {
+  const p = S.profile;
+  const g = $("#glance"); g.replaceChildren();
+  g.append(h("dl", { class: "facts" },
+    h("dt", { text: "Check-in" }), h("dd", { class: "mono", text: `from ${p.checkIn}` }),
+    h("dt", { text: "Check-out" }), h("dd", { class: "mono", text: `until ${p.checkOut}` }),
+    h("dt", { text: "Wi-Fi" }), h("dd", null, h("span", { class: "mono", text: p.wifiName }), h("br"), h("span", { class: "mono muted", text: p.wifiPass })),
+    h("dt", { text: "Reception" }), h("dd", { text: [p.frontDesk, p.phone].filter(Boolean).join(" · ") }),
+    p.address ? [h("dt", { text: "Address" }), h("dd", { text: p.address })] : null));
+  g.append(h("div", null, h("div", { class: "h-label", style: "margin-bottom:8px", text: "Rooms per night" }),
+    h("ul", { class: "rates" }, p.roomTypes.map((t) => h("li", null,
+      h("span", null, h("span", { text: t.name }), h("span", { class: "muted", text: ` · up to ${t.maxGuests}` })),
+      h("span", { class: "mono", text: money(t.price, p.currency) }))))));
+  if (p.breakfast) g.append(h("div", null, h("div", { class: "h-label", style: "margin-bottom:6px", text: "Breakfast" }), h("div", { class: "note", text: p.breakfast })));
+}
+
+/* ---------- shared forms ---------- */
+function field(label, input, wide) {
+  const id = input.id || ("f" + Math.random().toString(36).slice(2, 8));
+  input.id = id;
+  return h("div", { class: "field" + (wide ? " wide" : "") }, h("label", { for: id, text: label }), input);
+}
+let formSeq = 0;
+function bookingForm({ source, onDone, compact }) {
+  const n = ++formSeq, t = today();
+  const ci = h("input", { type: "date", id: `bk${n}-in`, value: t, min: t, required: true });
+  const co = h("input", { type: "date", id: `bk${n}-out`, value: addDays(t, 1), min: addDays(t, 1), required: true });
+  const guests = h("input", { type: "number", id: `bk${n}-g`, value: "1", min: "1", max: "20", required: true });
+  const rt = h("select", { id: `bk${n}-rt` });
+  const room = h("select", { id: `bk${n}-room` });
+  const name = h("input", { id: `bk${n}-name`, required: true, placeholder: "Full name", autocomplete: "off" });
+  const contact = h("input", { id: `bk${n}-c`, placeholder: "Phone or email", autocomplete: "off" });
+  const notes = h("input", { id: `bk${n}-notes`, placeholder: "Arrival time, wishes…" });
+  const avail = h("div", { class: "avail" });
+  const msg = h("span", { class: "form-msg" });
+  const submit = h("button", { class: "btn primary", type: "submit", text: "Book room" });
+  function refresh() {
+    const a = ci.value, b = co.value, g = Number(guests.value) || 1;
+    if (validDay(a) && (!validDay(b) || b <= a)) co.value = addDays(a, 1);
+    co.min = validDay(a) ? addDays(a, 1) : addDays(t, 1);
+    const prev = rt.value;
+    rt.replaceChildren(...S.profile.roomTypes.map((x) => h("option", { value: x.id, text: `${x.name} · ${money(x.price, S.profile.currency)}` })));
+    if (prev && roomTypeById(prev)) rt.value = prev;
+    avail.replaceChildren();
+    let ok = false;
+    try {
+      const nights = checkStay(ci.value, co.value);
+      for (const x of S.profile.roomTypes) {
+        const free = freeRooms(x, ci.value, co.value).length;
+        const fits = x.maxGuests >= g;
+        avail.append(h("span", { class: "chip " + (!fits ? "" : free ? "ok" : "bad"), text: `${x.name}: ${fits ? (free ? free + " free" : "full") : "too small"}` }));
+      }
+      const sel = roomTypeById(rt.value);
+      const free = sel ? freeRooms(sel, ci.value, co.value) : [];
+      const prevRoom = room.value;
+      room.replaceChildren(h("option", { value: "", text: free.length ? `Any free room (${free[0]})` : "No room free" }), ...free.map((r) => h("option", { value: r, text: "Room " + r })));
+      if (free.includes(prevRoom)) room.value = prevRoom;
+      ok = !!free.length && sel.maxGuests >= g;
+      msg.className = "form-msg"; msg.textContent = sel ? `${nights} night${nights > 1 ? "s" : ""} · ${money(sel.price * nights, S.profile.currency)}` : "";
+    } catch (e) { msg.className = "form-msg err"; msg.textContent = e.message; room.replaceChildren(h("option", { value: "", text: "—" })); }
+    submit.disabled = !ok;
+  }
+  const form = h("form", { class: "form", onsubmit: async (e) => {
+    e.preventDefault();
+    if (name.value.trim().length < 2) { msg.className = "form-msg err"; msg.textContent = "Enter the guest's full name."; name.focus(); return; }
+    submit.disabled = true;
+    try {
+      const b = await createBooking({ roomTypeId: rt.value, checkIn: ci.value, checkOut: co.value, guests: guests.value, guest: name.value, contact: contact.value, notes: notes.value, room: room.value, source });
+      toast(`Booked ${b.ref} · room ${b.room}`);
+      onDone && onDone(b);
+      if (!compact) { name.value = ""; contact.value = ""; notes.value = ""; refresh(); msg.className = "form-msg ok"; msg.textContent = `Booked ${b.ref} · room ${b.room}`; }
+    } catch (err) {
+      msg.className = "form-msg err"; msg.textContent = err && err.message && !err.code ? err.message : dbErrorText(err);
+      submit.disabled = false;
+    }
+  } },
+    field("Arrival", ci), field("Departure", co), field("Guests", guests), field("Room type", rt),
+    compact ? null : field("Room", room),
+    avail,
+    field("Guest name", name), field("Phone or email", contact), field("Notes", notes, !compact),
+    h("div", { class: "form-actions" }, submit, msg));
+  [ci, co, guests, rt].forEach((x) => x.addEventListener("change", refresh));
+  form._refresh = refresh;
+  refresh();
+  return form;
+}
+function requestForm({ type, detail, source, onDone, compact }) {
+  const n = ++formSeq;
+  const kind = h("select", { id: `rq${n}-t` }, Object.entries(REQ_TYPES).map(([k, v]) => h("option", { value: k, text: v })));
+  kind.value = REQ_TYPES[type] ? type : "housekeeping";
+  const room = h("select", { id: `rq${n}-room` }, h("option", { value: "", text: "No room / not a guest yet" }), allRooms().map((r) => h("option", { value: r, text: "Room " + r })));
+  const guest = h("input", { id: `rq${n}-g`, placeholder: "Name (optional)" });
+  const time = h("input", { id: `rq${n}-time`, placeholder: "e.g. 07:00 tomorrow" });
+  const det = h("textarea", { id: `rq${n}-d`, rows: "2", placeholder: "What's needed?" });
+  det.value = detail || "";
+  const msg = h("span", { class: "form-msg" });
+  const submit = h("button", { class: "btn primary", type: "submit", text: compact ? "Send to front desk" : "Add request" });
+  const needsRoom = () => !["question", "booking", "urgent", "other"].includes(kind.value);
+  const form = h("form", { class: "form", onsubmit: async (e) => {
+    e.preventDefault();
+    if (needsRoom() && !room.value) { msg.className = "form-msg err"; msg.textContent = "Choose the room number."; room.focus(); return; }
+    if (!det.value.trim() && !["wakeup", "taxi"].includes(kind.value)) { msg.className = "form-msg err"; msg.textContent = "Say briefly what's needed."; det.focus(); return; }
+    submit.disabled = true;
+    try {
+      const r = await createRequest({ type: kind.value, room: room.value, guest: guest.value, detail: det.value || REQ_TYPES[kind.value], time: time.value, source });
+      toast(`Request ${r.ref} sent`);
+      onDone && onDone(r);
+      if (!compact) { det.value = ""; time.value = ""; guest.value = ""; msg.className = "form-msg ok"; msg.textContent = `Added ${r.ref}`; }
+    } catch (err) { msg.className = "form-msg err"; msg.textContent = err && err.message && !err.code ? err.message : dbErrorText(err); }
+    submit.disabled = false;
+  } },
+    compact ? null : field("Type", kind), field("Room", room), field("Name", guest),
+    field("Time", time), field("Details", det, true),
+    h("div", { class: "form-actions" }, submit, msg));
+  return form;
+}
+
+/* ---------- front desk ---------- */
+const DESK = { reqFilter: "open", showPast: false, room: "", confirmClear: false };
+function tag(n, sm) { return h("span", { class: "rtag" + (sm ? " sm" : "") + (n ? "" : " none"), text: n || "—" }); }
+function sourceChip(src) {
+  if (src === "assistant") return h("span", { class: "chip brass", text: "via assistant" });
+  if (src === "guest-form") return h("span", { class: "chip", text: "guest form" });
+  return null;
+}
+function exampleChip(x) { return x && x.example ? h("span", { class: "chip", text: "Example" }) : null; }
+function renderSummary() {
+  const t = today();
+  const arrivals = S.bookings.filter((b) => b.status === "booked" && b.checkIn <= t && b.checkOut > t);
+  const inHouse = S.bookings.filter((b) => b.status === "in");
+  const departures = inHouse.filter((b) => b.checkOut <= t);
+  const open = S.requests.filter((r) => r.status !== "done");
+  const urgent = open.filter((r) => r.type === "urgent").length;
+  const rooms = allRooms();
+  const occupied = new Set(inHouse.map((b) => b.room));
+  const ready = rooms.filter((n) => hk(n) === "clean" && !occupied.has(n)).length;
+  const tiles = [
+    ["Arrivals to check in", arrivals.length],
+    ["Guests in house", inHouse.length],
+    ["Departures to check out", departures.length],
+    ["Open requests", open.length, urgent ? `${urgent} urgent` : "", !!urgent],
+    ["Rooms ready", ready, `/ ${rooms.length}`],
+  ];
+  $("#summary").replaceChildren(...tiles.map(([k, v, extra, alert]) =>
+    h("div", { class: "tile" + (alert ? " alert" : "") }, h("span", { class: "k", text: k }), h("span", { class: "v" }, String(v), extra ? h("small", { text: " " + extra }) : null))));
+}
+function renderRequests() {
+  const list = $("#reqList"); list.replaceChildren();
+  document.querySelectorAll("#reqFilters .chip-btn").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.f === DESK.reqFilter)));
+  if (!S.loaded.requests) { list.append(h("div", { class: "empty", text: S.stalled ? "Still connecting to the hotel's data…" : "Loading requests…" })); return; }
+  const rank = (r) => (r.type === "urgent" && r.status !== "done" ? 0 : r.status === "new" ? 1 : r.status === "doing" ? 2 : 3);
+  let items = S.requests.filter((r) => DESK.reqFilter === "all" || (DESK.reqFilter === "done" ? r.status === "done" : r.status !== "done"));
+  items.sort((a, b) => rank(a) - rank(b) || (a.status === "done" ? (b.updatedAt || 0) - (a.updatedAt || 0) : (a.createdAt || 0) - (b.createdAt || 0)));
+  if (!items.length) {
+    list.append(h("div", { class: "empty", text: DESK.reqFilter === "open" ? "No open requests. Requests from the guest chat appear here." : "Nothing here yet." }));
+    return;
+  }
+  for (const r of items.slice(0, 60)) {
+    const statusChip = r.status === "new" ? h("span", { class: "chip warn", text: "New" }) : r.status === "doing" ? h("span", { class: "chip info", text: "In progress" }) : h("span", { class: "chip ok", text: "Done" });
+    const acts = [];
+    if (r.status === "new") acts.push(h("button", { class: "btn sm", type: "button", text: "Start", onclick: () => attempt(() => W.patchRequest(r.id, { status: "doing", updatedAt: Date.now() })) }));
+    if (r.status !== "done") acts.push(h("button", { class: "btn sm primary", type: "button", text: "Done", onclick: () => attempt(() => W.patchRequest(r.id, { status: "done", updatedAt: Date.now() })) }));
+    else acts.push(h("button", { class: "btn sm ghost", type: "button", text: "Reopen", onclick: () => attempt(() => W.patchRequest(r.id, { status: "new", updatedAt: Date.now() })) }));
+    list.append(h("div", { class: "item" + (r.status === "done" ? " done" : "") + (r.type === "urgent" && r.status !== "done" ? " urgent" : "") },
+      tag(r.room, true),
+      h("div", { class: "main" },
+        h("div", { class: "line1" }, h("span", { class: "title", text: REQ_TYPES[r.type] || "Request" }), statusChip, sourceChip(r.source), exampleChip(r)),
+        r.detail ? h("div", { class: "detail", text: r.detail }) : null,
+        h("div", { class: "meta" },
+          h("span", { class: "mono", text: r.ref || "" }),
+          r.time ? h("span", { text: "for " + r.time }) : null,
+          r.guest ? h("span", { text: r.guest }) : null,
+          h("span", { text: ago(r.createdAt) }))),
+      h("div", { class: "acts" }, acts)));
+  }
+}
+function renderToday() {
+  const list = $("#todayList"); list.replaceChildren();
+  const t = today();
+  $("#todayLabel").textContent = fmtDay(t);
+  if (!S.loaded.bookings) { list.append(h("div", { class: "empty", text: S.stalled ? "Still connecting to the hotel's data…" : "Loading bookings…" })); return; }
+  const arrivals = S.bookings.filter((b) => b.status === "booked" && b.checkIn <= t && b.checkOut > t).sort((a, b) => natural(a.room, b.room));
+  const departures = S.bookings.filter((b) => b.status === "in" && b.checkOut <= t).sort((a, b) => natural(a.room, b.room));
+  const doneOut = S.bookings.filter((b) => b.status === "out" && b.checkOut === t).length;
+  const doneIn = S.bookings.filter((b) => b.status === "in" && b.checkIn === t).length;
+
+  list.append(h("div", { class: "subhead", text: `Arrivals · ${arrivals.length} to go${doneIn ? `, ${doneIn} checked in` : ""}` }));
+  if (!arrivals.length) list.append(h("div", { class: "empty", text: "No more arrivals today." }));
+  for (const b of arrivals) {
+    const state = hk(b.room);
+    const roomChip = state === "clean" ? h("span", { class: "chip ok", text: "Room ready" }) : state === "ooo" ? h("span", { class: "chip bad", text: "Room out of order" }) : h("span", { class: "chip warn", text: state === "dirty" ? "Room needs cleaning" : "Room to inspect" });
+    list.append(h("div", { class: "item" },
+      tag(b.room, true),
+      h("div", { class: "main" },
+        h("div", { class: "line1" }, h("span", { class: "title", text: b.guest }), b.checkIn < t ? h("span", { class: "chip bad", text: "Due " + fmtShort(b.checkIn) }) : null, roomChip, sourceChip(b.source), exampleChip(b)),
+        h("div", { class: "meta" }, h("span", { class: "mono", text: b.ref }), h("span", { text: `${b.roomTypeName} · ${b.guests} guest${b.guests > 1 ? "s" : ""} · ${b.nights} night${b.nights > 1 ? "s" : ""}` }), h("span", { class: "mono", text: "until " + fmtShort(b.checkOut) })),
+        b.notes ? h("div", { class: "detail muted", text: b.notes }) : null,
+        b.contact ? h("div", { class: "meta", text: b.contact }) : null),
+      h("div", { class: "acts" }, h("button", { class: "btn sm primary", type: "button", text: "Check in", onclick: () => attempt(() => W.patchBooking(b.id, { status: "in", checkedInAt: Date.now() }), `${b.guest} checked in to ${b.room}`) }))));
+  }
+  list.append(h("div", { class: "subhead", text: `Departures · ${departures.length} to go${doneOut ? `, ${doneOut} checked out` : ""}` }));
+  if (!departures.length) list.append(h("div", { class: "empty", text: "No more departures today." }));
+  for (const b of departures) {
+    list.append(h("div", { class: "item" },
+      tag(b.room, true),
+      h("div", { class: "main" },
+        h("div", { class: "line1" }, h("span", { class: "title", text: b.guest }), b.checkOut < t ? h("span", { class: "chip bad", text: "Was due " + fmtShort(b.checkOut) }) : null, exampleChip(b)),
+        h("div", { class: "meta" }, h("span", { class: "mono", text: b.ref }), h("span", { text: `${b.roomTypeName} · ${money(b.total, b.currency)}` }))),
+      h("div", { class: "acts" }, h("button", { class: "btn sm primary", type: "button", text: "Check out", onclick: async () => {
+        const ok = await attempt(() => W.patchBooking(b.id, { status: "out", checkedOutAt: Date.now() }).then(() => true));
+        if (ok) attempt(() => W.setRoom(b.room, { status: "dirty", updatedAt: Date.now() }), `${b.guest} checked out. Room ${b.room} marked for cleaning.`);
+      } }))));
+  }
+}
+const HK_LABEL = { clean: "Clean", dirty: "Needs cleaning", inspect: "Inspect", ooo: "Out of order" };
+function renderRooms() {
+  const board = $("#roomBoard"); board.replaceChildren();
+  const t = today();
+  const rooms = allRooms();
+  if (!rooms.length) { board.append(h("div", { class: "empty", text: "No rooms yet. Add room numbers under Hotel info." })); $("#roomPanel").replaceChildren(); return; }
+  for (const n of rooms) {
+    const st = hk(n);
+    const occ = S.bookings.find((b) => b.room === n && b.status === "in");
+    const arr = S.bookings.find((b) => b.room === n && b.status === "booked" && b.checkIn <= t && b.checkOut > t);
+    const rt = roomTypeOfRoom(n);
+    const chips = [];
+    if (occ) chips.push(h("span", { class: "chip info", text: "Occupied" }));
+    if (st === "ooo") chips.push(h("span", { class: "chip bad", text: "Out of order" }));
+    else if (st === "dirty") chips.push(h("span", { class: "chip warn", text: "Needs cleaning" }));
+    else if (st === "inspect") chips.push(h("span", { class: "chip brass", text: "Inspect" }));
+    else if (!occ) chips.push(h("span", { class: "chip ok", text: "Ready" }));
+    if (arr) chips.push(h("span", { class: "chip", text: "Arriving" }));
+    board.append(h("button", { class: "room" + (occ ? " s-occ" : "") + (st === "ooo" ? " s-ooo" : ""), type: "button", "aria-pressed": String(DESK.room === n), onclick: () => { DESK.room = DESK.room === n ? "" : n; renderRooms(); } },
+      tag(n), h("span", { class: "rt", text: rt ? rt.name : "" }), h("span", { class: "st" }, chips)));
+  }
+  const panel = $("#roomPanel"); panel.replaceChildren();
+  const n = DESK.room;
+  if (n && rooms.includes(n)) {
+    const occ = S.bookings.find((b) => b.room === n && b.status === "in");
+    const next = S.bookings.filter((b) => b.room === n && b.status === "booked" && b.checkOut > t).sort((a, b) => (a.checkIn < b.checkIn ? -1 : 1))[0];
+    const st = hk(n);
+    panel.append(h("div", { class: "room-panel" },
+      tag(n),
+      h("div", { class: "who" },
+        h("div", { class: "title", text: occ ? `${occ.guest} · until ${fmtShort(occ.checkOut)}` : "Vacant" }),
+        h("div", { class: "note", text: next ? `Next: ${next.guest}, ${fmtShort(next.checkIn)} → ${fmtShort(next.checkOut)}` : "No upcoming bookings" }),
+        S.rooms[n] && S.rooms[n].note ? h("div", { class: "note", text: S.rooms[n].note }) : null),
+      h("div", { class: "filters" }, Object.entries(HK_LABEL).map(([k, v]) =>
+        h("button", { class: "chip-btn", type: "button", "aria-pressed": String(st === k), text: v, onclick: () => attempt(() => W.setRoom(n, { status: k, updatedAt: Date.now() }), `Room ${n}: ${v.toLowerCase()}`) })))));
+  }
+}
+function renderBookings() {
+  const table = $("#bookTable"); table.replaceChildren();
+  $("#showPastBtn").setAttribute("aria-pressed", String(DESK.showPast));
+  const rows = S.bookings.filter((b) => DESK.showPast || LIVE(b)).sort((a, b) => (a.checkIn < b.checkIn ? -1 : a.checkIn > b.checkIn ? 1 : natural(a.room, b.room)));
+  table.append(h("thead", null, h("tr", null, ["Folio", "Guest", "Room", "Arrival", "Departure", "Nights", "Total", "Status", ""].map((x, i) => h("th", { class: [5, 6].includes(i) ? "num" : "", text: x })))));
+  const tb = h("tbody");
+  if (!rows.length) tb.append(h("tr", null, h("td", { colspan: "9", class: "muted", text: S.loaded.bookings ? "No bookings yet. Use New booking, or let the guest chat take one." : "Loading bookings…" })));
+  const ST = { booked: ["Booked", ""], in: ["In house", "info"], out: ["Checked out", "ok"], cancelled: ["Cancelled", "bad"] };
+  for (const b of rows) {
+    const [label, cls] = ST[b.status] || [b.status, ""];
+    const act = b.status === "booked" ? h("button", { class: "btn sm danger", type: "button", text: "Cancel", onclick: (e) => {
+      const btn = e.currentTarget;
+      if (btn.dataset.armed) { attempt(() => W.patchBooking(b.id, { status: "cancelled", cancelledAt: Date.now() }), `${b.ref} cancelled`); return; }
+      btn.dataset.armed = "1"; btn.textContent = "Confirm cancel";
+      setTimeout(() => { if (btn.isConnected) { delete btn.dataset.armed; btn.textContent = "Cancel"; } }, 4000);
+    } }) : null;
+    tb.append(h("tr", null,
+      h("td", { class: "mono", text: b.ref }),
+      h("td", { class: "wrap-cell" }, h("div", { text: b.guest }), h("div", { class: "note" }, [b.contact, b.notes].filter(Boolean).join(" · ")), h("div", { class: "line1", style: "display:flex;gap:4px;margin-top:2px" }, sourceChip(b.source), exampleChip(b))),
+      h("td", null, tag(b.room, true), " ", h("span", { class: "note", text: b.roomTypeName })),
+      h("td", { class: "mono", text: fmtShort(b.checkIn) }),
+      h("td", { class: "mono", text: fmtShort(b.checkOut) }),
+      h("td", { class: "num", text: b.nights }),
+      h("td", { class: "num", text: money(b.total, b.currency) }),
+      h("td", null, h("span", { class: "chip " + cls, text: label })),
+      h("td", null, act)));
+  }
+  table.append(tb);
+}
+function renderExampleTools() {
+  const box = $("#exampleTools"); box.replaceChildren();
+  const n = S.bookings.filter((x) => x.example).length + S.requests.filter((x) => x.example).length;
+  if (!n) return;
+  const btn = h("button", { class: "btn ghost sm", type: "button", text: DESK.confirmClear ? `Delete ${n} example records?` : "Remove example data", onclick: async () => {
+    if (!DESK.confirmClear) { DESK.confirmClear = true; renderExampleTools(); setTimeout(() => { DESK.confirmClear = false; renderExampleTools(); }, 5000); return; }
+    DESK.confirmClear = false; btn.disabled = true;
+    await attempt(() => W.removeExamples(), "Example data removed");
+    renderExampleTools();
+  } });
+  if (DESK.confirmClear) btn.classList.add("danger");
+  box.append(btn);
+}
+function renderDesk() { renderSummary(); renderRequests(); renderToday(); renderRooms(); renderBookings(); renderExampleTools(); refreshOpenForms(); }
+function refreshOpenForms() { document.querySelectorAll("form").forEach((f) => { if (typeof f._refresh === "function" && !f.contains(document.activeElement)) f._refresh(); }); }
+
+document.querySelectorAll("#reqFilters .chip-btn").forEach((b) => b.addEventListener("click", () => { DESK.reqFilter = b.dataset.f; renderRequests(); }));
+$("#showPastBtn").addEventListener("click", () => { DESK.showPast = !DESK.showPast; renderBookings(); });
+function openDeskForm(kind) {
+  const card = $("#deskFormCard"), body = $("#deskFormBody");
+  if (!card.hidden && card.dataset.kind === kind) { card.hidden = true; return; }
+  card.dataset.kind = kind; card.hidden = false;
+  $("#deskFormTitle").textContent = kind === "booking" ? "New booking" : "New request";
+  body.replaceChildren(kind === "booking" ? bookingForm({ source: "desk" }) : requestForm({ type: "housekeeping", source: "desk" }));
+  const first = body.querySelector("input,select"); if (first) first.focus();
+}
+$("#newBookingBtn").addEventListener("click", () => openDeskForm("booking"));
+$("#newRequestBtn").addEventListener("click", () => openDeskForm("request"));
+$("#deskFormClose").addEventListener("click", () => { $("#deskFormCard").hidden = true; });
+
+/* ---------- hotel info form ---------- */
+let hotelDirty = false;
+function rtRow(t) {
+  const n = ++formSeq;
+  const name = h("input", { id: `rt${n}-name`, value: t.name || "", placeholder: "Double" });
+  const beds = h("input", { id: `rt${n}-beds`, value: t.beds || "", placeholder: "Queen bed, shower" });
+  const max = h("input", { id: `rt${n}-max`, type: "number", min: "1", max: "20", value: String(t.maxGuests || 2) });
+  const price = h("input", { id: `rt${n}-price`, type: "number", min: "0", step: "0.01", value: String(t.price ?? "") });
+  const rooms = h("input", { id: `rt${n}-rooms`, value: t.rooms || "", placeholder: "101, 102" });
+  const del = h("button", { class: "btn sm ghost danger", type: "button", text: "Remove", onclick: () => { row.remove(); markHotelDirty(); } });
+  const row = h("div", { class: "rt-row", "data-id": t.id || "" },
+    field("Room type", name), field("Beds and bathroom", beds), field("Max guests", max), field("Price", price), field("Room numbers", rooms), del);
+  return row;
+}
+function fillHotelForm(force) {
+  if (hotelDirty && !force) return;
+  const p = S.profile, f = $("#hotelForm");
+  for (const k of PROFILE_TEXT_FIELDS) { const el = f.elements[k]; if (el) el.value = p[k] || ""; }
+  $("#rtRows").replaceChildren(...p.roomTypes.map(rtRow));
+  hotelDirty = false;
+  const editable = S.canEditProfile;
+  f.querySelectorAll("input,textarea,select,button").forEach((el) => { el.disabled = !editable; });
+  const note = $("#hotelNotice");
+  note.replaceChildren();
+  if (!editable) { note.hidden = false; note.append(h("span", null, h("b", { text: "Read only. " }), "Only the page's owner and editors can change the hotel information.")); }
+  else if (!S.profileSaved && S.loaded.profile) { note.hidden = false; note.append(h("span", null, h("b", { text: "This is an example hotel. " }), "Replace it with your own details and save. The assistant answers guests only from what is written here.")); }
+  else { note.hidden = false; note.append(h("span", null, h("b", { text: "The assistant answers guests only from this page. " }), "Keep times, prices and policies up to date.")); }
+  $("#hotelMsg").textContent = "";
+}
+function markHotelDirty() { hotelDirty = true; const m = $("#hotelMsg"); m.className = "form-msg"; m.textContent = "Unsaved changes"; }
+$("#hotelForm").addEventListener("input", markHotelDirty);
+$("#addRtBtn").addEventListener("click", () => { $("#rtRows").append(rtRow({ maxGuests: 2 })); markHotelDirty(); });
+$("#revertHotelBtn").addEventListener("click", () => fillHotelForm(true));
+$("#hotelForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const f = e.currentTarget, msg = $("#hotelMsg");
+  const p = {};
+  for (const k of PROFILE_TEXT_FIELDS) p[k] = (f.elements[k] && f.elements[k].value || "").trim();
+  p.currency = (p.currency || "EUR").toUpperCase();
+  const used = new Set();
+  p.roomTypes = [...$("#rtRows").children].map((row) => {
+    const v = (sel) => row.querySelector(sel).value.trim();
+    const name = v("[id$=-name]");
+    let id = row.dataset.id || slug(name);
+    while (used.has(id)) id += "-2";
+    used.add(id);
+    return { id, name, beds: v("[id$=-beds]"), maxGuests: Number(v("[id$=-max]")) || 1, price: Number(v("[id$=-price]")) || 0, rooms: splitRooms(v("[id$=-rooms]")).join(", ") };
+  });
+  const err = !p.name ? "Enter the hotel name."
+    : !p.roomTypes.length ? "Add at least one room type."
+    : p.roomTypes.some((t) => !t.name) ? "Every room type needs a name."
+    : p.roomTypes.some((t) => !t.rooms) ? "Every room type needs at least one room number."
+    : (() => { const all = p.roomTypes.flatMap((t) => splitRooms(t.rooms)); return all.length !== new Set(all).size ? "A room number is listed under two room types." : ""; })();
+  if (err) { msg.className = "form-msg err"; msg.textContent = err; return; }
+  $("#saveHotelBtn").disabled = true;
+  try {
+    await W.saveProfile(normalizeProfile(p));
+    hotelDirty = false; msg.className = "form-msg ok"; msg.textContent = "Saved. The assistant now uses this information.";
+    if (S.mode === "local") fillHotelForm(true);
+  } catch (ex) { msg.className = "form-msg err"; msg.textContent = dbErrorText(ex); }
+  $("#saveHotelBtn").disabled = !S.canEditProfile;
+});
+
+/* ---------- render all ---------- */
+let welcomeName = "";
+function ensureWelcome() {
+  if (CHAT.turns.length || CHAT.busy) return;
+  if (welcomeName === S.profile.name && log().children.length) return;
+  welcomeName = S.profile.name; log().replaceChildren(); welcome();
+}
+function renderAll() {
+  renderHeader(); renderGlance(); renderDesk();
+  if (S.loaded.profile) ensureWelcome();
+}
+setTimeout(ensureWelcome, 2500);
+route();
+renderQuick();
+fillHotelForm(true);
+boot();
+</script>
