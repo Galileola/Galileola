@@ -42,37 +42,36 @@
     <% } else { %>
       <div class="placeholder big tone-<%= deal.id % 4 %>" aria-hidden="true"><span><%= cat.emoji %></span></div>
     <% } %>
-    <a class="cat-pill" href="/?category=<%= cat.slug %>#deals"><span aria-hidden="true"><%= cat.emoji %></span> <%= cat.name %></a>
+    <a class="cat-pill" href="/?category=<%= cat.slug %>#deals"><%= cat.name %></a>
     <h1><%= deal.product_name %></h1>
     <% if (deal.headline) { %><p class="deal-headline"><%= deal.headline %></p><% } %>
     <p class="price-tag big"><%= formatEuro(deal.price_cents) %> <small><%= t('price.inclVat') %></small></p>
-    <p class="muted small"><%= t('deal.vatNote') %></p>
+    <p class="muted small vat-note"><%= t('deal.vatNote') %></p>
     <% if (deal.description) { %><div class="stack description"><% for (const para of deal.description.split(/(?:\r?\n\s*){2,}/)) { %><p><%= para %></p><% } %></div><% } %>
   </section>
 
   <section class="card join-card">
     <p class="counter"><%- th('deal.counterHtml', { min: state.minBuyers }, { count: '<span class="counter-num" data-count>' + Number(state.count) + '</span>' }) %></p>
     <div class="goal-track" aria-hidden="true">
-      <div class="progress big"><span data-progress data-width="<%= state.percent %>"><i class="rocket">🚀</i></span></div>
-      <i class="finish">🏁</i>
+      <div class="progress big"><span data-progress data-width="<%= state.percent %>"></span></div>
     </div>
     <p data-status-line class="status-line">
       <% if (state.status === 'expired') { %>
-        <%= state.cancelled ? t('deal.cancelled') : t('deal.expired') %>
+        <%= plain(state.cancelled ? t('deal.cancelled') : t('deal.expired')) %>
       <% } else if (state.minimumReached) { %>
-        <%= t('deal.reached') %>
+        <%= plain(t('deal.reached')) %>
       <% } else { %>
         <%- th('deal.remainingHtml', { count: state.remaining }, { remaining: '<span data-remaining>' + Number(state.remaining) + '</span>' }) %>
       <% } %>
     </p>
-    <% if (mood) { %><p class="mood" data-mood><%= mood %></p><% } %>
+    <% if (mood) { %><p class="mood" data-mood><%= plain(mood) %></p><% } %>
     <p class="deadline"><%= t('deal.deadline', { date: formatDate(deal.deadline) }) %></p>
     <div class="countdown" data-countdown data-seconds="<%= state.secondsLeft %>" role="timer" aria-live="off"></div>
 
     <% if (state.joinable) { %>
       <%- include('partials/join-form') %>
     <% } else if (state.status !== 'expired') { %>
-      <div class="notice"><%= t('deal.closed') %></div>
+      <div class="notice"><%= plain(t('deal.closed')) %></div>
     <% } %>
   </section>
 </div>
@@ -81,7 +80,7 @@
 
 <% if (state.joinable) { %>
   <section class="card share-card">
-    <h2><%= t('deal.shareTitle') %></h2>
+    <h2><%= plain(t('deal.shareTitle')) %></h2>
     <p class="muted"><%= t('deal.shareText') %></p>
     <%- include('partials/share', { shareUrl: baseUrl + '/deals/' + deal.slug + '?lang=' + lang, shareText: t('deal.shareMessage', { name: deal.headline || deal.product_name }) }) %>
   </section>

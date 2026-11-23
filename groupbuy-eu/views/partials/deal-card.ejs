@@ -4,16 +4,15 @@
     <% if (d.cover) { %><img src="<%= thumbUrl(d.cover) %>"<% if (d.cover.thumb) { %> srcset="<%= thumbUrl(d.cover) %> 480w, <%= photoUrl(d.cover.filename) %> <%= d.cover.width || 1600 %>w" sizes="(max-width: 640px) 92vw, 360px"<% } %> alt="" loading="lazy" decoding="async">
     <% } else if (d.image_url) { %><img src="<%= d.image_url %>" alt="" loading="lazy">
     <% } else { %><div class="placeholder tone-<%= d.id % 4 %>"><span><%= cat.emoji %></span></div><% } %>
-    <span class="chip <%= d.badge === 'on' ? 'chip-on' : '' %>"><%= d.badge === 'on' ? t('card.on') : t('card.moreNeeded', { count: d.remaining }) %></span>
-    <span class="cat-bubble" title="<%= cat.name %>"><span aria-hidden="true"><%= cat.emoji %></span><span class="visually-hidden"><%= cat.name %></span></span>
-    <% if (d.badge && d.badge !== 'on') { %><span class="ribbon ribbon-<%= d.badge %>"><%= t('card.' + d.badge) %></span><% } %>
+    <span class="chip <%= d.badge === 'on' ? 'chip-on' : '' %>"><%= plain(d.badge === 'on' ? t('card.on') : t('card.moreNeeded', { count: d.remaining })) %></span>
+    <% if (d.badge && d.badge !== 'on') { %><span class="ribbon ribbon-<%= d.badge %>"><%= plain(t('card.' + d.badge)) %></span><% } %>
   </div>
   <div class="deal-card-body">
     <p class="card-cat"><%= cat.name %></p>
     <h3><%= d.product_name %></h3>
     <% if (d.headline) { %><p class="card-headline"><%= d.headline %></p><% } %>
     <div class="progress" role="img" aria-label="<%= t('card.progressLabel', { count: d.count, min: d.min_buyers }) %>"><span style="width: <%= d.percent %>%"></span></div>
-    <p class="meta"><%- th('card.metaHtml', { count: d.count, min: d.min_buyers, date: formatDate(d.deadline) }) %></p>
+    <p class="meta"><%- plain(th('card.metaHtml', { count: d.count, min: d.min_buyers, date: formatDate(d.deadline) })) %></p>
     <p class="price-tag"><%= formatEuro(d.price_cents) %> <small><%= t('price.inclVat') %></small></p>
   </div>
 </a>

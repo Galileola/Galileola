@@ -265,3 +265,10 @@ export function forLanguage(lang) {
     formatDate: (d) => (d ? dateFormatter(code).format(new Date(d)) : ''),
   };
 }
+
+// Removes emoji (with their skin-tone and joiner parts) and the spaces they leave behind:
+// "🎉 Ühisostud" → "Ühisostud". Leaves letters, digits and punctuation alone.
+const EMOJI = /(?:(?![\u00A9\u00AE\u2122])\p{Extended_Pictographic}|\p{Regional_Indicator})(?:\u{FE0F}|\u{20E3}|[\u{1F3FB}-\u{1F3FF}]|\u{200D}(?:\p{Extended_Pictographic}|\u{2640}|\u{2642}))*\u{FE0F}?/gu;
+export function withoutEmoji(text) {
+  return String(text ?? '').replace(EMOJI, '').replace(/[ \t]{2,}/g, ' ').replace(/^\s+|\s+$/g, '').replace(/\s+([.,!?:;])/g, '$1');
+}

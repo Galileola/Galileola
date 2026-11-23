@@ -95,3 +95,14 @@ test('emails are written in the buyer\'s language and link to pages in it', () =
   const english = render('joined', { deal, p: { ...p, lang: undefined }, baseUrl: 'https://shop.test', business, now: new Date() });
   assert.match(english.body, /^Hi Anna,/);
 });
+
+test('withoutEmoji: drops decorative emoji, keeps text, symbols like © and HTML', async () => {
+  const { withoutEmoji } = await import('../src/i18n/index.js');
+  assert.equal(withoutEmoji('🎉 Ühisostud'), 'Ühisostud');
+  assert.equal(withoutEmoji('Olen kambas 🙌'), 'Olen kambas');
+  assert.equal(withoutEmoji('Liitu esimesena! 🥇'), 'Liitu esimesena!');
+  assert.equal(withoutEmoji('<strong>2</strong> peaaegu täis 🔥'), '<strong>2</strong> peaaegu täis');
+  assert.equal(withoutEmoji('👨‍👩‍👧 Семья ✅ готово'), 'Семья готово');
+  assert.equal(withoutEmoji('© 2026 Shop™'), '© 2026 Shop™');
+  assert.equal(withoutEmoji(undefined), '');
+});

@@ -132,7 +132,7 @@
       if (remaining) remaining.textContent = s.remaining;
       if (s.minimumReached && !reached) {
         reached = true;
-        $('[data-status-line]').textContent = T.reached || '🎉 Minimum reached. The deal is on!';
+        $('[data-status-line]').textContent = T.reached || 'Minimum reached. The deal is on!';
         const mood = $('[data-mood]');
         if (mood) mood.hidden = true;
         if (window.gbFun) window.gbFun.confetti();

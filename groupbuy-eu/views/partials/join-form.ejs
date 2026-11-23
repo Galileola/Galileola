@@ -1,8 +1,8 @@
 <form method="post" action="/deals/<%= deal.slug %>/join" class="stack" novalidate>
   <input type="hidden" name="lang" value="<%= lang %>">
-  <h2><%= state.minimumReached ? t('join.titleNow') : t('join.title') %></h2>
+  <h2><%= plain(state.minimumReached ? t('join.titleNow') : t('join.title')) %></h2>
   <% if (state.minimumReached) { %>
-    <div class="notice ok"><%= t('join.noticeReached') %></div>
+    <div class="notice ok"><%= plain(t('join.noticeReached')) %></div>
   <% } else { %>
     <div class="notice"><%- th('join.noticeHtml', { price: formatEuro(deal.price_cents), min: deal.min_buyers, date: formatDate(deal.deadline) }) %></div>
   <% } %>
@@ -51,6 +51,6 @@
     <span><%- th('join.acceptHtml') %></span>
   </label>
   <% if (errors.accept_terms) { %><p class="error-text"><%= errors.accept_terms %></p><% } %>
-  <button type="submit" class="big join-button"><%= t('join.submit') %></button>
+  <button type="submit" class="big join-button"><%= plain(t('join.submit')) %></button>
   <p class="muted small"><%= state.minimumReached ? t('join.nextReached') : t('join.next') %></p>
 </form>

@@ -13,6 +13,7 @@ import {
   section,
   stripeLocale,
   translate,
+  withoutEmoji,
   translateHtml,
 } from './index.js';
 import { allCategories, categoryFor, categoryName } from '../categories.js';
@@ -29,6 +30,8 @@ export function applyLanguage(req, res, lang, ctx = {}) {
     lang,
     t,
     th: (key, vars, raw) => translateHtml(lang, key, vars, raw),
+    // Text without decorative emoji, for the shop's calmer look (src/i18n/index.js).
+    plain: withoutEmoji,
     formatEuro: (cents) => euroFormatter(lang).format((cents ?? 0) / 100),
     formatDate: (d) => (d ? dateFormatter(lang).format(new Date(d)) : ''),
     // Only the countries the shop delivers to (Admin → Settings → Delivery countries).
@@ -42,7 +45,8 @@ export function applyLanguage(req, res, lang, ctx = {}) {
     currentLanguage: LANGUAGES.find((l) => l.code === lang),
     stripeLocale: stripeLocale(lang),
     ogLocale: ogLocale(lang),
-    clientStrings: section(lang, 'js'),
+    // Texts the page scripts show (without decorative emoji, like the pages themselves).
+    clientStrings: Object.fromEntries(Object.entries(section(lang, 'js')).map(([k, v]) => [k, typeof v === 'string' ? withoutEmoji(v) : v])),
     localizeDeal: (deal) => (ctx.translator ? ctx.translator.deal(deal, lang) : deal),
     // Link to the same page in another language. After a form post the page has no address of
     // its own, so routes set res.locals.canonicalPath (e.g. the deal page).

@@ -1,30 +1,28 @@
 <%- include('partials/header') %>
-<section class="hero">
+<% const featured = !q && !category && deals.length ? (deals.find((d) => d.badge === 'hot') || deals[0]) : null; %>
+<section class="hero<%= featured ? ' has-feature' : '' %>">
   <div class="hero-text">
-    <p class="eyebrow"><%= t('home.eyebrow') %></p>
+    <p class="eyebrow"><%= plain(t('home.eyebrow')) %></p>
     <h1><%= t('home.heroLine1') %><br><span class="hl"><%= t('home.heroLine2') %></span></h1>
     <p class="lead"><%= t('home.lead') %></p>
     <p class="hero-actions">
-      <a class="button big" href="#deals"><%= t('home.findDeal') %></a>
-      <a class="button big secondary" href="#how"><%= t('home.howItWorks') %></a>
+      <a class="button big" href="#deals"><%= plain(t('home.findDeal')) %></a>
+      <a class="button big secondary" href="#how"><%= plain(t('home.howItWorks')) %></a>
     </p>
     <ul class="hero-stats" aria-label="<%= t('home.statsLabel') %>">
-      <li><%- th('home.statOpenHtml', { count: stats.open }) %></li>
-      <li><%- th('home.statBuyersHtml', { count: stats.buyers }) %></li>
-      <% if (stats.hot) { %><li class="hot"><%- th('home.statHotHtml', { count: stats.hot }) %></li><% } %>
+      <li><%- plain(th('home.statOpenHtml', { count: stats.open })) %></li>
+      <li><%- plain(th('home.statBuyersHtml', { count: stats.buyers })) %></li>
+      <% if (stats.hot) { %><li class="hot"><%- plain(th('home.statHotHtml', { count: stats.hot })) %></li><% } %>
     </ul>
   </div>
-  <div class="hero-art" aria-hidden="true">
-    <span class="bubble b1">🎧</span><span class="bubble b2">👟</span><span class="bubble b3">🍫</span>
-    <span class="bubble b4">🧸</span><span class="bubble b5">☕</span><span class="bubble b6">🌱</span>
-  </div>
+  <% if (featured) { %><div class="hero-feature"><%- include('partials/deal-card', { d: featured, i: 0 }) %></div><% } %>
 </section>
 
 <section class="steps" id="how" aria-labelledby="how-title">
   <h2 class="visually-hidden" id="how-title"><%= t('home.howItWorks') %></h2>
-  <div class="step s1"><span class="num">1</span><h3><%= t('home.step1Title') %></h3><p><%= t('home.step1Text') %></p></div>
-  <div class="step s2"><span class="num">2</span><h3><%= t('home.step2Title') %></h3><p><%= t('home.step2Text') %></p></div>
-  <div class="step s3"><span class="num">3</span><h3><%= t('home.step3Title') %></h3><p><%= t('home.step3Text') %></p></div>
+  <div class="step s1"><span class="num">1</span><h3><%= plain(t('home.step1Title')) %></h3><p><%= t('home.step1Text') %></p></div>
+  <div class="step s2"><span class="num">2</span><h3><%= plain(t('home.step2Title')) %></h3><p><%= t('home.step2Text') %></p></div>
+  <div class="step s3"><span class="num">3</span><h3><%= plain(t('home.step3Title')) %></h3><p><%= t('home.step3Text') %></p></div>
 </section>
 
 <nav class="category-bar" id="categories" aria-label="<%= t('nav.categories') %>">
@@ -38,13 +36,13 @@
 
 <div class="deals-head">
   <h2 class="section-title" id="deals">
-    <% if (q) { %><%= t('home.searchResults', { q }) %><% } else if (category) { %><%= category.emoji %> <%= category.name %><% } else { %><%= t('home.currentDeals') %><% } %>
+    <% if (q) { %><%= t('home.searchResults', { q }) %><% } else if (category) { %><%= category.name %><% } else { %><%= plain(t('home.currentDeals')) %><% } %>
   </h2>
   <form class="deal-search" method="get" action="/" role="search">
     <% if (category) { %><input type="hidden" name="category" value="<%= category.slug %>"><% } %>
     <label class="visually-hidden" for="deal-search"><%= t('home.searchLabel') %></label>
     <input type="search" id="deal-search" name="q" value="<%= q %>" placeholder="<%= t('home.searchPlaceholder') %>" maxlength="100" enterkeyhint="search">
-    <button type="submit"><span aria-hidden="true">🔍</span><span class="visually-hidden"><%= t('home.searchButton') %></span></button>
+    <button type="submit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span class="visually-hidden"><%= t('home.searchButton') %></span></button>
   </form>
 </div>
 <% if (!deals.length) { %>
@@ -70,14 +68,14 @@
 
 <section class="alert-signup" id="alerts" aria-labelledby="alerts-title">
   <div>
-    <h2 id="alerts-title"><%= t('alerts.title') %></h2>
+    <h2 id="alerts-title"><%= plain(t('alerts.title')) %></h2>
     <p><%= t('alerts.text') %></p>
   </div>
   <form method="post" action="/alerts" class="alert-form">
     <label class="visually-hidden" for="alert-email"><%= t('alerts.emailLabel') %></label>
     <input type="email" id="alert-email" name="email" required autocomplete="email" inputmode="email" placeholder="<%= t('alerts.emailLabel') %>">
     <div class="hp" aria-hidden="true"><label for="alert-website">Website</label><input type="text" id="alert-website" name="website" tabindex="-1" autocomplete="off"></div>
-    <button type="submit"><%= t('alerts.button') %></button>
+    <button type="submit"><%= plain(t('alerts.button')) %></button>
   </form>
   <p class="small alert-privacy"><%= t('alerts.privacyNote') %> <a href="/privacy"><%= t('footer.privacy') %></a></p>
 </section>
