@@ -1,3 +1,4 @@
+import { isDeliveryCountry } from '../deliveryCountries.js';
 import {
   LANGUAGES,
   shopLanguages,
@@ -29,7 +30,8 @@ export function applyLanguage(req, res, lang, ctx = {}) {
     th: (key, vars, raw) => translateHtml(lang, key, vars, raw),
     formatEuro: (cents) => euroFormatter(lang).format((cents ?? 0) / 100),
     formatDate: (d) => (d ? dateFormatter(lang).format(new Date(d)) : ''),
-    countries: countryList(lang),
+    // Only the countries the shop delivers to (Admin → Settings → Delivery countries).
+    countries: countryList(lang).filter(([code]) => isDeliveryCountry(code)),
     categories: allCategories().map(localCategory),
     categoryFor: (slug) => localCategory(categoryFor(slug)),
     languages: shopLanguages(),

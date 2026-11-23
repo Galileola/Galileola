@@ -46,7 +46,7 @@
   "home": {
     "title": "Deals",
     "titleCategory": "{category} deals",
-    "eyebrow": "🎉 Group deals across the EU",
+    "eyebrow": "🎉 Group deals",
     "heroLine1": "Buy together.",
     "heroLine2": "Pay less.",
     "lead": "Team up with other shoppers. When enough people join a deal, everyone gets the group price. Not enough? Nobody pays a cent.",
@@ -134,7 +134,7 @@
     "errStreet": "Enter your street and number.",
     "errPostcode": "Enter your postcode.",
     "errCity": "Enter your city.",
-    "errCountry": "We currently deliver to EU countries only.",
+    "errCountry": "We don't deliver to this country at the moment.",
     "errTerms": "Please accept the terms to join.",
     "errTooMany": "Too many attempts from your network. Please wait 15 minutes and try again.",
     "errClosed": "This deal is no longer open.",

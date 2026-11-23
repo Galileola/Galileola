@@ -159,7 +159,7 @@
     "errStreet": "Įveskite gatvę ir namo numerį.",
     "errPostcode": "Įveskite pašto kodą.",
     "errCity": "Įveskite miestą.",
-    "errCountry": "Šiuo metu pristatome tik į ES šalis.",
+    "errCountry": "Šiuo metu į šią šalį nepristatome.",
     "errTerms": "Norėdami prisijungti, sutikite su sąlygomis.",
     "errTooMany": "Iš jūsų tinklo per daug bandymų. Palaukite 15 minučių ir bandykite dar kartą.",
     "errClosed": "Šis pasiūlymas nebegalioja.",

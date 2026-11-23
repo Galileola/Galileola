@@ -154,7 +154,7 @@
     "errStreet": "Unesite ulicu i kućni broj.",
     "errPostcode": "Unesite poštanski broj.",
     "errCity": "Unesite grad.",
-    "errCountry": "Trenutačno dostavljamo samo u zemlje EU-a.",
+    "errCountry": "Trenutačno ne dostavljamo u ovu zemlju.",
     "errTerms": "Prihvatite uvjete da biste se pridružili.",
     "errTooMany": "Previše pokušaja s vaše mreže. Pričekajte 15 minuta i pokušajte ponovno.",
     "errClosed": "Ova ponuda više nije otvorena.",

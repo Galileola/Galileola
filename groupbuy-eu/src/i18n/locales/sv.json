@@ -123,7 +123,7 @@
     "errStreet": "Ange din gatuadress.",
     "errPostcode": "Ange ditt postnummer.",
     "errCity": "Ange din ort.",
-    "errCountry": "Vi levererar just nu bara till EU-länder.",
+    "errCountry": "Vi levererar inte till det här landet just nu.",
     "errTerms": "Godkänn villkoren för att gå med.",
     "errTooMany": "För många försök från ditt nätverk. Vänta 15 minuter och försök igen.",
     "errClosed": "Det här erbjudandet är inte längre öppet.",

@@ -159,7 +159,7 @@
     "errStreet": "Zadajte ulicu a číslo.",
     "errPostcode": "Zadajte PSČ.",
     "errCity": "Zadajte mesto.",
-    "errCountry": "Zatiaľ doručujeme len do krajín EÚ.",
+    "errCountry": "Do tejto krajiny momentálne nedoručujeme.",
     "errTerms": "Ak sa chcete pridať, súhlaste s obchodnými podmienkami.",
     "errTooMany": "Z vašej siete prišlo príliš veľa pokusov. Počkajte 15 minút a skúste to znova.",
     "errClosed": "Táto ponuka už nie je otvorená.",

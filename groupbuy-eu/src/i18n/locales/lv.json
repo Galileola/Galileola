@@ -123,7 +123,7 @@
     "errStreet": "Ievadiet ielu un mājas numuru.",
     "errPostcode": "Ievadiet pasta indeksu.",
     "errCity": "Ievadiet pilsētu.",
-    "errCountry": "Pašlaik piegādājam tikai uz ES valstīm.",
+    "errCountry": "Pašlaik mēs nepiegādājam uz šo valsti.",
     "errTerms": "Lai pievienotos, piekrītiet noteikumiem.",
     "errTooMany": "No jūsu tīkla ir pārāk daudz mēģinājumu. Pagaidiet 15 minūtes un mēģiniet vēlreiz.",
     "errClosed": "Šis piedāvājums vairs nav atvērts.",

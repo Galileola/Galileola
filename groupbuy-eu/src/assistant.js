@@ -62,7 +62,8 @@ export function cleanHistory(raw) {
 
 const known = (value) => value && !String(value).startsWith('[');
 
-export function buildSystemPrompt({ business, baseUrl, deals, siteLanguage = 'English' }) {
+// deliveryTo: the names of the countries the shop delivers to; testMode: no real payments yet.
+export function buildSystemPrompt({ business, baseUrl, deals, siteLanguage = 'English', deliveryTo = [], testMode = true }) {
   const shop = known(business.name) ? business.name : 'this shop';
   const contact = known(business.email)
     ? `email ${business.email}`
@@ -77,17 +78,16 @@ export function buildSystemPrompt({ business, baseUrl, deals, siteLanguage = 'En
 <how_the_shop_works>
 - Deals are sorted into these categories: ${allCategories().map((c) => c.name).join(', ')}. Visitors can filter the deal list by category on the home page (${baseUrl}/?category=<slug>, where the slugs are ${allCategories().map((c) => c.slug).join(', ')}).
 - Each deal is one product with a fixed price including VAT, a minimum number of buyers and a deadline (at most 30 days away).
-- To join, a buyer enters their name, email and EU delivery address, accepts the terms, and saves a payment method: card, SEPA Direct Debit, or iDEAL (which sets up a SEPA Direct Debit mandate). Nothing is charged when joining.
+- To join, a buyer enters their name, email and delivery address, accepts the terms, and saves a payment method: card, SEPA Direct Debit, or iDEAL (which sets up a SEPA Direct Debit mandate). Nothing is charged when joining.
 - If the minimum number of buyers is reached before the deadline, everyone's saved payment method is charged. The "we're collecting payment now" email is also the SEPA pre-notification.
 - If a payment fails, the buyer gets an email with a link to fix it. They have 48 hours; after that their order is cancelled.
 - If the deadline passes without reaching the minimum, nobody is charged and all saved payment methods are removed.
 - Anyone who joins after the minimum is reached is charged straight away.
 - The price is the same for every EU country. Only the VAT share inside it depends on the delivery country.
-- Delivery is to EU countries only.
+- ${deliveryTo.length ? `The shop delivers only to: ${deliveryTo.join(', ')}.` : 'Delivery is to EU countries only.'}
 - Consumers have a 14-day right of withdrawal after receiving the goods: ${baseUrl}/terms#withdrawal. Before payment is collected, a buyer can also leave a deal by contacting the shop; their saved payment method is removed and nothing is charged.
 - Terms: ${baseUrl}/terms · Privacy policy: ${baseUrl}/privacy
-- The site is in test mode at the moment: no real payments are taken, and only Stripe test cards and test IBANs work.
-</how_the_shop_works>
+${testMode ? '- The site is in test mode at the moment: no real payments are taken, and only Stripe test cards and test IBANs work.\n' : ''}</how_the_shop_works>
 
 <open_deals>
 ${dealList}

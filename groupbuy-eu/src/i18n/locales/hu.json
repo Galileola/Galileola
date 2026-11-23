@@ -123,7 +123,7 @@
     "errStreet": "Add meg az utcát és a házszámot.",
     "errPostcode": "Add meg az irányítószámot.",
     "errCity": "Add meg a települést.",
-    "errCountry": "Jelenleg csak EU-országokba szállítunk.",
+    "errCountry": "Ebbe az országba jelenleg nem szállítunk.",
     "errTerms": "A csatlakozáshoz fogadd el az ÁSZF-et.",
     "errTooMany": "Túl sok próbálkozás érkezett a hálózatodról. Várj 15 percet, és próbáld újra.",
     "errClosed": "Ez az ajánlat már nem elérhető.",

@@ -41,7 +41,7 @@
     <select id="country" name="country" autocomplete="country" required>
       <option value=""><%= t('join.choose') %></option>
       <% for (const [code, cname] of countries) { %>
-        <option value="<%= code %>" <%= values.country === code ? 'selected' : '' %>><%= cname %></option>
+        <option value="<%= code %>" <%= values.country === code || countries.length === 1 ? 'selected' : '' %>><%= cname %></option>
       <% } %>
     </select>
     <% if (errors.country) { %><p class="error-text"><%= errors.country %></p><% } %>

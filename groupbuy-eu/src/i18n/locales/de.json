@@ -123,7 +123,7 @@
     "errStreet": "Bitte geben Sie Straße und Hausnummer ein.",
     "errPostcode": "Bitte geben Sie Ihre Postleitzahl ein.",
     "errCity": "Bitte geben Sie Ihren Ort ein.",
-    "errCountry": "Wir liefern derzeit nur in EU-Länder.",
+    "errCountry": "In dieses Land liefern wir derzeit nicht.",
     "errTerms": "Bitte akzeptieren Sie die AGB, um mitzumachen.",
     "errTooMany": "Zu viele Versuche aus Ihrem Netzwerk. Bitte warten Sie 15 Minuten und versuchen Sie es erneut.",
     "errClosed": "Dieses Angebot ist nicht mehr offen.",

@@ -7,6 +7,7 @@ import { photoUrl, thumbUrl } from './photos.js';
 import { languageMiddleware } from './i18n/middleware.js';
 import { loadCategories } from './categories.js';
 import { loadShopLanguages } from './shopLanguages.js';
+import { loadDeliveryCountries } from './deliveryCountries.js';
 import { hasOptionalCookies } from './cookies.js';
 import { applyBusinessSettings } from './businessSettings.js';
 import { applyBranding, currentBrand } from './branding.js';
@@ -36,6 +37,7 @@ export function createApp(ctx) {
   // Settings the owner changes in the admin: categories and the company details.
   loadCategories(ctx.repo);
   loadShopLanguages(ctx.repo, config);
+  loadDeliveryCountries(ctx.repo, config);
   applyBusinessSettings(config, ctx.repo);
   if (ctx.repo?.getAdminSetting) applyBranding(config, ctx.repo);
   // Visit statistics for Admin → Performance (no cookies; see src/analytics.js).

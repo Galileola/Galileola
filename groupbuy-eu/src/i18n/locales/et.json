@@ -39,7 +39,7 @@
   "home": {
     "title": "Pakkumised",
     "titleCategory": "{category}: pakkumised",
-    "eyebrow": "🎉 Ühisostud üle kogu ELi",
+    "eyebrow": "🎉 Ühisostud",
     "heroLine1": "Ostke koos.",
     "heroLine2": "Makske vähem.",
     "lead": "Liitu teiste ostjatega. Kui pakkumisega liitub piisavalt inimesi, saavad kõik grupihinna. Ei liitunud piisavalt? Keegi ei maksa sentigi.",
@@ -123,7 +123,7 @@
     "errStreet": "Sisesta tänav ja maja number.",
     "errPostcode": "Sisesta postiindeks.",
     "errCity": "Sisesta linn.",
-    "errCountry": "Praegu tarnime ainult ELi riikidesse.",
+    "errCountry": "Praegu me sellesse riiki ei tarni.",
     "errTerms": "Liitumiseks nõustu tingimustega.",
     "errTooMany": "Sinu võrgust on liiga palju katseid. Oota 15 minutit ja proovi uuesti.",
     "errClosed": "See pakkumine ei ole enam avatud.",

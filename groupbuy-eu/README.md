@@ -120,6 +120,11 @@ Admin creates deal ──► buyers join (SetupIntent: card / SEPA / iDEAL→SEP
   again at any time; category names typed for a language that is off are kept. Until the page is
   saved, all 25 are offered. The go-live check looks at the legal text visitors see in each offered
   language, so an Estonian-only shop needs complete Estonian legal pages.
+- **Delivery countries** (Admin → Settings → Delivery countries): switch each EU country on or
+  off. Only the countries switched on are in the order form (with one, it is already picked), a
+  form posted with another country is refused, and the shopping assistant names them. Until the
+  page is saved, `DELIVERY_COUNTRIES` applies (comma-separated codes, default `EE`: Estonia only).
+  Buyers who already joined keep their orders.
 - **Categories**: every deal has one of 12 standard categories (Electronics, Home & Kitchen,
   Fashion, Beauty & Health, Sports & Outdoors, Toys & Kids, Food & Drinks, Garden & DIY, Pets,
   Books & Hobbies, Car & Motorbike, Other). The home page has a chip for each one with its number of

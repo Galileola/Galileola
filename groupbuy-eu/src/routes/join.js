@@ -2,6 +2,7 @@ import { ordersOpen } from '../goLive.js';
 import { JoinError } from '../engine.js';
 import { isJoinable, publicDealState } from '../dealState.js';
 import { EU_COUNTRIES, isValidEmail } from '../util.js';
+import { isDeliveryCountry } from '../deliveryCountries.js';
 import { createRateLimiter } from '../rateLimit.js';
 import { isShopLanguage, translate } from '../i18n/index.js';
 import { applyLanguage } from '../i18n/middleware.js';
@@ -26,7 +27,7 @@ export function validateJoinInput(body, t = english) {
   if (!input.address_line1) errors.address_line1 = t('join.errStreet');
   if (!input.postal_code) errors.postal_code = t('join.errPostcode');
   if (!input.city) errors.city = t('join.errCity');
-  if (!EU_COUNTRIES[input.country]) errors.country = t('join.errCountry');
+  if (!EU_COUNTRIES[input.country] || !isDeliveryCountry(input.country)) errors.country = t('join.errCountry');
   if (body.accept_terms !== 'yes') errors.accept_terms = t('join.errTerms');
   return { input, errors };
 }

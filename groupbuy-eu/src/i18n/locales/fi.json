@@ -123,7 +123,7 @@
     "errStreet": "Anna katuosoite.",
     "errPostcode": "Anna postinumero.",
     "errCity": "Anna kaupunki.",
-    "errCountry": "Toimitamme tällä hetkellä vain EU-maihin.",
+    "errCountry": "Emme toimita tällä hetkellä tähän maahan.",
     "errTerms": "Hyväksy ehdot liittyäksesi.",
     "errTooMany": "Verkostasi on tullut liikaa yrityksiä. Odota 15 minuuttia ja yritä uudelleen.",
     "errClosed": "Tämä tarjous ei ole enää avoinna.",

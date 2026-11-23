@@ -154,7 +154,7 @@
     "errStreet": "Introdu strada și numărul.",
     "errPostcode": "Introdu codul poștal.",
     "errCity": "Introdu orașul.",
-    "errCountry": "Momentan livrăm doar în țările UE.",
+    "errCountry": "Momentan nu livrăm în această țară.",
     "errTerms": "Acceptă termenii pentru a te înscrie.",
     "errTooMany": "Prea multe încercări din rețeaua ta. Așteaptă 15 minute și încearcă din nou.",
     "errClosed": "Această ofertă nu mai este deschisă.",

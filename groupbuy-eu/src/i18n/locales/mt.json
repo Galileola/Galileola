@@ -123,7 +123,7 @@
     "errStreet": "Daħħal it-triq u n-numru.",
     "errPostcode": "Daħħal il-kodiċi postali.",
     "errCity": "Daħħal il-lokalità.",
-    "errCountry": "Bħalissa nwasslu biss lejn pajjiżi tal-UE.",
+    "errCountry": "Bħalissa ma nwasslux f'dan il-pajjiż.",
     "errTerms": "Aċċetta t-termini biex tingħaqad.",
     "errTooMany": "Saru wisq tentattivi min-netwerk tiegħek. Stenna 15-il minuta u erġa' pprova.",
     "errClosed": "Din l-offerta m'għadhiex miftuħa.",

@@ -2,6 +2,8 @@ import express from 'express';
 import Anthropic from '@anthropic-ai/sdk';
 import { buildSystemPrompt, cleanHistory } from '../assistant.js';
 import { isJoinable } from '../dealState.js';
+import { deliveryCountries } from '../deliveryCountries.js';
+import { EU_COUNTRIES } from '../util.js';
 import { createRateLimiter } from '../rateLimit.js';
 import { ENGLISH_NAMES, isShopLanguage } from '../i18n/index.js';
 import { applyLanguage } from '../i18n/middleware.js';
@@ -31,7 +33,10 @@ export function assistantRoutes(app, ctx) {
       .listPublicDeals()
       .filter((d) => isJoinable(d, now))
       .map((d) => ({ ...d, count: repo.committedCount(d.id), minimumReached: d.status !== 'open' }));
-    const system = buildSystemPrompt({ business: config.business, baseUrl: config.baseUrl, deals, siteLanguage: ENGLISH_NAMES[lang] });
+    const system = buildSystemPrompt({
+      business: config.business, baseUrl: config.baseUrl, deals, siteLanguage: ENGLISH_NAMES[lang],
+      deliveryTo: deliveryCountries().map((c) => EU_COUNTRIES[c]), testMode: config.paymentsMode !== 'live',
+    });
 
     try {
       const result = await ctx.assistant.reply({ system, messages });

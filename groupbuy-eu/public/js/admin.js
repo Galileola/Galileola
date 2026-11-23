@@ -127,6 +127,16 @@ document.querySelectorAll('[data-copy-codes]').forEach((button) =>
 );
 document.querySelectorAll('[data-print]').forEach((button) => button.addEventListener('click', () => window.print()));
 
+// Delivery countries: quick picks tick exactly the listed countries.
+document.querySelectorAll('[data-country-set]').forEach((button) =>
+  button.addEventListener('click', () => {
+    const codes = button.dataset.countrySet.split(' ').filter(Boolean);
+    document.querySelectorAll('.country-choice input[type=checkbox][name=country]').forEach((box) => {
+      box.checked = codes.includes(box.value);
+    });
+  })
+);
+
 // Languages: quick picks tick exactly the listed languages (the always-on ones stay ticked).
 document.querySelectorAll('[data-lang-set]').forEach((button) =>
   button.addEventListener('click', () => {

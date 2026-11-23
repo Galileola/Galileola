@@ -159,7 +159,7 @@
     "errStreet": "Vnesite ulico in hišno številko.",
     "errPostcode": "Vnesite poštno številko.",
     "errCity": "Vnesite kraj.",
-    "errCountry": "Trenutno dostavljamo samo v države EU.",
+    "errCountry": "V to državo trenutno ne dostavljamo.",
     "errTerms": "Za pridružitev sprejmite pogoje.",
     "errTooMany": "Iz vašega omrežja je bilo preveč poskusov. Počakajte 15 minut in poskusite znova.",
     "errClosed": "Ta ponudba ni več odprta.",

@@ -123,7 +123,7 @@
     "errStreet": "Saisissez le numéro et la rue.",
     "errPostcode": "Saisissez votre code postal.",
     "errCity": "Saisissez votre ville.",
-    "errCountry": "Nous livrons uniquement dans les pays de l'UE pour l'instant.",
+    "errCountry": "Nous ne livrons pas dans ce pays pour le moment.",
     "errTerms": "Veuillez accepter les conditions pour participer.",
     "errTooMany": "Trop de tentatives depuis votre réseau. Patientez 15 minutes puis réessayez.",
     "errClosed": "Cette offre n'est plus ouverte.",

@@ -3,6 +3,7 @@ import { applyLanguage } from '../i18n/middleware.js';
 import Anthropic from '@anthropic-ai/sdk';
 import { ENGLISH_NAMES, LANGUAGES, isLanguage, isShopLanguage, shopLanguages } from '../i18n/index.js';
 import { mainLanguageOf, requiredLanguages, saveShopLanguages, savedShopLanguages } from '../shopLanguages.js';
+import { ALL_COUNTRIES, isDeliveryCountry, saveDeliveryCountries, savedDeliveryCountries } from '../deliveryCountries.js';
 import { LEGAL_PAGES, MAX_LEGAL_TEXT, htmlToLegalText } from '../legalText.js';
 import { LEGAL_PAGE_INFO, builtInTranslationHtml, englishLegalHtml, usesBuiltInTranslation } from './legal.js';
 import multer from 'multer';
@@ -11,7 +12,7 @@ import { validateDealInput } from '../deals.js';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { hmac, safeEqual, randomToken } from '../util.js';
+import { EU_COUNTRIES, hmac, safeEqual, randomToken } from '../util.js';
 import { MAX_PHOTO_BYTES, MAX_PHOTOS_PER_DEAL, PHOTO_ACCEPT, checkPhotos, uploadErrorMessage } from '../photos.js';
 import {
   DESCRIPTION_SCHEMA,
@@ -516,6 +517,25 @@ export function adminRoutes(app, ctx) {
   router.post('/languages', (req, res) => {
     saveShopLanguages(repo, config, req.body.lang, clock.now().toISOString());
     res.redirect(303, '/admin/languages?saved=1');
+  });
+
+  // ---- Countries the shop delivers to (src/deliveryCountries.js)
+  const deliveryPage = (res, status, extra = {}) => {
+    res.status(status).render('admin/delivery', {
+      title: 'Delivery countries',
+      rows: ALL_COUNTRIES.map((code) => ({ code, name: EU_COUNTRIES[code], on: isDeliveryCountry(code) })).sort((a, b) => a.name.localeCompare(b.name)),
+      chosenYet: savedDeliveryCountries(repo) !== null,
+      saved: false,
+      error: '',
+      ...extra,
+    });
+  };
+  router.get('/delivery', (req, res) => deliveryPage(res, 200, { saved: req.query.saved === '1' }));
+  router.post('/delivery', (req, res) => {
+    if (!saveDeliveryCountries(repo, config, req.body.country, clock.now().toISOString())) {
+      return deliveryPage(res, 422, { error: 'Tick at least one country.' });
+    }
+    res.redirect(303, '/admin/delivery?saved=1');
   });
 
   // ---- Shop details: company name, address, VAT number… (src/businessSettings.js)

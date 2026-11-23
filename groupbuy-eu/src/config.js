@@ -1,4 +1,5 @@
 import { isLanguage } from './i18n/index.js';
+import { parseDeliveryCountries } from './deliveryCountries.js';
 import path from 'node:path';
 
 // Configuration, read from environment variables (see .env.example).
@@ -81,6 +82,8 @@ export function loadConfig(env = process.env) {
     // languages with the same key), and visitors whose browser language the shop doesn't offer
     // get it. Estonian unless CONTENT_LANGUAGE names another.
     contentLanguage: isLanguage(env.CONTENT_LANGUAGE) ? env.CONTENT_LANGUAGE : 'et',
+    // The EU countries the shop delivers to until the owner saves Admin → Delivery countries.
+    deliveryCountries: parseDeliveryCountries(env.DELIVERY_COUNTRIES),
     translationDailyLimit: Number(env.TRANSLATION_DAILY_LIMIT || 500), // Claude translation requests per day
     assistantRateLimit: Number(env.ASSISTANT_RATE_LIMIT || 30), // messages per IP per 15 minutes
     assistantDailyLimit: Number(env.ASSISTANT_DAILY_LIMIT || 1000), // messages per day, whole site

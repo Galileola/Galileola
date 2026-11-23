@@ -123,7 +123,7 @@
     "errStreet": "Vul je straat en huisnummer in.",
     "errPostcode": "Vul je postcode in.",
     "errCity": "Vul je plaats in.",
-    "errCountry": "We bezorgen momenteel alleen in EU-landen.",
+    "errCountry": "We leveren momenteel niet in dit land.",
     "errTerms": "Ga akkoord met de voorwaarden om mee te doen.",
     "errTooMany": "Te veel pogingen vanaf je netwerk. Wacht 15 minuten en probeer het opnieuw.",
     "errClosed": "Deze deal is niet meer open.",

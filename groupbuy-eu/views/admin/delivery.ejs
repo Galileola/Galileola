@@ -1,0 +1,28 @@
+<%- include('../partials/header') %>
+<p><a href="/admin/settings">← Settings</a></p>
+<section class="card narrow">
+  <h1>🚚 Delivery countries</h1>
+  <% if (saved) { %><div class="notice ok" role="status">Saved. The order form now offers <%= rows.filter((r) => r.on).length %> countr<%= rows.filter((r) => r.on).length === 1 ? 'y' : 'ies' %>.</div><% } %>
+  <% if (error) { %><div class="notice bad" role="alert"><%= error %></div><% } %>
+  <p>Tick the countries you deliver to. Switch a country on when you start delivering there, and off when you stop. Only ticked countries can be picked in the order form, and the shopping assistant names them. Buyers who already joined keep their orders.</p>
+  <p class="muted small">Remember to name the same countries, with their delivery costs and times, in your terms (Legal pages).<% if (!chosenYet) { %> Until you save this page, the shop uses its default (DELIVERY_COUNTRIES, normally Estonia).<% } %></p>
+  <form method="post" action="/admin/delivery" class="country-choice">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <p class="row-buttons">
+      <button type="button" class="secondary small" data-country-set="EE">Only Estonia</button>
+      <button type="button" class="secondary small" data-country-set="EE LV LT FI">Estonia, Latvia, Lithuania, Finland</button>
+      <button type="button" class="secondary small" data-country-set="<%= rows.map((r) => r.code).join(' ') %>">All EU countries</button>
+    </p>
+    <div class="language-grid">
+      <% for (const r of rows) { %>
+        <label class="check">
+          <input type="checkbox" name="country" value="<%= r.code %>"<%= r.on ? ' checked' : '' %>>
+          <span><strong><%= r.name %></strong> <span class="muted small"><%= r.code %></span></span>
+        </label>
+      <% } %>
+    </div>
+    <p><button type="submit">Save delivery countries</button></p>
+  </form>
+</section>
+<script src="<%= asset('/static/js/admin.js') %>"></script>
+<%- include('../partials/footer') %>

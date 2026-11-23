@@ -123,7 +123,7 @@
     "errStreet": "Cuir isteach do shráid agus uimhir.",
     "errPostcode": "Cuir isteach do chód poist.",
     "errCity": "Cuir isteach do bhaile.",
-    "errCountry": "Faoi láthair ní sheachadaimid ach chuig tíortha an AE.",
+    "errCountry": "Ní sheolaimid chuig an tír seo faoi láthair.",
     "errTerms": "Glac leis na téarmaí le bheith páirteach.",
     "errTooMany": "An iomarca iarrachtaí ó do líonra. Fan 15 nóiméad agus bain triail eile as.",
     "errClosed": "Níl an margadh seo oscailte a thuilleadh.",

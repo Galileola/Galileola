@@ -123,7 +123,7 @@
     "errStreet": "Indtast gade og husnummer.",
     "errPostcode": "Indtast dit postnummer.",
     "errCity": "Indtast din by.",
-    "errCountry": "Vi leverer i øjeblikket kun til EU-lande.",
+    "errCountry": "Vi leverer ikke til dette land i øjeblikket.",
     "errTerms": "Accepter vilkårene for at være med.",
     "errTooMany": "For mange forsøg fra dit netværk. Vent 15 minutter, og prøv igen.",
     "errClosed": "Dette tilbud er ikke længere åbent.",
