@@ -18,7 +18,7 @@ async function startApp({ smtp = true, adminEmail = '', businessEmail = 'owner@s
   const config = {
     baseUrl: 'https://shop.test', adminUser: 'admin', adminPassword, adminEmail, appSecret: 'test-secret-0123456789abcdef',
     defaultTaxCode: 'txcd_99999999', uploadDir: path.join(dir, 'uploads'), trustProxy: false, smtpUrl: smtp ? 'smtp://x' : '', quietEmails: true,
-    business: { name: 'SEK Deals', address: 'A', email: businessEmail, vatId: 'EE1', registration: 'R', supervisoryAuthority: 'D' },
+    business: { name: 'SEK Deals', address: 'A', email: businessEmail, vatId: 'EE1', registration: 'R', supervisoryAuthority: 'D', phone: '+372 5555 5555' },
   };
   const repo = createRepo(openDb(path.join(dir, 'db.sqlite')));
   const sent = [];

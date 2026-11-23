@@ -36,7 +36,7 @@ async function startApp({ adminTwoStep = 'on' } = {}) {
   const config = {
     baseUrl: 'https://shop.test', adminUser: 'admin', adminPassword: 'secret-pw', appSecret: 'test-secret-0123456789abcdef',
     defaultTaxCode: 'txcd_99999999', uploadDir: path.join(dir, 'uploads'), trustProxy: false, adminTwoStep,
-    business: { name: 'SEK Deals', address: 'A', email: 'a@b.ee', vatId: 'EE1', registration: 'R', supervisoryAuthority: 'D' },
+    business: { name: 'SEK Deals', address: 'A', email: 'a@b.ee', vatId: 'EE1', registration: 'R', supervisoryAuthority: 'D', phone: '+372 5555 5555' },
   };
   const repo = createRepo(openDb(path.join(dir, 'db.sqlite')));
   const ctx = { config, repo, clock, photos: createPhotoStore(config.uploadDir), routes: [adminRoutes] };

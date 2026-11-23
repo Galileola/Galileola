@@ -348,5 +348,32 @@
     "newDealSubject": "Naujas grupinis pirkimas: {name}",
     "newDealText": "Prasidėjo naujas grupinis pirkimas: {name} už {price}. Prisijunkite iki {date}:",
     "unsubscribe": "Nebenorite gauti šių laiškų? Atsisakyti: {link}"
+  },
+  "withdraw": {
+    "link": "Atsisakyti sutarties čia",
+    "title": "Sutarties atsisakymas",
+    "intro": "Užsakymo galite atsisakyti per 14 dienų nuo prekių gavimo ir bet kada jį atšaukti, kol iš jūsų nenuskaičiuota pinigų. Užpildykite šią formą ir paspauskite „Patvirtinti atsisakymą“: iš karto atsiųsime jums patvirtinimą el. paštu.",
+    "order": "Užsakymas",
+    "orderHint": "Apie kurią prekę kalbama, pavyzdžiui, jos pavadinimas.",
+    "orderKnown": "Užsakymas #{id}: {name}",
+    "name": "Jūsų vardas",
+    "email": "El. pašto adresas patvirtinimui",
+    "message": "Norite ką nors pridurti? (neprivaloma)",
+    "messageLabel": "Žinutė",
+    "confirm": "Patvirtinti atsisakymą",
+    "errName": "Įveskite savo vardą.",
+    "errEmail": "Įveskite galiojantį el. pašto adresą patvirtinimui.",
+    "errOrder": "Nurodykite, kurio užsakymo atsisakote.",
+    "tooMany": "Iš šio ryšio išsiųsta per daug atsisakymų. Bandykite dar kartą po 15 minučių arba parašykite mums el. laišką.",
+    "doneTitle": "Gavome jūsų atsisakymą",
+    "doneReceived": "Gauta {date}. Patvirtinimas su jūsų atsiųstais duomenimis išsiųstas adresu {email}.",
+    "doneCancelled": "Jūsų užsakymas atšauktas: nieko nebus nuskaičiuota, o jūsų išsaugotas mokėjimo būdas pašalintas.",
+    "doneRefund": "Grąžinsime jūsų mokėjimą per 14 dienų, kaip aprašyta mūsų sąlygose.",
+    "doneReview": "Patikrinsime, apie kurį užsakymą kalbama, ir atsakysime el. paštu.",
+    "doneEnded": "Šis užsakymas jau buvo pasibaigęs, todėl nėra ko atšaukti ar grąžinti.",
+    "reference": "Numeris",
+    "emailHere": "Atsisakyti sutarties čia: {link}",
+    "emailSubject": "Gavome jūsų atsisakymą ({reference})",
+    "emailText": "Jūsų sutarties atsisakymą gavome {date} (numeris {reference}). Jūs atsiuntėte:"
   }
 }

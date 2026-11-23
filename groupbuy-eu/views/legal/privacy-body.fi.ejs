@@ -14,6 +14,7 @@
       <tr><td>Nimi, sähköpostiosoite, toimitusosoite</td><td>Tarjoukseen osallistuminen, toimitus, sähköpostit tilauksestanne ja maksustanne</td><td>Sopimus, 6 artiklan 1 kohdan b alakohta</td></tr>
       <tr><td>Maksutiedot: kortti tai IBAN, joita käsittelee Stripe. Tallennamme vain Stripen viitetunnukset, korttityypin tai pankin ja 4 viimeistä numeroa.</td><td>Maksutapanne tallentaminen ja veloittaminen vain, jos tarjous toteutuu</td><td>Sopimus, 6 artiklan 1 kohdan b alakohta</td></tr>
       <tr><td>Tilaus-, maksu- ja arvonlisäverotiedot (summa, ALV, maa)</td><td>Kirjanpito- ja verovelvoitteet, mukaan lukien ALV/OSS-ilmoitukset Stripe Taxin kautta</td><td>Lakisääteinen velvoite, 6 artiklan 1 kohdan c alakohta</td></tr>
+      <tr><td>Peruutukset, jotka lähetätte linkin ”Peru sopimus tästä” kautta: nimenne, sähköpostiosoitteenne, tilaus, viestinne sekä päivämäärä ja kellonaika</td><td>Peruutuksenne käsittely ja sen vastaanottamisen vahvistaminen</td><td>Lakisääteinen velvoite, 6 artiklan 1 kohdan c alakohta</td></tr>
       <tr><td>Tekniset tiedot (IP-osoite, selain, palvelimen lokeissa ja Stripen petostentorjunnassa)</td><td>Tietoturva ja petosten estäminen</td><td>Oikeutettu etu, 6 artiklan 1 kohdan f alakohta</td></tr>
       <tr><td>Kävijätilastot: avaamanne sivut, verkkosivusto, mainos tai linkki, josta tulitte, kaupan kieli ja laitteen tyyppi. Tähän ei käytetä evästeitä eikä IP-osoitettanne tallenneta: se muutetaan koodiksi, joka vaihtuu päivittäin. Jos liitytte tarjoukseen, tilauksenne yhteyteen tallennetaan mainos tai verkkosivusto, josta tulitte sinä päivänä.</td><td>Sen selvittäminen, mitkä sivut, tarjoukset ja mainokset toimivat, kaupan parantamiseksi</td><td>Oikeutettu etu, 6 artiklan 1 kohdan f alakohta</td></tr>
       <tr><td>Sähköpostiosoitteenne ja kielenne, jos tilaatte tarjousilmoitukset</td><td>Sähköpostin lähettäminen, kun uusi yhteisostotarjous alkaa. Jokaisessa viestissä on linkki tilauksen perumiseen.</td><td>Suostumus, 6 artiklan 1 kohdan a alakohta</td></tr>
@@ -41,6 +42,7 @@
   <ul>
     <li><strong>Tallennetut maksutavat</strong> poistetaan Stripestä, kun niitä ei enää tarvita: kun tarjous ei saavuta vähimmäismäärää, kun olette maksaneet tai kun tilauksenne peruutetaan.</li>
     <li><strong>Tilaustiedot</strong> säilytetään, kunnes tarjous, toimitus ja peruuttamisaika ovat päättyneet, sekä niin kauan kuin se on tarpeen mahdollisia vaatimuksia varten [esim. 3 vuotta].</li>
+    <li><strong>Peruutukset</strong> säilytetään yhtä kauan kuin niihin liittyvät tilaustiedot.</li>
     <li><strong>Laskut ja kirjanpitoaineisto</strong> säilytetään verolainsäädännön edellyttämän ajan [esim. 10 vuotta].</li>
     <li><strong>Liittymiset, jotka eivät johtaneet maksuun</strong> (tarjous ei toteutunut tai peruitte ennen maksua), anonymisoidaan 30 päivän kuluttua niiden päättymisestä.</li>
     <li><strong>Tarjousilmoitusten tilaukset</strong> säilytetään, kunnes perutte tilauksen. Vahvistamattomat tilaukset poistetaan 30 päivän kuluttua.</li>

@@ -631,7 +631,8 @@ export function createEngine(ctx) {
     // EU right of withdrawal (and withdrawing an order before the deal is on): run by the admin
     // when a buyer asks. Unpaid buyers are released; paid buyers are refunded in full and the
     // Stripe Tax transaction is reversed.
-    async withdraw(participantId) {
+    // notify: false when the buyer already got an acknowledgement (src/withdrawals.js).
+    async withdraw(participantId, { notify = true } = {}) {
       const p = repo.participantById(participantId);
       const deal = repo.dealById(p.deal_id);
       const n = nowIso();
@@ -676,7 +677,7 @@ export function createEngine(ctx) {
         throw new Error(`Nothing to withdraw (status: ${p.status}).`);
       }
       const updated = repo.participantById(p.id);
-      await email('withdrawn', deal, updated);
+      if (notify) await email('withdrawn', deal, updated);
       return updated;
     },
 

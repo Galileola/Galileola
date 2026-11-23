@@ -5,7 +5,7 @@
   <h1>Müügitingimused</h1>
 
   <h2>1. Kes me oleme</h2>
-  <p><%= business.name %>, <%= business.address %>. E-post: <%= business.email %>. Käibemaksukohustuslase number: <%= business.vatId %>. <%= business.registration %>.</p>
+  <p><%= business.name %>, <%= business.address %>. E-post: <%= business.email %>. Telefon: <%= business.phone %>. Käibemaksukohustuslase number: <%= business.vatId %>. <%= business.registration %>.</p>
 
   <h2>2. Kuidas ühisost toimib</h2>
   <p>Igal pakkumisel on hind, minimaalne ostjate arv ja tähtaeg (kõige rohkem 30 päeva pärast pakkumise algust). Liitudes esitate tellimuse ühele tootele märgitud hinnaga. Tellimus jõustub ainult siis, kui pakkumine saavutab tähtajaks minimaalse ostjate arvu.</p>
@@ -34,7 +34,8 @@
   <p>Kui olete tarbija, on teil järgmine taganemisõigus.</p>
   <h3>Taganemisõigus</h3>
   <p>Teil on õigus 14 päeva jooksul käesolevast lepingust ilma põhjust esitamata taganeda. Taganemistähtaeg lõpeb 14 päeva möödumisel päevast, mil teie või teie nimetatud kolmas isik, kes ei ole vedaja, on asja füüsiliselt enda valdusesse saanud.</p>
-  <p>Taganemisõiguse kasutamiseks peate meid (<%= business.name %>, <%= business.address %>, <%= business.email %>) teavitama oma otsusest käesolevast lepingust taganeda ühemõttelise avaldusega (nt posti või e-postiga saadetud kiri). Võite kasutada allpool olevat taganemisavalduse tüüpvormi, kuid see ei ole kohustuslik.</p>
+  <p>Taganemisõiguse kasutamiseks peate meid (<%= business.name %>, <%= business.address %>, <%= business.phone %>, <%= business.email %>) teavitama oma otsusest käesolevast lepingust taganeda ühemõttelise avaldusega (nt posti või e-postiga saadetud kiri). Võite kasutada allpool olevat taganemisavalduse tüüpvormi, kuid see ei ole kohustuslik.</p>
+  <p>Teil on õigus lepingust taganeda ka interneti teel aadressil <a href="<%= baseUrl %>/withdraw"><%= baseUrl %>/withdraw</a>. Kui kasutate seda võimalust, saadame Teile viivitamata püsival andmekandjal (näiteks e-kirjaga) kinnituse Teie taganemisavalduse kättesaamise, sealhulgas selle sisu ning selle esitamise kuupäeva ja kellaaja kohta.</p>
   <p>Taganemistähtajast kinnipidamiseks piisab, kui saadate teatise taganemisõiguse kasutamise kohta enne taganemistähtaja möödumist.</p>
   <h3>Taganemise tagajärjed</h3>
   <p>Kui te käesolevast lepingust taganete, tagastame teile kõik teilt saadud maksed, sealhulgas kättetoimetamiskulud (välja arvatud lisakulud, mis tulenevad teie valitud kättetoimetamisviisist, mis erineb meie pakutud kõige odavamast tavapärasest kättetoimetamisviisist), viivitamata, kuid mitte hiljem kui 14 päeva möödumisel päevast, mil meid teavitati teie otsusest käesolevast lepingust taganeda. Teeme tagasimakse sama makseviisiga, mida kasutasite esialgse tehingu puhul, kui te ei ole sõnaselgelt nõustunud teistsuguse korraga; igal juhul ei kaasne tagasimaksega teile mingeid kulusid.</p>

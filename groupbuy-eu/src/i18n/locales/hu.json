@@ -312,5 +312,32 @@
     "newDealSubject": "Új csoportos vásárlás: {name}",
     "newDealText": "Új csoportos vásárlás indult: {name}, {price}. Csatlakozz eddig: {date}:",
     "unsubscribe": "Nem szeretnél több ilyen e-mailt? Leiratkozás: {link}"
+  },
+  "withdraw": {
+    "link": "Elállás a szerződéstől itt",
+    "title": "Elállás a szerződéstől",
+    "intro": "Egy rendeléstől az áru átvételétől számított 14 napon belül elállhatsz, és bármikor lemondhatod, mielőtt terhelnénk. Töltsd ki ezt az űrlapot, és nyomd meg az „Elállás megerősítése” gombot: azonnal küldünk egy visszaigazolást e-mailben.",
+    "order": "Rendelés",
+    "orderHint": "Melyik termékről van szó, például a neve.",
+    "orderKnown": "#{id} rendelés: {name}",
+    "name": "A neved",
+    "email": "E-mail-cím a visszaigazoláshoz",
+    "message": "Szeretnél még valamit hozzáfűzni? (nem kötelező)",
+    "messageLabel": "Üzenet",
+    "confirm": "Elállás megerősítése",
+    "errName": "Add meg a neved.",
+    "errEmail": "Adj meg egy érvényes e-mail-címet a visszaigazoláshoz.",
+    "errOrder": "Írd meg, melyik rendeléstől állsz el.",
+    "tooMany": "Erről a kapcsolatról túl sok elállást küldtek. Próbáld újra 15 perc múlva, vagy írj nekünk e-mailt.",
+    "doneTitle": "Megkaptuk az elállásodat",
+    "doneReceived": "Beérkezett: {date}. Az általad küldött adatokat tartalmazó visszaigazolást elküldtük ide: {email}.",
+    "doneCancelled": "A rendelésedet töröltük: nem terhelünk semmit, és a mentett fizetési módodat eltávolítottuk.",
+    "doneRefund": "A befizetésedet 14 napon belül visszatérítjük, ahogy a feltételeinkben szerepel.",
+    "doneReview": "Ellenőrizzük, melyik rendelésről van szó, és e-mailben válaszolunk.",
+    "doneEnded": "Ez a rendelés már lezárult, így nincs mit törölni vagy visszatéríteni.",
+    "reference": "Azonosító",
+    "emailHere": "Elállás a szerződéstől itt: {link}",
+    "emailSubject": "Megkaptuk az elállásodat ({reference})",
+    "emailText": "Az elállásodat ekkor kaptuk meg: {date} ({reference} azonosító). Ezt küldted:"
   }
 }

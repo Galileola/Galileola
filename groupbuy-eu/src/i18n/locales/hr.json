@@ -343,5 +343,32 @@
     "newDealSubject": "Nova grupna kupnja: {name}",
     "newDealText": "Započela je nova grupna kupnja: {name} za {price}. Pridružite se do {date}:",
     "unsubscribe": "Ne želite više ove e-poruke? Odjava: {link}"
+  },
+  "withdraw": {
+    "link": "Raskinite ugovor ovdje",
+    "title": "Jednostrani raskid ugovora",
+    "intro": "Od narudžbe možete odustati u roku od 14 dana od primitka robe, a otkazati je u bilo kojem trenutku prije nego što vam se naplati. Ispunite ovaj obrazac i pritisnite „Potvrdi raskid”: odmah ćemo vam poslati potvrdu e-poštom.",
+    "order": "Narudžba",
+    "orderHint": "O kojem je proizvodu riječ, na primjer njegov naziv.",
+    "orderKnown": "Narudžba #{id}: {name}",
+    "name": "Vaše ime",
+    "email": "Adresa e-pošte za potvrdu",
+    "message": "Želite li nešto dodati? (nije obvezno)",
+    "messageLabel": "Poruka",
+    "confirm": "Potvrdi raskid",
+    "errName": "Upišite svoje ime.",
+    "errEmail": "Upišite valjanu adresu e-pošte za potvrdu.",
+    "errOrder": "Navedite od koje narudžbe odustajete.",
+    "tooMany": "S ove veze poslano je previše raskida. Pokušajte ponovno za 15 minuta ili nam pišite e-poštom.",
+    "doneTitle": "Primili smo vaš raskid",
+    "doneReceived": "Primljeno {date}. Potvrda s podacima koje ste poslali poslana je na {email}.",
+    "doneCancelled": "Vaša je narudžba otkazana: ništa vam neće biti naplaćeno, a vaš spremljeni način plaćanja je uklonjen.",
+    "doneRefund": "Vratit ćemo vam uplatu u roku od 14 dana, kako je opisano u našim uvjetima.",
+    "doneReview": "Provjerit ćemo o kojoj je narudžbi riječ i odgovoriti vam e-poštom.",
+    "doneEnded": "Ova je narudžba već bila završena, pa nema što otkazati ni vratiti.",
+    "reference": "Broj",
+    "emailHere": "Raskinite ugovor ovdje: {link}",
+    "emailSubject": "Primili smo vaš raskid ({reference})",
+    "emailText": "Vaš raskid ugovora primili smo {date} (broj {reference}). Poslali ste nam:"
   }
 }

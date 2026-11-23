@@ -1,0 +1,41 @@
+<%- include('../partials/header') %>
+<p><a href="/admin">← Admin</a></p>
+<h1>↩️ Withdrawals</h1>
+<% if (flash) { %><div class="notice ok" role="status"><%= flash %></div><% } %>
+<p class="muted">What buyers sent with <strong>Withdraw from contract here</strong> (the link in the shop's footer, on their order page and in their emails). Each buyer got an acknowledgement by email straight away. Orders that hadn't been charged were cancelled automatically. A paid order is refunded within 14 days of the withdrawal; you may wait until the goods are back or the buyer has shown they sent them.</p>
+<% if (!withdrawals.length) { %>
+  <p class="card">No withdrawals yet.</p>
+<% } %>
+<% for (const w of withdrawals) { %>
+  <section class="card stack withdrawal<%= w.status === 'open' ? ' open' : '' %>">
+    <p class="row-between" style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0">
+      <strong><code><%= w.reference %></code> · <%= formatDate(w.created_at) %></strong>
+      <span class="badge<%= w.status === 'open' ? ' failed' : w.status === 'cancelled' ? ' released' : ' paid' %>"><%= w.status === 'open' ? 'To handle' : w.status === 'cancelled' ? 'Cancelled automatically' : 'Handled' %></span>
+    </p>
+    <dl class="withdrawal-summary">
+      <dt>Order</dt><dd><% if (w.deal_id) { %><a href="/admin/deals/<%= w.deal_id %>"><%= w.order_text %></a> <span class="muted small">(<%= w.order_status %><%= w.amount_cents ? ', ' + formatEuro(w.amount_cents) : '' %>)</span><% } else { %><%= w.order_text %> <span class="muted small">(not linked to an order)</span><% } %></dd>
+      <dt>Name</dt><dd><%= w.name %></dd>
+      <dt>Email</dt><dd><%= w.email %></dd>
+      <% if (w.message) { %><dt>Message</dt><dd><%= w.message %></dd><% } %>
+      <dt>Note</dt><dd><%= w.note %><% if (w.handled_at) { %> <span class="muted small">(<%= formatDate(w.handled_at) %>)</span><% } %></dd>
+    </dl>
+    <% if (w.status === 'open') { %>
+      <div class="row-buttons">
+        <% if (w.participant_id && ['paid', 'pending_setup', 'saved', 'failed', 'unpaid', 'late_failed'].includes(w.order_status)) { %>
+          <form method="post" action="/admin/withdrawals/<%= w.id %>/refund" data-confirm="<%= w.order_status === 'paid' ? 'Refund ' + formatEuro(w.amount_cents) + ' to ' + w.email + ' now?' : 'Cancel this order now? Nothing has been charged.' %>">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <button type="submit"><%= w.order_status === 'paid' ? 'Refund in full' : 'Cancel the order' %></button>
+          </form>
+        <% } %>
+        <form method="post" action="/admin/withdrawals/<%= w.id %>/done" class="inline-code-form">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <label class="visually-hidden" for="note-<%= w.id %>">Note</label>
+          <input type="text" id="note-<%= w.id %>" name="note" maxlength="300" placeholder="Note (optional), e.g. refunded by bank transfer">
+          <button type="submit" class="secondary">Mark as handled</button>
+        </form>
+      </div>
+    <% } %>
+  </section>
+<% } %>
+<script src="<%= asset('/static/js/admin.js') %>"></script>
+<%- include('../partials/footer') %>

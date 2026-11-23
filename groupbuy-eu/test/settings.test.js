@@ -19,7 +19,7 @@ async function startApp({ assistant = null, dbFile } = {}) {
   const config = {
     baseUrl: 'https://shop.test', adminUser: 'admin', adminPassword: 'secret-pw', appSecret: 'test-secret-0123456789abcdef',
     defaultTaxCode: 'txcd_99999999', uploadDir: path.join(dir, 'uploads'), trustProxy: false,
-    business: { name: '[Your company name]', address: '[Street, postcode, city, country]', email: 'env@example.com', vatId: '[EU VAT number]', registration: '[Company register and number]', supervisoryAuthority: '[DPA]' },
+    business: { name: '[Your company name]', address: '[Street, postcode, city, country]', email: 'env@example.com', vatId: '[EU VAT number]', registration: '[Company register and number]', supervisoryAuthority: '[DPA]', phone: '+372 5555 5555' },
   };
   const repo = createRepo(openDb(dbFile ?? path.join(dir, 'db.sqlite')));
   const ctx = { config, repo, clock: systemClock, photos: createPhotoStore(config.uploadDir), assistant, routes: [legalRoutes, publicRoutes, adminRoutes] };
@@ -46,16 +46,17 @@ test('shop details saved in the admin appear in the footer and legal pages, and 
 
   const bad = await app.post('/admin/business', { name: 'SEK Digital OÜ', email: 'not-an-email' });
   assert.equal(bad.status, 422);
+  assert.equal((await app.post('/admin/business', { name: 'SEK Digital OÜ', phone: 'call me maybe' })).status, 422, 'a phone number is checked');
 
   const r = await app.post('/admin/business', {
     name: 'SEK Digital OÜ', address: 'Narva mnt 5, 10117 Tallinn, Estonia', email: 'hello@sekdigital.eu',
-    vatId: 'EE102345678', registration: 'Registry code 16123456', supervisoryAuthority: 'Andmekaitse Inspektsioon',
+    vatId: 'EE102345678', registration: 'Registry code 16123456', supervisoryAuthority: 'Andmekaitse Inspektsioon', phone: '+372 5555 5555',
   });
   assert.equal(r.status, 303);
   const home = await app.get('/');
-  assert.match(home, /SEK Digital OÜ · Narva mnt 5, 10117 Tallinn, Estonia · VAT EE102345678/);
+  assert.match(home, /SEK Digital OÜ · Narva mnt 5, 10117 Tallinn, Estonia · <a href="tel:\+37255555555">\+372 5555 5555<\/a> · VAT EE102345678/);
   const terms = await app.get('/terms');
-  assert.match(terms, /SEK Digital OÜ, Narva mnt 5, 10117 Tallinn, Estonia\. Email: hello@sekdigital\.eu\. VAT number: EE102345678\. Registry code 16123456\./);
+  assert.match(terms, /SEK Digital OÜ, Narva mnt 5, 10117 Tallinn, Estonia\. Email: hello@sekdigital\.eu\. Phone: \+372 5555 5555\. VAT number: EE102345678\. Registry code 16123456\./);
   assert.match(await app.get('/privacy'), /Andmekaitse Inspektsioon/);
   assert.match(await app.get('/admin/business', app.auth), /value="EE102345678"/);
 

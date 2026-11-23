@@ -27,7 +27,7 @@ async function startApp({ business } = {}) {
   const config = {
     baseUrl: 'https://shop.test', adminUser: 'admin', adminPassword: 'secret-pw', appSecret: 'test-secret-0123456789abcdef',
     defaultTaxCode: 'txcd_99999999', uploadDir: path.join(dir, 'uploads'), trustProxy: false, contentLanguage: 'en',
-    business: business ?? { name: '[Your company name]', address: '[Street]', email: '[contact@example.com]', vatId: '[EU VAT number]', registration: '[Register]', supervisoryAuthority: '[DPA]' },
+    business: business ?? { name: '[Your company name]', address: '[Street]', email: '[contact@example.com]', vatId: '[EU VAT number]', registration: '[Register]', supervisoryAuthority: '[DPA]', phone: '+372 5555 5555' },
   };
   const repo = createRepo(openDb(path.join(dir, 'db.sqlite')));
   const server = createApp({ config, repo, clock: systemClock, photos: createPhotoStore(config.uploadDir), routes: [seoRoutes, publicRoutes, adminRoutes] }).listen(0);
@@ -73,7 +73,7 @@ test('every page has icons, a manifest and a share picture, even before any bran
 });
 
 test('admin: shop name, home search title and description, and verification codes', async (t) => {
-  const app = await startApp({ business: { name: 'SEK Digital OÜ', address: 'A', email: 'a@b.ee', vatId: 'EE1', registration: 'R', supervisoryAuthority: 'D' } });
+  const app = await startApp({ business: { name: 'SEK Digital OÜ', address: 'A', email: 'a@b.ee', vatId: 'EE1', registration: 'R', supervisoryAuthority: 'D', phone: '+372 5555 5555' } });
   t.after(app.close);
   assert.match(await app.get('/?lang=en'), /<title>Deals · SEK Digital OÜ<\/title>/, 'the company name until a shop name is set');
   assert.match(await app.get('/admin/settings', app.auth), /href="\/admin\/branding"/);
@@ -137,7 +137,7 @@ test('admin: logo and share picture uploads', { skip: !sharp && 'sharp is not in
 });
 
 test('security headers and security.txt', async (t) => {
-  const app = await startApp({ business: { name: 'SEK', address: 'A', email: 'security@sek.test', vatId: 'EE1', registration: 'R', supervisoryAuthority: 'D' } });
+  const app = await startApp({ business: { name: 'SEK', address: 'A', email: 'security@sek.test', vatId: 'EE1', registration: 'R', supervisoryAuthority: 'D', phone: '+372 5555 5555' } });
   t.after(app.close);
   const res = await fetch(`${app.base}/?lang=en`);
   assert.equal(res.headers.get('strict-transport-security'), 'max-age=31536000');

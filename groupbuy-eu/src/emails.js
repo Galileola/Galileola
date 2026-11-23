@@ -4,7 +4,7 @@ import { forLanguage } from './i18n/index.js';
 // src/i18n/locales). Every template gets ({ deal, p, baseUrl, business, now, i18n }), where deal
 // already has its name in that language when a translation exists. Links carry ?lang= so the page
 // opens in the same language as the email.
-const sign = (business) => `\n\n${business.name}\n${business.address}\n${business.email}`;
+const sign = (business) => `\n\n${business.name}\n${business.address}\n${business.email}${business.phone ? `\n${business.phone}` : ''}`;
 
 function helpers({ deal, p, baseUrl, i18n }) {
   const { t, formatEuro } = i18n;
@@ -21,13 +21,15 @@ function helpers({ deal, p, baseUrl, i18n }) {
     dealLink: `${baseUrl}/deals/${deal.slug}${q}`,
     termsLink: `${baseUrl}/terms${q}`,
     withdrawalLink: `${baseUrl}/terms${q}#withdrawal`,
+    // The online withdrawal function, opened for this buyer's order (src/withdrawals.js).
+    withdrawLink: `${baseUrl}/withdraw?order=${encodeURIComponent(p.token)}&lang=${i18n.lang}`,
   };
 }
 
 export const templates = {
   joined: (data) => {
     const { deal, p, business, i18n } = data;
-    const { t, name, amount, method, dealLink, termsLink } = helpers(data);
+    const { t, name, amount, method, dealLink, termsLink, withdrawLink } = helpers(data);
     const intro =
       deal.status === 'open'
         ? `${t('email.joinedOpen', { name })}
@@ -45,7 +47,8 @@ ${intro}
 ${method}
 ${t('email.dealPage', { link: dealLink })}
 
-${t('email.withdrawalRight', { link: termsLink })}${sign(business)}`,
+${t('email.withdrawalRight', { link: termsLink })}
+${t('withdraw.emailHere', { link: withdrawLink })}${sign(business)}`,
     };
   },
 
@@ -72,7 +75,7 @@ ${t('email.reachedIfFails')}${sign(business)}`,
 
   paid: (data) => {
     const { p, business } = data;
-    const { t, name, amount, method, withdrawalLink } = helpers(data);
+    const { t, name, amount, method, withdrawalLink, withdrawLink } = helpers(data);
     return {
       subject: t('email.paidSubject', { name }),
       body: `${t('email.hi', { name: p.name })}
@@ -81,7 +84,8 @@ ${t('email.paidText', { amount, name })}
 ${method}
 
 ${t('email.paidConfirmed')}
-${t('email.paidWithdrawal', { link: withdrawalLink })}${sign(business)}`,
+${t('email.paidWithdrawal', { link: withdrawalLink })}
+${t('withdraw.emailHere', { link: withdrawLink })}${sign(business)}`,
     };
   },
 
@@ -250,6 +254,48 @@ ${t('alerts.confirmIgnore')}${sign(business)}`,
 ${baseUrl}/deals/${deal.slug}${q}
 ${deal.headline ? `\n${deal.headline}\n` : ''}
 ${t('alerts.unsubscribe', { link: `${baseUrl}/alerts/unsubscribe/${sub.token}?lang=${i18n.lang}` })}${sign(business)}`,
+    };
+  },
+});
+
+// The online withdrawal function (src/withdrawals.js): the acknowledgement the buyer must get, with
+// what they sent and the date and time, and the shop's copy (in English, like the admin).
+Object.assign(templates, {
+  withdrawalReceived: (data) => {
+    const { withdrawal: w, outcome, business, i18n } = data;
+    const { t } = i18n;
+    const sent = [
+      `${t('withdraw.order')}: ${w.order_text}`,
+      `${t('withdraw.name')}: ${w.name}`,
+      `${t('withdraw.email')}: ${w.email}`,
+      w.message ? `${t('withdraw.messageLabel')}: ${w.message}` : '',
+    ].filter(Boolean);
+    const next = { cancelled: 'withdraw.doneCancelled', refund: 'withdraw.doneRefund', review: 'withdraw.doneReview', ended: 'withdraw.doneEnded' }[outcome];
+    return {
+      subject: t('withdraw.emailSubject', { reference: w.reference }),
+      body: `${t('email.hi', { name: w.name })}
+
+${t('withdraw.emailText', { date: i18n.formatDate(w.created_at), reference: w.reference })}
+
+${sent.join('\n')}
+
+${t(next)}${sign(business)}`,
+    };
+  },
+  withdrawalNotice: (data) => {
+    const { withdrawal: w, baseUrl, i18n } = data;
+    return {
+      subject: `Withdrawal ${w.reference}: ${w.order_text.slice(0, 80)}`,
+      body: `A buyer used "Withdraw from contract here" on ${i18n.formatDate(w.created_at)}.
+
+Order: ${w.order_text}
+Name: ${w.name}
+Email: ${w.email}
+Language: ${w.lang}
+${w.message ? `Message: ${w.message}\n` : ''}
+${w.note}
+
+They have been sent an acknowledgement. See Admin → Withdrawals: ${baseUrl}/admin/withdrawals`,
     };
   },
 });

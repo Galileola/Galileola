@@ -36,5 +36,6 @@
     <div class="notice"><%= p.refund_id ? t('done.withdrawnRefunded') : t('done.withdrawn') %></div>
   <% } %>
   <p><a href="/deals/<%= deal.slug %>"><%= t('done.backToDeal') %></a></p>
+  <% if (!['withdrawn', 'released'].includes(p.status)) { %><p><a class="withdraw-link" href="/withdraw?order=<%= encodeURIComponent(p.token) %>"><%= t('withdraw.link') %></a></p><% } %>
 </section>
 <%- include('partials/footer') %>

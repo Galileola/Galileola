@@ -91,7 +91,7 @@ async function startApp(assistant) {
     defaultTaxCode: 'txcd_99999999',
     uploadDir: path.join(dir, 'uploads'),
     trustProxy: false,
-    business: { name: 'Test Shop', address: 'Street 1', email: 'shop@example.com', vatId: 'EE1', registration: 'R1', supervisoryAuthority: 'DPA' },
+    business: { name: 'Test Shop', address: 'Street 1', email: 'shop@example.com', vatId: 'EE1', registration: 'R1', supervisoryAuthority: 'DPA', phone: '+372 5555 5555' },
   };
   const repo = createRepo(openDb(path.join(dir, 'db.sqlite')));
   const ctx = { config, repo, clock: systemClock, photos: createPhotoStore(config.uploadDir), assistant, routes: [publicRoutes, adminRoutes] };

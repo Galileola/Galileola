@@ -1,11 +1,11 @@
 <%# Built-in Finnish translation of terms-body.ejs. Shown in Finnish while the owner still uses the
     built-in English terms and has saved no Finnish text of their own (src/routes/legal.js), and
     used as the starting text in Admin → Legal pages. Keep it in step with the English file. %>
-  <div class="notice warn small">Malli: tarkistuta nämä ehdot juristilla niiden maiden osalta, joihin myyt, ennen julkaisua. Hakasulkeissa [ ] oleva teksti on täydennettävä. Peruuttamisoikeutta koskeva osa on oikeusministeriön asetuksen 110/2014 mallin mukainen; lisää puhelinnumerosi kohtaan [puhelinnumero].</div>
+  <div class="notice warn small">Malli: tarkistuta nämä ehdot juristilla niiden maiden osalta, joihin myyt, ennen julkaisua. Hakasulkeissa [ ] oleva teksti on täydennettävä. Peruuttamisoikeutta koskeva osa on oikeusministeriön asetuksen 110/2014 mallin mukainen.</div>
   <h1>Myynti- ja toimitusehdot</h1>
 
   <h2>1. Keitä olemme</h2>
-  <p><%= business.name %>, <%= business.address %>. Sähköposti: <%= business.email %>. ALV-tunniste: <%= business.vatId %>. <%= business.registration %>.</p>
+  <p><%= business.name %>, <%= business.address %>. Sähköposti: <%= business.email %>. Puhelin: <%= business.phone %>. ALV-tunniste: <%= business.vatId %>. <%= business.registration %>.</p>
 
   <h2>2. Miten yhteisosto toimii</h2>
   <p>Jokaisella tarjouksella on hinta, ostajien vähimmäismäärä ja määräaika (enintään 30 päivää tarjouksen alkamisesta). Liittyessänne teette tilauksen yhdestä tuotteesta ilmoitettuun hintaan. Tilaus toteutuu vain, jos tarjous saavuttaa ostajien vähimmäismäärän määräaikaan mennessä.</p>
@@ -34,7 +34,8 @@
   <p>Jos olette kuluttaja, teillä on seuraava peruuttamisoikeus. Ohje noudattaa oikeusministeriön asetuksen 110/2014 liitteen I mallia (sellaisena kuin se on muutettuna asetuksilla 754/2022 ja 165/2026).</p>
   <h3>Peruuttamisoikeus</h3>
   <p>Teillä on oikeus peruuttaa tämä sopimus 14 päivän kuluessa syytä ilmoittamatta. Peruuttamisen määräaika päättyy 14 päivän kuluttua siitä, kun tavara on vastaanotettu.</p>
-  <p>Peruuttamisoikeuden käyttämiseksi teidän on ilmoitettava meille (<%= business.name %>, <%= business.address %>, [puhelinnumero], <%= business.email %>) päätöksestänne peruuttaa sopimus yksiselitteisellä tavalla (esimerkiksi kirjeellä postitse tai sähköpostilla). Voitte käyttää liitteenä olevaa peruuttamislomaketta, mutta sen käyttö ei ole pakollista.</p>
+  <p>Peruuttamisoikeuden käyttämiseksi teidän on ilmoitettava meille (<%= business.name %>, <%= business.address %>, <%= business.phone %>, <%= business.email %>) päätöksestänne peruuttaa sopimus yksiselitteisellä tavalla (esimerkiksi kirjeellä postitse tai sähköpostilla). Voitte käyttää liitteenä olevaa peruuttamislomaketta, mutta sen käyttö ei ole pakollista.</p>
+  <p>Voitte käyttää peruuttamisoikeuttanne myös verkossa osoitteessa <a href="<%= baseUrl %>/withdraw"><%= baseUrl %>/withdraw</a>. Jos käytätte tätä verkkotoimintoa, lähetämme teille ilman aiheetonta viivytystä pysyvällä välineellä (esim. sähköpostitse) peruuttamisen vastaanottamista koskevan ilmoituksen, jossa mainitaan peruutuksen sisältö ja sen toimituspäivä ja -aika.</p>
   <p>Peruuttamisen määräajan noudattamiseksi riittää, että lähetätte ilmoituksenne peruuttamisoikeuden käytöstä ennen peruuttamisajan päättymistä.</p>
   <h3>Peruuttamisen vaikutukset</h3>
   <p>Jos peruutatte tämän sopimuksen, palautamme teille kaikki teiltä saamamme suoritukset, myös toimituskustannukset (paitsi lisäkustannuksia siitä, että olette valinnut tarjoamastamme edullisimmasta vakiotoimitustavasta poikkeavan toimitustavan), viivytyksettä ja joka tapauksessa viimeistään 14 päivän kuluttua peruuttamisilmoituksen saatuamme. Suoritamme palautuksen sillä maksutavalla, jota olette käyttänyt alkuperäisessä liiketoimessa, ellette ole nimenomaisesti suostunut muuhun, ja joka tapauksessa siten, että teille ei aiheudu suoritusten palauttamisesta kustannuksia.</p>

@@ -323,5 +323,32 @@
     "newDealSubject": "New group deal: {name}",
     "newDealText": "A new group deal has started: {name} for {price}. Join by {date}:",
     "unsubscribe": "Don't want these emails any more? Unsubscribe: {link}"
+  },
+  "withdraw": {
+    "link": "Withdraw from contract here",
+    "title": "Withdraw from a contract",
+    "intro": "You can withdraw from an order within 14 days of receiving the goods, and cancel it at any time before you are charged. Fill in this form and press “Confirm withdrawal”: we email you a confirmation straight away.",
+    "order": "Order",
+    "orderHint": "Which product it is, for example its name.",
+    "orderKnown": "Order #{id}: {name}",
+    "name": "Your name",
+    "email": "Email address for the confirmation",
+    "message": "Anything you'd like to add (optional)",
+    "messageLabel": "Message",
+    "confirm": "Confirm withdrawal",
+    "errName": "Enter your name.",
+    "errEmail": "Enter a valid email address for the confirmation.",
+    "errOrder": "Tell us which order you are withdrawing from.",
+    "tooMany": "Too many withdrawals were sent from this connection. Please try again in 15 minutes, or email us.",
+    "doneTitle": "We received your withdrawal",
+    "doneReceived": "Received on {date}. A confirmation with what you sent has been emailed to {email}.",
+    "doneCancelled": "Your order is cancelled: you will not be charged, and your saved payment method has been removed.",
+    "doneRefund": "We will refund your payment within 14 days, as described in our terms.",
+    "doneReview": "We will check which order this is and reply by email.",
+    "doneEnded": "This order had already ended, so there is nothing to cancel or refund.",
+    "reference": "Reference",
+    "emailHere": "Withdraw from contract here: {link}",
+    "emailSubject": "We received your withdrawal ({reference})",
+    "emailText": "We received your withdrawal from the contract on {date} (reference {reference}). This is what you sent:"
   }
 }

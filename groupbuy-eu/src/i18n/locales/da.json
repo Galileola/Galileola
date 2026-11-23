@@ -312,5 +312,32 @@
     "newDealSubject": "Nyt gruppekøb: {name}",
     "newDealText": "Et nyt gruppekøb er startet: {name} til {price}. Vær med senest {date}:",
     "unsubscribe": "Vil du ikke længere have disse e-mails? Afmeld: {link}"
+  },
+  "withdraw": {
+    "link": "Fortryd aftalen her",
+    "title": "Fortryd en aftale",
+    "intro": "Du kan fortryde en ordre inden for 14 dage efter, at du har modtaget varen, og annullere den når som helst, før du bliver trukket. Udfyld formularen, og tryk på „Bekræft fortrydelse“: Vi sender dig straks en bekræftelse på e-mail.",
+    "order": "Ordre",
+    "orderHint": "Hvilket produkt det drejer sig om, for eksempel navnet.",
+    "orderKnown": "Ordre #{id}: {name}",
+    "name": "Dit navn",
+    "email": "E-mailadresse til bekræftelsen",
+    "message": "Vil du tilføje noget? (valgfrit)",
+    "messageLabel": "Besked",
+    "confirm": "Bekræft fortrydelse",
+    "errName": "Skriv dit navn.",
+    "errEmail": "Skriv en gyldig e-mailadresse til bekræftelsen.",
+    "errOrder": "Skriv, hvilken ordre du fortryder.",
+    "tooMany": "Der er sendt for mange fortrydelser fra denne forbindelse. Prøv igen om 15 minutter, eller skriv til os.",
+    "doneTitle": "Vi har modtaget din fortrydelse",
+    "doneReceived": "Modtaget {date}. En bekræftelse med det, du sendte, er sendt til {email}.",
+    "doneCancelled": "Din ordre er annulleret: Du bliver ikke trukket, og din gemte betalingsmetode er fjernet.",
+    "doneRefund": "Vi tilbagebetaler din betaling inden for 14 dage som beskrevet i vores vilkår.",
+    "doneReview": "Vi undersøger, hvilken ordre det drejer sig om, og svarer dig på e-mail.",
+    "doneEnded": "Denne ordre var allerede afsluttet, så der er intet at annullere eller tilbagebetale.",
+    "reference": "Reference",
+    "emailHere": "Fortryd aftalen her: {link}",
+    "emailSubject": "Vi har modtaget din fortrydelse ({reference})",
+    "emailText": "Vi modtog din fortrydelse af aftalen {date} (reference {reference}). Det har du sendt:"
   }
 }

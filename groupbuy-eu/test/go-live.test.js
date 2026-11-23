@@ -34,7 +34,7 @@ test('placeholders in legal texts are found, links are not', () => {
   assert.ok(!PLACEHOLDER_RE.test('See [stripe.com/privacy](https://stripe.com/privacy).'));
 });
 
-const COMPLETE = { name: 'SEK Digital OÜ', address: 'Narva mnt 5, Tallinn', email: 'hello@sek.test', vatId: 'EE102345678', registration: 'Registry code 1', supervisoryAuthority: 'AKI' };
+const COMPLETE = { name: 'SEK Digital OÜ', address: 'Narva mnt 5, Tallinn', email: 'hello@sek.test', vatId: 'EE102345678', registration: 'Registry code 1', supervisoryAuthority: 'AKI', phone: '+372 5555 5555' };
 
 async function startApp({ live = true, business } = {}) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'gb-live-'));
@@ -42,7 +42,7 @@ async function startApp({ live = true, business } = {}) {
     baseUrl: 'https://shop.test', adminUser: 'admin', adminPassword: 'a-long-secret-pw', appSecret: 'test-secret-0123456789abcdef',
     defaultTaxCode: 'txcd_99999999', uploadDir: path.join(dir, 'uploads'), trustProxy: false, quietEmails: true,
     paymentsMode: live ? 'live' : 'test', smtpUrl: 'smtps://u:p@mail.test', stripeWebhookSecret: 'whsec_x',
-    business: business ?? { name: '[Your company name]', address: '[Street]', email: '[contact@example.com]', vatId: '[EU VAT number]', registration: '[Register]', supervisoryAuthority: '[DPA]' },
+    business: business ?? { name: '[Your company name]', address: '[Street]', email: '[contact@example.com]', vatId: '[EU VAT number]', registration: '[Register]', supervisoryAuthority: '[DPA]', phone: '+372 5555 5555' },
   };
   const repo = createRepo(openDb(path.join(dir, 'db.sqlite')));
   const stripe = { webhooks: { constructEvent: (body) => JSON.parse(body) } };

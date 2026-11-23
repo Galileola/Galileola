@@ -41,6 +41,7 @@ export async function anonymise(ctx, p) {
     },
     now
   );
+  repo.anonymiseWithdrawals?.({ participantId: p.id });
   return true;
 }
 

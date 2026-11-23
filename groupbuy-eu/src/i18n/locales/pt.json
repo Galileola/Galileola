@@ -312,5 +312,32 @@
     "newDealSubject": "Nova compra em grupo: {name}",
     "newDealText": "Começou uma nova compra em grupo: {name} por {price}. Adira até {date}:",
     "unsubscribe": "Já não quer receber estes e-mails? Cancelar a subscrição: {link}"
+  },
+  "withdraw": {
+    "link": "Resolver o contrato aqui",
+    "title": "Livre resolução de um contrato",
+    "intro": "Pode resolver uma encomenda no prazo de 14 dias após receber os produtos e cancelá-la a qualquer momento antes de ser cobrado. Preencha este formulário e clique em «Confirmar a resolução»: enviamos-lhe de imediato uma confirmação por e-mail.",
+    "order": "Encomenda",
+    "orderHint": "De que produto se trata, por exemplo o nome.",
+    "orderKnown": "Encomenda #{id}: {name}",
+    "name": "O seu nome",
+    "email": "Endereço de e-mail para a confirmação",
+    "message": "Quer acrescentar alguma coisa? (opcional)",
+    "messageLabel": "Mensagem",
+    "confirm": "Confirmar a resolução",
+    "errName": "Indique o seu nome.",
+    "errEmail": "Indique um endereço de e-mail válido para a confirmação.",
+    "errOrder": "Indique de que encomenda pretende resolver o contrato.",
+    "tooMany": "Foram enviadas demasiadas resoluções a partir desta ligação. Tente novamente dentro de 15 minutos ou envie-nos um e-mail.",
+    "doneTitle": "Recebemos a sua resolução",
+    "doneReceived": "Recebida em {date}. Foi enviada para {email} uma confirmação com o que nos enviou.",
+    "doneCancelled": "A sua encomenda foi cancelada: não será cobrado e o método de pagamento guardado foi removido.",
+    "doneRefund": "Reembolsaremos o seu pagamento no prazo de 14 dias, conforme descrito nos nossos termos.",
+    "doneReview": "Vamos verificar de que encomenda se trata e responder-lhe por e-mail.",
+    "doneEnded": "Esta encomenda já tinha terminado, por isso não há nada a cancelar ou reembolsar.",
+    "reference": "Referência",
+    "emailHere": "Resolver o contrato aqui: {link}",
+    "emailSubject": "Recebemos a sua resolução ({reference})",
+    "emailText": "Recebemos a sua resolução do contrato em {date} (referência {reference}). Foi isto que nos enviou:"
   }
 }

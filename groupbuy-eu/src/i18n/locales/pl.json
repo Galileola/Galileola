@@ -312,5 +312,32 @@
     "newDealSubject": "Nowy zakup grupowy: {name}",
     "newDealText": "Rozpoczął się nowy zakup grupowy: {name} za {price}. Dołącz do {date}:",
     "unsubscribe": "Nie chcesz już tych wiadomości? Wypisz się: {link}"
+  },
+  "withdraw": {
+    "link": "Odstąp od umowy tutaj",
+    "title": "Odstąpienie od umowy",
+    "intro": "Możesz odstąpić od zamówienia w ciągu 14 dni od otrzymania towaru i anulować je w każdej chwili, zanim pobierzemy płatność. Wypełnij ten formularz i kliknij „Potwierdź odstąpienie”: od razu wyślemy Ci potwierdzenie e-mailem.",
+    "order": "Zamówienie",
+    "orderHint": "Którego produktu dotyczy, na przykład jego nazwa.",
+    "orderKnown": "Zamówienie #{id}: {name}",
+    "name": "Twoje imię i nazwisko",
+    "email": "Adres e-mail do potwierdzenia",
+    "message": "Chcesz coś dodać? (opcjonalnie)",
+    "messageLabel": "Wiadomość",
+    "confirm": "Potwierdź odstąpienie",
+    "errName": "Wpisz swoje imię i nazwisko.",
+    "errEmail": "Wpisz prawidłowy adres e-mail do potwierdzenia.",
+    "errOrder": "Napisz, od którego zamówienia odstępujesz.",
+    "tooMany": "Z tego połączenia wysłano zbyt wiele odstąpień. Spróbuj ponownie za 15 minut albo napisz do nas e-mail.",
+    "doneTitle": "Otrzymaliśmy Twoje odstąpienie",
+    "doneReceived": "Otrzymano {date}. Potwierdzenie z tym, co wysłałeś, wysłaliśmy na {email}.",
+    "doneCancelled": "Twoje zamówienie zostało anulowane: nic nie zostanie pobrane, a zapisana metoda płatności została usunięta.",
+    "doneRefund": "Zwrócimy Twoją płatność w ciągu 14 dni, zgodnie z naszym regulaminem.",
+    "doneReview": "Sprawdzimy, którego zamówienia to dotyczy, i odpowiemy e-mailem.",
+    "doneEnded": "To zamówienie już się zakończyło, więc nie ma czego anulować ani zwracać.",
+    "reference": "Numer",
+    "emailHere": "Odstąp od umowy tutaj: {link}",
+    "emailSubject": "Otrzymaliśmy Twoje odstąpienie ({reference})",
+    "emailText": "Twoje odstąpienie od umowy otrzymaliśmy {date} (numer {reference}). Oto, co nam wysłałeś:"
   }
 }

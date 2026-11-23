@@ -348,5 +348,32 @@
     "newDealSubject": "Nový skupinový nákup: {name}",
     "newDealText": "Začal sa nový skupinový nákup: {name} za {price}. Pridajte sa do {date}:",
     "unsubscribe": "Nechcete už tieto e-maily dostávať? Odhlásiť sa: {link}"
+  },
+  "withdraw": {
+    "link": "Odstúpiť od zmluvy tu",
+    "title": "Odstúpenie od zmluvy",
+    "intro": "Od objednávky môžete odstúpiť do 14 dní od prevzatia tovaru a kedykoľvek ju zrušiť, kým vám nebola stiahnutá platba. Vyplňte tento formulár a kliknite na „Potvrdiť odstúpenie“: potvrdenie vám hneď pošleme e-mailom.",
+    "order": "Objednávka",
+    "orderHint": "O aký produkt ide, napríklad jeho názov.",
+    "orderKnown": "Objednávka #{id}: {name}",
+    "name": "Vaše meno",
+    "email": "E-mailová adresa na potvrdenie",
+    "message": "Chcete niečo doplniť? (nepovinné)",
+    "messageLabel": "Správa",
+    "confirm": "Potvrdiť odstúpenie",
+    "errName": "Zadajte svoje meno.",
+    "errEmail": "Zadajte platnú e-mailovú adresu na potvrdenie.",
+    "errOrder": "Uveďte, od ktorej objednávky odstupujete.",
+    "tooMany": "Z tohto pripojenia bolo odoslaných príliš veľa odstúpení. Skúste to znova o 15 minút alebo nám napíšte e-mail.",
+    "doneTitle": "Vaše odstúpenie sme prijali",
+    "doneReceived": "Prijaté {date}. Potvrdenie s údajmi, ktoré ste odoslali, sme poslali na {email}.",
+    "doneCancelled": "Vaša objednávka je zrušená: nič vám nebude účtované a uložený spôsob platby bol odstránený.",
+    "doneRefund": "Platbu vám vrátime do 14 dní, ako je opísané v našich obchodných podmienkach.",
+    "doneReview": "Overíme, o ktorú objednávku ide, a odpovieme vám e-mailom.",
+    "doneEnded": "Táto objednávka už bola ukončená, takže nie je čo rušiť ani vracať.",
+    "reference": "Číslo",
+    "emailHere": "Odstúpiť od zmluvy tu: {link}",
+    "emailSubject": "Vaše odstúpenie sme prijali ({reference})",
+    "emailText": "Vaše odstúpenie od zmluvy sme prijali {date} (číslo {reference}). Poslali ste nám:"
   }
 }

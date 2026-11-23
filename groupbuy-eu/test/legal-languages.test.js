@@ -25,7 +25,7 @@ async function startShop(extra = {}) {
     port: 0, baseUrl: 'https://shop.test', adminUser: 'admin', adminPassword: 'secret-pw', appSecret: 'test-secret-0123456789abcdef',
     stripePublishableKey: 'pk_test_1', defaultTaxCode: 'txcd_99999999', uploadDir: path.join(dir, 'uploads'), trustProxy: false,
     quietEmails: true, contentLanguage: 'en', paymentsMode: 'test',
-    business: { name: 'Põhjala Ost OÜ', address: 'Narva mnt 5, 10117 Tallinn, Estonia', email: 'shop@example.com', vatId: 'EE100000000', registration: 'Reg. 12345678', supervisoryAuthority: 'Andmekaitse Inspektsioon' },
+    business: { name: 'Põhjala Ost OÜ', address: 'Narva mnt 5, 10117 Tallinn, Estonia', email: 'shop@example.com', vatId: 'EE100000000', registration: 'Reg. 12345678', supervisoryAuthority: 'Andmekaitse Inspektsioon', phone: '+372 5555 5555' },
     ...extra,
   };
   const repo = createRepo(openDb(path.join(dir, 'db.sqlite')));

@@ -74,6 +74,18 @@ Admin creates deal ──► buyers join (SetupIntent: card / SEPA / iDEAL→SEP
   visitors read built-in translations (`views/legal/*-body.<lang>.ejs`) while the English text is
   the built-in one; the admin's legal page editor starts from them. Stripe.js only loads on
   payment pages.
+- **Online withdrawal function** (Article 11a of Directive 2011/83/EU, as amended by Directive
+  (EU) 2023/2673; applies since 19 June 2026): "Withdraw from contract here" is in the footer of
+  every page, on the buyer's order page and in the joined and paid emails. `/withdraw` asks for the
+  order, the buyer's name and an email address, and ends with "Confirm withdrawal". The buyer is
+  emailed an acknowledgement at once, with what they sent and the date and time; the shop gets a
+  copy. Opened from the buyer's own link, an order that hasn't been charged is cancelled
+  automatically. Paid orders, payments in progress and requests from the general link (where
+  anyone could type someone else's email) wait in Admin → Withdrawals, which refunds in full
+  (and reverses the VAT record) with one button. The terms describe it in every language.
+- **Phone number**: Admin → Settings → Shop details (or `BUSINESS_PHONE`). EU consumer law asks
+  for it next to the address and email; it is shown in the footer, the terms (including the
+  withdrawal instructions) and the emails, and the go-live checklist requires it.
 - **Cookie notice**: the shop sets only necessary cookies (consent choice, chosen language,
   Stripe's fraud prevention on payment pages), so the notice only informs, with one "OK" button.
   Optional cookies go in `src/cookies.js`; once that list has one, the notice offers "Only

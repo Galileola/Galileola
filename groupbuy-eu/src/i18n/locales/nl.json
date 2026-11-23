@@ -312,5 +312,32 @@
     "newDealSubject": "Nieuwe groepsdeal: {name}",
     "newDealText": "Er is een nieuwe groepsdeal gestart: {name} voor {price}. Doe mee vóór {date}:",
     "unsubscribe": "Wil je deze e-mails niet meer? Afmelden: {link}"
+  },
+  "withdraw": {
+    "link": "Herroep de overeenkomst hier",
+    "title": "Een overeenkomst herroepen",
+    "intro": "Je kunt een bestelling binnen 14 dagen na ontvangst van de producten herroepen, en haar op elk moment annuleren voordat er iets is afgeschreven. Vul dit formulier in en klik op ‘Herroeping bevestigen’: we sturen je meteen een bevestiging per e-mail.",
+    "order": "Bestelling",
+    "orderHint": "Om welk product het gaat, bijvoorbeeld de naam.",
+    "orderKnown": "Bestelling #{id}: {name}",
+    "name": "Je naam",
+    "email": "E-mailadres voor de bevestiging",
+    "message": "Wil je nog iets toevoegen? (optioneel)",
+    "messageLabel": "Bericht",
+    "confirm": "Herroeping bevestigen",
+    "errName": "Vul je naam in.",
+    "errEmail": "Vul een geldig e-mailadres in voor de bevestiging.",
+    "errOrder": "Geef aan welke bestelling je herroept.",
+    "tooMany": "Er zijn te veel herroepingen verstuurd vanaf deze verbinding. Probeer het over 15 minuten opnieuw of stuur ons een e-mail.",
+    "doneTitle": "We hebben je herroeping ontvangen",
+    "doneReceived": "Ontvangen op {date}. Een bevestiging met wat je hebt verstuurd, is gemaild naar {email}.",
+    "doneCancelled": "Je bestelling is geannuleerd: er wordt niets afgeschreven en je opgeslagen betaalmethode is verwijderd.",
+    "doneRefund": "We betalen je binnen 14 dagen terug, zoals beschreven in onze voorwaarden.",
+    "doneReview": "We kijken om welke bestelling het gaat en antwoorden je per e-mail.",
+    "doneEnded": "Deze bestelling was al afgelopen, dus er valt niets te annuleren of terug te betalen.",
+    "reference": "Kenmerk",
+    "emailHere": "Herroep de overeenkomst hier: {link}",
+    "emailSubject": "We hebben je herroeping ontvangen ({reference})",
+    "emailText": "We hebben je herroeping van de overeenkomst ontvangen op {date} (kenmerk {reference}). Dit heb je ons gestuurd:"
   }
 }

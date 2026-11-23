@@ -32,7 +32,7 @@ async function startShop() {
     stripePublishableKey: 'pk_test_123', stripeWebhookSecret: WEBHOOK_SECRET, cronSecret: CRON_SECRET, defaultTaxCode: 'txcd_99999999',
     uploadDir: path.join(dir, 'uploads'), backupDir: path.join(dir, 'backups'), trustProxy: 1, quietEmails: true, joinRateLimit: 50,
     contentLanguage: 'en', paymentsMode: 'test',
-    business: { name: 'Test Shop', address: 'Street 1', email: 'shop@example.com', vatId: 'EE1', registration: 'R1', supervisoryAuthority: 'DPA' },
+    business: { name: 'Test Shop', address: 'Street 1', email: 'shop@example.com', vatId: 'EE1', registration: 'R1', supervisoryAuthority: 'DPA', phone: '+372 5555 5555' },
   };
   const repo = createRepo(openDb(path.join(dir, 'db.sqlite')));
   const stripe = createFakeStripe();
@@ -89,7 +89,7 @@ test('security: every admin page and download needs a login', async (t) => {
     '/admin', '/admin/go-live', '/admin/deals/new', `/admin/deals/${shop.deal.id}`, `/admin/deals/${shop.deal.id}/orders.csv`,
     '/admin/backup.sqlite', '/admin/customers', '/admin/customers.csv', '/admin/photos.zip', '/admin/subscribers.csv',
     '/admin/emails', '/admin/settings', '/admin/security', '/admin/password', '/admin/performance', '/admin/import',
-    '/admin/legal', '/admin/business', '/admin/branding', '/admin/snap', '/admin/two-step',
+    '/admin/legal', '/admin/business', '/admin/branding', '/admin/snap', '/admin/two-step', '/admin/withdrawals', '/admin/languages',
   ];
   for (const p of gets) {
     const r = await shop.raw('GET', p);
@@ -97,7 +97,7 @@ test('security: every admin page and download needs a login', async (t) => {
     assert.match(r.headers.location, /^\/admin\/login\?next=/, p);
     assert.doesNotMatch(r.text, /SQLite format|@example\.com/, `${p} leaked data`);
   }
-  for (const p of ['/admin/business', `/admin/deals/${shop.deal.id}/delete`, '/admin/customers/erase', '/admin/password', '/admin/tick', '/admin/security/disable']) {
+  for (const p of ['/admin/business', `/admin/deals/${shop.deal.id}/delete`, '/admin/customers/erase', '/admin/password', '/admin/tick', '/admin/security/disable', '/admin/withdrawals/1/refund', '/admin/withdrawals/1/done', '/admin/languages']) {
     const r = await shop.raw('POST', p, { 'Content-Type': 'application/x-www-form-urlencoded' }, 'name=Hacked&_csrf=x');
     assert.equal(r.status, 401, `POST ${p} answered ${r.status} without a login`);
   }

@@ -348,5 +348,32 @@
     "newDealSubject": "Nov skupinski nakup: {name}",
     "newDealText": "Začel se je nov skupinski nakup: {name} za {price}. Pridružite se do {date}:",
     "unsubscribe": "Teh sporočil ne želite več prejemati? Odjava: {link}"
+  },
+  "withdraw": {
+    "link": "Odstopite od pogodbe tukaj",
+    "title": "Odstop od pogodbe",
+    "intro": "Od naročila lahko odstopite v 14 dneh od prejema blaga, prekličete pa ga lahko kadar koli, preden vam bremenimo plačilo. Izpolnite ta obrazec in pritisnite »Potrdi odstop«: potrdilo vam takoj pošljemo po e-pošti.",
+    "order": "Naročilo",
+    "orderHint": "Za kateri izdelek gre, na primer njegovo ime.",
+    "orderKnown": "Naročilo #{id}: {name}",
+    "name": "Vaše ime",
+    "email": "E-poštni naslov za potrdilo",
+    "message": "Želite kaj dodati? (neobvezno)",
+    "messageLabel": "Sporočilo",
+    "confirm": "Potrdi odstop",
+    "errName": "Vpišite svoje ime.",
+    "errEmail": "Vpišite veljaven e-poštni naslov za potrdilo.",
+    "errOrder": "Navedite, od katerega naročila odstopate.",
+    "tooMany": "S te povezave je bilo poslanih preveč odstopov. Poskusite znova čez 15 minut ali nam pišite po e-pošti.",
+    "doneTitle": "Prejeli smo vaš odstop",
+    "doneReceived": "Prejeto {date}. Potrdilo s podatki, ki ste jih poslali, smo poslali na {email}.",
+    "doneCancelled": "Vaše naročilo je preklicano: nič vam ne bomo zaračunali, vaš shranjeni način plačila pa smo odstranili.",
+    "doneRefund": "Plačilo vam bomo vrnili v 14 dneh, kot je opisano v naših pogojih.",
+    "doneReview": "Preverili bomo, za katero naročilo gre, in vam odgovorili po e-pošti.",
+    "doneEnded": "To naročilo se je že končalo, zato ni ničesar za preklic ali vračilo.",
+    "reference": "Številka",
+    "emailHere": "Odstopite od pogodbe tukaj: {link}",
+    "emailSubject": "Prejeli smo vaš odstop ({reference})",
+    "emailText": "Vaš odstop od pogodbe smo prejeli {date} (številka {reference}). Poslali ste nam:"
   }
 }

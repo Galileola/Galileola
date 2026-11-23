@@ -5,7 +5,7 @@
   <h1>Pārdošanas noteikumi</h1>
 
   <h2>1. Kas mēs esam</h2>
-  <p><%= business.name %>, <%= business.address %>. E-pasts: <%= business.email %>. PVN maksātāja numurs: <%= business.vatId %>. <%= business.registration %>.</p>
+  <p><%= business.name %>, <%= business.address %>. E-pasts: <%= business.email %>. Tālrunis: <%= business.phone %>. PVN maksātāja numurs: <%= business.vatId %>. <%= business.registration %>.</p>
 
   <h2>2. Kā darbojas kopīgais pirkums</h2>
   <p>Katram piedāvājumam ir cena, minimālais pircēju skaits un termiņš (ne vairāk kā 30 dienas pēc piedāvājuma sākuma). Pievienojoties jūs veicat pasūtījumu par vienu preci norādītajā cenā. Pasūtījums tiek izpildīts tikai tad, ja līdz termiņam piedāvājums sasniedz minimālo pircēju skaitu.</p>
@@ -34,7 +34,8 @@
   <p>Ja esat patērētājs, jums ir šādas atteikuma tiesības.</p>
   <h3>Atteikuma tiesības</h3>
   <p>Jums ir tiesības atteikties no šā līguma 14 dienu laikā, neminot iemeslu. Atteikuma termiņš beidzas pēc 14 dienām no dienas, kad jūs vai jūsu norādīta trešā persona, kas nav pārvadātājs, iegūst preces fiziskā valdījumā.</p>
-  <p>Lai izmantotu atteikuma tiesības, jums mūs (<%= business.name %>, <%= business.address %>, <%= business.email %>) jāinformē par savu lēmumu atteikties no šā līguma, sniedzot nepārprotamu paziņojumu (piemēram, vēstuli, kas nosūtīta pa pastu vai e-pastu). Jūs varat izmantot zemāk esošo atteikuma veidlapas paraugu, taču tas nav obligāti.</p>
+  <p>Lai izmantotu atteikuma tiesības, jums mūs (<%= business.name %>, <%= business.address %>, <%= business.phone %>, <%= business.email %>) jāinformē par savu lēmumu atteikties no šā līguma, sniedzot nepārprotamu paziņojumu (piemēram, vēstuli, kas nosūtīta pa pastu vai e-pastu). Jūs varat izmantot zemāk esošo atteikuma veidlapas paraugu, taču tas nav obligāti.</p>
+  <p>Jūs varat izmantot atteikuma tiesības arī tiešsaistē: <a href="<%= baseUrl %>/withdraw"><%= baseUrl %>/withdraw</a>. Ja izmantojat šo tiešsaistes funkciju, mēs bez nepamatotas kavēšanās nosūtīsim jums apstiprinājumu par atteikuma saņemšanu pastāvīgā informācijas nesējā (piemēram, pa e-pastu), norādot tā saturu un iesniegšanas datumu un laiku.</p>
   <p>Lai ievērotu atteikuma termiņu, pietiek ar to, ka jūs nosūtāt paziņojumu par atteikuma tiesību izmantošanu pirms atteikuma termiņa beigām.</p>
   <h3>Atteikuma sekas</h3>
   <p>Ja jūs atsakāties no šā līguma, mēs jums atmaksājam visus no jums saņemtos maksājumus, tostarp piegādes izmaksas (izņemot papildu izmaksas, kas rodas, ja esat izvēlējies citu piegādes veidu, nevis mūsu piedāvāto lētāko standarta piegādi), bez nepamatotas kavēšanās un jebkurā gadījumā ne vēlāk kā 14 dienu laikā no dienas, kad mūs informēja par jūsu lēmumu atteikties no šā līguma. Mēs veiksim atmaksu, izmantojot to pašu maksāšanas līdzekli, ko jūs izmantojāt sākotnējā darījumā, ja vien jūs neesat skaidri piekritis citam risinājumam; jebkurā gadījumā jums nav jāmaksā nekāda maksa saistībā ar šādu atmaksu.</p>

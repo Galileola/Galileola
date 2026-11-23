@@ -312,5 +312,32 @@
     "newDealSubject": "Nouvel achat groupé : {name}",
     "newDealText": "Un nouvel achat groupé a commencé : {name} pour {price}. Participez avant le {date} :",
     "unsubscribe": "Vous ne souhaitez plus recevoir ces e-mails ? Désinscription : {link}"
+  },
+  "withdraw": {
+    "link": "Se rétracter du contrat ici",
+    "title": "Se rétracter d'un contrat",
+    "intro": "Vous pouvez vous rétracter d'une commande dans les 14 jours suivant la réception des produits, et l'annuler à tout moment avant d'être débité. Remplissez ce formulaire et cliquez sur « Confirmer la rétractation » : nous vous envoyons aussitôt une confirmation par e-mail.",
+    "order": "Commande",
+    "orderHint": "De quel produit il s'agit, par exemple son nom.",
+    "orderKnown": "Commande #{id} : {name}",
+    "name": "Votre nom",
+    "email": "Adresse e-mail pour la confirmation",
+    "message": "Souhaitez-vous ajouter quelque chose ? (facultatif)",
+    "messageLabel": "Message",
+    "confirm": "Confirmer la rétractation",
+    "errName": "Saisissez votre nom.",
+    "errEmail": "Saisissez une adresse e-mail valide pour la confirmation.",
+    "errOrder": "Indiquez de quelle commande vous vous rétractez.",
+    "tooMany": "Trop de rétractations ont été envoyées depuis cette connexion. Réessayez dans 15 minutes ou écrivez-nous par e-mail.",
+    "doneTitle": "Nous avons bien reçu votre rétractation",
+    "doneReceived": "Reçue le {date}. Une confirmation reprenant ce que vous avez envoyé a été adressée à {email}.",
+    "doneCancelled": "Votre commande est annulée : vous ne serez pas débité et votre moyen de paiement enregistré a été supprimé.",
+    "doneRefund": "Nous vous rembourserons dans un délai de 14 jours, comme indiqué dans nos conditions.",
+    "doneReview": "Nous vérifions de quelle commande il s'agit et vous répondons par e-mail.",
+    "doneEnded": "Cette commande était déjà terminée : il n'y a rien à annuler ni à rembourser.",
+    "reference": "Référence",
+    "emailHere": "Se rétracter du contrat ici : {link}",
+    "emailSubject": "Nous avons bien reçu votre rétractation ({reference})",
+    "emailText": "Nous avons reçu votre rétractation du contrat le {date} (référence {reference}). Voici ce que vous avez envoyé :"
   }
 }

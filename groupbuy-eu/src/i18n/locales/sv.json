@@ -312,5 +312,32 @@
     "newDealSubject": "Nytt gruppköp: {name}",
     "newDealText": "Ett nytt gruppköp har startat: {name} för {price}. Gå med senast {date}:",
     "unsubscribe": "Vill du inte längre få de här mejlen? Avregistrera dig: {link}"
+  },
+  "withdraw": {
+    "link": "Ångra avtalet här",
+    "title": "Ångra ett avtal",
+    "intro": "Du kan ångra en beställning inom 14 dagar från att du tagit emot varorna, och avbryta den när som helst innan du debiteras. Fyll i formuläret och tryck på ”Bekräfta att du ångrar”: vi skickar en bekräftelse till dig via e-post direkt.",
+    "order": "Beställning",
+    "orderHint": "Vilken produkt det gäller, till exempel namnet.",
+    "orderKnown": "Beställning #{id}: {name}",
+    "name": "Ditt namn",
+    "email": "E-postadress för bekräftelsen",
+    "message": "Vill du lägga till något? (valfritt)",
+    "messageLabel": "Meddelande",
+    "confirm": "Bekräfta att du ångrar",
+    "errName": "Skriv ditt namn.",
+    "errEmail": "Skriv en giltig e-postadress för bekräftelsen.",
+    "errOrder": "Skriv vilken beställning du ångrar.",
+    "tooMany": "För många ångermeddelanden har skickats från den här anslutningen. Försök igen om 15 minuter eller mejla oss.",
+    "doneTitle": "Vi har tagit emot ditt ångermeddelande",
+    "doneReceived": "Mottaget {date}. En bekräftelse med det du skickade har mejlats till {email}.",
+    "doneCancelled": "Din beställning är avbruten: du debiteras ingenting och din sparade betalningsmetod har tagits bort.",
+    "doneRefund": "Vi betalar tillbaka din betalning inom 14 dagar, enligt våra villkor.",
+    "doneReview": "Vi kontrollerar vilken beställning det gäller och svarar dig via e-post.",
+    "doneEnded": "Den här beställningen var redan avslutad, så det finns inget att avbryta eller betala tillbaka.",
+    "reference": "Referens",
+    "emailHere": "Ångra avtalet här: {link}",
+    "emailSubject": "Vi har tagit emot ditt ångermeddelande ({reference})",
+    "emailText": "Vi tog emot ditt ångermeddelande för avtalet {date} (referens {reference}). Detta skickade du:"
   }
 }

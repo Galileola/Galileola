@@ -312,5 +312,32 @@
     "newDealSubject": "Uusi ryhmäosto: {name}",
     "newDealText": "Uusi ryhmäosto on alkanut: {name} hintaan {price}. Liity viimeistään {date}:",
     "unsubscribe": "Etkö halua enää näitä viestejä? Peruuta tilaus: {link}"
+  },
+  "withdraw": {
+    "link": "Peru sopimus tästä",
+    "title": "Sopimuksen peruuttaminen",
+    "intro": "Voit peruuttaa tilauksen 14 päivän kuluessa tavaran vastaanottamisesta ja perua sen milloin tahansa ennen kuin sinua veloitetaan. Täytä tämä lomake ja paina ”Vahvista peruutus”: lähetämme sinulle heti vahvistuksen sähköpostitse.",
+    "order": "Tilaus",
+    "orderHint": "Mistä tuotteesta on kyse, esimerkiksi sen nimi.",
+    "orderKnown": "Tilaus #{id}: {name}",
+    "name": "Nimesi",
+    "email": "Sähköpostiosoite vahvistusta varten",
+    "message": "Haluatko lisätä jotain? (vapaaehtoinen)",
+    "messageLabel": "Viesti",
+    "confirm": "Vahvista peruutus",
+    "errName": "Kirjoita nimesi.",
+    "errEmail": "Anna kelvollinen sähköpostiosoite vahvistusta varten.",
+    "errOrder": "Kerro, minkä tilauksen peruutat.",
+    "tooMany": "Tästä yhteydestä on lähetetty liian monta peruutusta. Yritä uudelleen 15 minuutin kuluttua tai lähetä meille sähköpostia.",
+    "doneTitle": "Saimme peruutuksesi",
+    "doneReceived": "Vastaanotettu {date}. Vahvistus lähettämistäsi tiedoista on lähetetty osoitteeseen {email}.",
+    "doneCancelled": "Tilauksesi on peruttu: sinua ei veloiteta, ja tallennettu maksutapasi on poistettu.",
+    "doneRefund": "Palautamme maksusi 14 päivän kuluessa ehtojemme mukaisesti.",
+    "doneReview": "Tarkistamme, mistä tilauksesta on kyse, ja vastaamme sähköpostitse.",
+    "doneEnded": "Tämä tilaus oli jo päättynyt, joten peruttavaa tai palautettavaa ei ole.",
+    "reference": "Viite",
+    "emailHere": "Peru sopimus tästä: {link}",
+    "emailSubject": "Saimme peruutuksesi ({reference})",
+    "emailText": "Saimme sopimuksen peruutuksesi {date} (viite {reference}). Lähettämäsi tiedot:"
   }
 }

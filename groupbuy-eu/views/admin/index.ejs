@@ -4,6 +4,7 @@
   <span><strong>Snap a deal</strong><span>Seen a great product? Take a photo. The AI writes the ad, you add the price, and it's live.</span></span>
 </a>
 <% if (locals.flash) { %><div class="notice"><%= flash %></div><% } %>
+<% if (locals.openWithdrawals) { %><div class="notice warn"><strong>↩️ <%= openWithdrawals %> withdrawal<%= openWithdrawals === 1 ? '' : 's' %> to handle.</strong> A paid order must be refunded within 14 days. <a href="/admin/withdrawals">Open Withdrawals</a></div><% } %>
 <% if (locals.live && problems.length) { %>
   <div class="notice bad"><strong>Real payments are on, but the shop isn't taking new orders yet.</strong> Deal pages say "closed to new buyers" until these are done: <%= problems.map((p) => p.label).join(', ') %>. <a href="/admin/go-live">Open the go-live checklist</a>.</div>
 <% } else if (locals.live) { %>

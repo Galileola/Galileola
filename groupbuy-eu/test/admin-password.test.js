@@ -22,7 +22,7 @@ async function start(adminPassword, dbFile) {
   const config = {
     baseUrl: 'http://localhost', adminUser: 'admin', adminPassword, appSecret: 'test-secret-0123456789abcdef',
     defaultTaxCode: 'txcd_99999999', uploadDir: path.join(path.dirname(dbFile), 'uploads'), trustProxy: false,
-    business: { name: 'Shop', address: 'A', email: 'a@b.c', vatId: 'V', registration: 'R', supervisoryAuthority: 'D' },
+    business: { name: 'Shop', address: 'A', email: 'a@b.c', vatId: 'V', registration: 'R', supervisoryAuthority: 'D', phone: '+372 5555 5555' },
   };
   const repo = createRepo(openDb(dbFile));
   const server = createApp({ config, repo, clock: systemClock, routes: [adminRoutes] }).listen(0);

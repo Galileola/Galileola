@@ -343,5 +343,32 @@
     "newDealSubject": "Nouă cumpărare în grup: {name}",
     "newDealText": "A început o nouă cumpărare în grup: {name} la {price}. Alătură-te până la {date}:",
     "unsubscribe": "Nu mai vrei aceste e-mailuri? Dezabonează-te: {link}"
+  },
+  "withdraw": {
+    "link": "Retrage-te din contract aici",
+    "title": "Retragerea dintr-un contract",
+    "intro": "Te poți retrage dintr-o comandă în 14 zile de la primirea produselor și o poți anula oricând înainte să fii debitat. Completează acest formular și apasă „Confirmă retragerea”: îți trimitem imediat o confirmare pe e-mail.",
+    "order": "Comandă",
+    "orderHint": "Despre ce produs este vorba, de exemplu numele lui.",
+    "orderKnown": "Comanda #{id}: {name}",
+    "name": "Numele tău",
+    "email": "Adresa de e-mail pentru confirmare",
+    "message": "Vrei să adaugi ceva? (opțional)",
+    "messageLabel": "Mesaj",
+    "confirm": "Confirmă retragerea",
+    "errName": "Introdu numele tău.",
+    "errEmail": "Introdu o adresă de e-mail validă pentru confirmare.",
+    "errOrder": "Spune-ne din ce comandă te retragi.",
+    "tooMany": "De pe această conexiune s-au trimis prea multe retrageri. Încearcă din nou peste 15 minute sau scrie-ne un e-mail.",
+    "doneTitle": "Am primit retragerea ta",
+    "doneReceived": "Primită pe {date}. Am trimis la {email} o confirmare cu ce ne-ai trimis.",
+    "doneCancelled": "Comanda ta a fost anulată: nu vei fi debitat, iar metoda de plată salvată a fost eliminată.",
+    "doneRefund": "Îți rambursăm plata în 14 zile, așa cum este descris în termenii noștri.",
+    "doneReview": "Verificăm despre ce comandă este vorba și îți răspundem pe e-mail.",
+    "doneEnded": "Această comandă se încheiase deja, așa că nu este nimic de anulat sau de rambursat.",
+    "reference": "Referință",
+    "emailHere": "Retrage-te din contract aici: {link}",
+    "emailSubject": "Am primit retragerea ta ({reference})",
+    "emailText": "Am primit retragerea ta din contract pe {date} (referința {reference}). Iată ce ne-ai trimis:"
   }
 }

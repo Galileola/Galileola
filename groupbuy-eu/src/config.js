@@ -87,6 +87,7 @@ export function loadConfig(env = process.env) {
       name: env.BUSINESS_NAME || '[Your company name]',
       address: env.BUSINESS_ADDRESS || '[Street, postcode, city, country]',
       email: env.BUSINESS_EMAIL || '[contact@example.com]',
+      phone: env.BUSINESS_PHONE || '[Phone number]',
       vatId: env.BUSINESS_VAT_ID || '[EU VAT number]',
       registration: env.BUSINESS_REGISTRATION || '[Company register and number]',
       supervisoryAuthority: env.BUSINESS_DPA || '[Your national data protection authority]',

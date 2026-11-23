@@ -41,6 +41,7 @@ import { copyPhotos, dealRoutes, dealToFormValues } from './adminDeals.js';
 import { brandingParsers, brandingRoutes } from './adminBranding.js';
 import { fulfilmentRoutes } from './adminFulfilment.js';
 import { customerRoutes } from './adminCustomers.js';
+import { withdrawalRoutes } from './adminWithdrawals.js';
 import { adminAlertRoutes } from './alerts.js';
 import { goLiveChecks, isLive, liveProblems } from '../goLive.js';
 import { twoStepGate, twoStepRoutes } from './adminTwoStep.js';
@@ -115,7 +116,7 @@ export function adminRoutes(app, ctx) {
     const deals = repo
       .listDeals()
       .map((d) => ({ ...d, count: repo.committedCount(d.id), cover: repo.coverPhoto(d.id) }));
-    res.render('admin/index', { title: 'Admin', deals, flash: req.query.flash || '', live: isLive(config), problems: liveProblems(ctx) });
+    res.render('admin/index', { title: 'Admin', deals, flash: req.query.flash || '', live: isLive(config), problems: liveProblems(ctx), openWithdrawals: repo.openWithdrawalCount() });
   });
 
   router.get('/go-live', (req, res) => res.render('admin/go-live', { title: 'Go-live checklist', checks: goLiveChecks(ctx), live: isLive(config) }));
@@ -127,6 +128,7 @@ export function adminRoutes(app, ctx) {
   brandingRoutes(router, ctx);
   fulfilmentRoutes(router, ctx);
   customerRoutes(router, ctx);
+  withdrawalRoutes(router, ctx);
   adminAlertRoutes(router, ctx);
 
   // New deal form. ?copy=<id> fills it in from an existing deal (Duplicate on the deal page); the

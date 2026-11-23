@@ -212,6 +212,25 @@ CREATE TABLE IF NOT EXISTS subscribers (
   unsubscribed_at TEXT
 );
 
+-- Withdrawals sent with the online withdrawal function (src/withdrawals.js, Article 11a of
+-- Directive 2011/83/EU): what the buyer sent, when, and what happened to the order.
+CREATE TABLE IF NOT EXISTS withdrawals (
+  id             INTEGER PRIMARY KEY,
+  reference      TEXT NOT NULL UNIQUE,            -- shown to the buyer, e.g. W-7K3M9Q
+  participant_id INTEGER REFERENCES participants(id),  -- the order, when it could be identified
+  name           TEXT NOT NULL,
+  email          TEXT NOT NULL,                   -- where the acknowledgement was sent
+  order_text     TEXT NOT NULL,                   -- how the buyer identified the order
+  message        TEXT NOT NULL DEFAULT '',
+  lang           TEXT NOT NULL DEFAULT 'en',
+  -- cancelled: done automatically (nothing was charged) / open: for the owner / done: handled
+  status         TEXT NOT NULL,
+  note           TEXT NOT NULL DEFAULT '',
+  created_at     TEXT NOT NULL,
+  handled_at     TEXT
+);
+CREATE INDEX IF NOT EXISTS withdrawals_status ON withdrawals(status, created_at);
+
 CREATE TABLE IF NOT EXISTS locks (
   name       TEXT PRIMARY KEY,
   holder     TEXT NOT NULL,
@@ -447,6 +466,37 @@ export function createRepo(db) {
            WHERE lower(p.email) = lower(?) ORDER BY p.created_at DESC`
         )
         .all(email),
+    // ---- withdrawals (src/withdrawals.js)
+    insertWithdrawal(w) {
+      const r = db
+        .prepare(
+          `INSERT INTO withdrawals (reference, participant_id, name, email, order_text, message, lang, status, note, created_at, handled_at)
+           VALUES (:reference, :participant_id, :name, :email, :order_text, :message, :lang, :status, :note, :created_at, :handled_at)`
+        )
+        .run({ participant_id: null, message: '', note: '', handled_at: null, ...w });
+      return db.prepare('SELECT * FROM withdrawals WHERE id = ?').get(Number(r.lastInsertRowid));
+    },
+    withdrawalById: (id) => db.prepare('SELECT * FROM withdrawals WHERE id = ?').get(id),
+    updateWithdrawal: (id, fields) => update('withdrawals', id, fields),
+    // Open ones first, then newest first; with the order and deal they belong to.
+    withdrawals: () =>
+      db
+        .prepare(
+          `SELECT w.*, p.status AS order_status, p.deal_id, p.amount_cents, d.product_name
+           FROM withdrawals w LEFT JOIN participants p ON p.id = w.participant_id LEFT JOIN deals d ON d.id = p.deal_id
+           ORDER BY (w.status = 'open') DESC, w.created_at DESC LIMIT 500`
+        )
+        .all(),
+    openWithdrawalCount: () => db.prepare("SELECT COUNT(*) AS n FROM withdrawals WHERE status = 'open'").get().n,
+    withdrawalsForParticipant: (participantId) =>
+      db.prepare('SELECT * FROM withdrawals WHERE participant_id = ? ORDER BY created_at').all(participantId),
+    anonymiseWithdrawals: ({ participantId = null, email = null }) =>
+      db
+        .prepare(
+          `UPDATE withdrawals SET name = '', email = 'erased@invalid', message = '', order_text = ''
+           WHERE (participant_id = :pid OR (:email IS NOT NULL AND lower(email) = lower(:email) AND status != 'open'))`
+        )
+        .run({ pid: participantId, email }).changes,
     // ---- deal alerts (src/alerts.js)
     subscriberByEmail: (email) => db.prepare('SELECT * FROM subscribers WHERE email = ?').get(String(email).toLowerCase()),
     subscriberByToken: (token) => db.prepare('SELECT * FROM subscribers WHERE token = ?').get(token),

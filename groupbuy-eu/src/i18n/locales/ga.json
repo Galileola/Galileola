@@ -312,5 +312,32 @@
     "newDealSubject": "Margadh grúpa nua: {name}",
     "newDealText": "Thosaigh margadh grúpa nua: {name} ar {price}. Glac páirt roimh {date}:",
     "unsubscribe": "Nach dteastaíonn na ríomhphoist seo uait a thuilleadh? Díliostáil: {link}"
+  },
+  "withdraw": {
+    "link": "Tarraing siar ón gconradh anseo",
+    "title": "Tarraingt siar ó chonradh",
+    "intro": "Is féidir leat tarraingt siar ó ordú laistigh de 14 lá tar éis duit na hearraí a fháil, agus é a chealú ag am ar bith sula ngearrtar thú. Líon isteach an fhoirm seo agus brúigh “Deimhnigh an tarraingt siar”: seolfaimid deimhniú chugat láithreach i ríomhphost.",
+    "order": "Ordú",
+    "orderHint": "Cén táirge atá i gceist, mar shampla a ainm.",
+    "orderKnown": "Ordú #{id}: {name}",
+    "name": "D'ainm",
+    "email": "Seoladh ríomhphoist don deimhniú",
+    "message": "Ar mhaith leat aon rud a chur leis? (roghnach)",
+    "messageLabel": "Teachtaireacht",
+    "confirm": "Deimhnigh an tarraingt siar",
+    "errName": "Cuir isteach d'ainm.",
+    "errEmail": "Cuir isteach seoladh ríomhphoist bailí don deimhniú.",
+    "errOrder": "Inis dúinn cén t-ordú óna bhfuil tú ag tarraingt siar.",
+    "tooMany": "Seoladh an iomarca tarraingtí siar ón nasc seo. Bain triail eile as i gceann 15 nóiméad, nó seol ríomhphost chugainn.",
+    "doneTitle": "Fuaireamar do tharraingt siar",
+    "doneReceived": "Faighte ar {date}. Seoladh deimhniú leis an méid a sheol tú chuig {email}.",
+    "doneCancelled": "Tá d'ordú cealaithe: ní ghearrfar aon rud ort, agus baineadh do mhodh íocaíochta sábháilte.",
+    "doneRefund": "Aisíocfaimid d'íocaíocht laistigh de 14 lá, mar a mhínítear inár dtéarmaí.",
+    "doneReview": "Seiceálfaimid cén t-ordú atá i gceist agus freagróimid thú i ríomhphost.",
+    "doneEnded": "Bhí an t-ordú seo críochnaithe cheana, mar sin níl aon rud le cealú ná le haisíoc.",
+    "reference": "Tagairt",
+    "emailHere": "Tarraing siar ón gconradh anseo: {link}",
+    "emailSubject": "Fuaireamar do tharraingt siar ({reference})",
+    "emailText": "Fuaireamar do tharraingt siar ón gconradh ar {date} (tagairt {reference}). Seo an méid a sheol tú:"
   }
 }

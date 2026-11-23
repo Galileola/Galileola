@@ -312,5 +312,32 @@
     "newDealSubject": "Nuovo acquisto di gruppo: {name}",
     "newDealText": "È partito un nuovo acquisto di gruppo: {name} a {price}. Aderisci entro il {date}:",
     "unsubscribe": "Non vuoi più ricevere queste email? Disiscriviti: {link}"
+  },
+  "withdraw": {
+    "link": "Recedi dal contratto qui",
+    "title": "Recesso da un contratto",
+    "intro": "Puoi recedere da un ordine entro 14 giorni dal ricevimento della merce e annullarlo in qualsiasi momento prima dell'addebito. Compila questo modulo e premi «Conferma il recesso»: ti invieremo subito una conferma via email.",
+    "order": "Ordine",
+    "orderHint": "Di quale prodotto si tratta, ad esempio il suo nome.",
+    "orderKnown": "Ordine #{id}: {name}",
+    "name": "Il tuo nome",
+    "email": "Indirizzo email per la conferma",
+    "message": "Vuoi aggiungere qualcosa? (facoltativo)",
+    "messageLabel": "Messaggio",
+    "confirm": "Conferma il recesso",
+    "errName": "Inserisci il tuo nome.",
+    "errEmail": "Inserisci un indirizzo email valido per la conferma.",
+    "errOrder": "Indica da quale ordine recedi.",
+    "tooMany": "Da questa connessione sono stati inviati troppi recessi. Riprova tra 15 minuti oppure scrivici un'email.",
+    "doneTitle": "Abbiamo ricevuto il tuo recesso",
+    "doneReceived": "Ricevuto il {date}. Abbiamo inviato a {email} una conferma con quanto ci hai mandato.",
+    "doneCancelled": "Il tuo ordine è annullato: non ti verrà addebitato nulla e il metodo di pagamento salvato è stato rimosso.",
+    "doneRefund": "Ti rimborseremo entro 14 giorni, come descritto nelle nostre condizioni.",
+    "doneReview": "Verificheremo di quale ordine si tratta e ti risponderemo via email.",
+    "doneEnded": "Questo ordine era già concluso, quindi non c'è nulla da annullare o rimborsare.",
+    "reference": "Riferimento",
+    "emailHere": "Recedi dal contratto qui: {link}",
+    "emailSubject": "Abbiamo ricevuto il tuo recesso ({reference})",
+    "emailText": "Abbiamo ricevuto il tuo recesso dal contratto il {date} (riferimento {reference}). Ecco cosa ci hai inviato:"
   }
 }

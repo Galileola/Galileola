@@ -312,5 +312,32 @@
     "newDealSubject": "Jauns kopīgais pirkums: {name}",
     "newDealText": "Sācies jauns kopīgais pirkums: {name} par {price}. Pievienojieties līdz {date}:",
     "unsubscribe": "Vairs nevēlaties šos e-pastus? Atteikties: {link}"
+  },
+  "withdraw": {
+    "link": "Atteikties no līguma šeit",
+    "title": "Atteikšanās no līguma",
+    "intro": "Jūs varat atteikties no pasūtījuma 14 dienu laikā pēc preču saņemšanas un atcelt to jebkurā laikā, pirms no jums tiek iekasēta nauda. Aizpildiet šo veidlapu un nospiediet “Apstiprināt atteikumu”: mēs uzreiz nosūtīsim jums apstiprinājumu pa e-pastu.",
+    "order": "Pasūtījums",
+    "orderHint": "Par kuru preci ir runa, piemēram, tās nosaukums.",
+    "orderKnown": "Pasūtījums #{id}: {name}",
+    "name": "Jūsu vārds, uzvārds",
+    "email": "E-pasta adrese apstiprinājumam",
+    "message": "Vai vēlaties ko piebilst? (nav obligāti)",
+    "messageLabel": "Ziņa",
+    "confirm": "Apstiprināt atteikumu",
+    "errName": "Ievadiet savu vārdu un uzvārdu.",
+    "errEmail": "Ievadiet derīgu e-pasta adresi apstiprinājumam.",
+    "errOrder": "Norādiet, no kura pasūtījuma atsakāties.",
+    "tooMany": "No šī savienojuma nosūtīts pārāk daudz atteikumu. Lūdzu, mēģiniet vēlreiz pēc 15 minūtēm vai rakstiet mums e-pastu.",
+    "doneTitle": "Mēs saņēmām jūsu atteikumu",
+    "doneReceived": "Saņemts {date}. Apstiprinājums ar jūsu nosūtīto informāciju ir nosūtīts uz {email}.",
+    "doneCancelled": "Jūsu pasūtījums ir atcelts: no jums nekas netiks iekasēts, un jūsu saglabātais maksājuma veids ir dzēsts.",
+    "doneRefund": "Mēs atmaksāsim jūsu maksājumu 14 dienu laikā, kā aprakstīts mūsu noteikumos.",
+    "doneReview": "Mēs pārbaudīsim, par kuru pasūtījumu ir runa, un atbildēsim pa e-pastu.",
+    "doneEnded": "Šis pasūtījums jau bija beidzies, tāpēc nav ko atcelt vai atmaksāt.",
+    "reference": "Atsauce",
+    "emailHere": "Atteikties no līguma šeit: {link}",
+    "emailSubject": "Mēs saņēmām jūsu atteikumu ({reference})",
+    "emailText": "Mēs saņēmām jūsu atteikumu no līguma {date} (atsauce {reference}). Jūs nosūtījāt:"
   }
 }

@@ -50,6 +50,7 @@ export function customerRoutes(router, ctx) {
       if (!signups.length) return next();
       let erased = 0;
       for (const p of signups) if (await anonymise(ctx, repo.participantById(p.id))) erased += 1;
+      repo.anonymiseWithdrawals({ email });
       const kept = signups.length - erased;
       const flash = `${erased} sign-up${erased === 1 ? '' : 's'} anonymised.${kept ? ` ${kept} paid or active order${kept === 1 ? ' was' : 's were'} kept: the law requires order and accounting records.` : ''}`;
       const left = repo.participantsByEmail(email).length;

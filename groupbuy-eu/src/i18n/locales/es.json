@@ -312,5 +312,32 @@
     "newDealSubject": "Nueva compra en grupo: {name}",
     "newDealText": "Ha empezado una nueva compra en grupo: {name} por {price}. Únete antes del {date}:",
     "unsubscribe": "¿Ya no quieres recibir estos correos? Darte de baja: {link}"
+  },
+  "withdraw": {
+    "link": "Desistir del contrato aquí",
+    "title": "Desistir de un contrato",
+    "intro": "Puedes desistir de un pedido en los 14 días siguientes a recibir los productos y cancelarlo en cualquier momento antes de que se te cobre. Rellena este formulario y pulsa «Confirmar desistimiento»: te enviaremos una confirmación por correo electrónico al momento.",
+    "order": "Pedido",
+    "orderHint": "De qué producto se trata, por ejemplo su nombre.",
+    "orderKnown": "Pedido #{id}: {name}",
+    "name": "Tu nombre",
+    "email": "Correo electrónico para la confirmación",
+    "message": "¿Quieres añadir algo? (opcional)",
+    "messageLabel": "Mensaje",
+    "confirm": "Confirmar desistimiento",
+    "errName": "Escribe tu nombre.",
+    "errEmail": "Escribe un correo electrónico válido para la confirmación.",
+    "errOrder": "Indica de qué pedido desistes.",
+    "tooMany": "Se han enviado demasiados desistimientos desde esta conexión. Inténtalo de nuevo dentro de 15 minutos o escríbenos un correo.",
+    "doneTitle": "Hemos recibido tu desistimiento",
+    "doneReceived": "Recibido el {date}. Hemos enviado a {email} una confirmación con lo que nos mandaste.",
+    "doneCancelled": "Tu pedido está cancelado: no se te cobrará nada y hemos eliminado tu método de pago guardado.",
+    "doneRefund": "Te devolveremos el pago en un plazo de 14 días, como se indica en nuestras condiciones.",
+    "doneReview": "Comprobaremos de qué pedido se trata y te responderemos por correo electrónico.",
+    "doneEnded": "Este pedido ya había terminado, así que no hay nada que cancelar ni devolver.",
+    "reference": "Referencia",
+    "emailHere": "Desistir del contrato aquí: {link}",
+    "emailSubject": "Hemos recibido tu desistimiento ({reference})",
+    "emailText": "Recibimos tu desistimiento del contrato el {date} (referencia {reference}). Esto es lo que nos enviaste:"
   }
 }

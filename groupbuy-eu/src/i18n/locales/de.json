@@ -312,5 +312,32 @@
     "newDealSubject": "Neues Gruppenangebot: {name}",
     "newDealText": "Ein neues Gruppenangebot hat begonnen: {name} für {price}. Mitmachen bis {date}:",
     "unsubscribe": "Sie möchten diese E-Mails nicht mehr erhalten? Abmelden: {link}"
+  },
+  "withdraw": {
+    "link": "Vertrag hier widerrufen",
+    "title": "Vertrag widerrufen",
+    "intro": "Sie können eine Bestellung innerhalb von 14 Tagen nach Erhalt der Ware widerrufen und sie jederzeit stornieren, bevor Ihnen etwas belastet wird. Füllen Sie dieses Formular aus und klicken Sie auf „Widerruf bestätigen“: Wir senden Ihnen sofort eine Bestätigung per E-Mail.",
+    "order": "Bestellung",
+    "orderHint": "Um welches Produkt es geht, zum Beispiel sein Name.",
+    "orderKnown": "Bestellung #{id}: {name}",
+    "name": "Ihr Name",
+    "email": "E-Mail-Adresse für die Bestätigung",
+    "message": "Möchten Sie noch etwas hinzufügen? (optional)",
+    "messageLabel": "Nachricht",
+    "confirm": "Widerruf bestätigen",
+    "errName": "Bitte geben Sie Ihren Namen ein.",
+    "errEmail": "Bitte geben Sie eine gültige E-Mail-Adresse für die Bestätigung ein.",
+    "errOrder": "Bitte geben Sie an, welche Bestellung Sie widerrufen.",
+    "tooMany": "Von dieser Verbindung wurden zu viele Widerrufe gesendet. Bitte versuchen Sie es in 15 Minuten erneut oder schreiben Sie uns eine E-Mail.",
+    "doneTitle": "Wir haben Ihren Widerruf erhalten",
+    "doneReceived": "Eingegangen am {date}. Eine Bestätigung mit Ihren Angaben wurde an {email} gesendet.",
+    "doneCancelled": "Ihre Bestellung ist storniert: Ihnen wird nichts belastet, und Ihre gespeicherte Zahlungsmethode wurde entfernt.",
+    "doneRefund": "Wir erstatten Ihre Zahlung innerhalb von 14 Tagen, wie in unseren AGB beschrieben.",
+    "doneReview": "Wir prüfen, um welche Bestellung es geht, und antworten Ihnen per E-Mail.",
+    "doneEnded": "Diese Bestellung war bereits beendet, es gibt also nichts zu stornieren oder zu erstatten.",
+    "reference": "Referenz",
+    "emailHere": "Vertrag hier widerrufen: {link}",
+    "emailSubject": "Wir haben Ihren Widerruf erhalten ({reference})",
+    "emailText": "Wir haben Ihren Widerruf des Vertrags am {date} erhalten (Referenz {reference}). Das haben Sie uns gesendet:"
   }
 }

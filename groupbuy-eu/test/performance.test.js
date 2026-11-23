@@ -28,7 +28,7 @@ async function startApp() {
   const config = {
     baseUrl: 'https://shop.test', adminUser: 'admin', adminPassword: 'secret-pw', appSecret: 'test-secret-0123456789abcdef',
     defaultTaxCode: 'txcd_99999999', uploadDir: path.join(dir, 'uploads'), trustProxy: false,
-    business: { name: 'SEK Digital OÜ', address: 'Tallinn', email: 'hello@shop.test', vatId: 'EE1', registration: 'r', supervisoryAuthority: 'AKI' },
+    business: { name: 'SEK Digital OÜ', address: 'Tallinn', email: 'hello@shop.test', vatId: 'EE1', registration: 'r', supervisoryAuthority: 'AKI', phone: '+372 5555 5555' },
   };
   const repo = createRepo(openDb(path.join(dir, 'db.sqlite')));
   const ctx = { config, repo, clock, photos: createPhotoStore(config.uploadDir), assistant: null, routes: [seoRoutes, legalRoutes, publicRoutes, adminRoutes, testRoutes] };

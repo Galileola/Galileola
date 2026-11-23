@@ -312,5 +312,32 @@
     "newDealSubject": "Xiri ġdid fi grupp: {name}",
     "newDealText": "Beda xiri ġdid fi grupp: {name} għal {price}. Ingħaqad sa {date}:",
     "unsubscribe": "M'għadekx trid dawn l-emails? Neħħi l-abbonament: {link}"
+  },
+  "withdraw": {
+    "link": "Irtira mill-kuntratt hawn",
+    "title": "Irtirar minn kuntratt",
+    "intro": "Tista' tirtira minn ordni fi żmien 14-il jum minn meta tirċievi l-oġġetti, u tikkanċellaha f'kull ħin qabel ma tiġi ddebitat. Imla din il-formola u agħfas “Ikkonferma l-irtirar”: nibagħtulek konferma bl-email minnufih.",
+    "order": "Ordni",
+    "orderHint": "Liema prodott hu, pereżempju isimu.",
+    "orderKnown": "Ordni #{id}: {name}",
+    "name": "Ismek",
+    "email": "Indirizz tal-email għall-konferma",
+    "message": "Trid iżżid xi ħaġa? (mhux obbligatorju)",
+    "messageLabel": "Messaġġ",
+    "confirm": "Ikkonferma l-irtirar",
+    "errName": "Daħħal ismek.",
+    "errEmail": "Daħħal indirizz tal-email validu għall-konferma.",
+    "errOrder": "Għidilna minn liema ordni qed tirtira.",
+    "tooMany": "Intbagħtu wisq talbiet ta' rtirar minn din il-konnessjoni. Erġa' pprova fi żmien 15-il minuta, jew ibgħatilna email.",
+    "doneTitle": "Irċevejna l-irtirar tiegħek",
+    "doneReceived": "Riċevut fl-{date}. Bgħatna konferma b'dak li bgħattilna lil {email}.",
+    "doneCancelled": "L-ordni tiegħek ġiet ikkanċellata: mhu se tiġi ddebitat xejn, u l-metodu ta' ħlas li ssejvjajt tneħħa.",
+    "doneRefund": "Se nirrifondulek il-ħlas fi żmien 14-il jum, kif spjegat fit-termini tagħna.",
+    "doneReview": "Se niċċekkjaw liema ordni hi u nwieġbuk bl-email.",
+    "doneEnded": "Din l-ordni kienet diġà ntemmet, għalhekk m'hemm xejn x'jiġi kkanċellat jew rifondut.",
+    "reference": "Referenza",
+    "emailHere": "Irtira mill-kuntratt hawn: {link}",
+    "emailSubject": "Irċevejna l-irtirar tiegħek ({reference})",
+    "emailText": "Irċevejna l-irtirar tiegħek mill-kuntratt fl-{date} (referenza {reference}). Dan hu dak li bgħattilna:"
   }
 }

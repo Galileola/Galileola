@@ -312,5 +312,32 @@
     "newDealSubject": "Uus ühisost: {name}",
     "newDealText": "Algas uus ühisost: {name} hinnaga {price}. Liitu hiljemalt {date}:",
     "unsubscribe": "Ei soovi neid kirju enam saada? Loobu: {link}"
+  },
+  "withdraw": {
+    "link": "Tagane lepingust siin",
+    "title": "Lepingust taganemine",
+    "intro": "Saad tellimusest taganeda 14 päeva jooksul pärast kauba kättesaamist ja selle igal ajal tühistada, enne kui sinult raha võetakse. Täida see vorm ja vajuta „Kinnita taganemine“: saadame sulle kohe e-kirjaga kinnituse.",
+    "order": "Tellimus",
+    "orderHint": "Millise tootega on tegu, näiteks selle nimi.",
+    "orderKnown": "Tellimus #{id}: {name}",
+    "name": "Sinu nimi",
+    "email": "E-posti aadress kinnituse jaoks",
+    "message": "Kas soovid midagi lisada? (valikuline)",
+    "messageLabel": "Sõnum",
+    "confirm": "Kinnita taganemine",
+    "errName": "Sisesta oma nimi.",
+    "errEmail": "Sisesta kinnituse jaoks kehtiv e-posti aadress.",
+    "errOrder": "Kirjuta, millisest tellimusest taganed.",
+    "tooMany": "Sellest ühendusest saadeti liiga palju taganemisavaldusi. Proovi 15 minuti pärast uuesti või kirjuta meile e-kiri.",
+    "doneTitle": "Saime sinu taganemisavalduse kätte",
+    "doneReceived": "Saabunud {date}. Kinnitus koos sinu saadetud andmetega on saadetud aadressile {email}.",
+    "doneCancelled": "Sinu tellimus on tühistatud: sinult raha ei võeta ja sinu salvestatud makseviis on eemaldatud.",
+    "doneRefund": "Tagastame sinu makse 14 päeva jooksul, nagu on kirjas meie tingimustes.",
+    "doneReview": "Kontrollime, millise tellimusega on tegu, ja vastame sulle e-kirjaga.",
+    "doneEnded": "See tellimus oli juba lõppenud, seega pole midagi tühistada ega tagastada.",
+    "reference": "Viide",
+    "emailHere": "Tagane lepingust siin: {link}",
+    "emailSubject": "Saime sinu taganemisavalduse kätte ({reference})",
+    "emailText": "Saime sinu lepingust taganemise avalduse kätte {date} (viide {reference}). Sinu saadetud andmed:"
   }
 }

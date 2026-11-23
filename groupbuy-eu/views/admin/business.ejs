@@ -10,7 +10,7 @@
     <% for (const f of fields) { %>
       <div>
         <label for="b-<%= f.key %>"><%= f.label %></label>
-        <input type="<%= f.key === 'email' ? 'email' : 'text' %>" id="b-<%= f.key %>" name="<%= f.key %>" value="<%= values[f.key] || '' %>" maxlength="300"<%- f.key === 'email' ? ' autocomplete="email"' : f.key === 'name' ? ' autocomplete="organization"' : '' %>>
+        <input type="<%= f.key === 'email' ? 'email' : 'text' %>" id="b-<%= f.key %>" name="<%= f.key %>" value="<%= values[f.key] || '' %>" maxlength="300"<%- f.key === 'email' ? ' autocomplete="email"' : f.key === 'name' ? ' autocomplete="organization"' : f.key === 'phone' ? ' autocomplete="tel" inputmode="tel"' : '' %>>
         <% if (errors[f.key]) { %><p class="error-text"><%= errors[f.key] %></p><% } %>
         <p class="muted small"><%= f.hint %></p>
       </div>
