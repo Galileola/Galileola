@@ -1,0 +1,18 @@
+<%# Built-in Estonian translation of cookies-body.ejs. Shown in Estonian while the owner still uses
+    the built-in English page and has saved no Estonian text of their own (src/routes/legal.js),
+    and used as the starting text in Admin → Legal pages. Keep it in step with the English file. %>
+  <h1>Küpsised</h1>
+  <p>Kasutame ainult küpsiseid, mida sait töötamiseks vajab. Valikulisi küpsiseid (analüütika või turundus) kasutatakse ainult siis, kui te nendega nõustute. Praegu sait neid ei kasuta.</p>
+  <table>
+    <thead><tr><th>Küpsis</th><th>Kes selle määrab</th><th>Eesmärk</th><th>Kestus</th><th>Liik</th></tr></thead>
+    <tbody>
+      <tr><td><code>gb_consent</code></td><td>See sait</td><td>Peab meeles teie küpsiste valiku</td><td>6 kuud</td><td>Vajalik</td></tr>
+      <tr><td><code>gb_lang</code></td><td>See sait</td><td>Peab meeles keele, mille valisite keelemenüüst. Määratakse ainult siis, kui keele valite.</td><td>1 aasta</td><td>Vajalik</td></tr>
+      <tr><td><code>__stripe_mid</code>, <code>__stripe_sid</code></td><td>Stripe</td><td>Pettuste ennetamine makseviisi salvestamisel või kinnitamisel. Määratakse ainult makselehtedel.</td><td>1 aasta / 30 minutit</td><td>Vajalik</td></tr>
+    </tbody>
+  </table>
+  <% if (assistantEnabled) { %>
+  <p>Ostuabiline hoiab teie vestlust brauseri seansimälus (<code>gb_assistant_chat</code>), et see säiliks lehtede vahel liikudes. See ei ole küpsis, see kustutatakse vahekaardi sulgemisel ja see saadetakse meile ainult koos uue küsimusega.</p>
+  <% } %>
+  <p>Stripe võib makse vormis ja panga autentimise ajal (3-D Secure või iDEAL) määrata küpsiseid ka oma domeenidel. Vt <a href="https://stripe.com/cookie-settings" rel="noopener">Stripe'i küpsiste põhimõtteid</a>.</p>
+  <p><button type="button" class="secondary" data-cookie-settings>Muuda küpsiste seadeid</button></p>

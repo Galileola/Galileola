@@ -4,7 +4,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { ENGLISH_NAMES, LANGUAGES, isLanguage, isShopLanguage, shopLanguages } from '../i18n/index.js';
 import { requiredLanguages, saveShopLanguages, savedShopLanguages } from '../shopLanguages.js';
 import { LEGAL_PAGES, MAX_LEGAL_TEXT, htmlToLegalText } from '../legalText.js';
-import { LEGAL_PAGE_INFO, englishLegalHtml } from './legal.js';
+import { LEGAL_PAGE_INFO, builtInTranslationHtml, englishLegalHtml, usesBuiltInTranslation } from './legal.js';
 import multer from 'multer';
 import { HttpError } from '../app.js';
 import { validateDealInput } from '../deals.js';
@@ -666,6 +666,7 @@ export function adminRoutes(app, ctx) {
       pages: LEGAL_PAGES.map((slug) => ({ slug, name: LEGAL_NAMES[slug] })),
       languages: shopLanguages(),
       saved,
+      builtIn: (page, lang) => usesBuiltInTranslation(ctx, page, lang),
       autoTranslation: Boolean(ctx.assistant),
     });
   });
@@ -674,6 +675,8 @@ export function adminRoutes(app, ctx) {
     const { page, lang } = req.params;
     const own = repo.legalText(page, lang);
     const english = await englishLegalText(res, page);
+    // A language with a built-in translation starts from it (the owner fills in the [brackets]).
+    const builtIn = own ? null : await builtInTranslationHtml(app, ctx, page, lang, { ...res.locals, assistantEnabled: Boolean(ctx.assistant) });
     res.status(status).render('admin/legal-edit', {
       title: `${LEGAL_NAMES[page]} · ${ENGLISH_NAMES[lang]}`,
       page,
@@ -682,7 +685,8 @@ export function adminRoutes(app, ctx) {
       langName: ENGLISH_NAMES[lang],
       nativeName: LANGUAGES.find((l) => l.code === lang).name,
       own,
-      text: own ? own.body : lang === 'en' ? english : '',
+      text: own ? own.body : lang === 'en' ? english : builtIn ? htmlToLegalText(builtIn) : '',
+      builtIn: Boolean(builtIn),
       english,
       publicUrl: `${LEGAL_PAGE_INFO[page].route}?lang=${lang}`,
       aiEnabled: Boolean(ctx.assistant),

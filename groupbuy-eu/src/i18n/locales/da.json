@@ -18,7 +18,8 @@
     "text": "Vi bruger cookies, der er nødvendige for siden og for sikre betalinger (Stripes svindelforebyggelse på betalingssiderne). Valgfrie cookies, fx til statistik, ville vi kun bruge med dit samtykke. Der er ingen lige nu.",
     "details": "Læs mere",
     "necessary": "Kun nødvendige",
-    "all": "Accepter valgfrie"
+    "all": "Accepter alle",
+    "ok": "OK"
   },
   "categories": {
     "electronics": "Elektronik",

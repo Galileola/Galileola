@@ -18,7 +18,8 @@
     "text": "Usiamo cookie necessari per il sito e per pagamenti sicuri (prevenzione delle frodi di Stripe nelle pagine di pagamento). Useremmo cookie facoltativi, come quelli di analisi, solo con il tuo consenso. Al momento non ce ne sono.",
     "details": "Dettagli",
     "necessary": "Solo necessari",
-    "all": "Accetta facoltativi"
+    "all": "Accetta tutti",
+    "ok": "Ho capito"
   },
   "categories": {
     "electronics": "Elettronica",

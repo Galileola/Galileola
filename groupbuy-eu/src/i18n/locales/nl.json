@@ -18,7 +18,8 @@
     "text": "We gebruiken cookies die nodig zijn voor de site en voor veilige betalingen (fraudepreventie van Stripe op de betaalpagina's). Optionele cookies, zoals voor statistieken, gebruiken we alleen met je toestemming. Die zijn er nu niet.",
     "details": "Meer info",
     "necessary": "Alleen noodzakelijke",
-    "all": "Optionele accepteren"
+    "all": "Alles accepteren",
+    "ok": "Oké"
   },
   "categories": {
     "electronics": "Elektronica",

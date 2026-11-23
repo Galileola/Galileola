@@ -22,7 +22,8 @@
     "text": "Naudojame slapukus, kurių reikia svetainei ir saugiems mokėjimams („Stripe“ apsauga nuo sukčiavimo mokėjimo puslapiuose). Nebūtinus slapukus, pavyzdžiui, analitikos, naudotume tik gavę jūsų sutikimą. Šiuo metu tokių nėra.",
     "details": "Daugiau",
     "necessary": "Tik būtini",
-    "all": "Sutinku su nebūtinais"
+    "all": "Priimti visus",
+    "ok": "Supratau"
   },
   "categories": {
     "electronics": "Elektronika",

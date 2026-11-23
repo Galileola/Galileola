@@ -9,6 +9,8 @@
   <p class="muted">This is the English text. It is also the source for every language that has no text of its own<%= aiEnabled ? ' (those are translated from it automatically)' : '' %>.</p>
 <% } else if (own) { %>
   <p class="muted">Visitors who read the site in <%= langName %> see this text.</p>
+<% } else if (builtIn) { %>
+  <p class="muted">Visitors who read the site in <%= langName %> see the shop's built-in <%= langName %> translation, shown below. Fill in the [brackets], have it checked, and save it as your own text. Once you save your own English text, this built-in translation is no longer shown, so save a <%= langName %> text too.</p>
 <% } else { %>
   <p class="muted">There is no <%= langName %> text yet, so visitors see the English text<%= aiEnabled ? ', translated automatically' : '' %>. Start from the English text or an AI translation, adapt it to the law of the country, and save.</p>
 <% } %>

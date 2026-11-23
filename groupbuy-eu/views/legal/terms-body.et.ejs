@@ -1,0 +1,61 @@
+<%# Built-in Estonian translation of terms-body.ejs. Shown in Estonian while the owner still uses the
+    built-in English terms and has saved no Estonian text of their own (src/routes/legal.js), and
+    used as the starting text in Admin → Legal pages. Keep it in step with the English file. %>
+  <div class="notice warn small">Mall: laske juristil need tingimused enne avaldamist üle vaadata nende riikide jaoks, kuhu müüte. Nurksulgudes [ ] olev tekst tuleb täita. Taganemisõiguse osa järgib ELi direktiivi 2011/83/EL I lisa näidisteksti: võrrelge seda direktiivi ametliku eestikeelse tekstiga.</div>
+  <h1>Müügitingimused</h1>
+
+  <h2>1. Kes me oleme</h2>
+  <p><%= business.name %>, <%= business.address %>. E-post: <%= business.email %>. Käibemaksukohustuslase number: <%= business.vatId %>. <%= business.registration %>.</p>
+
+  <h2>2. Kuidas ühisost toimib</h2>
+  <p>Igal pakkumisel on hind, minimaalne ostjate arv ja tähtaeg (kõige rohkem 30 päeva pärast pakkumise algust). Liitudes esitate tellimuse ühele tootele märgitud hinnaga. Tellimus jõustub ainult siis, kui pakkumine saavutab tähtajaks minimaalse ostjate arvu.</p>
+  <ul>
+    <li><strong>Kui miinimum saavutatakse tähtajaks</strong>, muutub teie tellimus siduvaks ja me võtame makse (vt punkt 4). Kinnitame selle e-kirjaga.</li>
+    <li><strong>Kui miinimumi tähtajaks ei saavutata</strong>, teie tellimus aegub. Teilt ei võeta raha ja me eemaldame teie salvestatud makseviisi.</li>
+    <li>Kui liitute pärast seda, kui miinimum on juba saavutatud, on teie tellimus siduv kohe liitumisel ja me võtame makse kohe.</li>
+  </ul>
+
+  <h2>3. Hinnad</h2>
+  <p>Kõik hinnad on eurodes (EUR) ja sisaldavad käibemaksu. Hind on kõigis ELi riikides sama. Selles sisalduv käibemaks arvutatakse teie tarneriigi järgi (Stripe Taxi abil) ning seda näidatakse enne makseviisi salvestamist ja teie kviitungil. [Tarnekulud: märkige, kas tarne sisaldub hinnas, või loetlege tarnekulud riigiti.]</p>
+
+  <h2 id="payment">4. Millal makse võetakse</h2>
+  <ul>
+    <li><strong>Liitumisel teilt raha ei võeta.</strong> Teie makseviis (kaart või SEPA otsekorralduse volitus, mille saate seadistada ka iDEALi kaudu) salvestatakse turvaliselt meie makseteenuse pakkuja Stripe juures. Me ei näe ega salvesta kunagi teie täielikku kaardinumbrit ega IBANi.</li>
+    <li><strong>Kui pakkumine saavutab miinimumi</strong>, või kohe, kui liitute pärast seda, võtame täishinna teie salvestatud makseviisilt ja saadame teile e-kirja.</li>
+    <li><strong>Kaardimaksed</strong> võetakse kohe. Teie pank võib paluda makse kinnitada (tugev kliendi autentimine). Sel juhul saadame teile e-kirjaga lingi, et seda teha.</li>
+    <li><strong>SEPA otsekorraldus:</strong> SEPA volituse salvestamisega lubate meil (ja meie makseteenuse pakkujal Stripe'il) võtta pakkumise hinna teie kontolt, kui pakkumine saavutab miinimumi. Meie e-kiri „võtame nüüd makse“ on teie eelteavitus summa ja kuupäeva kohta. Nõustute, et võime selle saata makse võtmise alguspäeval, mitte tavapäraselt 14 päeva varem. Summa debiteeritakse teie kontolt tavaliselt mõne tööpäeva jooksul. SEPA reeglite kohaselt võite paluda oma pangal lubatud otsekorralduse makse tagastada 8 nädala jooksul selle võtmise päevast.</li>
+    <li><strong>Kui makse ebaõnnestub</strong>, võime seda automaatselt uuesti proovida. Saadame teile ka e-kirjaga lingi, et makse lõpule viia, seda pangas kinnitada või kasutada muud makseviisi. Teil on selleks aega <strong>48 tundi</strong> meie esimesest maksekatsest. Kui makse pole ka siis õnnestunud, tühistatakse teie tellimus ja te ei võlgne meile midagi.</li>
+  </ul>
+
+  <h2>5. Tarne</h2>
+  <p>[Eeldatav tarneaeg pärast pakkumise lõppu, riigid, kuhu tarnite (ainult EL), ja vedaja.] Tellime kauba pärast 48-tunnise makseaja lõppu.</p>
+
+  <h2 id="withdrawal">6. Taganemisõigus</h2>
+  <p>Kui olete tarbija, on teil järgmine taganemisõigus.</p>
+  <h3>Taganemisõigus</h3>
+  <p>Teil on õigus 14 päeva jooksul käesolevast lepingust ilma põhjust esitamata taganeda. Taganemistähtaeg lõpeb 14 päeva möödumisel päevast, mil teie või teie nimetatud kolmas isik, kes ei ole vedaja, on asja füüsiliselt enda valdusesse saanud.</p>
+  <p>Taganemisõiguse kasutamiseks peate meid (<%= business.name %>, <%= business.address %>, <%= business.email %>) teavitama oma otsusest käesolevast lepingust taganeda ühemõttelise avaldusega (nt posti või e-postiga saadetud kiri). Võite kasutada allpool olevat taganemisavalduse tüüpvormi, kuid see ei ole kohustuslik.</p>
+  <p>Taganemistähtajast kinnipidamiseks piisab, kui saadate teatise taganemisõiguse kasutamise kohta enne taganemistähtaja möödumist.</p>
+  <h3>Taganemise tagajärjed</h3>
+  <p>Kui te käesolevast lepingust taganete, tagastame teile kõik teilt saadud maksed, sealhulgas kättetoimetamiskulud (välja arvatud lisakulud, mis tulenevad teie valitud kättetoimetamisviisist, mis erineb meie pakutud kõige odavamast tavapärasest kättetoimetamisviisist), viivitamata, kuid mitte hiljem kui 14 päeva möödumisel päevast, mil meid teavitati teie otsusest käesolevast lepingust taganeda. Teeme tagasimakse sama makseviisiga, mida kasutasite esialgse tehingu puhul, kui te ei ole sõnaselgelt nõustunud teistsuguse korraga; igal juhul ei kaasne tagasimaksega teile mingeid kulusid.</p>
+  <p>Me võime tagasimaksega viivitada seni, kuni oleme kauba tagasi saanud või kuni olete esitanud tõendi kauba tagasisaatmise kohta, olenevalt sellest, kumb toimub varem.</p>
+  <p>Te peate kauba tagasi saatma või meile üle andma viivitamata, kuid mitte hiljem kui 14 päeva möödumisel päevast, mil te meile käesolevast lepingust taganemisest teatasite. Tähtajast on kinni peetud, kui saadate kauba tagasi enne 14-päevase tähtaja möödumist.</p>
+  <p>[Teie kannate kauba tagastamise otsesed kulud. / Meie kanname kauba tagastamise kulud.]</p>
+  <p>Teie vastutate üksnes kauba väärtuse vähenemise eest, mis tuleneb kauba kasutamisest muul viisil, kui on vaja kauba olemuses, omadustes ja toimimises veendumiseks.</p>
+  <h3>Enne kui pakkumine jõustub</h3>
+  <p>Võite oma tellimusest loobuda ka enne, kui pakkumine saavutab miinimumi, või enne, kui oleme makse võtnud, saates e-kirja aadressile <%= business.email %>. Seejärel eemaldame teie salvestatud makseviisi ja teilt raha ei võeta.</p>
+
+  <h3>Taganemisavalduse tüüpvorm</h3>
+  <div class="card small">
+    <p>(Täitke ja tagastage käesolev vorm üksnes juhul, kui soovite lepingust taganeda.)</p>
+    <p>Kellele: <%= business.name %>, <%= business.address %>, <%= business.email %>:</p>
+    <p>Mina/Meie (*) teatan/teatame (*), et taganen/taganeme (*) minu/meie (*) sõlmitud lepingust järgmiste asjade müügi kohta (*)/järgmise teenuse osutamise kohta (*),</p>
+    <p>Tellimise kuupäev (*)/kättesaamise kuupäev (*),<br>Tarbija(te) nimi,<br>Tarbija(te) aadress,<br>Tarbija(te) allkiri (ainult juhul, kui käesolev vorm esitatakse paberil),<br>Kuupäev</p>
+    <p>(*) Mittevajalik maha tõmmata.</p>
+  </div>
+
+  <h2>7. Müüja vastutus (seaduslik garantii)</h2>
+  <p>Teil on seadusest tulenevad õigused, kui kaup ei vasta lepingutingimustele (ELi õiguse kohaselt vähemalt kaheaastane müüja vastutus alates kauba üleandmisest). [Lisage kaubanduslik garantii, kui see on olemas.]</p>
+
+  <h2>8. Kaebused ja kohaldatav õigus</h2>
+  <p>Kaebuste korral võtke meiega ühendust aadressil <%= business.email %>. [Märkige, kas osalete tarbijavaidluste kohtuvälises lahendamises, näiteks tarbijavaidluste komisjonis.] Nendele tingimustele kohaldatakse [riigi] õigust. Kui olete tarbija, ei võta see teilt ära teie elukohariigi kohustusliku tarbijaõiguse kaitset.</p>

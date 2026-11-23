@@ -1,0 +1,18 @@
+<%# Built-in Russian translation of cookies-body.ejs. Shown in Russian while the owner still uses the
+    built-in English page and has saved no Russian text of their own (src/routes/legal.js), and
+    used as the starting text in Admin → Legal pages. Keep it in step with the English file. %>
+  <h1>Cookies</h1>
+  <p>Мы используем только те cookies, которые нужны для работы сайта. Необязательные cookies (аналитика или маркетинг) устанавливаются, только если вы их примете. Сейчас сайт их не использует.</p>
+  <table>
+    <thead><tr><th>Cookie</th><th>Кто устанавливает</th><th>Назначение</th><th>Срок</th><th>Тип</th></tr></thead>
+    <tbody>
+      <tr><td><code>gb_consent</code></td><td>Этот сайт</td><td>Запоминает ваш выбор в отношении cookies</td><td>6 месяцев</td><td>Необходимый</td></tr>
+      <tr><td><code>gb_lang</code></td><td>Этот сайт</td><td>Запоминает язык, выбранный вами в меню языков. Устанавливается, только если вы выбираете язык.</td><td>1 год</td><td>Необходимый</td></tr>
+      <tr><td><code>__stripe_mid</code>, <code>__stripe_sid</code></td><td>Stripe</td><td>Предотвращение мошенничества при сохранении или подтверждении способа оплаты. Устанавливаются только на страницах оплаты.</td><td>1 год / 30 минут</td><td>Необходимый</td></tr>
+    </tbody>
+  </table>
+  <% if (assistantEnabled) { %>
+  <p>Помощник по покупкам хранит вашу переписку в сессионном хранилище браузера (<code>gb_assistant_chat</code>), чтобы она сохранялась при переходе между страницами. Это не cookie, она удаляется при закрытии вкладки и отправляется нам только вместе с новым вопросом.</p>
+  <% } %>
+  <p>Stripe также может устанавливать cookies на своих доменах в платёжной форме и при подтверждении в банке (3-D Secure или iDEAL). См. <a href="https://stripe.com/cookie-settings" rel="noopener">политику Stripe в отношении cookies</a>.</p>
+  <p><button type="button" class="secondary" data-cookie-settings>Изменить настройки cookies</button></p>

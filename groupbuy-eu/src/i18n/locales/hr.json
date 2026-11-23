@@ -22,7 +22,8 @@
     "text": "Koristimo kolačiće koji su potrebni za rad stranice i sigurna plaćanja (Stripeova zaštita od prijevara na stranicama za plaćanje). Neobavezne kolačiće, npr. za analitiku, koristili bismo samo uz vašu privolu. Trenutačno ih nema.",
     "details": "Pojedinosti",
     "necessary": "Samo nužni",
-    "all": "Prihvati neobavezne"
+    "all": "Prihvati sve",
+    "ok": "U redu"
   },
   "categories": {
     "electronics": "Elektronika",

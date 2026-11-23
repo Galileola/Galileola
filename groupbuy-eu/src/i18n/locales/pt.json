@@ -18,7 +18,8 @@
     "text": "Usamos cookies necessários para o site e para pagamentos seguros (prevenção de fraude da Stripe nas páginas de pagamento). Só usaríamos cookies opcionais, como os de análise, com o seu consentimento. Neste momento não existem.",
     "details": "Detalhes",
     "necessary": "Só os necessários",
-    "all": "Aceitar opcionais"
+    "all": "Aceitar todos",
+    "ok": "Entendi"
   },
   "categories": {
     "electronics": "Eletrónica",

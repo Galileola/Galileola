@@ -1,0 +1,61 @@
+<%# Built-in Latvian translation of terms-body.ejs. Shown in Latvian while the owner still uses the
+    built-in English terms and has saved no Latvian text of their own (src/routes/legal.js), and
+    used as the starting text in Admin → Legal pages. Keep it in step with the English file. %>
+  <div class="notice warn small">Paraugs: pirms publicēšanas lūdziet juristam pārbaudīt šos noteikumus tām valstīm, kurās pārdodat. Teksts kvadrātiekavās [ ] ir jāaizpilda. Atteikuma tiesību daļa seko Direktīvas 2011/83/ES I pielikuma parauga tekstam: salīdziniet to ar direktīvas oficiālo latviešu valodas tekstu.</div>
+  <h1>Pārdošanas noteikumi</h1>
+
+  <h2>1. Kas mēs esam</h2>
+  <p><%= business.name %>, <%= business.address %>. E-pasts: <%= business.email %>. PVN maksātāja numurs: <%= business.vatId %>. <%= business.registration %>.</p>
+
+  <h2>2. Kā darbojas kopīgais pirkums</h2>
+  <p>Katram piedāvājumam ir cena, minimālais pircēju skaits un termiņš (ne vairāk kā 30 dienas pēc piedāvājuma sākuma). Pievienojoties jūs veicat pasūtījumu par vienu preci norādītajā cenā. Pasūtījums tiek izpildīts tikai tad, ja līdz termiņam piedāvājums sasniedz minimālo pircēju skaitu.</p>
+  <ul>
+    <li><strong>Ja minimums tiek sasniegts līdz termiņam</strong>, jūsu pasūtījums kļūst saistošs un mēs iekasējam maksājumu (skatīt 4. punktu). Mēs to apstiprinām pa e-pastu.</li>
+    <li><strong>Ja minimums līdz termiņam netiek sasniegts</strong>, jūsu pasūtījums zaudē spēku. Nekas netiek iekasēts, un mēs dzēšam jūsu saglabāto maksājuma veidu.</li>
+    <li>Ja pievienojaties pēc tam, kad minimums jau ir sasniegts, jūsu pasūtījums ir saistošs uzreiz pēc pievienošanās, un mēs iekasējam maksājumu nekavējoties.</li>
+  </ul>
+
+  <h2>3. Cenas</h2>
+  <p>Visas cenas ir norādītas eiro (EUR) un ietver PVN. Cena ir vienāda visās ES valstīs. Tajā ietvertais PVN tiek aprēķināts atbilstoši jūsu piegādes valstij (ar Stripe Tax palīdzību), un tas tiek parādīts pirms maksājuma veida saglabāšanas un jūsu čekā. [Piegādes izmaksas: norādiet, vai piegāde ir iekļauta cenā, vai uzskaitiet piegādes izmaksas katrai valstij.]</p>
+
+  <h2 id="payment">4. Kad tiek iekasēts maksājums</h2>
+  <ul>
+    <li><strong>Pievienojoties no jums nekas netiek iekasēts.</strong> Jūsu maksājuma veids (karte vai SEPA tiešā debeta pilnvara, ko var izveidot arī ar iDEAL) tiek droši saglabāts pie mūsu maksājumu pakalpojumu sniedzēja Stripe. Mēs nekad neredzam un neglabājam jūsu pilno kartes numuru vai IBAN.</li>
+    <li><strong>Kad piedāvājums sasniedz minimumu</strong>, vai uzreiz, ja pievienojaties pēc tam, mēs iekasējam pilnu cenu no jūsu saglabātā maksājuma veida un informējam jūs pa e-pastu.</li>
+    <li><strong>Karšu maksājumi</strong> tiek iekasēti nekavējoties. Jūsu banka var lūgt apstiprināt maksājumu (stingra klienta autentifikācija). Šādā gadījumā mēs nosūtām jums e-pastā saiti, lai to izdarītu.</li>
+    <li><strong>SEPA tiešais debets:</strong> saglabājot SEPA pilnvaru, jūs pilnvarojat mūs (un mūsu maksājumu pakalpojumu sniedzēju Stripe) iekasēt piedāvājuma cenu no jūsu konta, kad piedāvājums sasniedz minimumu. Mūsu e-pasts “tagad iekasējam maksājumu” ir jūsu iepriekšējs paziņojums par summu un datumu. Jūs piekrītat, ka mēs to varam nosūtīt iekasēšanas sākuma dienā, nevis standarta 14 dienas iepriekš. Summa parasti tiek norakstīta no jūsu konta dažu darba dienu laikā. Saskaņā ar SEPA noteikumiem jūs varat lūgt savai bankai atmaksāt atļautu debeta maksājumu 8 nedēļu laikā no tā norakstīšanas dienas.</li>
+    <li><strong>Ja maksājums neizdodas</strong>, mēs varam to automātiski mēģināt vēlreiz. Mēs arī nosūtām jums e-pastā saiti, lai pabeigtu maksājumu, apstiprinātu to savā bankā vai izmantotu citu maksājuma veidu. Jums ir <strong>48 stundas</strong> no mūsu pirmā iekasēšanas mēģinājuma. Ja maksājums arī pēc tam nav izdevies, jūsu pasūtījums tiek atcelts, un jūs mums neko neesat parādā.</li>
+  </ul>
+
+  <h2>5. Piegāde</h2>
+  <p>[Paredzamais piegādes laiks pēc piedāvājuma beigām, valstis, uz kurām piegādājat (tikai ES), un pārvadātājs.] Mēs pasūtām preces pēc 48 stundu maksājuma termiņa beigām.</p>
+
+  <h2 id="withdrawal">6. Atteikuma tiesības</h2>
+  <p>Ja esat patērētājs, jums ir šādas atteikuma tiesības.</p>
+  <h3>Atteikuma tiesības</h3>
+  <p>Jums ir tiesības atteikties no šā līguma 14 dienu laikā, neminot iemeslu. Atteikuma termiņš beidzas pēc 14 dienām no dienas, kad jūs vai jūsu norādīta trešā persona, kas nav pārvadātājs, iegūst preces fiziskā valdījumā.</p>
+  <p>Lai izmantotu atteikuma tiesības, jums mūs (<%= business.name %>, <%= business.address %>, <%= business.email %>) jāinformē par savu lēmumu atteikties no šā līguma, sniedzot nepārprotamu paziņojumu (piemēram, vēstuli, kas nosūtīta pa pastu vai e-pastu). Jūs varat izmantot zemāk esošo atteikuma veidlapas paraugu, taču tas nav obligāti.</p>
+  <p>Lai ievērotu atteikuma termiņu, pietiek ar to, ka jūs nosūtāt paziņojumu par atteikuma tiesību izmantošanu pirms atteikuma termiņa beigām.</p>
+  <h3>Atteikuma sekas</h3>
+  <p>Ja jūs atsakāties no šā līguma, mēs jums atmaksājam visus no jums saņemtos maksājumus, tostarp piegādes izmaksas (izņemot papildu izmaksas, kas rodas, ja esat izvēlējies citu piegādes veidu, nevis mūsu piedāvāto lētāko standarta piegādi), bez nepamatotas kavēšanās un jebkurā gadījumā ne vēlāk kā 14 dienu laikā no dienas, kad mūs informēja par jūsu lēmumu atteikties no šā līguma. Mēs veiksim atmaksu, izmantojot to pašu maksāšanas līdzekli, ko jūs izmantojāt sākotnējā darījumā, ja vien jūs neesat skaidri piekritis citam risinājumam; jebkurā gadījumā jums nav jāmaksā nekāda maksa saistībā ar šādu atmaksu.</p>
+  <p>Mēs varam aizturēt atmaksu, līdz esam saņēmuši preces atpakaļ vai līdz jūs esat iesniedzis pierādījumu par preču nosūtīšanu atpakaļ, atkarībā no tā, kas notiek agrāk.</p>
+  <p>Jums preces jānosūta atpakaļ vai jānodod mums bez nepamatotas kavēšanās un jebkurā gadījumā ne vēlāk kā 14 dienu laikā no dienas, kad jūs mums paziņojāt par atteikšanos no šā līguma. Termiņš ir ievērots, ja jūs preces nosūtāt atpakaļ pirms 14 dienu termiņa beigām.</p>
+  <p>[Jums būs jāsedz tiešās preču atpakaļatdošanas izmaksas. / Mēs sedzam preču atpakaļatdošanas izmaksas.]</p>
+  <p>Jūs esat atbildīgs tikai par preču vērtības samazināšanos, kas radusies, rīkojoties ar precēm citādi, nekā nepieciešams, lai noskaidrotu preču veidu, īpašības un darbību.</p>
+  <h3>Pirms piedāvājums tiek īstenots</h3>
+  <p>Jūs varat atteikties no sava pasūtījuma arī pirms piedāvājums sasniedz minimumu vai pirms esam iekasējuši maksājumu, nosūtot e-pastu uz <%= business.email %>. Tad mēs dzēšam jūsu saglabāto maksājuma veidu un neko neiekasējam.</p>
+
+  <h3>Atteikuma veidlapas paraugs</h3>
+  <div class="card small">
+    <p>(Aizpildiet un nosūtiet šo veidlapu tikai tad, ja vēlaties atteikties no līguma.)</p>
+    <p>Kam: <%= business.name %>, <%= business.address %>, <%= business.email %>:</p>
+    <p>Es/Mēs (*) ar šo paziņoju/paziņojam (*), ka es/mēs (*) atsakos/atsakāmies (*) no līguma par šādu preču pirkšanu (*)/šāda pakalpojuma sniegšanu (*),</p>
+    <p>Pasūtīšanas datums (*)/saņemšanas datums (*),<br>Patērētāja(-u) vārds, uzvārds,<br>Patērētāja(-u) adrese,<br>Patērētāja(-u) paraksts (tikai tad, ja šī veidlapa tiek iesniegta papīra formā),<br>Datums</p>
+    <p>(*) Nevajadzīgo svītrot.</p>
+  </div>
+
+  <h2>7. Likumīgā garantija</h2>
+  <p>Jums ir likumā noteiktās tiesības, ja prece neatbilst līguma noteikumiem (saskaņā ar ES tiesībām likumīgā garantija ir vismaz divi gadi no piegādes). [Pievienojiet komercgarantiju, ja tāda ir.]</p>
+
+  <h2>8. Sūdzības un piemērojamie tiesību akti</h2>
+  <p>Ar jebkuru sūdzību vērsieties pie mums, rakstot uz <%= business.email %>. [Norādiet, vai piedalāties strīdu alternatīvā izšķiršanā, piemēram, patērētāju strīdu risināšanas komisijā.] Šiem noteikumiem piemēro [valsts] tiesību aktus. Ja esat patērētājs, tas jums neatņem aizsardzību, ko sniedz jūsu dzīvesvietas valsts obligātās patērētāju tiesību normas.</p>

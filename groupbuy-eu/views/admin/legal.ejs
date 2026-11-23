@@ -1,7 +1,7 @@
 <%- include('../partials/header') %>
 <p><a href="/admin/settings">← Settings</a></p>
 <h1>📄 Legal pages</h1>
-<p class="muted">Write your own Terms, Privacy and Cookies text for each language, for example to match the law of the countries you sell to. A language without its own text shows the English text<%= autoTranslation ? ', translated automatically by AI (with a note that the English version applies)' : '. Automatic translation needs ANTHROPIC_API_KEY' %>.</p>
+<p class="muted">Write your own Terms, Privacy and Cookies text for each language, for example to match the law of the countries you sell to. A language without its own text shows the shop's built-in translation where there is one (Estonian, Finnish, Latvian, Russian) while the English text is the built-in one; otherwise it shows the English text<%= autoTranslation ? ', translated automatically by AI (with a note that the English version applies)' : '. Automatic translation needs ANTHROPIC_API_KEY' %>.</p>
 <div class="table-wrap">
   <table class="legal-overview">
     <thead><tr><th>Language</th><% for (const p of pages) { %><th><%= p.name %></th><% } %></tr></thead>
@@ -12,7 +12,7 @@
           <% for (const p of pages) { const when = saved.get(p.slug + '/' + l.code); %>
             <td>
               <a href="/admin/legal/<%= p.slug %>/<%= l.code %>">
-                <% if (when) { %><span class="badge paid">Own text</span><% } else if (l.code === 'en') { %><span class="badge">Built-in text</span><% } else { %><span class="badge"><%= autoTranslation ? 'From English (AI)' : 'English' %></span><% } %>
+                <% if (when) { %><span class="badge paid">Own text</span><% } else if (l.code === 'en') { %><span class="badge">Built-in text</span><% } else if (builtIn(p.slug, l.code)) { %><span class="badge">Built-in translation</span><% } else { %><span class="badge"><%= autoTranslation ? 'From English (AI)' : 'English' %></span><% } %>
               </a>
               <% if (when) { %><br><span class="muted small"><%= formatDate(when) %></span><% } %>
             </td>

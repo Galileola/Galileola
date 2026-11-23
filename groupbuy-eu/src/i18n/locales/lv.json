@@ -18,7 +18,8 @@
     "text": "Mēs izmantojam sīkdatnes, kas vajadzīgas vietnes darbībai un drošiem maksājumiem (Stripe krāpšanas novēršana maksājumu lapās). Neobligātas sīkdatnes, piemēram, analītikai, izmantotu tikai ar jūsu piekrišanu. Pašlaik tādu nav.",
     "details": "Sīkāk",
     "necessary": "Tikai nepieciešamās",
-    "all": "Pieņemt neobligātās"
+    "all": "Pieņemt visas",
+    "ok": "Labi"
   },
   "categories": {
     "electronics": "Elektronika",

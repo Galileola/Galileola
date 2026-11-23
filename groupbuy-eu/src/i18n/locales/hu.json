@@ -18,7 +18,8 @@
     "text": "Olyan sütiket használunk, amelyek az oldal működéséhez és a biztonságos fizetéshez szükségesek (a Stripe csalásmegelőzése a fizetési oldalakon). Opcionális sütiket, például elemzéshez, csak a hozzájárulásoddal használnánk. Jelenleg nincs ilyen.",
     "details": "Részletek",
     "necessary": "Csak a szükségesek",
-    "all": "Opcionálisak elfogadása"
+    "all": "Az összes elfogadása",
+    "ok": "Rendben"
   },
   "categories": {
     "electronics": "Elektronika",

@@ -22,7 +22,8 @@
     "text": "Používame cookies potrebné na fungovanie stránky a bezpečné platby (ochrana Stripe pred podvodmi na platobných stránkach). Voliteľné cookies, napríklad analytické, by sme použili len s vaším súhlasom. Momentálne žiadne nie sú.",
     "details": "Podrobnosti",
     "necessary": "Len nevyhnutné",
-    "all": "Prijať voliteľné"
+    "all": "Prijať všetky",
+    "ok": "Rozumiem"
   },
   "categories": {
     "electronics": "Elektronika",

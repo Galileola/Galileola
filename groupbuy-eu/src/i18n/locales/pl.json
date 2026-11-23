@@ -18,7 +18,8 @@
     "text": "Używamy plików cookie niezbędnych do działania strony i bezpiecznych płatności (ochrona Stripe przed oszustwami na stronach płatności). Opcjonalnych plików cookie, np. analitycznych, używalibyśmy tylko za Twoją zgodą. Obecnie nie ma żadnych.",
     "details": "Szczegóły",
     "necessary": "Tylko niezbędne",
-    "all": "Akceptuj opcjonalne"
+    "all": "Akceptuj wszystkie",
+    "ok": "Rozumiem"
   },
   "categories": {
     "electronics": "Elektronika",

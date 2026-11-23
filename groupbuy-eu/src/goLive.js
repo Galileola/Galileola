@@ -5,6 +5,7 @@ import { BUSINESS_FIELDS, isPlaceholder } from './businessSettings.js';
 import { LEGAL_PAGES } from './legalText.js';
 import { loadSharp } from './photos.js';
 import { MIN_PASSWORD_LENGTH, passwordChangedInAdmin } from './adminPassword.js';
+import { ENGLISH_NAMES, shopLanguages } from './i18n/index.js';
 
 // Admin → Settings → Go-live checklist, and the safety net for real payments: with
 // PAYMENTS_MODE=live the shop only takes new orders while every required check passes (complete
@@ -35,20 +36,28 @@ export function goLiveChecks(ctx) {
     href: '/admin/business',
     required: true,
   });
+  const placeholders = (text) => [...text.matchAll(new RegExp(PLACEHOLDER_RE.source, 'g'))].map((m) => m[0]);
   for (const page of LEGAL_PAGES) {
     const own = repo?.legalText?.(page, 'en');
-    const text = own ? own.body : builtInText(page);
-    const found = [...text.matchAll(new RegExp(PLACEHOLDER_RE.source, 'g'))].map((m) => m[0]);
+    const found = placeholders(own ? own.body : builtInText(page));
+    // The owner's texts in the shop's other languages must be complete too. (Built-in
+    // translations are only shown while the English text is the built-in one, which fails above.)
+    const unfinished = shopLanguages()
+      .filter((l) => l.code !== 'en')
+      .map((l) => ({ code: l.code, found: placeholders(repo?.legalText?.(page, l.code)?.body ?? '') }))
+      .filter((l) => l.found.length);
     // The template's own note "Text in [brackets] must be completed" counts, but a real example
     // is more useful to show.
-    const example = found.find((p) => p !== '[brackets]') ?? found[0];
+    const all = found.length ? found : unfinished[0]?.found ?? [];
+    const example = all.find((p) => p !== '[brackets]') ?? all[0];
+    const where = found.length ? '' : unfinished.length ? ` (${unfinished.map((l) => ENGLISH_NAMES[l.code]).join(', ')})` : '';
     checks.push({
       label: LEGAL_LABELS[page],
-      ok: !found.length,
-      detail: found.length
-        ? `${found.length === 1 ? 'Still has a placeholder' : `Still has ${found.length} placeholders, for example`}: ${example.length > 90 ? `${example.slice(0, 89)}…]` : example} Write your own text (reviewed by a lawyer) in Legal pages.`
+      ok: !all.length,
+      detail: all.length
+        ? `${all.length === 1 ? 'Still has a placeholder' : `Still has ${all.length} placeholders, for example`}${where}: ${example.length > 90 ? `${example.slice(0, 89)}…]` : example} Write your own text (reviewed by a lawyer) in Legal pages.`
         : own ? 'Your own text.' : 'The built-in text.',
-      href: `/admin/legal/${page}/en`,
+      href: `/admin/legal/${page}/${found.length || !unfinished.length ? 'en' : unfinished[0].code}`,
       required: true,
     });
   }

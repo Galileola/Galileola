@@ -22,7 +22,8 @@
     "text": "Uporabljamo piškotke, ki so potrebni za delovanje strani in varna plačila (Stripova zaščita pred goljufijami na plačilnih straneh). Neobvezne piškotke, na primer za analitiko, bi uporabili le z vašim soglasjem. Trenutno jih ni.",
     "details": "Podrobnosti",
     "necessary": "Samo nujni",
-    "all": "Sprejmi neobvezne"
+    "all": "Sprejmi vse",
+    "ok": "V redu"
   },
   "categories": {
     "electronics": "Elektronika",

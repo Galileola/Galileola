@@ -1,0 +1,18 @@
+<%# Built-in Latvian translation of cookies-body.ejs. Shown in Latvian while the owner still uses the
+    built-in English page and has saved no Latvian text of their own (src/routes/legal.js), and
+    used as the starting text in Admin → Legal pages. Keep it in step with the English file. %>
+  <h1>Sīkdatnes</h1>
+  <p>Mēs izmantojam tikai sīkdatnes, kas vietnei nepieciešamas darbībai. Neobligātās sīkdatnes (analītikai vai mārketingam) tiek izmantotas tikai tad, ja jūs tām piekrītat. Pašlaik vietne tās neizmanto.</p>
+  <table>
+    <thead><tr><th>Sīkdatne</th><th>Iestatītājs</th><th>Mērķis</th><th>Ilgums</th><th>Veids</th></tr></thead>
+    <tbody>
+      <tr><td><code>gb_consent</code></td><td>Šī vietne</td><td>Atceras jūsu sīkdatņu izvēli</td><td>6 mēneši</td><td>Nepieciešamā</td></tr>
+      <tr><td><code>gb_lang</code></td><td>Šī vietne</td><td>Atceras valodu, ko izvēlējāties valodu izvēlnē. Tiek iestatīta tikai tad, kad izvēlaties valodu.</td><td>1 gads</td><td>Nepieciešamā</td></tr>
+      <tr><td><code>__stripe_mid</code>, <code>__stripe_sid</code></td><td>Stripe</td><td>Krāpšanas novēršana, kad saglabājat vai apstiprināt maksājuma veidu. Tiek iestatītas tikai maksājumu lapās.</td><td>1 gads / 30 minūtes</td><td>Nepieciešamā</td></tr>
+    </tbody>
+  </table>
+  <% if (assistantEnabled) { %>
+  <p>Iepirkšanās asistents glabā jūsu sarunu pārlūkprogrammas sesijas krātuvē (<code>gb_assistant_chat</code>), lai tā saglabātos, pārejot no lapas uz lapu. Tā nav sīkdatne, tā tiek dzēsta, kad aizverat cilni, un mums tā tiek nosūtīta tikai kopā ar jaunu jautājumu.</p>
+  <% } %>
+  <p>Stripe var iestatīt sīkdatnes arī savos domēnos maksājuma veidlapā un bankas autentifikācijas laikā (3-D Secure vai iDEAL). Skatīt <a href="https://stripe.com/cookie-settings" rel="noopener">Stripe sīkdatņu politiku</a>.</p>
+  <p><button type="button" class="secondary" data-cookie-settings>Mainīt sīkdatņu iestatījumus</button></p>

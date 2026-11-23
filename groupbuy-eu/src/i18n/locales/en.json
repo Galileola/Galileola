@@ -22,7 +22,8 @@
     "text": "We use cookies that are needed for the site and for secure payments (Stripe fraud prevention on payment pages). We'd only use optional cookies, such as analytics, with your consent. There are none right now.",
     "details": "Details",
     "necessary": "Only necessary",
-    "all": "Accept optional"
+    "all": "Accept all",
+    "ok": "OK"
   },
   "categories": {
     "electronics": "Electronics",

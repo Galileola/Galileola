@@ -7,6 +7,7 @@ import { photoUrl, thumbUrl } from './photos.js';
 import { languageMiddleware } from './i18n/middleware.js';
 import { loadCategories } from './categories.js';
 import { loadShopLanguages } from './shopLanguages.js';
+import { hasOptionalCookies } from './cookies.js';
 import { applyBusinessSettings } from './businessSettings.js';
 import { applyBranding, currentBrand } from './branding.js';
 import { analyticsMiddleware, createAnalytics } from './analytics.js';
@@ -90,6 +91,7 @@ export function createApp(ctx) {
     res.locals.business = config.business;
     res.locals.brand = currentBrand(config); // shop name, logo, icons, share picture (src/branding.js)
     res.locals.testMode = config.paymentsMode !== 'live'; // the yellow "test mode" banner
+    res.locals.optionalCookies = hasOptionalCookies(config); // the cookie notice asks only when there are some (src/cookies.js)
     res.locals.loadStripe = false; // payment pages switch this on (Stripe.js only where needed)
     res.locals.title = 'Group Buy';
     res.locals.asset = asset;

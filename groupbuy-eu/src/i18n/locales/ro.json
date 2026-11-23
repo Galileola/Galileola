@@ -22,7 +22,8 @@
     "text": "Folosim cookie-uri necesare pentru site și pentru plăți sigure (prevenirea fraudei de către Stripe pe paginile de plată). Am folosi cookie-uri opționale, cum ar fi cele de analiză, doar cu acordul tău. Momentan nu există niciunul.",
     "details": "Detalii",
     "necessary": "Doar cele necesare",
-    "all": "Acceptă opționalele"
+    "all": "Accept toate",
+    "ok": "Am înțeles"
   },
   "categories": {
     "electronics": "Electronice",

@@ -18,7 +18,8 @@
     "text": "Úsáidimid fianáin atá riachtanach don suíomh agus d'íocaíochtaí slána (cosc calaoise Stripe ar na leathanaigh íocaíochta). Ní úsáidfimis fianáin roghnacha, mar fhianáin anailísíochta, ach le do thoiliú. Níl aon cheann ann faoi láthair.",
     "details": "Sonraí",
     "necessary": "Na cinn riachtanacha amháin",
-    "all": "Glac leis na cinn roghnacha"
+    "all": "Glac le gach ceann",
+    "ok": "Ceart go leor"
   },
   "categories": {
     "electronics": "Leictreonaic",

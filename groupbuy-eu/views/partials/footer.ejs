@@ -15,8 +15,12 @@
     <strong><%= t('cookieBanner.title') %></strong>
     <p class="small"><%= t('cookieBanner.text') %> <a href="/cookies"><%= t('cookieBanner.details') %></a></p>
     <div class="actions">
+      <% if (locals.optionalCookies) { %>
       <button type="button" data-consent="necessary"><%= t('cookieBanner.necessary') %></button>
       <button type="button" data-consent="all"><%= t('cookieBanner.all') %></button>
+      <% } else { %>
+      <button type="button" data-consent="necessary"><%= t('cookieBanner.ok') %></button>
+      <% } %>
     </div>
   </div>
   <% if (assistantEnabled) { %><%- include('assistant') %><% } %>

@@ -1,0 +1,61 @@
+<%# Built-in Finnish translation of terms-body.ejs. Shown in Finnish while the owner still uses the
+    built-in English terms and has saved no Finnish text of their own (src/routes/legal.js), and
+    used as the starting text in Admin → Legal pages. Keep it in step with the English file. %>
+  <div class="notice warn small">Malli: tarkistuta nämä ehdot juristilla niiden maiden osalta, joihin myyt, ennen julkaisua. Hakasulkeissa [ ] oleva teksti on täydennettävä. Peruuttamisoikeutta koskeva osa noudattaa EU:n direktiivin 2011/83/EU liitteen I mallitekstiä: vertaa sitä direktiivin viralliseen suomenkieliseen tekstiin.</div>
+  <h1>Myynti- ja toimitusehdot</h1>
+
+  <h2>1. Keitä olemme</h2>
+  <p><%= business.name %>, <%= business.address %>. Sähköposti: <%= business.email %>. ALV-tunniste: <%= business.vatId %>. <%= business.registration %>.</p>
+
+  <h2>2. Miten yhteisosto toimii</h2>
+  <p>Jokaisella tarjouksella on hinta, ostajien vähimmäismäärä ja määräaika (enintään 30 päivää tarjouksen alkamisesta). Liittyessänne teette tilauksen yhdestä tuotteesta ilmoitettuun hintaan. Tilaus toteutuu vain, jos tarjous saavuttaa ostajien vähimmäismäärän määräaikaan mennessä.</p>
+  <ul>
+    <li><strong>Jos vähimmäismäärä saavutetaan määräaikaan mennessä</strong>, tilauksenne muuttuu sitovaksi ja veloitamme maksun (ks. kohta 4). Vahvistamme tämän sähköpostitse.</li>
+    <li><strong>Jos vähimmäismäärää ei saavuteta määräaikaan mennessä</strong>, tilauksenne raukeaa. Teiltä ei veloiteta mitään, ja poistamme tallennetun maksutapanne.</li>
+    <li>Jos liitytte sen jälkeen, kun vähimmäismäärä on jo saavutettu, tilauksenne on sitova heti liittyessänne ja veloitamme maksun saman tien.</li>
+  </ul>
+
+  <h2>3. Hinnat</h2>
+  <p>Kaikki hinnat ovat euroina (EUR) ja sisältävät arvonlisäveron. Hinta on sama kaikissa EU-maissa. Hintaan sisältyvä arvonlisävero lasketaan toimitusmaanne mukaan (Stripe Taxin avulla), ja se näytetään ennen kuin tallennatte maksutavan sekä kuitissanne. [Toimituskulut: kerro, sisältyykö toimitus hintaan, tai luettele toimituskulut maittain.]</p>
+
+  <h2 id="payment">4. Milloin maksu veloitetaan</h2>
+  <ul>
+    <li><strong>Liittyessänne teiltä ei veloiteta mitään.</strong> Maksutapanne (kortti tai SEPA-suoraveloitusvaltuutus, jonka voitte antaa myös iDEALin kautta) tallennetaan turvallisesti maksupalveluntarjoajamme Stripen järjestelmään. Emme koskaan näe emmekä tallenna koko kortin numeroa tai IBAN-tilinumeroa.</li>
+    <li><strong>Kun tarjous saavuttaa vähimmäismäärän</strong>, tai heti, jos liitytte sen jälkeen, veloitamme koko hinnan tallennetulta maksutavaltanne ja ilmoitamme siitä sähköpostitse.</li>
+    <li><strong>Korttimaksut</strong> veloitetaan heti. Pankkinne voi pyytää teitä vahvistamaan maksun (vahva tunnistautuminen). Siinä tapauksessa lähetämme teille sähköpostitse linkin vahvistamista varten.</li>
+    <li><strong>SEPA-suoraveloitus:</strong> tallentamalla SEPA-valtuutuksen valtuutatte meidät (ja maksupalveluntarjoajamme Stripen) veloittamaan tarjouksen hinnan tililtänne, kun tarjous saavuttaa vähimmäismäärän. Sähköpostiviestimme ”veloitamme maksun nyt” on ennakkoilmoitus summasta ja päivämäärästä. Hyväksytte, että voimme lähettää sen veloituksen aloituspäivänä tavanomaisen 14 päivän sijaan. Veloitus näkyy tilillänne yleensä muutaman pankkipäivän kuluessa. SEPA-sääntöjen mukaan voitte pyytää pankkianne palauttamaan valtuutetun veloituksen 8 viikon kuluessa veloituspäivästä.</li>
+    <li><strong>Jos maksu epäonnistuu</strong>, voimme yrittää sitä automaattisesti uudelleen. Lähetämme teille myös sähköpostitse linkin, jonka kautta voitte suorittaa maksun loppuun, vahvistaa sen pankissanne tai käyttää toista maksutapaa. Teillä on aikaa <strong>48 tuntia</strong> ensimmäisestä veloitusyrityksestämme. Jos maksu ei ole sen jälkeenkään onnistunut, tilauksenne peruutetaan, eikä teidän tarvitse maksaa meille mitään.</li>
+  </ul>
+
+  <h2>5. Toimitus</h2>
+  <p>[Arvioitu toimitusaika tarjouksen päättymisen jälkeen, maat, joihin toimitat (vain EU), ja kuljetusyhtiö.] Tilaamme tuotteet, kun 48 tunnin maksuaika on päättynyt.</p>
+
+  <h2 id="withdrawal">6. Peruuttamisoikeus</h2>
+  <p>Jos olette kuluttaja, teillä on seuraava peruuttamisoikeus.</p>
+  <h3>Peruuttamisoikeus</h3>
+  <p>Teillä on oikeus peruuttaa tämä sopimus 14 päivän kuluessa ilman syytä. Peruuttamisaika päättyy 14 päivän kuluttua siitä päivästä, jona te tai ilmoittamanne kolmas osapuoli, joka ei ole rahdinkuljettaja, saatte tavarat fyysisesti haltuunne.</p>
+  <p>Peruuttamisoikeuden käyttämiseksi teidän on ilmoitettava meille (<%= business.name %>, <%= business.address %>, <%= business.email %>) päätöksestänne peruuttaa tämä sopimus yksiselitteisellä ilmoituksella (esim. postitse tai sähköpostitse lähetetyllä kirjeellä). Voitte käyttää alla olevaa peruuttamislomakemallia, mutta se ei ole pakollista.</p>
+  <p>Peruuttamisaikaa noudatetaan, kun lähetätte ilmoituksenne peruuttamisoikeuden käyttämisestä ennen peruuttamisajan päättymistä.</p>
+  <h3>Peruuttamisen vaikutukset</h3>
+  <p>Jos peruutatte tämän sopimuksen, palautamme teille kaikki teiltä saadut maksut, mukaan lukien toimituskulut (lukuun ottamatta lisäkuluja, jotka johtuvat siitä, että olette valinneet muun toimitustavan kuin tarjoamamme edullisimman vakiotoimituksen), viipymättä ja viimeistään 14 päivän kuluttua siitä päivästä, jona saamme tiedon päätöksestänne peruuttaa tämä sopimus. Suoritamme palautuksen käyttäen samaa maksutapaa, jota käytitte alkuperäisessä liiketoimessa, ellette ole nimenomaisesti sopineet muusta; palautuksesta ei missään tapauksessa aiheudu teille kuluja.</p>
+  <p>Voimme pidättäytyä palautuksen suorittamisesta, kunnes olemme saaneet tavarat takaisin tai kunnes olette toimittaneet todisteen tavaroiden palauttamisesta, sen mukaan, kumpi tapahtuu ensin.</p>
+  <p>Teidän on palautettava tavarat tai luovutettava ne meille viipymättä ja viimeistään 14 päivän kuluttua siitä päivästä, jona ilmoititte meille tämän sopimuksen peruuttamisesta. Määräaikaa noudatetaan, jos lähetätte tavarat takaisin ennen 14 päivän määräajan päättymistä.</p>
+  <p>[Te vastaatte tavaroiden palauttamisesta aiheutuvista välittömistä kuluista. / Me vastaamme tavaroiden palauttamisesta aiheutuvista kuluista.]</p>
+  <p>Olette vastuussa ainoastaan tavaroiden arvon alentumisesta, joka johtuu tavaroiden muusta kuin niiden luonteen, ominaisuuksien ja toimivuuden varmistamiseksi tarpeellisesta käsittelystä.</p>
+  <h3>Ennen kuin tarjous toteutuu</h3>
+  <p>Voitte peruuttaa tilauksenne myös ennen kuin tarjous saavuttaa vähimmäismäärän tai ennen kuin olemme veloittaneet maksun lähettämällä sähköpostia osoitteeseen <%= business.email %>. Poistamme silloin tallennetun maksutapanne, emmekä veloita teitä.</p>
+
+  <h3>Peruuttamislomakemalli</h3>
+  <div class="card small">
+    <p>(Täyttäkää ja palauttakaa tämä lomake vain, jos haluatte peruuttaa sopimuksen.)</p>
+    <p>Vastaanottaja: <%= business.name %>, <%= business.address %>, <%= business.email %>:</p>
+    <p>Ilmoitan/Ilmoitamme (*), että haluan/haluamme (*) peruuttaa tekemäni/tekemämme (*) sopimuksen, joka koskee seuraavien tavaroiden kauppaa (*)/seuraavan palvelun suorittamista (*),</p>
+    <p>Tilattu (*)/vastaanotettu (*),<br>Kuluttajan nimi/Kuluttajien nimet,<br>Kuluttajan osoite/Kuluttajien osoitteet,<br>Kuluttajan allekirjoitus/Kuluttajien allekirjoitukset (vain jos tämä lomake ilmoitetaan paperilla),<br>Päiväys</p>
+    <p>(*) Tarpeeton yliviivataan.</p>
+  </div>
+
+  <h2>7. Lakisääteinen virhevastuu</h2>
+  <p>Teillä on lain mukaiset oikeudet, jos tavara ei ole sopimuksen mukainen (EU-oikeuden mukaan virhevastuu vähintään kaksi vuotta toimituksesta). [Lisää mahdollinen kaupallinen takuu.]</p>
+
+  <h2>8. Reklamaatiot ja sovellettava laki</h2>
+  <p>Ottakaa reklamaatioissa yhteyttä osoitteeseen <%= business.email %>. [Kerro, osallistutko riitojen vaihtoehtoiseen ratkaisuun, esimerkiksi kuluttajariitalautakunnassa.] Näihin ehtoihin sovelletaan [maan] lakia. Jos olette kuluttaja, tämä ei vie teiltä asuinmaanne pakottavan kuluttajansuojalainsäädännön antamaa suojaa.</p>

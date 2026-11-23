@@ -18,7 +18,8 @@
     "text": "Käytämme evästeitä, joita sivusto ja turvalliset maksut tarvitsevat (Stripen petostentorjunta maksusivuilla). Valinnaisia evästeitä, kuten analytiikkaa, käyttäisimme vain suostumuksellasi. Niitä ei tällä hetkellä ole.",
     "details": "Lisätietoja",
     "necessary": "Vain välttämättömät",
-    "all": "Hyväksy valinnaiset"
+    "all": "Hyväksy kaikki",
+    "ok": "Selvä"
   },
   "categories": {
     "electronics": "Elektroniikka",

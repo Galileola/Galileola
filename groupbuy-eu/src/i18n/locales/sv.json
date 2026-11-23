@@ -18,7 +18,8 @@
     "text": "Vi använder cookies som behövs för webbplatsen och för säkra betalningar (Stripes bedrägeriskydd på betalsidorna). Valfria cookies, till exempel för statistik, skulle vi bara använda med ditt samtycke. Just nu finns det inga.",
     "details": "Mer information",
     "necessary": "Bara nödvändiga",
-    "all": "Godkänn valfria"
+    "all": "Acceptera alla",
+    "ok": "Okej"
   },
   "categories": {
     "electronics": "Elektronik",

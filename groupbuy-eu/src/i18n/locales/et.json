@@ -18,7 +18,8 @@
     "text": "Kasutame küpsiseid, mis on vajalikud saidi toimimiseks ja turvalisteks makseteks (Stripe'i pettuste ennetus makselehtedel). Valikulisi küpsiseid, näiteks analüütikaks, kasutaksime ainult sinu nõusolekul. Praegu neid ei ole.",
     "details": "Lähemalt",
     "necessary": "Ainult vajalikud",
-    "all": "Nõustu valikulistega"
+    "all": "Nõustu kõigiga",
+    "ok": "Selge"
   },
   "categories": {
     "electronics": "Elektroonika",

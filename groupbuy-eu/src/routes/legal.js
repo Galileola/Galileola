@@ -1,15 +1,37 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { renderLegalText } from '../legalText.js';
 
 // The legal pages. For the visitor's language the shop shows, in this order:
 //  1. the text the owner wrote for that language in the admin (Admin → Legal pages);
-//  2. otherwise the English text (the owner's, or the built-in views/legal/*-body.ejs),
+//  2. while the owner still uses the built-in English text: its built-in translation,
+//     views/legal/<page>-body.<lang>.ejs (Estonian, Finnish, Latvian and Russian so far);
+//  3. otherwise the English text (the owner's, or the built-in views/legal/*-body.ejs),
 //     translated by Claude and kept in the database (only when ANTHROPIC_API_KEY is set);
-//  3. otherwise the English text itself.
+//  4. otherwise the English text itself.
 export const LEGAL_PAGE_INFO = {
   terms: { route: '/terms', view: 'legal/terms-body', title: 'legal.termsTitle' },
   privacy: { route: '/privacy', view: 'legal/privacy-body', title: 'legal.privacyTitle' },
   cookies: { route: '/cookies', view: 'legal/cookies-body', title: 'legal.cookiesTitle' },
 };
+
+const viewsDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..', 'views');
+const translations = new Map();
+// The view with the built-in translation of a built-in English page, or null.
+export function builtInTranslationView(page, lang) {
+  const key = `${page}/${lang}`;
+  if (!translations.has(key)) {
+    // With the .ejs ending: otherwise Express reads ".et" as the file type.
+    const view = LEGAL_PAGE_INFO[page] && lang !== 'en' && /^[a-z]{2}$/.test(lang) ? `${LEGAL_PAGE_INFO[page].view}.${lang}.ejs` : null;
+    translations.set(key, view && fs.existsSync(path.join(viewsDir, view)) ? view : null);
+  }
+  return translations.get(key);
+}
+
+// The built-in translation is shown only while the English page is the built-in one too: once the
+// owner writes their own English text, the translation no longer matches it.
+export const usesBuiltInTranslation = (ctx, page, lang) => Boolean(builtInTranslationView(page, lang)) && !ctx.repo?.legalText?.(page, 'en');
 
 const renderView = (app, view, locals) =>
   new Promise((resolve, reject) => app.render(view, locals, (err, html) => (err ? reject(err) : resolve(html))));
@@ -18,6 +40,11 @@ const renderView = (app, view, locals) =>
 export async function englishLegalHtml(app, ctx, page, locals) {
   const own = ctx.repo?.legalText(page, 'en');
   return own ? renderLegalText(own.body) : renderView(app, LEGAL_PAGE_INFO[page].view, locals);
+}
+
+// The built-in translation as HTML, or null when there is none to show (see above).
+export function builtInTranslationHtml(app, ctx, page, lang, locals) {
+  return usesBuiltInTranslation(ctx, page, lang) ? renderView(app, builtInTranslationView(page, lang), locals) : Promise.resolve(null);
 }
 
 export function legalRoutes(app, ctx = {}) {
@@ -29,8 +56,11 @@ export function legalRoutes(app, ctx = {}) {
         const wantsOriginal = req.query.original === '1';
         const own = !wantsOriginal && lang !== 'en' ? ctx.repo?.legalText(page, lang) : null;
         let result;
+        const builtIn = !own && !wantsOriginal ? await builtInTranslationHtml(app, ctx, page, lang, { ...res.locals }) : null;
         if (own) {
           result = { html: renderLegalText(own.body), translated: false, pending: false, contentLang: lang };
+        } else if (builtIn) {
+          result = { html: builtIn, translated: false, pending: false, contentLang: lang };
         } else {
           const englishHtml = await englishLegalHtml(app, ctx, page, { ...res.locals });
           const auto = ctx.translator && !wantsOriginal ? ctx.translator.html(englishHtml, lang) : null;
