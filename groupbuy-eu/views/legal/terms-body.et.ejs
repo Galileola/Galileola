@@ -1,7 +1,7 @@
 <%# Built-in Estonian translation of terms-body.ejs. Shown in Estonian while the owner still uses the
     built-in English terms and has saved no Estonian text of their own (src/routes/legal.js), and
     used as the starting text in Admin → Legal pages. Keep it in step with the English file. %>
-  <div class="notice warn small">Mall: laske juristil need tingimused enne avaldamist üle vaadata nende riikide jaoks, kuhu müüte. Nurksulgudes [ ] olev tekst tuleb täita. Taganemisõiguse osa järgib ELi direktiivi 2011/83/EL I lisa näidisteksti: võrrelge seda direktiivi ametliku eestikeelse tekstiga.</div>
+  <div class="notice warn small">Mall: laske juristil need tingimused enne avaldamist üle vaadata nende riikide jaoks, kuhu müüte. Nurksulgudes [ ] olev tekst tuleb täita. Taganemisõiguse osa on justiitsministri määruse nr 41 näidisjuhendi ja tüüpvormi järgi.</div>
   <h1>Müügitingimused</h1>
 
   <h2>1. Kes me oleme</h2>
@@ -31,32 +31,34 @@
   <p>[Eeldatav tarneaeg pärast pakkumise lõppu, riigid, kuhu tarnite (ainult EL), ja vedaja.] Tellime kauba pärast 48-tunnise makseaja lõppu.</p>
 
   <h2 id="withdrawal">6. Taganemisõigus</h2>
-  <p>Kui olete tarbija, on teil järgmine taganemisõigus.</p>
+  <p>Kui olete tarbija, on Teil järgmine taganemisõigus. Juhend ja vorm järgivad justiitsministri 17.12.2013 määruse nr 41 lisasid 1 ja 2 (lisa 2 justiits- ja digiministri 14.07.2026 määruse nr 26 sõnastuses).</p>
   <h3>Taganemisõigus</h3>
-  <p>Teil on õigus 14 päeva jooksul käesolevast lepingust ilma põhjust esitamata taganeda. Taganemistähtaeg lõpeb 14 päeva möödumisel päevast, mil teie või teie nimetatud kolmas isik, kes ei ole vedaja, on asja füüsiliselt enda valdusesse saanud.</p>
-  <p>Taganemisõiguse kasutamiseks peate meid (<%= business.name %>, <%= business.address %>, <%= business.phone %>, <%= business.email %>) teavitama oma otsusest käesolevast lepingust taganeda ühemõttelise avaldusega (nt posti või e-postiga saadetud kiri). Võite kasutada allpool olevat taganemisavalduse tüüpvormi, kuid see ei ole kohustuslik.</p>
+  <p>Teil on õigus põhjust avaldamata taganeda kõnesolevast lepingust 14 päeva jooksul. Taganemistähtaeg lõpeb 14 päeva möödumisel alates päevast, mil Teie või Teie nimetatud kolmas isik, kes ei ole kauba vedaja, on saanud asja füüsiliselt enda valdusesse.</p>
+  <p>Taganemisõiguse kasutamiseks teavitage meid (<%= business.name %>, <%= business.address %>, <%= business.phone %>, <%= business.email %>) oma otsusest taganeda kõnesolevast lepingust ühemõttelise avaldusega (nt posti või e-postiga saadetud kiri). Võite selleks kasutada lisatud taganemisavalduse tüüpvormi, kuid see ei ole kohustuslik.</p>
   <p>Teil on õigus lepingust taganeda ka interneti teel aadressil <a href="<%= baseUrl %>/withdraw"><%= baseUrl %>/withdraw</a>. Kui kasutate seda võimalust, saadame Teile viivitamata püsival andmekandjal (näiteks e-kirjaga) kinnituse Teie taganemisavalduse kättesaamise, sealhulgas selle sisu ning selle esitamise kuupäeva ja kellaaja kohta.</p>
-  <p>Taganemistähtajast kinnipidamiseks piisab, kui saadate teatise taganemisõiguse kasutamise kohta enne taganemistähtaja möödumist.</p>
-  <h3>Taganemise tagajärjed</h3>
-  <p>Kui te käesolevast lepingust taganete, tagastame teile kõik teilt saadud maksed, sealhulgas kättetoimetamiskulud (välja arvatud lisakulud, mis tulenevad teie valitud kättetoimetamisviisist, mis erineb meie pakutud kõige odavamast tavapärasest kättetoimetamisviisist), viivitamata, kuid mitte hiljem kui 14 päeva möödumisel päevast, mil meid teavitati teie otsusest käesolevast lepingust taganeda. Teeme tagasimakse sama makseviisiga, mida kasutasite esialgse tehingu puhul, kui te ei ole sõnaselgelt nõustunud teistsuguse korraga; igal juhul ei kaasne tagasimaksega teile mingeid kulusid.</p>
-  <p>Me võime tagasimaksega viivitada seni, kuni oleme kauba tagasi saanud või kuni olete esitanud tõendi kauba tagasisaatmise kohta, olenevalt sellest, kumb toimub varem.</p>
-  <p>Te peate kauba tagasi saatma või meile üle andma viivitamata, kuid mitte hiljem kui 14 päeva möödumisel päevast, mil te meile käesolevast lepingust taganemisest teatasite. Tähtajast on kinni peetud, kui saadate kauba tagasi enne 14-päevase tähtaja möödumist.</p>
-  <p>[Teie kannate kauba tagastamise otsesed kulud. / Meie kanname kauba tagastamise kulud.]</p>
-  <p>Teie vastutate üksnes kauba väärtuse vähenemise eest, mis tuleneb kauba kasutamisest muul viisil, kui on vaja kauba olemuses, omadustes ja toimimises veendumiseks.</p>
+  <p>Taganemisõiguse kasutamise tähtajast kinnipidamiseks piisab, kui saadate teate taganemisõiguse kasutamise kohta ära enne taganemistähtaja lõppu.</p>
+  <h3>Lepingust taganemise tagajärjed</h3>
+  <p>Kui Te taganete kõnesolevast lepingust, tagastame Teile kõik Teilt saadud maksed, sealhulgas kättetoimetamiskulud (välja arvatud täiendavad kulud, mis tulenevad Teie valitud kättetoimetamise viisist, mis erineb meie pakutud kõige odavamast tavapärasest kättetoimetamise viisist) viivitamata, kuid hiljemalt 14 päeva möödumisel alates päevast, mil saame teada Teie otsusest kõnesolevast lepingust taganeda. Teeme nimetatud tagasimaksed, kasutades sama makseviisi, mida kasutasite makse tegemiseks, välja arvatud juhul, kui olete sõnaselgelt andnud nõusoleku teistsuguse makseviisi kasutamiseks; igal juhul ei kaasne Teile sellise maksete tagastamisega teenustasu ega muud kulu.</p>
+  <p>Võime keelduda tagasimaksete tegemisest seni, kuni oleme lepingu esemeks oleva asja tagasi saanud või kuni olete esitanud tõendid, et olete asja tagasi saatnud, sõltuvalt sellest, kumb toimub varem.</p>
+  <p>Saadate asja tagasi või annate selle viivitamata, kuid hiljemalt 14 päeva möödumisel päevast, mil teatasite meile oma taganemisest kõnesolevast lepingust, üle meile. Tähtajast on kinni peetud, kui saadate lepingu esemeks oleva asja tagasi enne 14-päevase tähtaja lõppu.</p>
+  <p>[Asja tagastamise kulud katame meie. / Asja tagastamise otsesed kulud tuleb katta Teil.]</p>
+  <p>Vastutate üksnes asja väärtuse vähenemise eest, mis on tingitud asja kasutamisest muul viisil, kui on vaja asja olemuses, omadustes ja toimimises veendumiseks.</p>
   <h3>Enne kui pakkumine jõustub</h3>
-  <p>Võite oma tellimusest loobuda ka enne, kui pakkumine saavutab miinimumi, või enne, kui oleme makse võtnud, saates e-kirja aadressile <%= business.email %>. Seejärel eemaldame teie salvestatud makseviisi ja teilt raha ei võeta.</p>
+  <p>Võite oma tellimusest loobuda ka enne, kui pakkumine saavutab miinimumi, või enne, kui oleme makse võtnud, saates e-kirja aadressile <%= business.email %>. Seejärel eemaldame Teie salvestatud makseviisi ja Teilt raha ei võeta.</p>
 
   <h3>Taganemisavalduse tüüpvorm</h3>
   <div class="card small">
-    <p>(Täitke ja tagastage käesolev vorm üksnes juhul, kui soovite lepingust taganeda.)</p>
+    <p>(täitke ja tagastage käesolev vorm üksnes juhul, kui soovite lepingust taganeda)</p>
     <p>Kellele: <%= business.name %>, <%= business.address %>, <%= business.email %>:</p>
-    <p>Mina/Meie (*) teatan/teatame (*), et taganen/taganeme (*) minu/meie (*) sõlmitud lepingust järgmiste asjade müügi kohta (*)/järgmise teenuse osutamise kohta (*),</p>
-    <p>Tellimise kuupäev (*)/kättesaamise kuupäev (*),<br>Tarbija(te) nimi,<br>Tarbija(te) aadress,<br>Tarbija(te) allkiri (ainult juhul, kui käesolev vorm esitatakse paberil),<br>Kuupäev</p>
+    <p>Käesolevaga taganen/taganeme (*) lepingust, mille esemeks on järgmine asi (*) / järgmine teenus (*)</p>
+    <p>Tellimuse esitamise kuupäev (*) / asja kättesaamise kuupäev (*)<br>Tarbija nimi / tarbijate nimed<br>Tarbija aadress / tarbijate aadressid<br>Tarbija allkiri / tarbijate allkirjad (ainult juhul, kui käesolev vorm esitatakse paberil)<br>Kuupäev</p>
     <p>(*) Mittevajalik maha tõmmata.</p>
   </div>
 
   <h2>7. Müüja vastutus (seaduslik garantii)</h2>
-  <p>Teil on seadusest tulenevad õigused, kui kaup ei vasta lepingutingimustele (ELi õiguse kohaselt vähemalt kaheaastane müüja vastutus alates kauba üleandmisest). [Lisage kaubanduslik garantii, kui see on olemas.]</p>
+  <p>Tarbijana on Teil seadusest tulenevad õigused, kui asi ei vasta lepingutingimustele. Võlaõigusseaduse § 218 lõike 2 kohaselt vastutab müüja asja lepingutingimustele mittevastavuse eest, mis ilmneb kahe aasta jooksul alates asja Teile üleandmisest. Sama seaduse § 220 lõike 1 kohaselt tuleb mittevastavusest müüjale teatada kahe kuu jooksul pärast seda, kui saite sellest teada. [Lisage kaubanduslik garantii, kui see on olemas.]</p>
 
   <h2>8. Kaebused ja kohaldatav õigus</h2>
-  <p>Kaebuste korral võtke meiega ühendust aadressil <%= business.email %>. [Märkige, kas osalete tarbijavaidluste kohtuvälises lahendamises, näiteks tarbijavaidluste komisjonis.] Nendele tingimustele kohaldatakse [riigi] õigust. Kui olete tarbija, ei võta see teilt ära teie elukohariigi kohustusliku tarbijaõiguse kaitset.</p>
+  <p>Võite esitada meile kaebuse mis tahes vormis, näiteks e-kirjaga aadressil <%= business.email %>. Kinnitame kirjalikult esitatud kaebuse kättesaamist ja vastame sellele 15 päeva jooksul. Kui see ei ole võimalik, põhjendame viivitust kirjalikult ja teatame uue mõistliku tähtaja (tarbijakaitseseaduse § 24).</p>
+  <p>Kui me vaidlust ei lahenda, võite pöörduda meid hõlmava vaidluste kohtuvälise lahendamise üksuse poole: Tarbijavaidluste komisjon, Tarbijakaitse ja Tehnilise Järelevalve Amet (TTJA), Endla 10A, 10122 Tallinn, +372 667 2000, info@ttja.ee, <a href="https://ttja.ee/eraklient/tarbijaoiguste-valdkond/tarbijavaidluste-komisjon" rel="noopener">https://ttja.ee/eraklient/tarbijaoiguste-valdkond/tarbijavaidluste-komisjon</a>. Komisjon lahendab Eestis asutatud kauplejatega seotud nii riigisiseseid kui ka piiriüleseid tarbijavaidlusi; menetluse kord on sätestatud tarbijakaitseseaduse 6. peatükis (§ 26 lõige 2 ja § 40).</p>
+  <p>Nendele tingimustele kohaldatakse Eesti õigust. Kui olete tarbija, ei võta see Teilt ära Teie elukohariigi kohustusliku tarbijaõiguse kaitset.</p>

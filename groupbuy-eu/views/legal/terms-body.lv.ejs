@@ -1,7 +1,7 @@
 <%# Built-in Latvian translation of terms-body.ejs. Shown in Latvian while the owner still uses the
     built-in English terms and has saved no Latvian text of their own (src/routes/legal.js), and
     used as the starting text in Admin → Legal pages. Keep it in step with the English file. %>
-  <div class="notice warn small">Paraugs: pirms publicēšanas lūdziet juristam pārbaudīt šos noteikumus tām valstīm, kurās pārdodat. Teksts kvadrātiekavās [ ] ir jāaizpilda. Atteikuma tiesību daļa seko Direktīvas 2011/83/ES I pielikuma parauga tekstam: salīdziniet to ar direktīvas oficiālo latviešu valodas tekstu.</div>
+  <div class="notice warn small">Paraugs: pirms publicēšanas lūdziet juristam pārbaudīt šos noteikumus tām valstīm, kurās pārdodat. Teksts kvadrātiekavās [ ] ir jāaizpilda. Atteikuma tiesību daļa atbilst MK noteikumu Nr. 255 pielikuma paraugam.</div>
   <h1>Pārdošanas noteikumi</h1>
 
   <h2>1. Kas mēs esam</h2>
@@ -31,32 +31,34 @@
   <p>[Paredzamais piegādes laiks pēc piedāvājuma beigām, valstis, uz kurām piegādājat (tikai ES), un pārvadātājs.] Mēs pasūtām preces pēc 48 stundu maksājuma termiņa beigām.</p>
 
   <h2 id="withdrawal">6. Atteikuma tiesības</h2>
-  <p>Ja esat patērētājs, jums ir šādas atteikuma tiesības.</p>
+  <p>Ja esat patērētājs, jums ir šādas atteikuma tiesības. Norādījumi un veidlapa atbilst Ministru kabineta 2014. gada 20. maija noteikumu Nr. 255 “Noteikumi par distances līgumu” pielikuma A un B daļai (MK 22.09.2026. noteikumu Nr. 562 redakcijā).</p>
   <h3>Atteikuma tiesības</h3>
-  <p>Jums ir tiesības atteikties no šā līguma 14 dienu laikā, neminot iemeslu. Atteikuma termiņš beidzas pēc 14 dienām no dienas, kad jūs vai jūsu norādīta trešā persona, kas nav pārvadātājs, iegūst preces fiziskā valdījumā.</p>
-  <p>Lai izmantotu atteikuma tiesības, jums mūs (<%= business.name %>, <%= business.address %>, <%= business.phone %>, <%= business.email %>) jāinformē par savu lēmumu atteikties no šā līguma, sniedzot nepārprotamu paziņojumu (piemēram, vēstuli, kas nosūtīta pa pastu vai e-pastu). Jūs varat izmantot zemāk esošo atteikuma veidlapas paraugu, taču tas nav obligāti.</p>
-  <p>Jūs varat izmantot atteikuma tiesības arī tiešsaistē: <a href="<%= baseUrl %>/withdraw"><%= baseUrl %>/withdraw</a>. Ja izmantojat šo tiešsaistes funkciju, mēs bez nepamatotas kavēšanās nosūtīsim jums apstiprinājumu par atteikuma saņemšanu pastāvīgā informācijas nesējā (piemēram, pa e-pastu), norādot tā saturu un iesniegšanas datumu un laiku.</p>
-  <p>Lai ievērotu atteikuma termiņu, pietiek ar to, ka jūs nosūtāt paziņojumu par atteikuma tiesību izmantošanu pirms atteikuma termiņa beigām.</p>
-  <h3>Atteikuma sekas</h3>
-  <p>Ja jūs atsakāties no šā līguma, mēs jums atmaksājam visus no jums saņemtos maksājumus, tostarp piegādes izmaksas (izņemot papildu izmaksas, kas rodas, ja esat izvēlējies citu piegādes veidu, nevis mūsu piedāvāto lētāko standarta piegādi), bez nepamatotas kavēšanās un jebkurā gadījumā ne vēlāk kā 14 dienu laikā no dienas, kad mūs informēja par jūsu lēmumu atteikties no šā līguma. Mēs veiksim atmaksu, izmantojot to pašu maksāšanas līdzekli, ko jūs izmantojāt sākotnējā darījumā, ja vien jūs neesat skaidri piekritis citam risinājumam; jebkurā gadījumā jums nav jāmaksā nekāda maksa saistībā ar šādu atmaksu.</p>
-  <p>Mēs varam aizturēt atmaksu, līdz esam saņēmuši preces atpakaļ vai līdz jūs esat iesniedzis pierādījumu par preču nosūtīšanu atpakaļ, atkarībā no tā, kas notiek agrāk.</p>
-  <p>Jums preces jānosūta atpakaļ vai jānodod mums bez nepamatotas kavēšanās un jebkurā gadījumā ne vēlāk kā 14 dienu laikā no dienas, kad jūs mums paziņojāt par atteikšanos no šā līguma. Termiņš ir ievērots, ja jūs preces nosūtāt atpakaļ pirms 14 dienu termiņa beigām.</p>
-  <p>[Jums būs jāsedz tiešās preču atpakaļatdošanas izmaksas. / Mēs sedzam preču atpakaļatdošanas izmaksas.]</p>
-  <p>Jūs esat atbildīgs tikai par preču vērtības samazināšanos, kas radusies, rīkojoties ar precēm citādi, nekā nepieciešams, lai noskaidrotu preču veidu, īpašības un darbību.</p>
+  <p>Jums ir tiesības 14 dienu laikā atteikties no šā līguma, neminot iemeslu. Atteikuma tiesību izmantošanas termiņš beigsies pēc 14 dienām, sākot no dienas, kad jūs esat ieguvis vai trešā persona, kas nav pārvadātājs un ko jūs esat norādījis, ir ieguvusi preces valdījumā.</p>
+  <p>Lai izmantotu atteikuma tiesības, jums ar nepārprotamu paziņojumu (piemēram, pa pastu nosūtītu vēstuli vai e-pastu) mūs – <%= business.name %>, <%= business.address %>, <%= business.phone %>, <%= business.email %> – ir jāinformē par lēmumu atteikties no šā līguma. Jūs varat izmantot pievienoto atteikuma veidlapas paraugu, bet tas nav obligāti.</p>
+  <p>Atteikuma tiesības varat izmantot arī tiešsaistē <a href="<%= baseUrl %>/withdraw"><%= baseUrl %>/withdraw</a>. Ja izmantojat šo tiešsaistes funkciju, mēs jums bez nepamatotas kavēšanās nosūtīsim apstiprinājumu par atteikuma saņemšanu pastāvīgā informācijas nesējā (piemēram, e-pastā), norādot tā saturu un iesniegšanas datumu un laiku.</p>
+  <p>Lai atteikuma tiesību termiņš būtu ievērots, pietiek, ja savu paziņojumu par atteikuma tiesību izmantošanu nosūtīsiet pirms atteikuma tiesību termiņa beigām.</p>
+  <h3>Atteikuma radītās sekas</h3>
+  <p>Ja jūs atteiksieties no šā līguma, mēs jums atmaksāsim visus no jums saņemtos maksājumus, tostarp piegādes izmaksas (izņemot papildu izmaksas, kas radušās tādēļ, ka jūs esat izvēlējies piegādes veidu, kas nav mūsu piedāvātais vislētākais standarta piegādes veids), bez nepamatotas kavēšanās un jebkurā gadījumā ne vēlāk kā 14 dienu laikā no dienas, kad mēs tikām informēti par jūsu lēmumu atteikties no šā līguma. Atmaksāšana tiks veikta, izmantojot tādu pašu maksāšanas līdzekli, kādu jūs izmantojāt sākotnējam darījumam, ja vien neesat skaidri paudis piekrišanu to darīt citādi. Jebkurā gadījumā no jums saistībā ar šādu atmaksāšanu netiks iekasēta nekāda maksa.</p>
+  <p>Mēs varam aizturēt atmaksājumu līdz brīdim, kamēr būsim saņēmuši preces atpakaļ vai kamēr jūs būsiet iesniedzis apliecinājumu, ka preces ir nosūtītas atpakaļ, atkarībā no tā, kura darbība tiek izpildīta agrāk.</p>
+  <p>Jums preces jānosūta atpakaļ vai jānodod mums bez nepamatotas kavēšanās, bet ne vēlāk kā 14 dienu laikā pēc tam, kad jūs mums paziņojāt savu lēmumu atteikties no šā līguma. Termiņš būs ievērots, ja jūs preces nosūtīsiet atpakaļ pirms 14 dienu termiņa beigām.</p>
+  <p>[Mēs segsim ar preču atpakaļ atdošanu saistītās izmaksas. / Jums būs jāsedz ar preču atpakaļ atdošanu saistītās tiešās izmaksas.]</p>
+  <p>Jūs esat atbildīgs tikai par preču vērtības samazināšanos, ja preces izmantotas nevis tāpēc, lai konstatētu šo preču veidu, īpašības un darbību, bet citos nolūkos.</p>
   <h3>Pirms piedāvājums tiek īstenots</h3>
   <p>Jūs varat atteikties no sava pasūtījuma arī pirms piedāvājums sasniedz minimumu vai pirms esam iekasējuši maksājumu, nosūtot e-pastu uz <%= business.email %>. Tad mēs dzēšam jūsu saglabāto maksājuma veidu un neko neiekasējam.</p>
 
-  <h3>Atteikuma veidlapas paraugs</h3>
+  <h3>Atteikuma veidlapa (paraugs)</h3>
   <div class="card small">
-    <p>(Aizpildiet un nosūtiet šo veidlapu tikai tad, ja vēlaties atteikties no līguma.)</p>
-    <p>Kam: <%= business.name %>, <%= business.address %>, <%= business.email %>:</p>
-    <p>Es/Mēs (*) ar šo paziņoju/paziņojam (*), ka es/mēs (*) atsakos/atsakāmies (*) no līguma par šādu preču pirkšanu (*)/šāda pakalpojuma sniegšanu (*),</p>
-    <p>Pasūtīšanas datums (*)/saņemšanas datums (*),<br>Patērētāja(-u) vārds, uzvārds,<br>Patērētāja(-u) adrese,<br>Patērētāja(-u) paraksts (tikai tad, ja šī veidlapa tiek iesniegta papīra formā),<br>Datums</p>
-    <p>(*) Nevajadzīgo svītrot.</p>
+    <p>Aizpildiet un nosūtiet šo veidlapu tikai tad, ja vēlaties atteikties no līguma.</p>
+    <p>Adresāts <%= business.name %>, <%= business.address %>, <%= business.email %>:</p>
+    <p>Es/mēs paziņoju/paziņojam, ka es/mēs vēlos/vēlamies atteikties no līguma, ko esmu/esam noslēdzis/noslēguši par šādu preču iegādi/pakalpojumu sniegšanu (nevajadzīgo svītrot)</p>
+    <p>Pasūtīšanas datums/saņemšanas datums (nevajadzīgo svītrot)<br>Patērētāja(-u) vārds(-i) un uzvārds(-i)<br>Patērētāja(-u) adrese<br>Patērētāja(-u) paraksts(-i) (tikai tad, ja šo veidlapu nosūta uz papīra)<br>Datums</p>
+    <p>(Nevajadzīgo svītrot.)</p>
   </div>
 
   <h2>7. Likumīgā garantija</h2>
-  <p>Jums ir likumā noteiktās tiesības, ja prece neatbilst līguma noteikumiem (saskaņā ar ES tiesībām likumīgā garantija ir vismaz divi gadi no piegādes). [Pievienojiet komercgarantiju, ja tāda ir.]</p>
+  <p>Kā patērētājam jums ir Patērētāju tiesību aizsardzības likumā noteiktās tiesības, ja prece neatbilst līguma noteikumiem. Pārdevējs ir atbildīgs par jebkuru preces piegādes dienā esošu neatbilstību, kas atklājas divu gadu laikā no preces piegādes dienas (13. panta otrā daļa). Prasījumu var pieteikt divu gadu laikā no preces piegādes dienas, un prasījuma pieteikumu iesniedz vismaz divu mēnešu laikā no dienas, kad atklājāt neatbilstību (27. panta pirmā daļa). Jūs varat prasīt novērst neatbilstību, apmainīt preci, samazināt cenu vai atcelt līgumu (28. pants). [Pievienojiet komercgarantiju, ja tāda ir.]</p>
 
   <h2>8. Sūdzības un piemērojamie tiesību akti</h2>
-  <p>Ar jebkuru sūdzību vērsieties pie mums, rakstot uz <%= business.email %>. [Norādiet, vai piedalāties strīdu alternatīvā izšķiršanā, piemēram, patērētāju strīdu risināšanas komisijā.] Šiem noteikumiem piemēro [valsts] tiesību aktus. Ja esat patērētājs, tas jums neatņem aizsardzību, ko sniedz jūsu dzīvesvietas valsts obligātās patērētāju tiesību normas.</p>
+  <p>Sūdzību mums varat iesniegt jebkurā veidā, piemēram, rakstot uz <%= business.email %>. Mēs apstiprinām rakstiski iesniegtas sūdzības saņemšanu un atbildam uz to 15 dienu laikā. Ja tas nav iespējams, mēs rakstiski pamatojam kavēšanos un paziņojam jaunu saprātīgu termiņu (Igaunijas Patērētāju tiesību aizsardzības likuma 24. pants).</p>
+  <p>Ja strīdu neizdodas atrisināt, varat vērsties pie ārpustiesas strīdu risinātāja, kura kompetencē esam mēs: Igaunijas Patērētāju strīdu komisija (Tarbijavaidluste komisjon), Patērētāju aizsardzības un tehniskās uzraudzības iestāde (TTJA), Endla 10A, 10122 Tallina, Igaunija, +372 667 2000, info@ttja.ee, <a href="https://ttja.ee/eraklient/tarbijaoiguste-valdkond/tarbijavaidluste-komisjon" rel="noopener">https://ttja.ee/eraklient/tarbijaoiguste-valdkond/tarbijavaidluste-komisjon</a>. Komisija risina gan iekšzemes, gan pārrobežu strīdus ar Igaunijā reģistrētiem tirgotājiem; tās darbības kārtība noteikta Igaunijas Patērētāju tiesību aizsardzības likuma 6. nodaļā.</p>
+  <p>Šiem noteikumiem piemēro Igaunijas tiesību aktus. Ja esat patērētājs, tas jums neatņem aizsardzību, ko sniedz jūsu dzīvesvietas valsts obligātās patērētāju tiesību normas.</p>

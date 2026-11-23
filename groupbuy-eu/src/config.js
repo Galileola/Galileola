@@ -90,7 +90,7 @@ export function loadConfig(env = process.env) {
       phone: env.BUSINESS_PHONE || '[Phone number]',
       vatId: env.BUSINESS_VAT_ID || '[EU VAT number]',
       registration: env.BUSINESS_REGISTRATION || '[Company register and number]',
-      supervisoryAuthority: env.BUSINESS_DPA || '[Your national data protection authority]',
+      supervisoryAuthority: env.BUSINESS_DPA || 'Andmekaitse Inspektsioon (Estonian Data Protection Inspectorate, www.aki.ee)',
     },
   };
 
