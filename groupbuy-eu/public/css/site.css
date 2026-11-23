@@ -342,6 +342,9 @@ body:has(.cookie-banner:not([hidden])) .assistant-widget { bottom: 190px; }
 .join-button { width: 100%; }
 
 .share-card { margin-top: 24px; border-top: 6px solid var(--teal); }
+/* The EU harmonised notice on the legal guarantee: the official image, shown whole and in colour. */
+.guarantee-notice { margin: 24px auto 0; max-width: 520px; }
+.guarantee-notice img { display: block; width: 100%; height: auto; border: 1px solid #d8d8d8; border-radius: 6px; }
 .share-card h2 { color: var(--teal); }
 .share { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 .share-btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 999px; font-weight: 700; font-size: .9rem; text-decoration: none; color: #fff; border: 0; box-shadow: none; cursor: pointer; transition: transform .15s; }

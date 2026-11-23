@@ -1,0 +1,8 @@
+<%# The EU harmonised notice on the legal guarantee (src/guaranteeNotice.js): the official image, unchanged, in colour. %>
+<% const g = guaranteeNotice; %>
+<section class="guarantee-notice" lang="<%= g.lang %>" aria-label="<%= g.title %>">
+  <a href="<%= g.link %>" target="_blank" rel="noopener">
+    <img src="<%= asset(g.src) %>" width="<%= g.width %>" height="<%= g.height %>" alt="<%= g.title %>" aria-describedby="guarantee-notice-text" loading="lazy" decoding="async">
+  </a>
+  <p id="guarantee-notice-text" class="visually-hidden"><%= g.text %></p>
+</section>

@@ -120,6 +120,11 @@ Admin creates deal ──► buyers join (SetupIntent: card / SEPA / iDEAL→SEP
   again at any time; category names typed for a language that is off are kept. Until the page is
   saved, all 25 are offered. The go-live check looks at the legal text visitors see in each offered
   language, so an Estonian-only shop needs complete Estonian legal pages.
+- **EU legal guarantee notice** (required from 27 September 2026): the official harmonised notice
+  from Commission Implementing Regulation (EU) 2025/1960, Annex I (colour image from the Official
+  Journal, unchanged, in `public/legal/`) is shown on every deal page and on the page where the
+  buyer saves the payment method, with its text for screen readers (`src/guaranteeNotice.js`).
+  Estonian and Russian pages show the Estonian notice; other languages the English one.
 - **Delivery countries** (Admin → Settings → Delivery countries): switch each EU country on or
   off. Only the countries switched on are in the order form (with one, it is already picked), a
   form posted with another country is refused, and the shopping assistant names them. Until the

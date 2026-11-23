@@ -1,4 +1,5 @@
 import { isDeliveryCountry } from '../deliveryCountries.js';
+import { guaranteeNotice } from '../guaranteeNotice.js';
 import {
   LANGUAGES,
   shopLanguages,
@@ -32,6 +33,8 @@ export function applyLanguage(req, res, lang, ctx = {}) {
     formatDate: (d) => (d ? dateFormatter(lang).format(new Date(d)) : ''),
     // Only the countries the shop delivers to (Admin → Settings → Delivery countries).
     countries: countryList(lang).filter(([code]) => isDeliveryCountry(code)),
+    // The EU harmonised notice on the legal guarantee for this language (src/guaranteeNotice.js).
+    guaranteeNotice: guaranteeNotice(lang),
     categories: allCategories().map(localCategory),
     categoryFor: (slug) => localCategory(categoryFor(slug)),
     languages: shopLanguages(),

@@ -102,3 +102,27 @@ test('delivery: the shopping assistant names the delivery countries, and test mo
   assert.doesNotMatch(live, /EU countries only|test mode/);
   assert.match(prompt({ deliveryTo: ['Estonia', 'Latvia'] }), /delivers only to: Estonia, Latvia\.[\s\S]*test mode/);
 });
+
+test('legal guarantee notice: the official EU notice on deal pages, Estonian for Estonian and Russian', async (t) => {
+  const shop = await startShop();
+  t.after(shop.close);
+  const notice = async (lang) => {
+    const html = await (await fetch(`${shop.base}/deals/lamp-1?lang=${lang}`)).text();
+    const m = html.match(/<section class="guarantee-notice" lang="(\w+)"[\s\S]*?<img src="([^"?]+)\?v=\w+"[^>]*alt="([^"]+)"[\s\S]*?class="visually-hidden">([^<]+)</);
+    assert.ok(m, `${lang}: notice shown`);
+    return { lang: m[1], src: m[2], alt: m[3], text: m[4] };
+  };
+  const et = await notice('et');
+  assert.deepEqual([et.lang, et.src, et.alt], ['et', '/static/legal/eu-legal-guarantee-notice-et.jpg', 'Seadusest tulenev vastutus']);
+  assert.match(et.text, /Vähemalt kaheaastane seadusest tulenev vastutus/);
+  assert.equal((await notice('ru')).src, et.src, 'Russian is not an EU language: the Estonian notice');
+  const en = await notice('en');
+  assert.deepEqual([en.lang, en.src], ['en', '/static/legal/eu-legal-guarantee-notice-en.jpg']);
+  assert.match(en.text, /Minimum two-year legal guarantee protection/);
+  for (const src of [et.src, en.src]) {
+    const img = await fetch(shop.base + src);
+    assert.equal(img.status, 200);
+    assert.equal(img.headers.get('content-type'), 'image/jpeg');
+    assert.ok((await img.arrayBuffer()).byteLength > 250_000, 'the full-size official image');
+  }
+});
