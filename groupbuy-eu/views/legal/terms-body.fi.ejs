@@ -1,7 +1,7 @@
 <%# Built-in Finnish translation of terms-body.ejs. Shown in Finnish while the owner still uses the
     built-in English terms and has saved no Finnish text of their own (src/routes/legal.js), and
     used as the starting text in Admin → Legal pages. Keep it in step with the English file. %>
-  <div class="notice warn small">Malli: tarkistuta nämä ehdot juristilla niiden maiden osalta, joihin myyt, ennen julkaisua. Hakasulkeissa [ ] oleva teksti on täydennettävä. Peruuttamisoikeutta koskeva osa noudattaa EU:n direktiivin 2011/83/EU liitteen I mallitekstiä: vertaa sitä direktiivin viralliseen suomenkieliseen tekstiin.</div>
+  <div class="notice warn small">Malli: tarkistuta nämä ehdot juristilla niiden maiden osalta, joihin myyt, ennen julkaisua. Hakasulkeissa [ ] oleva teksti on täydennettävä. Peruuttamisoikeutta koskeva osa on oikeusministeriön asetuksen 110/2014 mallin mukainen; lisää puhelinnumerosi kohtaan [puhelinnumero].</div>
   <h1>Myynti- ja toimitusehdot</h1>
 
   <h2>1. Keitä olemme</h2>
@@ -31,26 +31,26 @@
   <p>[Arvioitu toimitusaika tarjouksen päättymisen jälkeen, maat, joihin toimitat (vain EU), ja kuljetusyhtiö.] Tilaamme tuotteet, kun 48 tunnin maksuaika on päättynyt.</p>
 
   <h2 id="withdrawal">6. Peruuttamisoikeus</h2>
-  <p>Jos olette kuluttaja, teillä on seuraava peruuttamisoikeus.</p>
+  <p>Jos olette kuluttaja, teillä on seuraava peruuttamisoikeus. Ohje noudattaa oikeusministeriön asetuksen 110/2014 liitteen I mallia (sellaisena kuin se on muutettuna asetuksilla 754/2022 ja 165/2026).</p>
   <h3>Peruuttamisoikeus</h3>
-  <p>Teillä on oikeus peruuttaa tämä sopimus 14 päivän kuluessa ilman syytä. Peruuttamisaika päättyy 14 päivän kuluttua siitä päivästä, jona te tai ilmoittamanne kolmas osapuoli, joka ei ole rahdinkuljettaja, saatte tavarat fyysisesti haltuunne.</p>
-  <p>Peruuttamisoikeuden käyttämiseksi teidän on ilmoitettava meille (<%= business.name %>, <%= business.address %>, <%= business.email %>) päätöksestänne peruuttaa tämä sopimus yksiselitteisellä ilmoituksella (esim. postitse tai sähköpostitse lähetetyllä kirjeellä). Voitte käyttää alla olevaa peruuttamislomakemallia, mutta se ei ole pakollista.</p>
-  <p>Peruuttamisaikaa noudatetaan, kun lähetätte ilmoituksenne peruuttamisoikeuden käyttämisestä ennen peruuttamisajan päättymistä.</p>
+  <p>Teillä on oikeus peruuttaa tämä sopimus 14 päivän kuluessa syytä ilmoittamatta. Peruuttamisen määräaika päättyy 14 päivän kuluttua siitä, kun tavara on vastaanotettu.</p>
+  <p>Peruuttamisoikeuden käyttämiseksi teidän on ilmoitettava meille (<%= business.name %>, <%= business.address %>, [puhelinnumero], <%= business.email %>) päätöksestänne peruuttaa sopimus yksiselitteisellä tavalla (esimerkiksi kirjeellä postitse tai sähköpostilla). Voitte käyttää liitteenä olevaa peruuttamislomaketta, mutta sen käyttö ei ole pakollista.</p>
+  <p>Peruuttamisen määräajan noudattamiseksi riittää, että lähetätte ilmoituksenne peruuttamisoikeuden käytöstä ennen peruuttamisajan päättymistä.</p>
   <h3>Peruuttamisen vaikutukset</h3>
-  <p>Jos peruutatte tämän sopimuksen, palautamme teille kaikki teiltä saadut maksut, mukaan lukien toimituskulut (lukuun ottamatta lisäkuluja, jotka johtuvat siitä, että olette valinneet muun toimitustavan kuin tarjoamamme edullisimman vakiotoimituksen), viipymättä ja viimeistään 14 päivän kuluttua siitä päivästä, jona saamme tiedon päätöksestänne peruuttaa tämä sopimus. Suoritamme palautuksen käyttäen samaa maksutapaa, jota käytitte alkuperäisessä liiketoimessa, ellette ole nimenomaisesti sopineet muusta; palautuksesta ei missään tapauksessa aiheudu teille kuluja.</p>
-  <p>Voimme pidättäytyä palautuksen suorittamisesta, kunnes olemme saaneet tavarat takaisin tai kunnes olette toimittaneet todisteen tavaroiden palauttamisesta, sen mukaan, kumpi tapahtuu ensin.</p>
-  <p>Teidän on palautettava tavarat tai luovutettava ne meille viipymättä ja viimeistään 14 päivän kuluttua siitä päivästä, jona ilmoititte meille tämän sopimuksen peruuttamisesta. Määräaikaa noudatetaan, jos lähetätte tavarat takaisin ennen 14 päivän määräajan päättymistä.</p>
-  <p>[Te vastaatte tavaroiden palauttamisesta aiheutuvista välittömistä kuluista. / Me vastaamme tavaroiden palauttamisesta aiheutuvista kuluista.]</p>
-  <p>Olette vastuussa ainoastaan tavaroiden arvon alentumisesta, joka johtuu tavaroiden muusta kuin niiden luonteen, ominaisuuksien ja toimivuuden varmistamiseksi tarpeellisesta käsittelystä.</p>
+  <p>Jos peruutatte tämän sopimuksen, palautamme teille kaikki teiltä saamamme suoritukset, myös toimituskustannukset (paitsi lisäkustannuksia siitä, että olette valinnut tarjoamastamme edullisimmasta vakiotoimitustavasta poikkeavan toimitustavan), viivytyksettä ja joka tapauksessa viimeistään 14 päivän kuluttua peruuttamisilmoituksen saatuamme. Suoritamme palautuksen sillä maksutavalla, jota olette käyttänyt alkuperäisessä liiketoimessa, ellette ole nimenomaisesti suostunut muuhun, ja joka tapauksessa siten, että teille ei aiheudu suoritusten palauttamisesta kustannuksia.</p>
+  <p>Voimme pidättyä maksujen palautuksesta, kunnes olemme saaneet tavaran takaisin tai kunnes olette osoittanut lähettäneenne tavaran takaisin.</p>
+  <p>Teidän on lähetettävä tavarat takaisin tai luovutettava ne meille viivytyksettä ja viimeistään 14 päivän kuluttua peruuttamisilmoituksen tekemisestä. Määräaikaa on noudatettu, jos lähetätte tavarat takaisin ennen kyseisen 14 päivän määräajan päättymistä.</p>
+  <p>[Teidän on vastattava tavaroiden palauttamisesta johtuvista välittömistä kustannuksista. / Vastaamme tavaroiden palauttamiskustannuksista.]</p>
+  <p>Olette vastuussa vain sellaisesta tavaroiden arvon alentumisesta, joka on seurausta muusta kuin tavaroiden luonteen, ominaisuuksien ja toimivuuden toteamiseksi tarvittavasta käsittelystä.</p>
   <h3>Ennen kuin tarjous toteutuu</h3>
   <p>Voitte peruuttaa tilauksenne myös ennen kuin tarjous saavuttaa vähimmäismäärän tai ennen kuin olemme veloittaneet maksun lähettämällä sähköpostia osoitteeseen <%= business.email %>. Poistamme silloin tallennetun maksutapanne, emmekä veloita teitä.</p>
 
-  <h3>Peruuttamislomakemalli</h3>
+  <h3>Peruuttamislomakkeen malli</h3>
   <div class="card small">
-    <p>(Täyttäkää ja palauttakaa tämä lomake vain, jos haluatte peruuttaa sopimuksen.)</p>
-    <p>Vastaanottaja: <%= business.name %>, <%= business.address %>, <%= business.email %>:</p>
-    <p>Ilmoitan/Ilmoitamme (*), että haluan/haluamme (*) peruuttaa tekemäni/tekemämme (*) sopimuksen, joka koskee seuraavien tavaroiden kauppaa (*)/seuraavan palvelun suorittamista (*),</p>
-    <p>Tilattu (*)/vastaanotettu (*),<br>Kuluttajan nimi/Kuluttajien nimet,<br>Kuluttajan osoite/Kuluttajien osoitteet,<br>Kuluttajan allekirjoitus/Kuluttajien allekirjoitukset (vain jos tämä lomake ilmoitetaan paperilla),<br>Päiväys</p>
+    <p>(täyttäkää ja palauttakaa tämä lomake vain siinä tapauksessa, että haluatte peruuttaa sopimuksen)</p>
+    <p>Vastaanottaja <%= business.name %>, <%= business.address %>, <%= business.email %>:</p>
+    <p>Ilmoitan/Ilmoitamme (*), että haluan/haluamme (*) peruuttaa tekemäni/tekemämme (*) sopimuksen, joka koskee seuraavien tavaroiden toimittamista (*) / seuraavan palvelun suorittamista (*):</p>
+    <p>Tilauspäivä (*)/Vastaanottopäivä (*)<br>Kuluttajan nimi (*) / Kuluttajien nimet (*)<br>Kuluttajan osoite (*) / Kuluttajien osoitteet (*)<br>Kuluttajan allekirjoitus (*) / Kuluttajien allekirjoitukset (*) (vain jos lomake täytetään paperimuodossa)<br>Päiväys</p>
     <p>(*) Tarpeeton yliviivataan.</p>
   </div>
 
