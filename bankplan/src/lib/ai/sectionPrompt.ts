@@ -69,3 +69,21 @@ export function buildUserMessage(input: SectionPromptInput): string {
   parts.push("</owner_notes>", "", `Write the "${input.sectionTitle}" section now.`);
   return parts.join("\n");
 }
+
+/** For the export: translates one finished section into the document language. */
+export function buildTranslationPrompt(from: Locale, to: Locale): string {
+  return [
+    `You translate parts of a business plan for an Estonian bank from ${LANGUAGE_NAMES[from]} into ${LANGUAGE_NAMES[to]}.`,
+    "",
+    "Rules:",
+    "- Translate the meaning faithfully. Do not add, remove or change any facts, numbers, names or dates.",
+    "- Use the plain, professional words a credit officer expects. Keep company and product names as they are.",
+    "- Keep the format: the same paragraphs, and list lines that start with \"- \".",
+    "- Reply with the translated text only.",
+  ].join("\n");
+}
+
+export function buildTranslationMessage(text: string): string {
+  // The text cannot close the tag around it.
+  return ["<text>", text.replaceAll("</text>", "‹/text›"), "</text>"].join("\n");
+}

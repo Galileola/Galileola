@@ -49,7 +49,7 @@ export async function askClaude(options: {
   } catch (error) {
     // Only the error type and status go to the logs, never the plan text (GDPR).
     if (error instanceof Anthropic.APIError) {
-      console.error("AI request failed", { status: error.status, type: error.constructor.name });
+      console.error("AI request failed", { status: error.status ?? null, type: error.type ?? null });
     } else {
       console.error("AI request failed", { type: error instanceof Error ? error.name : "unknown" });
     }

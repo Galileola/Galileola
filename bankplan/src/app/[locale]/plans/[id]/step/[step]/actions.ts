@@ -50,10 +50,13 @@ async function storeSection(input: SectionInput, text: string) {
   if (error || !plan) return null;
 
   const answers: PlanAnswers = readPlanAnswers(plan.answers);
+  const previous = answers[input.section];
   answers[input.section] = {
     q: cleanSectionAnswers(input.section, input.q),
     text,
     ...(text.trim() ? { textLocale: input.locale } : {}),
+    // Keep translations; the export checks whether each still matches the text.
+    ...(previous?.translations ? { translations: previous.translations } : {}),
   };
   const { error: updateError } = await supabase.from("plans").update({ answers }).eq("id", input.planId);
   if (updateError) {

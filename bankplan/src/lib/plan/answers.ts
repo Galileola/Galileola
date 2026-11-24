@@ -13,6 +13,13 @@ const sectionAnswerSchema = z.object({
   text: z.string().max(MAX_TEXT_LENGTH),
   /** Language the text is written in. */
   textLocale: z.enum(routing.locales).optional(),
+  /** AI translations of `text` for the export, by language. Stale once `text` changes. */
+  translations: z
+    .partialRecord(
+      z.enum(routing.locales),
+      z.object({ text: z.string().max(MAX_TEXT_LENGTH * 2), sourceHash: z.string().max(20) }),
+    )
+    .optional(),
 });
 
 /** Stored in plans.answers. Sections that were never opened are missing. */
@@ -35,4 +42,14 @@ export function cleanSectionAnswers(section: BankLoanSection, q: Record<string, 
 
 export function hasAnyAnswer(answer: SectionAnswer | undefined): boolean {
   return Boolean(answer && Object.values(answer.q).some((value) => value.trim().length > 0));
+}
+
+/** Short fingerprint of a text (FNV-1a), to tell whether a stored translation still matches it. */
+export function textHash(text: string): string {
+  let hash = 0x811c9dc5;
+  for (let i = 0; i < text.length; i++) {
+    hash ^= text.charCodeAt(i);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return (hash >>> 0).toString(16);
 }

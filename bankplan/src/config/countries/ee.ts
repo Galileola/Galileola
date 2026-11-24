@@ -182,7 +182,7 @@ export const payroll = {
         sources: [
           {
             url: 'https://www.riigiteataja.ee/akt/130092025003',
-            ref: 'Government regulation no 78 of 25.09.2025, § 1 lg 1 (rates for 2026–2029)',
+            ref: 'VV määrus 25.09.2025 nr 78 § 1 lg 1 (rates for 2026–2029)',
             checked: CHECKED,
           },
           emta.unemployment,
@@ -204,7 +204,7 @@ export const payroll = {
         sources: [
           {
             url: 'https://www.riigiteataja.ee/akt/130092025003',
-            ref: 'Government regulation no 78 of 25.09.2025, § 1 lg 2 (rates for 2026–2029)',
+            ref: 'VV määrus 25.09.2025 nr 78 § 1 lg 2 (rates for 2026–2029)',
             checked: CHECKED,
           },
           emta.unemployment,
