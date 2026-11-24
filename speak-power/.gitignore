@@ -1,6 +1,0 @@
-node_modules/
-.expo/
-.env
-server/.env
-.DS_Store
-dist/
