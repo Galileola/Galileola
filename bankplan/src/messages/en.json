@@ -1,0 +1,143 @@
+{
+  "app": {
+    "name": "Business plan for the bank",
+    "tagline": "Write a bank-ready business plan for an Estonian loan, step by step."
+  },
+  "nav": {
+    "plans": "My plans",
+    "settings": "Settings",
+    "login": "Log in",
+    "language": "Language"
+  },
+  "footer": {
+    "disclaimer": "This is a planning tool, not legal, tax or financial advice. Check important decisions with a professional.",
+    "privacy": "Privacy"
+  },
+  "home": {
+    "title": "Get your business plan ready for the bank",
+    "intro": "Answer simple questions about your business. The app turns them into a clear plan that follows what Estonian banks expect.",
+    "feature1Title": "Guided plan",
+    "feature1Text": "Step-by-step questions, from your idea to collateral. AI helps you write clear text.",
+    "feature2Title": "Numbers with Estonian rules",
+    "feature2Text": "Three-year forecast, loan schedule and the key ratios banks check. Estonian taxes built in.",
+    "feature3Title": "Bank officer check",
+    "feature3Text": "Before you go to the bank, an AI credit officer finds weak points and asks hard questions.",
+    "start": "Start my plan",
+    "deleted": "Your account and all your data have been deleted."
+  },
+  "login": {
+    "title": "Log in",
+    "intro": "Enter your email. We send you a link — click it to log in. No password needed.",
+    "emailLabel": "Email",
+    "submit": "Send login link",
+    "sending": "Sending…",
+    "sentTitle": "Check your email",
+    "sentText": "We sent a login link to your email. Open it on this device and in this browser.",
+    "errorInvalid": "Please enter a valid email address.",
+    "errorGeneric": "We could not send the link. Please try again in a few minutes.",
+    "errorLink": "The login link did not work or has expired. Please ask for a new one."
+  },
+  "plans": {
+    "title": "My plans",
+    "empty": "You have no plans yet. Create your first one below.",
+    "newTitle": "New plan",
+    "nameLabel": "Plan name",
+    "namePlaceholder": "For example: Café loan 2027",
+    "companyTypeLabel": "Type of business",
+    "companyTypeOU": "Private limited company (OÜ)",
+    "companyTypeFIE": "Sole proprietor (FIE)",
+    "create": "Create plan",
+    "creating": "Creating…",
+    "updated": "Last change: {date}",
+    "errorInvalid": "Please give the plan a name and choose the type of business.",
+    "errorGeneric": "Something went wrong. Please try again."
+  },
+  "plan": {
+    "sectionsTitle": "Plan sections",
+    "stepOf": "Step {current} of {total}",
+    "back": "Back",
+    "next": "Next",
+    "toOverview": "Back to plan overview",
+    "placeholder": "The questions for this section are added in the next development phase.",
+    "bankLooksFor": "What the bank looks for",
+    "laterTitle": "Coming later",
+    "finance": "Numbers and loan calculator",
+    "export": "Download as Word and PDF",
+    "bankReview": "Bank officer check",
+    "comingSoon": "Coming soon"
+  },
+  "sections": {
+    "summary": {
+      "title": "Summary",
+      "hint": "A short overview: what you do, how much you want to borrow, and why the bank will get its money back. You write it last, but it comes first."
+    },
+    "idea": {
+      "title": "Business idea",
+      "hint": "Your product or service, the problem it solves, and why now is the right time."
+    },
+    "market": {
+      "title": "Market and competitors",
+      "hint": "How big the market is, who your main competitors are, and why customers will choose you."
+    },
+    "customers": {
+      "title": "Customers",
+      "hint": "Who buys from you, how many customers you expect, and any first customers or agreements you already have."
+    },
+    "team": {
+      "title": "Team",
+      "hint": "The owners and key people, their experience, and who does what."
+    },
+    "marketing": {
+      "title": "Marketing and sales",
+      "hint": "How customers find you, your prices, sales channels and marketing budget."
+    },
+    "operations": {
+      "title": "Operations",
+      "hint": "Location, equipment, suppliers, and the licences and permits you need."
+    },
+    "risks": {
+      "title": "Risks",
+      "hint": "The main risks and how you reduce each one. Banks value owners who have thought this through."
+    },
+    "loan": {
+      "title": "Loan purpose and amount",
+      "hint": "What the money is for, how much you need, for how long, and how you plan to pay it back."
+    },
+    "ownContribution": {
+      "title": "Own contribution",
+      "hint": "How much of your own money goes into the project and where it comes from. Banks often ask for 10–30%."
+    },
+    "collateral": {
+      "title": "Collateral",
+      "hint": "What secures the loan: real estate, a personal guarantee, or a guarantee from EIS (Enterprise Estonia)."
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "account": "Your account",
+    "signedInAs": "Logged in as {email}",
+    "logout": "Log out",
+    "deleteTitle": "Delete my account and data",
+    "deleteText": "This deletes your login and all your plans for good. It cannot be undone.",
+    "deleteConfirm": "I understand that everything will be deleted.",
+    "deleteButton": "Delete everything",
+    "deleting": "Deleting…",
+    "deleteError": "We could not delete your account. Please try again."
+  },
+  "privacy": {
+    "title": "Privacy",
+    "draftNote": "Draft. The company details of the service provider will be added before launch.",
+    "whatTitle": "What we store",
+    "whatText": "Your email address (to log you in) and the business plans you write. We do not ask for your name, ID code, address or phone number.",
+    "whereTitle": "Where it is stored",
+    "whereText": "In a database in the European Union (Frankfurt, Germany). Only you can see your plans.",
+    "aiTitle": "AI help",
+    "aiText": "When you use the AI helper or the bank officer check, the text of your plan is sent to Anthropic, the company that provides the AI. Your email is not sent.",
+    "deleteTitle": "Deleting your data",
+    "deleteText": "You can delete your account and all your plans at any time in Settings."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "back": "Go to the start page"
+  }
+}

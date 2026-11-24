@@ -1,0 +1,143 @@
+{
+  "app": {
+    "name": "Äriplaan pangale",
+    "tagline": "Koosta Eesti pangalaenu jaoks pangale sobiv äriplaan samm-sammult."
+  },
+  "nav": {
+    "plans": "Minu plaanid",
+    "settings": "Seaded",
+    "login": "Logi sisse",
+    "language": "Keel"
+  },
+  "footer": {
+    "disclaimer": "See on planeerimise tööriist, mitte õigus-, maksu- ega finantsnõustamine. Kontrolli olulised otsused üle spetsialistiga.",
+    "privacy": "Privaatsus"
+  },
+  "home": {
+    "title": "Valmista oma äriplaan pangaks ette",
+    "intro": "Vasta lihtsatele küsimustele oma ettevõtte kohta. Rakendus teeb neist selge plaani, mis vastab Eesti pankade ootustele.",
+    "feature1Title": "Juhendatud plaan",
+    "feature1Text": "Küsimused samm-sammult, alates ideest kuni tagatiseni. Tehisaru aitab kirjutada selget teksti.",
+    "feature2Title": "Numbrid Eesti reeglitega",
+    "feature2Text": "Kolme aasta prognoos, laenugraafik ja peamised näitajad, mida pank kontrollib. Eesti maksud on sees.",
+    "feature3Title": "Pangatöötaja kontroll",
+    "feature3Text": "Enne panka minekut leiab tehisaru krediidispetsialist nõrgad kohad ja küsib raskeid küsimusi.",
+    "start": "Alusta oma plaani",
+    "deleted": "Sinu konto ja kõik andmed on kustutatud."
+  },
+  "login": {
+    "title": "Logi sisse",
+    "intro": "Sisesta oma e-posti aadress. Saadame sulle lingi — klõpsa sellel, et sisse logida. Parooli pole vaja.",
+    "emailLabel": "E-post",
+    "submit": "Saada sisselogimise link",
+    "sending": "Saadan…",
+    "sentTitle": "Vaata oma e-posti",
+    "sentText": "Saatsime sisselogimise lingi sinu e-postile. Ava see samas seadmes ja samas brauseris.",
+    "errorInvalid": "Palun sisesta korrektne e-posti aadress.",
+    "errorGeneric": "Linki ei õnnestunud saata. Palun proovi mõne minuti pärast uuesti.",
+    "errorLink": "Sisselogimise link ei töötanud või on aegunud. Palun küsi uus link."
+  },
+  "plans": {
+    "title": "Minu plaanid",
+    "empty": "Sul pole veel ühtegi plaani. Loo allpool oma esimene plaan.",
+    "newTitle": "Uus plaan",
+    "nameLabel": "Plaani nimi",
+    "namePlaceholder": "Näiteks: Kohviku laen 2027",
+    "companyTypeLabel": "Ettevõtte vorm",
+    "companyTypeOU": "Osaühing (OÜ)",
+    "companyTypeFIE": "Füüsilisest isikust ettevõtja (FIE)",
+    "create": "Loo plaan",
+    "creating": "Loon…",
+    "updated": "Viimati muudetud: {date}",
+    "errorInvalid": "Palun anna plaanile nimi ja vali ettevõtte vorm.",
+    "errorGeneric": "Midagi läks valesti. Palun proovi uuesti."
+  },
+  "plan": {
+    "sectionsTitle": "Plaani osad",
+    "stepOf": "Samm {current} / {total}",
+    "back": "Tagasi",
+    "next": "Edasi",
+    "toOverview": "Tagasi plaani ülevaatesse",
+    "placeholder": "Selle osa küsimused lisatakse järgmises arendusetapis.",
+    "bankLooksFor": "Mida pank vaatab",
+    "laterTitle": "Tulekul",
+    "finance": "Numbrid ja laenukalkulaator",
+    "export": "Laadi alla Wordi ja PDF-ina",
+    "bankReview": "Pangatöötaja kontroll",
+    "comingSoon": "Varsti"
+  },
+  "sections": {
+    "summary": {
+      "title": "Kokkuvõte",
+      "hint": "Lühike ülevaade: mida teed, kui palju soovid laenata ja miks pank saab oma raha tagasi. Kirjutad selle viimasena, kuid see on plaanis esimene."
+    },
+    "idea": {
+      "title": "Äriidee",
+      "hint": "Sinu toode või teenus, millise probleemi see lahendab ja miks just praegu on õige aeg."
+    },
+    "market": {
+      "title": "Turg ja konkurendid",
+      "hint": "Kui suur on turg, kes on peamised konkurendid ja miks kliendid valivad sinu."
+    },
+    "customers": {
+      "title": "Kliendid",
+      "hint": "Kes sinult ostavad, mitut klienti ootad ja kas sul on juba esimesi kliente või kokkuleppeid."
+    },
+    "team": {
+      "title": "Meeskond",
+      "hint": "Omanikud ja võtmeisikud, nende kogemus ning kes mida teeb."
+    },
+    "marketing": {
+      "title": "Turundus ja müük",
+      "hint": "Kuidas kliendid sind leiavad, sinu hinnad, müügikanalid ja turunduseelarve."
+    },
+    "operations": {
+      "title": "Tegevus",
+      "hint": "Asukoht, seadmed, tarnijad ning vajalikud load ja litsentsid."
+    },
+    "risks": {
+      "title": "Riskid",
+      "hint": "Peamised riskid ja kuidas igaüht neist vähendad. Pank hindab omanikke, kes on selle läbi mõelnud."
+    },
+    "loan": {
+      "title": "Laenu eesmärk ja summa",
+      "hint": "Milleks raha kulub, kui palju vajad, kui pikaks ajaks ja kuidas plaanid selle tagasi maksta."
+    },
+    "ownContribution": {
+      "title": "Omafinantseering",
+      "hint": "Kui palju omaraha projekti läheb ja kust see tuleb. Pangad küsivad sageli 10–30%."
+    },
+    "collateral": {
+      "title": "Tagatis",
+      "hint": "Mis laenu tagab: kinnisvara, isiklik käendus või EISi (Ettevõtluse ja Innovatsiooni Sihtasutuse) käendus."
+    }
+  },
+  "settings": {
+    "title": "Seaded",
+    "account": "Sinu konto",
+    "signedInAs": "Sisse logitud kui {email}",
+    "logout": "Logi välja",
+    "deleteTitle": "Kustuta minu konto ja andmed",
+    "deleteText": "See kustutab jäädavalt sinu konto ja kõik sinu plaanid. Seda ei saa tagasi võtta.",
+    "deleteConfirm": "Saan aru, et kõik kustutatakse.",
+    "deleteButton": "Kustuta kõik",
+    "deleting": "Kustutan…",
+    "deleteError": "Kontot ei õnnestunud kustutada. Palun proovi uuesti."
+  },
+  "privacy": {
+    "title": "Privaatsus",
+    "draftNote": "Mustand. Teenuse pakkuja ettevõtte andmed lisatakse enne avaldamist.",
+    "whatTitle": "Mida me salvestame",
+    "whatText": "Sinu e-posti aadressi (sisselogimiseks) ja sinu koostatud äriplaanid. Me ei küsi sinu nime, isikukoodi, aadressi ega telefoninumbrit.",
+    "whereTitle": "Kus andmeid hoitakse",
+    "whereText": "Andmebaasis Euroopa Liidus (Frankfurt, Saksamaa). Sinu plaane näed ainult sina.",
+    "aiTitle": "Tehisaru abi",
+    "aiText": "Kui kasutad tehisaru abilist või pangatöötaja kontrolli, saadetakse sinu plaani tekst tehisaru pakkujale Anthropic. Sinu e-posti aadressi ei saadeta.",
+    "deleteTitle": "Andmete kustutamine",
+    "deleteText": "Saad oma konto ja kõik plaanid igal ajal seadetes kustutada."
+  },
+  "notFound": {
+    "title": "Lehte ei leitud",
+    "back": "Mine avalehele"
+  }
+}
