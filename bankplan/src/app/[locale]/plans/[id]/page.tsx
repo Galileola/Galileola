@@ -2,7 +2,8 @@ import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { requireUser } from "@/lib/auth";
-import { getMyPlan } from "@/lib/plans";
+import { hasAnyAnswer, readPlanAnswers } from "@/lib/plan/answers";
+import { getMyPlanFull } from "@/lib/plans";
 import { bankLoanSections } from "@/plan-types/bank-loan/sections";
 
 type Props = { params: Promise<{ locale: string; id: string }> };
@@ -10,8 +11,9 @@ type Props = { params: Promise<{ locale: string; id: string }> };
 export default async function PlanOverviewPage({ params }: Props) {
   const { locale, id } = await params;
   await requireUser(locale);
-  const plan = await getMyPlan(id);
+  const plan = await getMyPlanFull(id);
   if (!plan) notFound();
+  const answers = readPlanAnswers(plan.answers);
 
   const t = await getTranslations();
   const later = [t("plan.export"), t("plan.bankReview")];
@@ -37,7 +39,12 @@ export default async function PlanOverviewPage({ params }: Props) {
                 <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-sm font-semibold text-slate-700">
                   {index + 1}
                 </span>
-                <span className="text-slate-900">{t(`sections.${section}.title`)}</span>
+                <span className="flex-1 text-slate-900">{t(`sections.${section}.title`)}</span>
+                {answers[section]?.text.trim() ? (
+                  <span className="rounded bg-green-100 px-2 py-0.5 text-xs text-green-900">✓ {t("wizard.statusText")}</span>
+                ) : hasAnyAnswer(answers[section]) ? (
+                  <span className="rounded bg-slate-100 px-2 py-0.5 text-xs text-slate-700">{t("wizard.statusStarted")}</span>
+                ) : null}
               </Link>
             </li>
           ))}

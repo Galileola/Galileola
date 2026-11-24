@@ -58,7 +58,6 @@
     "back": "Tagasi",
     "next": "Edasi",
     "toOverview": "Tagasi plaani ülevaatesse",
-    "placeholder": "Selle osa küsimused lisatakse järgmises arendusetapis.",
     "bankLooksFor": "Mida pank vaatab",
     "laterTitle": "Tulekul",
     "finance": "Numbrid ja laenukalkulaator",
@@ -325,5 +324,172 @@
       "unemploymentInsurance": "töötuskindlustusmakse määrad aastal {year}",
       "other": "maksuväärtus aastal {year}"
     }
+  },
+  "questions": {
+    "summary": {
+      "whatYouDo": {
+        "label": "Ühe-kahe lausega: mida sinu ettevõte teeb ja kellele?",
+        "example": "nt Kohvik Tartu kesklinnas, mis pakub kohvi ja kergeid lõunaid tudengitele ja kontoritöötajatele."
+      },
+      "whyBank": {
+        "label": "Miks peaks pank uskuma, et laen makstakse tagasi?",
+        "example": "nt 5 aastat kogemust kohvikuäris, allkirjastatud rendileping, omaraha 30% projektist, püsivad lõunakliendid."
+      }
+    },
+    "idea": {
+      "product": {
+        "label": "Mida sa müüd? Kirjelda oma toodet või teenust.",
+        "example": "nt Kohv, kohapeal küpsetatud saiakesed, lõunamenüü, toitlustus väikestele kontoritele."
+      },
+      "problem": {
+        "label": "Millist vajadust või probleemi see klientidel lahendab?",
+        "example": "nt Ülikooli lähedal pole kohvikut, kust saaks kiiresti lõunat."
+      },
+      "whyNow": {
+        "label": "Miks on praegu hea aeg alustada või kasvada?",
+        "example": "nt Kevadel avatakse kõrval uus kontorihoone 400 töötajaga."
+      },
+      "stage": {
+        "label": "Kui kaugel sa oled? (idee, alustanud, juba müüd — mis ajast ja kui palju)",
+        "example": "nt Ettevõte registreeritud 2026, müüme laatadel maist, umbes 3000 € kuus."
+      }
+    },
+    "market": {
+      "competitors": {
+        "label": "Kes on sinu peamised konkurendid? Nimeta nad ja mida nad pakuvad.",
+        "example": "nt Kohvik A (200 m kaugusel, kallim), pagarikett B (lõunat pole)."
+      },
+      "advantage": {
+        "label": "Miks valivad kliendid sinu, mitte nemad?",
+        "example": "nt Odavam lõuna, kiirem teenindus, kodused saiakesed."
+      },
+      "marketSize": {
+        "label": "Kui suur on sinu turg? (piirkond, võimalike klientide arv, trendid)",
+        "example": "nt 500 m raadiuses umbes 6000 tudengit ja 1500 kontoritöötajat."
+      }
+    },
+    "customers": {
+      "who": {
+        "label": "Kes on sinu kliendid? (inimesed või ettevõtted, vanus, asukoht)",
+        "example": "nt 19–25-aastased tudengid ja lähedal töötavad inimesed; väikeettevõtted toitlustuseks."
+      },
+      "howMany": {
+        "label": "Mitu klienti ootad ja kui tihti nad ostavad?",
+        "example": "nt 120 klienti päevas, keskmine ost 7 €."
+      },
+      "existing": {
+        "label": "Kas sul on juba kliente, tellimusi, kavatsuste protokolle või lepinguid?",
+        "example": "nt Toitlustusleping ettevõttega C, 40 lõunat nädalas."
+      }
+    },
+    "team": {
+      "people": {
+        "label": "Kes on omanikud ja võtmeisikud? Nende kogemus ja haridus selles valdkonnas.",
+        "example": "nt Mari (omanik): 6 aastat kohviku juhatajana; Jaan: kokahariduses."
+      },
+      "roles": {
+        "label": "Kes mida teeb? Kas on lünki, mida täidad? (raamatupidaja, uued töötajad, partnerid)",
+        "example": "nt Mari juhib kohvikut ja müüki; raamatupidamine ostetakse raamatupidamisbüroolt."
+      }
+    },
+    "marketing": {
+      "channels": {
+        "label": "Kuidas kliendid sinust teada saavad? Kanalid ja eelarve.",
+        "example": "nt Instagram, tudengileht, flaierid; 300 € kuus."
+      },
+      "prices": {
+        "label": "Millised on sinu hinnad ja kuidas need paika panid?",
+        "example": "nt Lõuna 6,50 €, 10% odavam kui kohvik A; kohv 2,80 €."
+      },
+      "salesProcess": {
+        "label": "Kuidas sa müüd? (pood, e-pood, otsemüük, partnerid)",
+        "example": "nt Kohvikus, eeltellimused veebis, kohaletoimetamine Woltiga."
+      }
+    },
+    "operations": {
+      "location": {
+        "label": "Kus sa tegutsed? Ruumid, suurus, rent või oma.",
+        "example": "nt 80 m² ruumid esimesel korrusel, 5-aastane rendileping, 1200 € kuus."
+      },
+      "suppliers": {
+        "label": "Peamised seadmed, tarnijad ja partnerid.",
+        "example": "nt Espressomasin (ostmisel), toiduained tarnijalt D, kohvioad röstikojast E."
+      },
+      "permits": {
+        "label": "Vajalikud load, tegevusload või registreeringud ja nende seis.",
+        "example": "nt Toidukäitlemise teatis Põllumajandus- ja Toiduametile — esitatud."
+      }
+    },
+    "risks": {
+      "risks": {
+        "label": "Mis võib valesti minna? Loetle peamised riskid.",
+        "example": "nt Suvel vähem kliente; rendi tõus; omanik jääb haigeks."
+      },
+      "mitigation": {
+        "label": "Kuidas iga riski vähendad või sellele reageerid?",
+        "example": "nt Suvine toitlustus ja terrass; rendihind fikseeritud 3 aastaks; väljaõpetatud teine barista."
+      }
+    },
+    "loan": {
+      "use": {
+        "label": "Milleks täpselt laen kulub? Loetle asjad ja summad.",
+        "example": "nt Espressomasin 9000 €, mööbel 6000 €, remont 10 000 €."
+      },
+      "amountTerm": {
+        "label": "Kui palju soovid laenata ja kui pikaks ajaks?",
+        "example": "nt 25 000 € 5 aastaks."
+      },
+      "repayment": {
+        "label": "Kuidas laenu tagasi maksad? Millisest tulust?",
+        "example": "nt Kohviku kasumist; kuumakse umbes 500 €, kasum umbes 1500 € kuus."
+      }
+    },
+    "ownContribution": {
+      "amount": {
+        "label": "Kui palju omaraha või vara paned projekti?",
+        "example": "nt 8000 € raha ja köögiseadmed väärtusega 3000 €."
+      },
+      "source": {
+        "label": "Kust sinu omaraha tuleb?",
+        "example": "nt Isiklikud säästud; osa auto müügist."
+      }
+    },
+    "collateral": {
+      "security": {
+        "label": "Mida saad pakkuda laenu tagatiseks?",
+        "example": "nt Omaniku isiklik käendus; kohviku seadmed kommertspandina."
+      },
+      "eisGuarantee": {
+        "label": "Kas soovid kasutada EISi laenukäendust? (see võib asendada puuduvat tagatist)",
+        "example": "nt Jah, meil pole kinnisvara, mida panditada."
+      },
+      "existingDebts": {
+        "label": "Ettevõtte ja omanike olemasolevad laenud, liisingud või võlad.",
+        "example": "nt Autoliising 250 € kuus kuni 2028; maksuvõlgu pole."
+      }
+    }
+  },
+  "wizard": {
+    "answersTitle": "Sinu vastused",
+    "answersHint": "Kirjuta vabalt, lühikeste märkmetena, ükskõik mis järjekorras. Tehisaru teeb neist selge teksti.",
+    "save": "Salvesta",
+    "saving": "Salvestan…",
+    "saved": "Salvestatud",
+    "saveError": "Salvestamine ei õnnestunud. Palun proovi uuesti.",
+    "aiWrite": "Kirjuta tekst tehisaruga",
+    "aiRewrite": "Kirjuta tehisaruga uuesti",
+    "aiWriting": "Kirjutan… see võib võtta kuni minuti.",
+    "textTitle": "Tekst sinu plaani",
+    "textHint": "Saad seda teksti muuta. See läheb allalaaditavasse plaani.",
+    "textEmpty": "Teksti pole veel. Vasta küsimustele ja vajuta tehisaru nuppu või kirjuta tekst ise.",
+    "checkNote": "Tehisaru võib eksida. Kontrolli iga fakt ja number enne, kui saadad plaani pangale.",
+    "aiNotConfigured": "Tehisaru abiline pole veel seadistatud.",
+    "aiRefused": "Tehisaru ei saanud seda teksti kirjutada. Palun sõnasta vastused ümber ja proovi uuesti.",
+    "aiError": "Tehisaru abiline ei vastanud. Palun proovi minuti pärast uuesti.",
+    "aiNeedAnswers": "Vasta enne vähemalt ühele küsimusele.",
+    "summaryHint": "Kokkuvõte kasutab ka sinu teiste osade teksti ja numbreid, seega kirjuta see viimasena.",
+    "numbersHint": "Tehisaru kasutab ka kalkulaatori laenu ja omaraha numbreid.",
+    "statusText": "Tekst valmis",
+    "statusStarted": "Alustatud"
   }
 }

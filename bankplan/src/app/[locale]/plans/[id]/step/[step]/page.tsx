@@ -1,9 +1,12 @@
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
+import { isAiConfigured } from "@/lib/ai/claude";
 import { requireUser } from "@/lib/auth";
-import { getMyPlan } from "@/lib/plans";
+import { readPlanAnswers } from "@/lib/plan/answers";
+import { getMyPlanFull } from "@/lib/plans";
 import { bankLoanSections, isBankLoanSection } from "@/plan-types/bank-loan/sections";
+import { StepForm } from "./StepForm";
 
 type Props = { params: Promise<{ locale: string; id: string; step: string }> };
 
@@ -11,10 +14,11 @@ export default async function WizardStepPage({ params }: Props) {
   const { locale, id, step } = await params;
   await requireUser(locale);
   if (!isBankLoanSection(step)) notFound();
-  const plan = await getMyPlan(id);
+  const plan = await getMyPlanFull(id);
   if (!plan) notFound();
 
   const t = await getTranslations();
+  const saved = readPlanAnswers(plan.answers)[step];
   const index = bankLoanSections.indexOf(step);
   const previous = bankLoanSections[index - 1];
   const next = bankLoanSections[index + 1];
@@ -42,9 +46,17 @@ export default async function WizardStepPage({ params }: Props) {
         <p className="mt-1 text-blue-900">{t(`sections.${step}.hint`)}</p>
       </div>
 
-      <p className="rounded-lg border border-dashed border-slate-300 p-6 text-slate-500">{t("plan.placeholder")}</p>
+      {/* key: a fresh form for each section, so typed answers never leak between steps */}
+      <StepForm
+        key={step}
+        planId={plan.id}
+        section={step}
+        initialAnswers={saved?.q ?? {}}
+        initialText={saved?.text ?? ""}
+        aiConfigured={isAiConfigured()}
+      />
 
-      <nav className="flex justify-between">
+      <nav className="flex justify-between border-t border-slate-200 pt-4">
         {previous ? (
           <Link
             href={`/plans/${plan.id}/step/${previous}`}
@@ -58,12 +70,12 @@ export default async function WizardStepPage({ params }: Props) {
         {next ? (
           <Link
             href={`/plans/${plan.id}/step/${next}`}
-            className="rounded-md bg-blue-700 px-4 py-2 text-white hover:bg-blue-800"
+            className="rounded-md border border-blue-700 bg-white px-4 py-2 text-blue-800 hover:bg-blue-50"
           >
             {t("plan.next")} →
           </Link>
         ) : (
-          <Link href={`/plans/${plan.id}`} className="rounded-md bg-blue-700 px-4 py-2 text-white hover:bg-blue-800">
+          <Link href={`/plans/${plan.id}`} className="rounded-md border border-blue-700 bg-white px-4 py-2 text-blue-800 hover:bg-blue-50">
             {t("plan.toOverview")}
           </Link>
         )}

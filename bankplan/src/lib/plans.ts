@@ -20,24 +20,26 @@ export async function listMyPlans(): Promise<PlanSummary[]> {
   return data;
 }
 
-export async function getMyPlan(id: string): Promise<PlanSummary | null> {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("plans")
-    .select("id, title, company_type, updated_at")
-    .eq("id", id)
-    .maybeSingle();
-  // An id that is not a valid uuid gives error code 22P02: treat it as "not found".
-  if (error && error.code !== "22P02") throw new Error(`Could not load plan (${error.code})`);
-  return data ?? null;
-}
-
 /** The plan with its saved numbers (raw JSON; validate before use). */
 export async function getMyPlanFinance(id: string): Promise<(PlanSummary & { finance: unknown }) | null> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("plans")
     .select("id, title, company_type, updated_at, finance")
+    .eq("id", id)
+    .maybeSingle();
+  if (error && error.code !== "22P02") throw new Error(`Could not load plan (${error.code})`);
+  return data ?? null;
+}
+
+/** The full plan: answers and numbers as raw JSON (validate before use). */
+export async function getMyPlanFull(
+  id: string,
+): Promise<(PlanSummary & { answers: unknown; finance: unknown }) | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("plans")
+    .select("id, title, company_type, updated_at, answers, finance")
     .eq("id", id)
     .maybeSingle();
   if (error && error.code !== "22P02") throw new Error(`Could not load plan (${error.code})`);

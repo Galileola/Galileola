@@ -58,7 +58,6 @@
     "back": "Back",
     "next": "Next",
     "toOverview": "Back to plan overview",
-    "placeholder": "The questions for this section are added in the next development phase.",
     "bankLooksFor": "What the bank looks for",
     "laterTitle": "Coming later",
     "finance": "Numbers and loan calculator",
@@ -325,5 +324,172 @@
       "unemploymentInsurance": "unemployment insurance rates for {year}",
       "other": "a tax value for {year}"
     }
+  },
+  "questions": {
+    "summary": {
+      "whatYouDo": {
+        "label": "In one or two sentences: what does your business do and for whom?",
+        "example": "e.g. A café in Tartu city centre serving coffee and light lunches to students and office workers."
+      },
+      "whyBank": {
+        "label": "Why should the bank believe the loan will be paid back?",
+        "example": "e.g. 5 years in the café business, signed lease, own money 30% of the project, steady lunch customers."
+      }
+    },
+    "idea": {
+      "product": {
+        "label": "What do you sell? Describe your product or service.",
+        "example": "e.g. Coffee, pastries baked on site, lunch menu, catering for small offices."
+      },
+      "problem": {
+        "label": "What need or problem does it solve for customers?",
+        "example": "e.g. There is no café with quick lunches near the university campus."
+      },
+      "whyNow": {
+        "label": "Why is now a good time to start or grow?",
+        "example": "e.g. A new office building with 400 workers opens next door in spring."
+      },
+      "stage": {
+        "label": "How far are you? (idea, started, already selling — since when and how much)",
+        "example": "e.g. Company registered in 2026, selling at markets since May, about 3 000 € a month."
+      }
+    },
+    "market": {
+      "competitors": {
+        "label": "Who are your main competitors? Name them and what they offer.",
+        "example": "e.g. Café A (200 m away, higher prices), bakery chain B (no lunch)."
+      },
+      "advantage": {
+        "label": "Why will customers choose you instead of them?",
+        "example": "e.g. Lower lunch price, faster service, home-made pastries."
+      },
+      "marketSize": {
+        "label": "How big is your market? (area, number of possible customers, trends)",
+        "example": "e.g. About 6 000 students and 1 500 office workers within 500 m."
+      }
+    },
+    "customers": {
+      "who": {
+        "label": "Who are your customers? (people or companies, age, location)",
+        "example": "e.g. Students 19–25 and office workers nearby; small companies for catering."
+      },
+      "howMany": {
+        "label": "How many customers do you expect, and how often do they buy?",
+        "example": "e.g. 120 customers a day, average purchase 7 €."
+      },
+      "existing": {
+        "label": "Do you already have customers, orders, letters of intent or agreements?",
+        "example": "e.g. Catering agreement with company C for 40 lunches a week."
+      }
+    },
+    "team": {
+      "people": {
+        "label": "Who are the owners and key people? Their experience and education related to this business.",
+        "example": "e.g. Mari (owner): 6 years as café manager; Jaan: trained chef."
+      },
+      "roles": {
+        "label": "Who does what? Are there gaps you will fill? (accountant, new staff, partners)",
+        "example": "e.g. Mari runs the café and sales; accounting bought from an accounting firm."
+      }
+    },
+    "marketing": {
+      "channels": {
+        "label": "How will customers find out about you? Channels and budget.",
+        "example": "e.g. Instagram, student newspaper, flyers; 300 € a month."
+      },
+      "prices": {
+        "label": "What are your prices and how did you set them?",
+        "example": "e.g. Lunch 6.50 €, 10% below Café A; coffee 2.80 €."
+      },
+      "salesProcess": {
+        "label": "How do you sell? (shop, online, direct sales, partners)",
+        "example": "e.g. In the café, online pre-orders, delivery through Wolt."
+      }
+    },
+    "operations": {
+      "location": {
+        "label": "Where will you work? Premises, size, rent or own.",
+        "example": "e.g. 80 m² ground-floor premises, 5-year lease, 1 200 € a month."
+      },
+      "suppliers": {
+        "label": "Main equipment, suppliers and partners.",
+        "example": "e.g. Espresso machine (to buy), food from supplier D, coffee beans from roastery E."
+      },
+      "permits": {
+        "label": "Licences, permits or registrations you need, and their status.",
+        "example": "e.g. Food business notice to the Agriculture and Food Board — submitted."
+      }
+    },
+    "risks": {
+      "risks": {
+        "label": "What could go wrong? List the main risks.",
+        "example": "e.g. Fewer customers in summer; rent increase; the owner falls ill."
+      },
+      "mitigation": {
+        "label": "How will you reduce each risk or react if it happens?",
+        "example": "e.g. Summer catering and terrace; lease price fixed for 3 years; trained second barista."
+      }
+    },
+    "loan": {
+      "use": {
+        "label": "What exactly will the loan be used for? List items and amounts.",
+        "example": "e.g. Espresso machine 9 000 €, furniture 6 000 €, renovation 10 000 €."
+      },
+      "amountTerm": {
+        "label": "How much do you want to borrow and for how long?",
+        "example": "e.g. 25 000 € for 5 years."
+      },
+      "repayment": {
+        "label": "How will you pay the loan back? From which income?",
+        "example": "e.g. From café profit; monthly payment about 500 €, profit about 1 500 € a month."
+      }
+    },
+    "ownContribution": {
+      "amount": {
+        "label": "How much of your own money or assets do you put into the project?",
+        "example": "e.g. 8 000 € in money and kitchen equipment worth 3 000 €."
+      },
+      "source": {
+        "label": "Where does your own money come from?",
+        "example": "e.g. Personal savings; part from selling a car."
+      }
+    },
+    "collateral": {
+      "security": {
+        "label": "What can you offer as security for the loan?",
+        "example": "e.g. Personal guarantee of the owner; the café equipment as a commercial pledge."
+      },
+      "eisGuarantee": {
+        "label": "Would you like to use an EIS loan guarantee? (it can replace missing collateral)",
+        "example": "e.g. Yes, we lack real estate to pledge."
+      },
+      "existingDebts": {
+        "label": "Existing loans, leases or debts of the business and owners.",
+        "example": "e.g. Car lease 250 € a month until 2028; no tax debts."
+      }
+    }
+  },
+  "wizard": {
+    "answersTitle": "Your answers",
+    "answersHint": "Write freely, in short notes, in any order. The AI turns them into clear text.",
+    "save": "Save",
+    "saving": "Saving…",
+    "saved": "Saved",
+    "saveError": "Could not save. Please try again.",
+    "aiWrite": "Write the text with AI",
+    "aiRewrite": "Write again with AI",
+    "aiWriting": "Writing… this can take up to a minute.",
+    "textTitle": "Text for your plan",
+    "textHint": "You can edit this text. It goes into the exported plan.",
+    "textEmpty": "No text yet. Answer the questions and press the AI button, or write the text yourself.",
+    "checkNote": "AI can make mistakes. Check every fact and number before you send the plan to a bank.",
+    "aiNotConfigured": "The AI helper is not set up yet.",
+    "aiRefused": "The AI could not write this text. Please rephrase your answers and try again.",
+    "aiError": "The AI helper did not answer. Please try again in a minute.",
+    "aiNeedAnswers": "Answer at least one question first.",
+    "summaryHint": "The summary also uses the text of your other sections and your numbers, so write it last.",
+    "numbersHint": "The AI also uses the loan and own-money figures from the calculator.",
+    "statusText": "Text ready",
+    "statusStarted": "Started"
   }
 }
