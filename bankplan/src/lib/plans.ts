@@ -31,3 +31,15 @@ export async function getMyPlan(id: string): Promise<PlanSummary | null> {
   if (error && error.code !== "22P02") throw new Error(`Could not load plan (${error.code})`);
   return data ?? null;
 }
+
+/** The plan with its saved numbers (raw JSON; validate before use). */
+export async function getMyPlanFinance(id: string): Promise<(PlanSummary & { finance: unknown }) | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("plans")
+    .select("id, title, company_type, updated_at, finance")
+    .eq("id", id)
+    .maybeSingle();
+  if (error && error.code !== "22P02") throw new Error(`Could not load plan (${error.code})`);
+  return data ?? null;
+}

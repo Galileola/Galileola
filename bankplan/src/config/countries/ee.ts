@@ -263,6 +263,31 @@ export const payroll = {
   },
 } satisfies Record<string, Rule<number> | Rule<number[]>>;
 
+/** OÜ board member fee (juhatuse liikme tasu): differs from an employee's wage. */
+export const boardMember = {
+  unemploymentInsurance: {
+    label: 'Unemployment insurance on a board member fee',
+    value: false,
+    certainty: 'law',
+    sources: [rt('TKindlS', 'TKindlS § 3 lg 2 p 3 (a board member without an employment contract is not insured)')],
+  },
+  socialTaxMinimum: {
+    label: 'Employer minimum social tax (monthly base) on a board member fee',
+    value: false,
+    certainty: 'law',
+    sources: [rt('SMS', 'SMS § 2 lg 2 (minimum applies to employees and officials)')],
+    note: 'Social tax 33%, funded pension and income tax still apply (SMS § 2 lg 1 p 4, KoPS § 7 lg 1).',
+  },
+} satisfies Record<string, Sourced<boolean>>;
+
+/** How withheld income tax on a wage is worked out. */
+export const wageIncomeTaxBase = {
+  label: 'Income tax base for a monthly wage',
+  value: 'gross − employee unemployment insurance − funded pension − monthly tax-free income',
+  certainty: 'law',
+  sources: [rt('TuMS', 'TuMS § 42 lg 1 (1/12 of the tax-free income), lg 5 (unemployment insurance), lg 6 (funded pension)')],
+} satisfies Sourced<string>;
+
 // ---------------------------------------------------------------------------
 // Company (OÜ) profit tax — tax is paid when profit is distributed, not when it is earned
 // ---------------------------------------------------------------------------
@@ -429,8 +454,8 @@ export const soleProprietor = {
       {
         from: '2026-01-01',
         value: 0,
-        certainty: 'official',
-        sources: [emta.changes2026],
+        certainty: 'law',
+        sources: [rt('TKindlS', 'TKindlS § 3 lg 2 p 1 (an FIE is not an insured person)'), emta.changes2026],
         note: '"FIE ei pea enda eest töötuskindlustusmakset tasuma."',
       },
     ],
@@ -492,11 +517,35 @@ export const paymentDays = {
         value: 20,
         certainty: 'law',
         sources: [rt('KMS', 'KMS § 27 lg 1')],
-        note: 'The law text checked states the return day. We assume VAT is paid on the same day; the payment day itself was not found in the texts checked.',
+        note: 'The law text checked states the return day. We assume VAT is paid on the same day, and that a VAT refund arrives in that month too; neither date was found in the texts checked.',
       },
     ],
   },
 } satisfies Record<string, Rule<number>>;
+
+/** When an FIE pays its own taxes (used to place them in the monthly cash flow). */
+export const fieSchedule = {
+  socialTaxAdvanceMonths: {
+    label: 'Months in which the FIE pays the quarterly minimum social tax advance (by the 15th)',
+    value: [3, 6, 9, 12],
+    certainty: 'law',
+    sources: [rt('SMS', 'SMS § 9 lg 3 p 1')],
+  },
+  settlementMonth: {
+    label: 'Month of the next year in which the rest of the yearly tax is paid (by 1 October)',
+    value: 10,
+    certainty: 'law',
+    sources: [rt('SMS', 'SMS § 9 lg 3 p 2 (social tax)'), emta.fieGuide],
+    note: 'Law checked for social tax; EMTA states the same day for the funded pension. We assume income tax is paid the same day.',
+  },
+  incomeTaxAdvance: {
+    label: 'Income tax advances in the second and later years: share of last year\'s tax per payment, months, and minimum',
+    value: { sharePerPayment: 0.25, months: [9, 12], skipIfNotAbove: 300 },
+    certainty: 'law',
+    sources: [rt('TuMS', 'TuMS § 47 lg 1–3')],
+    note: 'Not paid in the first year of business.',
+  },
+} satisfies Record<string, Sourced<unknown>>;
 
 // ---------------------------------------------------------------------------
 // Bank benchmarks — what lenders and EIS publish. Banks do not publish their
@@ -590,7 +639,10 @@ export const estonia = {
   payroll,
   corporate,
   vat,
+  boardMember,
+  wageIncomeTaxBase,
   soleProprietor,
+  fieSchedule,
   paymentDays,
   bankBenchmarks,
 } as const;

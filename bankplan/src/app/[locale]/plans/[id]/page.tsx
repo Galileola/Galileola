@@ -14,7 +14,7 @@ export default async function PlanOverviewPage({ params }: Props) {
   if (!plan) notFound();
 
   const t = await getTranslations();
-  const later = [t("plan.finance"), t("plan.export"), t("plan.bankReview")];
+  const later = [t("plan.export"), t("plan.bankReview")];
 
   return (
     <div className="space-y-8">
@@ -42,6 +42,16 @@ export default async function PlanOverviewPage({ params }: Props) {
             </li>
           ))}
         </ol>
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-lg font-semibold text-slate-900">{t("plan.finance")}</h2>
+        <Link
+          href={`/plans/${plan.id}/finance`}
+          className="block rounded-lg border border-slate-200 bg-white p-4 hover:border-blue-400"
+        >
+          <span className="font-medium text-blue-800">{t("finance.title")} →</span>
+        </Link>
       </section>
 
       <section className="space-y-3">
