@@ -142,7 +142,7 @@ export async function toDocx(doc: ExportDocument): Promise<Buffer> {
   closePortrait();
 
   const file = new Document({
-    creator: "Business plan for the bank",
+    creator: "Plaani Äri",
     title: doc.title,
     styles: { default: { document: { run: { font: FONT } } } },
     sections,

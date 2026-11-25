@@ -1,6 +1,7 @@
-# Äriplaan pangale – Business plan for the bank (working name)
+# Plaani Äri
 
 A web app that helps small businesses in Estonia write the business plan they give to a bank with a loan application.
+The name **Plaani Äri** is shown in the page header and browser tab (key `app.name` in `src/messages/*.json`).
 It is a planning tool only, not legal, tax or financial advice.
 
 **What it does**
@@ -91,7 +92,7 @@ Values that are not confirmed are marked `assumed` in the config file and are li
 - [ ] Terms of use page (not built yet).
 - [ ] Paid Vercel plan (commercial use).
 - [ ] Spending limit in the Anthropic console.
-- [ ] Final product name and your own web address (domain).
+- [ ] Your own web address (domain) for Plaani Äri.
 - [ ] Tax values re-checked for the new year.
 - [ ] A test with a few real users and real AI answers.
 
