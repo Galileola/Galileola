@@ -9,6 +9,11 @@ const nextConfig: NextConfig = {
   // almost every page is personal (signed-in user), so the simpler
   // "render on each request" model fits and keeps the code easy to follow.
 
+  // Build a self-contained server (.next/standalone/server.js). Hostinger's servers cannot
+  // run the Next.js build tools, so the app is built elsewhere and only run there
+  // (see scripts/pack-hostinger.sh).
+  output: "standalone",
+
   // Basic browser protections for every page.
   headers() {
     return [

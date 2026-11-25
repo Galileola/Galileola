@@ -40,3 +40,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Hostinger upload package (scripts/pack-hostinger.sh)
+/.hostinger/
+/plaani-*.zip
