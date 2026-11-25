@@ -71,6 +71,11 @@ So a new version is built on another computer and uploaded as a ready-made app:
 
 Automatic publishing on every GitHub change is not set up, because Hostinger would try to build the app on its server and fail.
 
+Saving environment variables in hPanel makes Hostinger redeploy the last uploaded version with the stored build settings.
+Those must stay **Express**, entry file **server.js**, no build command (they are set like that). If a redeploy
+fails with "Couldn't find any `pages` or `app` directory", the stored settings were changed back to Next.js:
+set them to Express / server.js again. Do **not** add `app` or `pages` folders as Hostinger's analysis suggests.
+
 ### Everyday tasks
 
 **A tax rate or bank rule changes.** Open `src/config/countries/ee.ts` on GitHub, click the pencil icon, change the value, the `checked` date and the source, then click **Commit changes**. Then publish a new version (see "Publishing a new version"). The automated tests contain hand-calculated examples with the current rates, so after a rate change some tests will fail on purpose: ask a developer to recalculate them.
