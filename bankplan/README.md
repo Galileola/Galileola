@@ -3,7 +3,8 @@
 Helps small businesses in Estonia write a bank-ready business plan.
 Planning tool only, not legal, tax or financial advice.
 
-**Status:** Phase 4 done: download the plan as Word (.docx) and PDF in Estonian, Russian or English, with the numbers, the loan schedule and how the numbers were calculated. Sections written in another language can be translated by the AI.
+**Status:** Phase 5 done: bank officer check. A readiness score out of 100 (plan check 60 points worked out by the app, AI officer interview 40 points), the weak points, and the 10 hardest questions a credit officer would ask; each answer is rated and the score updates.
+Phase 4: download the plan as Word (.docx) and PDF in Estonian, Russian or English, with the numbers, the loan schedule and how the numbers were calculated. Sections written in another language can be translated by the AI.
 Phase 3: questions for all 11 plan sections and an AI helper that turns rough answers into clear text (needs `ANTHROPIC_API_KEY` and `ANTHROPIC_MODEL`).
 Phase 2: financial calculator with Estonian rules (3-year forecast, loan schedule, bank ratios) and a screen to enter the numbers.
 Phase 1: login by email link, Estonian/Russian/English, plan list, empty wizard (11 sections), settings with "delete my account".
@@ -17,6 +18,7 @@ A full guide for non-developers comes in Phase 6.
 | `src/lib/finance/` | The calculator (no screens, no database) and its tests in `__tests__/` |
 | `src/plan-types/bank-loan/` | The wizard sections and their questions |
 | `src/lib/ai/` | The AI helper: prompts and the one call to Claude (server only) |
+| `src/lib/review/` | The readiness score and the saved bank officer check |
 | `src/lib/export/` | The downloadable plan: one document description, drawn as Word and as PDF |
 | `src/assets/fonts/` | Noto Sans font for the PDF (Estonian and Russian letters), free licence |
 | `src/messages/` | All interface text (`et.json`, `ru.json`, `en.json`) |

@@ -59,11 +59,10 @@
     "next": "Next",
     "toOverview": "Back to plan overview",
     "bankLooksFor": "What the bank looks for",
-    "laterTitle": "Coming later",
     "finance": "Numbers and loan calculator",
     "export": "Download as Word and PDF",
     "bankReview": "Bank officer check",
-    "comingSoon": "Coming soon"
+    "score": "Readiness: {score} / 100"
   },
   "sections": {
     "summary": {
@@ -560,5 +559,99 @@
       "ru": "Russian",
       "en": "English"
     }
+  },
+  "review": {
+    "title": "Bank officer check",
+    "intro": "See your plan through a bank's eyes: a readiness score, the weak points, and the 10 hardest questions a credit officer would ask.",
+    "scoreTitle": "Readiness score",
+    "scoreOutOf": "{score} / 100",
+    "levels": {
+      "notReady": "Not ready yet",
+      "almost": "Almost ready",
+      "ready": "Ready to show the bank"
+    },
+    "planPart": "Plan check: {points} / {max}",
+    "interviewPart": "Officer interview: {points} / {max}",
+    "scoreNote": "This score is an estimate made by this app. Only the bank decides on a loan.",
+    "checksTitle": "Plan check",
+    "checksIntro": "The app compares your plan with what Estonian banks and EIS usually look for.",
+    "points": "{points} / {max} points",
+    "source": "Source",
+    "status": {
+      "ok": "OK",
+      "partial": "Partly",
+      "fail": "Needs work",
+      "needsNumbers": "Needs the numbers"
+    },
+    "checks": {
+      "sections": {
+        "title": "Plan sections written",
+        "text": "{done} of {total} sections have text."
+      },
+      "numbers": {
+        "title": "Sales and loan in the calculator",
+        "ok": "The sales forecast and the loan are entered.",
+        "missing": "Enter your sales forecast and the loan you are asking for."
+      },
+      "dscr": {
+        "title": "Can the business pay the loan? (DSCR)",
+        "text": "Lowest debt service coverage in the forecast: {value}. Banks usually want at least {minimum}."
+      },
+      "cash": {
+        "title": "Money never runs out",
+        "ok": "The bank balance stays above zero in all 36 months. Lowest balance: {lowest}.",
+        "fail": "The bank balance falls below zero in {month} (lowest {lowest}). Add own money, choose a longer loan term or interest-only months, or cut early costs."
+      },
+      "ownContribution": {
+        "title": "Own money in the project",
+        "text": "Your own money is {share} of own money plus the loan. Banks often ask for {good}; {minimum} is the usual minimum."
+      },
+      "equity": {
+        "title": "Equity share",
+        "text": "Lowest equity share of the balance sheet: {value}. Banks usually want at least {minimum}."
+      },
+      "currentRatio": {
+        "title": "Short-term debts covered (current ratio)",
+        "text": "Lowest current ratio: {value}. At least {minimum} is expected.",
+        "none": "No short-term debts in the forecast."
+      },
+      "debtToTurnover": {
+        "title": "Loan compared with yearly sales",
+        "text": "Highest loan balance compared with yearly sales: {value}. At most {maximum} is recommended.",
+        "noSales": "The forecast has a year without sales."
+      }
+    },
+    "needsNumbersText": "Enter the sales forecast and the loan first.",
+    "fixSection": "Write: {section}",
+    "fixNumbers": "Open the calculator",
+    "officerTitle": "AI bank officer",
+    "officerIntro": "The AI reads your plan like a bank's credit officer: it names the weak points and asks the 10 hardest questions. Your answers are rated and give up to 40 points.",
+    "start": "Start the check",
+    "starting": "The officer is reading your plan… this can take 1–2 minutes.",
+    "restart": "Start a new check",
+    "restartConfirm": "A new check replaces these questions and your answers. Continue?",
+    "needPlan": "Write some sections or enter the numbers first, so the officer has something to read.",
+    "error": "The check did not work. Please try again in a minute.",
+    "stale": "Your plan has changed since this check. Start a new check to get questions about the latest version.",
+    "otherLanguage": "This check is in {language}. Start a new check to get it in this language.",
+    "madeOn": "Check made on {date}",
+    "summaryTitle": "The officer's view",
+    "weakTitle": "Weak points",
+    "howToFix": "What to do",
+    "questionsTitle": "The 10 hardest questions",
+    "questionsIntro": "Answer as you would in the meeting at the bank: briefly, with facts and numbers.",
+    "whyAsked": "Why banks ask",
+    "yourAnswer": "Your answer",
+    "check": "Save and check my answers",
+    "checking": "Checking your answers…",
+    "checked": "Answers saved and checked.",
+    "savedNotChecked": "Your answers are saved, but the check did not work. Please try again in a minute.",
+    "ratings": {
+      "strong": "Strong answer",
+      "ok": "OK, could be stronger",
+      "weak": "Weak answer"
+    },
+    "notRated": "Not checked yet",
+    "practiceNote": "This is practice. The real bank may ask other questions."
   }
 }

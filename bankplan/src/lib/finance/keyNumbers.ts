@@ -1,5 +1,5 @@
 import type { CompanyType } from "@/config/countries/ee";
-import { financeInputsSchema } from "./inputs";
+import { filledFinanceInputs } from "./inputs";
 import { calculateProjection } from "./projection";
 
 const eur = (value: number) => `${Math.round(value).toLocaleString("en-US")} EUR`;
@@ -10,12 +10,8 @@ const twoDecimals = (value: number | null) => (value === null ? "no loan payment
  * the bank officer simulator. Returns an empty list if the numbers are not filled in.
  */
 export function keyNumbers(rawFinance: unknown, companyType: CompanyType): string[] {
-  const parsed = financeInputsSchema.safeParse(rawFinance);
-  if (!parsed.success) return [];
-  const inputs = parsed.data;
-  const hasNumbers =
-    inputs.revenue.length > 0 || inputs.loan.amount > 0 || inputs.ownContribution > 0 || inputs.investments.length > 0;
-  if (!hasNumbers) return [];
+  const inputs = filledFinanceInputs(rawFinance);
+  if (!inputs) return [];
 
   const result = calculateProjection(inputs, companyType);
   const years = result.years;

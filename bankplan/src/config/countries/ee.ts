@@ -596,6 +596,14 @@ export const bankBenchmarks = {
     sources: [banks.lhvInvestment, banks.coopInvestment, eis.starterLoan, banks.lhvMicro],
   },
 
+  ownContributionTarget: {
+    label: 'Own money as a share of the project cost (own money + loan), used by the readiness score',
+    value: { good: 0.2, minimum: 0.1 },
+    certainty: 'official',
+    sources: [banks.coopInvestment, eis.starterLoan],
+    note: 'good = Coop Pank finances up to 80% of the project cost; minimum = recommended minimum of the closed EIS starter loan. LHV asks 30% of the loan amount (about 23% of the project cost) but accepts extra collateral instead.',
+  },
+
   eisGuarantee: {
     label: 'EIS loan guarantee (for firms without enough collateral or history)',
     value: {

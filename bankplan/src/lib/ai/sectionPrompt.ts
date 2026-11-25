@@ -39,12 +39,13 @@ export function buildSystemPrompt(locale: Locale): string {
   ].join("\n");
 }
 
-const escape = (text: string) => text.replaceAll("<", "‹").replaceAll(">", "›");
+/** The owner's text cannot open or close the tags around it. */
+export const escapeTags = (text: string) => text.replaceAll("<", "‹").replaceAll(">", "›");
 
 export function buildUserMessage(input: SectionPromptInput): string {
   const parts = [
     "<plan>",
-    `Plan name: ${escape(input.planTitle)}`,
+    `Plan name: ${escapeTags(input.planTitle)}`,
     `Business form: ${input.businessForm}`,
     "</plan>",
     "<section>",
@@ -58,13 +59,13 @@ export function buildUserMessage(input: SectionPromptInput): string {
   if (input.otherSections?.length) {
     parts.push("<other_sections>");
     for (const section of input.otherSections) {
-      parts.push(`<section_text title="${section.title}">`, escape(section.text), "</section_text>");
+      parts.push(`<section_text title="${section.title}">`, escapeTags(section.text), "</section_text>");
     }
     parts.push("</other_sections>");
   }
   parts.push("<owner_notes>");
   for (const { question, answer } of input.answers) {
-    parts.push(`Question: ${question}`, `Answer: ${escape(answer)}`, "");
+    parts.push(`Question: ${question}`, `Answer: ${escapeTags(answer)}`, "");
   }
   parts.push("</owner_notes>", "", `Write the "${input.sectionTitle}" section now.`);
   return parts.join("\n");

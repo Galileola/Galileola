@@ -1,7 +1,7 @@
 import { estonia, type CompanyType } from "@/config/countries/ee";
 import type { Rule, Source } from "@/config/types";
 import type { Locale } from "@/i18n/routing";
-import { financeInputsSchema } from "@/lib/finance/inputs";
+import { filledFinanceInputs } from "@/lib/finance/inputs";
 import { calculateProjection, type ProjectionResult } from "@/lib/finance/projection";
 import { valueAt } from "@/lib/finance/rules";
 import { textHash, type PlanAnswers, type SectionAnswer } from "@/lib/plan/answers";
@@ -34,15 +34,6 @@ export function sectionTextFor(answer: SectionAnswer | undefined, locale: Locale
 /** Sections whose text is in another language and has no up-to-date translation. */
 export function sectionsNeedingTranslation(answers: PlanAnswers, locale: Locale) {
   return bankLoanSections.filter((section) => sectionTextFor(answers[section], locale).untranslatedFrom);
-}
-
-/** The saved calculator inputs, or null when no numbers are filled in yet. */
-export function filledFinanceInputs(raw: unknown) {
-  const parsed = financeInputsSchema.safeParse(raw);
-  if (!parsed.success) return null;
-  const i = parsed.data;
-  const filled = i.revenue.length > 0 || i.loan.amount > 0 || i.ownContribution > 0 || i.investments.length > 0;
-  return filled ? i : null;
 }
 
 export function buildPlanDocument(plan: PlanForExport, locale: Locale, t: Translate, now: Date): ExportDocument {

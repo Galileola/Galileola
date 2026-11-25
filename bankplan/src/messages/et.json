@@ -59,11 +59,10 @@
     "next": "Edasi",
     "toOverview": "Tagasi plaani ülevaatesse",
     "bankLooksFor": "Mida pank vaatab",
-    "laterTitle": "Tulekul",
     "finance": "Numbrid ja laenukalkulaator",
     "export": "Laadi alla Wordi ja PDF-ina",
     "bankReview": "Pangatöötaja kontroll",
-    "comingSoon": "Varsti"
+    "score": "Valmisolek: {score} / 100"
   },
   "sections": {
     "summary": {
@@ -560,5 +559,99 @@
       "ru": "vene",
       "en": "inglise"
     }
+  },
+  "review": {
+    "title": "Pangatöötaja kontroll",
+    "intro": "Vaata oma plaani panga silmadega: valmisoleku hinne, nõrgad kohad ja 10 kõige raskemat küsimust, mida laenuhaldur küsiks.",
+    "scoreTitle": "Valmisoleku hinne",
+    "scoreOutOf": "{score} / 100",
+    "levels": {
+      "notReady": "Veel mitte valmis",
+      "almost": "Peaaegu valmis",
+      "ready": "Valmis pangale näitamiseks"
+    },
+    "planPart": "Plaani kontroll: {points} / {max}",
+    "interviewPart": "Vestlus laenuhalduriga: {points} / {max}",
+    "scoreNote": "Selle hinde arvutab see rakendus. Laenu üle otsustab ainult pank.",
+    "checksTitle": "Plaani kontroll",
+    "checksIntro": "Rakendus võrdleb sinu plaani sellega, mida Eesti pangad ja EIS tavaliselt vaatavad.",
+    "points": "{points} / {max} punkti",
+    "source": "Allikas",
+    "status": {
+      "ok": "Korras",
+      "partial": "Osaliselt",
+      "fail": "Vajab tööd",
+      "needsNumbers": "Vajab numbreid"
+    },
+    "checks": {
+      "sections": {
+        "title": "Kirjutatud osad",
+        "text": "Tekst on olemas {done} osas {total}-st."
+      },
+      "numbers": {
+        "title": "Müük ja laen kalkulaatoris",
+        "ok": "Müügiprognoos ja laen on sisestatud.",
+        "missing": "Sisesta müügiprognoos ja laen, mida taotled."
+      },
+      "dscr": {
+        "title": "Kas ettevõte suudab laenu maksta? (DSCR)",
+        "text": "Väikseim laenu teenindamise kattekordaja prognoosis: {value}. Pangad soovivad tavaliselt vähemalt {minimum}."
+      },
+      "cash": {
+        "title": "Raha ei saa otsa",
+        "ok": "Pangakonto jääk püsib kõigil 36 kuul üle nulli. Väikseim jääk: {lowest}.",
+        "fail": "Pangakonto jääk langeb alla nulli: {month} (väikseim {lowest}). Lisa omaraha, vali pikem laenuperiood või ainult intressi maksmise kuud või vähenda alguse kulusid."
+      },
+      "ownContribution": {
+        "title": "Omaraha projektis",
+        "text": "Sinu omaraha on {share} omarahast koos laenuga. Pangad küsivad sageli {good}; tavaline miinimum on {minimum}."
+      },
+      "equity": {
+        "title": "Omakapitali osa",
+        "text": "Väikseim omakapitali osa bilansis: {value}. Pangad soovivad tavaliselt vähemalt {minimum}."
+      },
+      "currentRatio": {
+        "title": "Lühiajalised kohustused kaetud (lühiajaliste kohustuste kattekordaja)",
+        "text": "Väikseim kattekordaja: {value}. Oodatakse vähemalt {minimum}.",
+        "none": "Prognoosis pole lühiajalisi kohustusi."
+      },
+      "debtToTurnover": {
+        "title": "Laen võrreldes aastamüügiga",
+        "text": "Suurim laenujääk võrreldes aastamüügiga: {value}. Soovitatav on kuni {maximum}.",
+        "noSales": "Prognoosis on aasta ilma müügita."
+      }
+    },
+    "needsNumbersText": "Sisesta enne müügiprognoos ja laen.",
+    "fixSection": "Kirjuta: {section}",
+    "fixNumbers": "Ava kalkulaator",
+    "officerTitle": "Tehisaru laenuhaldur",
+    "officerIntro": "Tehisaru loeb sinu plaani nagu panga laenuhaldur: nimetab nõrgad kohad ja esitab 10 kõige raskemat küsimust. Sinu vastuseid hinnatakse ja need annavad kuni 40 punkti.",
+    "start": "Alusta kontrolli",
+    "starting": "Laenuhaldur loeb sinu plaani… see võib võtta 1–2 minutit.",
+    "restart": "Alusta uut kontrolli",
+    "restartConfirm": "Uus kontroll asendab need küsimused ja sinu vastused. Kas jätkata?",
+    "needPlan": "Kirjuta enne mõned osad või sisesta numbrid, et laenuhalduril oleks midagi lugeda.",
+    "error": "Kontroll ei õnnestunud. Proovi minuti pärast uuesti.",
+    "stale": "Sinu plaan on pärast seda kontrolli muutunud. Alusta uut kontrolli, et saada küsimused uusima versiooni kohta.",
+    "otherLanguage": "See kontroll on {language} keeles. Alusta uut kontrolli, et saada see selles keeles.",
+    "madeOn": "Kontroll tehtud {date}",
+    "summaryTitle": "Laenuhalduri hinnang",
+    "weakTitle": "Nõrgad kohad",
+    "howToFix": "Mida teha",
+    "questionsTitle": "10 kõige raskemat küsimust",
+    "questionsIntro": "Vasta nii, nagu vastaksid kohtumisel pangas: lühidalt, faktide ja numbritega.",
+    "whyAsked": "Miks pangad seda küsivad",
+    "yourAnswer": "Sinu vastus",
+    "check": "Salvesta ja kontrolli vastuseid",
+    "checking": "Kontrollin vastuseid…",
+    "checked": "Vastused on salvestatud ja kontrollitud.",
+    "savedNotChecked": "Vastused on salvestatud, kuid kontroll ei õnnestunud. Proovi minuti pärast uuesti.",
+    "ratings": {
+      "strong": "Tugev vastus",
+      "ok": "Rahuldav, võiks olla tugevam",
+      "weak": "Nõrk vastus"
+    },
+    "notRated": "Veel kontrollimata",
+    "practiceNote": "See on harjutus. Päris pank võib küsida teisi küsimusi."
   }
 }

@@ -1,9 +1,12 @@
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { companyTypes, type CompanyType } from "@/config/countries/ee";
 import { Link } from "@/i18n/navigation";
 import { requireUser } from "@/lib/auth";
 import { hasAnyAnswer, readPlanAnswers } from "@/lib/plan/answers";
 import { getMyPlanFull } from "@/lib/plans";
+import { checkPlan, readinessScore } from "@/lib/review/readiness";
+import { currentRating, readReview } from "@/lib/review/review";
 import { bankLoanSections } from "@/plan-types/bank-loan/sections";
 
 type Props = { params: Promise<{ locale: string; id: string }> };
@@ -16,7 +19,11 @@ export default async function PlanOverviewPage({ params }: Props) {
   const answers = readPlanAnswers(plan.answers);
 
   const t = await getTranslations();
-  const later = [t("plan.bankReview")];
+  const companyType: CompanyType = (companyTypes as readonly string[]).includes(plan.company_type)
+    ? (plan.company_type as CompanyType)
+    : "OU";
+  const review = readReview(plan.review);
+  const score = readinessScore(checkPlan(answers, plan.finance, companyType), review ? review.questions.map(currentRating) : []);
 
   return (
     <div className="space-y-8">
@@ -72,15 +79,14 @@ export default async function PlanOverviewPage({ params }: Props) {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold text-slate-900">{t("plan.laterTitle")}</h2>
-        <ul className="grid gap-3 sm:grid-cols-3">
-          {later.map((label) => (
-            <li key={label} className="rounded-lg border border-dashed border-slate-300 p-3 text-slate-500">
-              {label}
-              <span className="mt-1 block text-xs uppercase tracking-wide">{t("plan.comingSoon")}</span>
-            </li>
-          ))}
-        </ul>
+        <h2 className="text-lg font-semibold text-slate-900">{t("review.title")}</h2>
+        <Link
+          href={`/plans/${plan.id}/review`}
+          className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white p-4 hover:border-blue-400"
+        >
+          <span className="font-medium text-blue-800">{t("plan.bankReview")} →</span>
+          <span className="text-sm text-slate-700">{t("plan.score", { score: score.total })}</span>
+        </Link>
       </section>
     </div>
   );

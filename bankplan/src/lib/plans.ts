@@ -32,14 +32,14 @@ export async function getMyPlanFinance(id: string): Promise<(PlanSummary & { fin
   return data ?? null;
 }
 
-/** The full plan: answers and numbers as raw JSON (validate before use). */
+/** The full plan: answers, numbers and the bank officer check as raw JSON (validate before use). */
 export async function getMyPlanFull(
   id: string,
-): Promise<(PlanSummary & { answers: unknown; finance: unknown }) | null> {
+): Promise<(PlanSummary & { answers: unknown; finance: unknown; review: unknown }) | null> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("plans")
-    .select("id, title, company_type, updated_at, answers, finance")
+    .select("id, title, company_type, updated_at, answers, finance, review")
     .eq("id", id)
     .maybeSingle();
   if (error && error.code !== "22P02") throw new Error(`Could not load plan (${error.code})`);

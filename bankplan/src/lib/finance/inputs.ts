@@ -131,3 +131,12 @@ export function defaultFinanceInputs(today = new Date()): FinanceInputs {
     useBasicExemption: true,
   };
 }
+
+/** The saved calculator inputs, or null when no numbers are filled in yet. */
+export function filledFinanceInputs(raw: unknown): FinanceInputs | null {
+  const parsed = financeInputsSchema.safeParse(raw);
+  if (!parsed.success) return null;
+  const i = parsed.data;
+  const filled = i.revenue.length > 0 || i.loan.amount > 0 || i.ownContribution > 0 || i.investments.length > 0;
+  return filled ? i : null;
+}
