@@ -22,11 +22,11 @@ All Estonian tax rules and bank benchmarks are in one file, each with its source
 | Service | What it does | Where |
 |---|---|---|
 | **GitHub** | Keeps the code. Every change is saved here. | github.com |
-| **Vercel** | Runs the app on the internet. Publishes every change by itself. | Servers in Frankfurt, Germany |
+| **Hostinger** | Runs the app on the internet (your Business Web Hosting plan, Node.js app). Test address: https://classic-indigo-gaur-55.hostingersite.com | Your Hostinger server (check its location in hPanel) |
 | **Supabase** | Login by email link and the database with the plans. | Frankfurt, Germany (project "bankplan") |
 | **Anthropic** | The AI (Claude). Used only when someone presses an AI button. | USA |
 
-### Settings in Vercel (Project → Settings → Environment Variables)
+### Settings on Hostinger (hPanel → the website → Node.js → Environment variables)
 
 | Name | What to put there | Secret? |
 |---|---|---|
@@ -38,14 +38,18 @@ All Estonian tax rules and bank benchmarks are in one file, each with its source
 | `SITE_OPERATOR_NAME` | Who runs the service (person or company), shown on the privacy page | No |
 | `SITE_CONTACT_EMAIL` | Contact email shown on the privacy page | No |
 
-After changing a setting, open **Deployments**, click **⋯** next to the newest one and choose **Redeploy**, so the app picks it up.
+Saving a setting restarts the app. The two `NEXT_PUBLIC_…` values are built into the app, so changing them needs a new upload (see "Publishing a new version").
+
+**Careful:** the AI key is entered only in hPanel. Settings changed through Hostinger's API replace the whole list, so whoever changes settings that way must enter the AI key again afterwards.
 
 ### Supabase login settings (one time)
 
 In the Supabase dashboard: **Authentication → URL Configuration**
 
-- **Site URL:** the app's address, for example `https://your-app.vercel.app`
-- **Redirect URLs:** add `https://your-app.vercel.app/**`
+- **Site URL:** the app's address, now `https://classic-indigo-gaur-55.hostingersite.com`
+- **Redirect URLs:** add `https://classic-indigo-gaur-55.hostingersite.com/**`
+
+When the app moves to your own domain, change both to the new address.
 
 Without this, the login link in the email leads to the wrong place.
 
@@ -57,9 +61,21 @@ Until you set up your own email sending, Supabase's built-in email service:
 
 For real users, connect your own email sending service in **Supabase → Authentication → Emails → SMTP Settings** (any email provider that offers "SMTP", ideally one based in the EU).
 
+### Publishing a new version
+
+Hostinger's server cannot build this app itself (its system libraries are older than the Next.js build tools need).
+So a new version is built on another computer and uploaded as a ready-made app:
+
+1. On a computer with Node.js 22 and the `.env.local` file: run `./scripts/pack-hostinger.sh`. It creates `plaani-<version>.zip`.
+2. Upload the zip to the website (hPanel → Files, or Hostinger's API) and start a Node.js deployment with
+   application type **Express**, entry file **server.js**, Node.js **22**, no build command.
+3. Hostinger installs the packages and restarts the app (about 1 minute).
+
+Automatic publishing on every GitHub change is not set up, because Hostinger would try to build the app on its server and fail.
+
 ### Everyday tasks
 
-**A tax rate or bank rule changes.** Open `src/config/countries/ee.ts` on GitHub, click the pencil icon, change the value, the `checked` date and the source, then click **Commit changes**. Vercel publishes it in a few minutes. The automated tests contain hand-calculated examples with the current rates, so after a rate change some tests will fail on purpose: ask a developer to recalculate them.
+**A tax rate or bank rule changes.** Open `src/config/countries/ee.ts` on GitHub, click the pencil icon, change the value, the `checked` date and the source, then click **Commit changes**. Then publish a new version (see "Publishing a new version"). The automated tests contain hand-calculated examples with the current rates, so after a rate change some tests will fail on purpose: ask a developer to recalculate them.
 
 **Values to check every year (each January):**
 - Social tax minimum monthly base for 2027 (946 € is *assumed* until the 2027 State Budget Act is published).
@@ -74,14 +90,14 @@ Values that are not confirmed are marked `assumed` in the config file and are li
 
 **Keep the AI bill under control.**
 - Set a monthly spending limit in the Anthropic console (console.anthropic.com → Billing / Limits).
-- Lower `AI_DAILY_LIMIT_PER_USER` in Vercel if needed.
+- Lower `AI_DAILY_LIMIT_PER_USER` in the Hostinger settings if needed.
 - Rough cost per action at today's prices: writing one section ≈ 1–3 cents; one bank officer check ≈ 10–30 cents; rating the answers ≈ 5–15 cents; translating one section ≈ 2–5 cents. Check the real numbers in the Anthropic console.
 
 **Someone asks you to delete their data.** They can do it themselves: **Settings → Delete my account** removes the account and all plans. You can also delete a user in **Supabase → Authentication → Users**.
 
 ### Free plans and their limits
 
-- **Vercel Hobby (free)** is for personal or non-commercial use only. A business launch needs a paid Vercel plan.
+- **Hostinger Business Web Hosting** (your existing paid plan) runs the app; business use is fine.
 - **Supabase Free** pauses a project after about 7 days with little activity (you get an email first). Restore it in the Supabase dashboard with **Resume project**. Paid plans are never paused.
 - **Anthropic** is pay-as-you-go.
 
@@ -90,7 +106,6 @@ Values that are not confirmed are marked `assumed` in the config file and are li
 - [ ] Own email sending in Supabase (see above).
 - [ ] `SITE_OPERATOR_NAME` and `SITE_CONTACT_EMAIL` set, and the privacy text checked by a lawyer.
 - [ ] Terms of use page (not built yet).
-- [ ] Paid Vercel plan (commercial use).
 - [ ] Spending limit in the Anthropic console.
 - [ ] Your own web address (domain) for Plaani Äri.
 - [ ] Tax values re-checked for the new year.
@@ -143,6 +158,8 @@ Checks: `npm test`, `npm run typecheck`, `npm run lint`, `npm run build`.
 
 ### Hosting notes
 
-- Vercel project **Root Directory** is `bankplan` (the repository holds other projects too).
-- `vercel.json` puts the server functions in Frankfurt (`fra1`), next to the Supabase database.
-- The bank officer page allows up to 300 seconds per request (`maxDuration`), the most the free Vercel plan allows.
+- `next.config.ts` builds a standalone server (`output: "standalone"`); `scripts/pack-hostinger.sh` packs it for Hostinger
+  and turns the build's hashed package links into small packages, because links do not survive the upload.
+- Hostinger runs `npm install` and then `server.js` (Node.js 22, through Passenger).
+- The bank officer page asks for up to 300 seconds per request (`maxDuration`); how long Hostinger lets a request run
+  is checked with the first real AI test.
