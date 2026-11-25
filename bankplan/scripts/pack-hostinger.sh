@@ -18,6 +18,17 @@ if [ -d public ]; then cp -R public "$OUT/public"; fi
 cp package-lock.json "$OUT/"
 rm -f "$OUT"/.env*                          # never upload local settings
 
+# The build refers to some packages by an extra hashed name (e.g. @react-pdf/renderer-1a2b...),
+# normally a shortcut (symlink) in .next/node_modules. Shortcuts do not survive the upload,
+# so each one becomes a tiny package that loads the real one.
+find "$OUT/.next/node_modules" -type l 2>/dev/null | while read -r link; do
+  real="$(readlink "$link")"; real="${real##*node_modules/}"
+  name="${link#"$OUT/.next/node_modules/"}"
+  rm "$link" && mkdir -p "$link"
+  printf '{ "name": "%s", "type": "module", "exports": "./index.js" }\n' "$name" > "$link/package.json"
+  printf 'export * from "%s";\n' "$real" > "$link/index.js"
+done
+
 ZIP="plaani-$(git rev-parse --short HEAD).zip"
 rm -f plaani-*.zip
 (cd "$OUT" && zip -qr "../$ZIP" .)
