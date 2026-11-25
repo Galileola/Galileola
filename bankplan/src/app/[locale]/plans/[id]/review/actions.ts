@@ -30,7 +30,7 @@ import {
 import { createClient } from "@/lib/supabase/server";
 import { bankLoanSections } from "@/plan-types/bank-loan/sections";
 
-export type ReviewResult = { status: "ok" | "invalid" | "error" | "notConfigured" | "refused" | "needPlan" };
+export type ReviewResult = { status: "ok" | "invalid" | "error" | "notConfigured" | "refused" | "needPlan" | "limit" };
 
 const startSchema = z.object({ planId: z.uuid(), locale: z.enum(routing.locales) });
 const answersSchema = z.object({

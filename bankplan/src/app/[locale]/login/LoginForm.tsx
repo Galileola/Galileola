@@ -37,6 +37,8 @@ export function LoginForm() {
       </div>
       {state.status === "invalid" && <p role="alert" className="text-red-700">{t("errorInvalid")}</p>}
       {state.status === "error" && <p role="alert" className="text-red-700">{t("errorGeneric")}</p>}
+      {state.status === "tooMany" && <p role="alert" className="text-red-700">{t("errorTooMany")}</p>}
+      {state.status === "notAllowed" && <p role="alert" className="text-red-700">{t("errorNotAllowed")}</p>}
       <SubmitButton label={t("submit")} pendingLabel={t("sending")} />
     </form>
   );

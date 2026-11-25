@@ -54,6 +54,7 @@ export function StepForm({ planId, section, initialAnswers, initialText, aiConfi
         needAnswers: "wizard.aiNeedAnswers",
         notConfigured: "wizard.aiNotConfigured",
         refused: "wizard.aiRefused",
+        limit: "wizard.aiLimit",
         invalid: "wizard.saveError",
         error: "wizard.aiError",
       } as const;

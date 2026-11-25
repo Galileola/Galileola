@@ -35,6 +35,8 @@
     "sentText": "Saatsime sisselogimise lingi sinu e-postile. Ava see samas seadmes ja samas brauseris.",
     "errorInvalid": "Palun sisesta korrektne e-posti aadress.",
     "errorGeneric": "Linki ei õnnestunud saata. Palun proovi mõne minuti pärast uuesti.",
+    "errorTooMany": "Lühikese aja jooksul saadeti liiga palju sisselogimise kirju. Oota veidi ja proovi uuesti.",
+    "errorNotAllowed": "See testversioon saab sisselogimise kirju saata ainult lubatud aadressidele. Võta ühendust teenuse pakkujaga.",
     "errorLink": "Sisselogimise link ei töötanud või on aegunud. Palun küsi uus link."
   },
   "plans": {
@@ -124,15 +126,21 @@
   },
   "privacy": {
     "title": "Privaatsus",
-    "draftNote": "Mustand. Teenuse pakkuja ettevõtte andmed lisatakse enne avaldamist.",
-    "whatTitle": "Mida me salvestame",
-    "whatText": "Sinu e-posti aadressi (sisselogimiseks) ja sinu koostatud äriplaanid. Me ei küsi sinu nime, isikukoodi, aadressi ega telefoninumbrit.",
+    "draftNote": "Mustand. Teenuse pakkuja andmed lisatakse enne avamist.",
+    "operatorTitle": "Kes seda teenust pakub",
+    "operatorText": "{name}. Kontakt: {email}",
+    "whatTitle": "Mida me hoiame",
+    "whatText": "Sinu e-posti aadressi (et saata sisselogimise lingid) ja äriplaane, mida kirjutad. Me ei küsi sinu nime, isikukoodi, aadressi ega telefoninumbrit.",
     "whereTitle": "Kus andmeid hoitakse",
-    "whereText": "Andmebaasis Euroopa Liidus (Frankfurt, Saksamaa). Sinu plaane näed ainult sina.",
+    "whereText": "Andmebaasis Euroopa Liidus (Frankfurt, Saksamaa). Rakendus töötab Verceli serverites Frankfurdis. Sinu plaane näed ainult sina.",
     "aiTitle": "Tehisaru abi",
-    "aiText": "Kui kasutad tehisaru abilist või pangatöötaja kontrolli, saadetakse sinu plaani tekst tehisaru pakkujale Anthropic. Sinu e-posti aadressi ei saadeta.",
-    "deleteTitle": "Andmete kustutamine",
-    "deleteText": "Saad oma konto ja kõik plaanid igal ajal seadetes kustutada."
+    "aiText": "Kui kasutad tehisaru abilist, tõlget või pangatöötaja kontrolli, saadetakse sinu plaani tekst Anthropicule – ettevõttele, kes pakub tehisaru, USA-s. Sinu e-posti ei saadeta. Kulude kontrolli all hoidmiseks loeme, mitu tehisaru päringut iga konto päevas teeb.",
+    "cookiesTitle": "Küpsised",
+    "cookiesText": "Kasutame ainult ühte küpsist: sisselogimise küpsist, mis hoiab sind sisse logituna. Reklaami- ega jälgimisküpsiseid ei ole.",
+    "keepTitle": "Kui kaua andmeid hoitakse",
+    "keepText": "Kuni kustutad oma konto.",
+    "deleteTitle": "Sinu õigused",
+    "deleteText": "Saad oma plaane igal ajal vaadata ja muuta ning seadetes kustutada oma konto koos kõigi plaanidega. Kui arvad, et sinu andmeid kasutatakse valesti, võid pöörduda Andmekaitse Inspektsiooni (www.aki.ee)."
   },
   "notFound": {
     "title": "Lehte ei leitud",
@@ -484,6 +492,7 @@
     "checkNote": "Tehisaru võib eksida. Kontrolli iga fakt ja number enne, kui saadad plaani pangale.",
     "aiNotConfigured": "Tehisaru abiline pole veel seadistatud.",
     "aiRefused": "Tehisaru ei saanud seda teksti kirjutada. Palun sõnasta vastused ümber ja proovi uuesti.",
+    "aiLimit": "Tänane tehisaru kasutuse piir on täis. Proovi homme uuesti.",
     "aiError": "Tehisaru abiline ei vastanud. Palun proovi minuti pärast uuesti.",
     "aiNeedAnswers": "Vasta enne vähemalt ühele küsimusele.",
     "summaryHint": "Kokkuvõte kasutab ka sinu teiste osade teksti ja numbreid, seega kirjuta see viimasena.",
@@ -653,5 +662,12 @@
     },
     "notRated": "Veel kontrollimata",
     "practiceNote": "See on harjutus. Päris pank võib küsida teisi küsimusi."
+  },
+  "errorPage": {
+    "title": "Midagi läks valesti",
+    "text": "Lehte ei õnnestunud avada. Sinu salvestatud töö on alles. Proovi hetke pärast uuesti.",
+    "retry": "Proovi uuesti",
+    "home": "Minu plaanide juurde",
+    "code": "Veakood: {code}"
   }
 }

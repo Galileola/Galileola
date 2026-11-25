@@ -27,6 +27,7 @@ export function StartReviewButton({ planId, locale, hasReview, aiConfigured }: P
         needPlan: "review.needPlan",
         notConfigured: "wizard.aiNotConfigured",
         refused: "wizard.aiRefused",
+        limit: "wizard.aiLimit",
         invalid: "review.error",
         error: "review.error",
       } as const;

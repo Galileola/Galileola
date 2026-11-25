@@ -35,6 +35,8 @@
     "sentText": "We sent a login link to your email. Open it on this device and in this browser.",
     "errorInvalid": "Please enter a valid email address.",
     "errorGeneric": "We could not send the link. Please try again in a few minutes.",
+    "errorTooMany": "Too many login emails were sent in a short time. Please wait a while and try again.",
+    "errorNotAllowed": "This test version can only send login emails to approved addresses. Please contact the person who runs this service.",
     "errorLink": "The login link did not work or has expired. Please ask for a new one."
   },
   "plans": {
@@ -124,15 +126,21 @@
   },
   "privacy": {
     "title": "Privacy",
-    "draftNote": "Draft. The company details of the service provider will be added before launch.",
+    "draftNote": "Draft. The details of who runs this service will be added before launch.",
+    "operatorTitle": "Who runs this service",
+    "operatorText": "{name}. Contact: {email}",
     "whatTitle": "What we store",
-    "whatText": "Your email address (to log you in) and the business plans you write. We do not ask for your name, ID code, address or phone number.",
+    "whatText": "Your email address (to send you login links) and the business plans you write. We do not ask for your name, ID code, address or phone number.",
     "whereTitle": "Where it is stored",
-    "whereText": "In a database in the European Union (Frankfurt, Germany). Only you can see your plans.",
+    "whereText": "In a database in the European Union (Frankfurt, Germany). The app runs on Vercel servers in Frankfurt. Only you can see your plans.",
     "aiTitle": "AI help",
-    "aiText": "When you use the AI helper or the bank officer check, the text of your plan is sent to Anthropic, the company that provides the AI. Your email is not sent.",
-    "deleteTitle": "Deleting your data",
-    "deleteText": "You can delete your account and all your plans at any time in Settings."
+    "aiText": "When you use the AI helper, the translation or the bank officer check, the text of your plan is sent to Anthropic, the company that provides the AI, in the USA. Your email is not sent. To keep costs under control, we count how many AI requests each account makes per day.",
+    "cookiesTitle": "Cookies",
+    "cookiesText": "We use one cookie only: the login cookie that keeps you signed in. No advertising or tracking cookies.",
+    "keepTitle": "How long we keep it",
+    "keepText": "Until you delete your account.",
+    "deleteTitle": "Your rights",
+    "deleteText": "You can see and change your plans at any time, and delete your account and all your plans in Settings. If you think your data is misused, you can complain to the Estonian Data Protection Inspectorate (www.aki.ee)."
   },
   "notFound": {
     "title": "Page not found",
@@ -484,6 +492,7 @@
     "checkNote": "AI can make mistakes. Check every fact and number before you send the plan to a bank.",
     "aiNotConfigured": "The AI helper is not set up yet.",
     "aiRefused": "The AI could not write this text. Please rephrase your answers and try again.",
+    "aiLimit": "You have used today's AI limit. Please try again tomorrow.",
     "aiError": "The AI helper did not answer. Please try again in a minute.",
     "aiNeedAnswers": "Answer at least one question first.",
     "summaryHint": "The summary also uses the text of your other sections and your numbers, so write it last.",
@@ -653,5 +662,12 @@
     },
     "notRated": "Not checked yet",
     "practiceNote": "This is practice. The real bank may ask other questions."
+  },
+  "errorPage": {
+    "title": "Something went wrong",
+    "text": "The page could not be loaded. Your saved work is safe. Please try again in a moment.",
+    "retry": "Try again",
+    "home": "Go to my plans",
+    "code": "Error code: {code}"
   }
 }

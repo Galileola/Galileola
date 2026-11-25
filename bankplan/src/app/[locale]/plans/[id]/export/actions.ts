@@ -11,7 +11,7 @@ import { createClient } from "@/lib/supabase/server";
 
 const inputSchema = z.object({ planId: z.uuid(), lang: z.enum(routing.locales) });
 
-export type TranslateResult = { status: "ok" | "invalid" | "error" | "notConfigured" | "refused" };
+export type TranslateResult = { status: "ok" | "invalid" | "error" | "notConfigured" | "refused" | "limit" };
 
 /**
  * Translates every section written in another language into the document language

@@ -35,7 +35,7 @@ export type SectionInput = z.infer<typeof inputSchema>;
 export type SaveSectionResult = { status: "saved" | "invalid" | "error" };
 export type WriteSectionResult =
   | { status: "ok"; text: string }
-  | { status: "invalid" | "error" | "needAnswers" | "notConfigured" | "refused" };
+  | { status: "invalid" | "error" | "needAnswers" | "notConfigured" | "refused" | "limit" };
 
 /** Loads the plan (row-level security: only the owner's) and stores this section's answers. */
 async function storeSection(input: SectionInput, text: string) {

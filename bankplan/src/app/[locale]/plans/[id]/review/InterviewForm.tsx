@@ -38,6 +38,7 @@ export function InterviewForm({ planId, reviewCreatedAt, aiConfigured, maxAnswer
         ok: "review.checked",
         notConfigured: "wizard.aiNotConfigured",
         refused: "review.savedNotChecked",
+        limit: "wizard.aiLimit",
         error: "review.savedNotChecked",
         invalid: "review.error",
         needPlan: "review.error",

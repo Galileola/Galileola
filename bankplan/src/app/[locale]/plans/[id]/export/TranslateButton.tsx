@@ -22,6 +22,7 @@ export function TranslateButton({ planId, lang, aiConfigured }: Props) {
         ok: "export.translated",
         notConfigured: "wizard.aiNotConfigured",
         refused: "wizard.aiRefused",
+        limit: "wizard.aiLimit",
         invalid: "export.translateError",
         error: "export.translateError",
       } as const;
