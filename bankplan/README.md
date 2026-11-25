@@ -42,24 +42,19 @@ Saving a setting restarts the app. The two `NEXT_PUBLIC_…` values are built in
 
 **Careful:** the AI key is entered only in hPanel. Settings changed through Hostinger's API replace the whole list, so whoever changes settings that way must enter the AI key again afterwards.
 
-### Supabase login settings (one time)
+### Supabase login settings (done)
 
-In the Supabase dashboard: **Authentication → URL Configuration**
+These are already set in Supabase (**Authentication → URL Configuration** and **Authentication → Emails**):
 
-- **Site URL:** the app's address, now `https://classic-indigo-gaur-55.hostingersite.com`
-- **Redirect URLs:** add `https://classic-indigo-gaur-55.hostingersite.com/**`
+- **Site URL:** `https://classic-indigo-gaur-55.hostingersite.com`
+- **Redirect URLs:** `https://classic-indigo-gaur-55.hostingersite.com/**` (and `http://localhost:3000/**` for a developer's computer)
+- **Login emails** are sent from `noreply@sekdigital.eu` (a Hostinger mailbox, server `smtp.hostinger.com`, port 465),
+  sender name "Plaani Äri", text in Estonian, Russian and English. Limit: 30 login emails per hour for the whole app
+  (change it in **Authentication → Rate Limits**).
 
-When the app moves to your own domain, change both to the new address.
-
-Without this, the login link in the email leads to the wrong place.
-
-### Login emails: test version vs. real launch
-
-Until you set up your own email sending, Supabase's built-in email service:
-- sends login emails **only to the members of your Supabase team** (your own address works), and
-- sends only **a few emails per hour** for the whole app.
-
-For real users, connect your own email sending service in **Supabase → Authentication → Emails → SMTP Settings** (any email provider that offers "SMTP", ideally one based in the EU).
+When the app moves to your own domain, change the Site URL and the Redirect URL to the new address.
+If you change the password of the `noreply@sekdigital.eu` mailbox in Hostinger, enter the new password in
+**Supabase → Authentication → Emails → SMTP Settings** too, or login emails stop.
 
 ### Publishing a new version
 
@@ -103,7 +98,7 @@ Values that are not confirmed are marked `assumed` in the config file and are li
 
 ### Before a real launch
 
-- [ ] Own email sending in Supabase (see above).
+- [x] Own email sending in Supabase (noreply@sekdigital.eu).
 - [ ] `SITE_OPERATOR_NAME` and `SITE_CONTACT_EMAIL` set, and the privacy text checked by a lawyer.
 - [ ] Terms of use page (not built yet).
 - [ ] Spending limit in the Anthropic console.
