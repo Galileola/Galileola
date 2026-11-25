@@ -51,6 +51,9 @@ These are already set in Supabase (**Authentication → URL Configuration** and 
 - **Login emails** are sent from `noreply@sekdigital.eu` (a Hostinger mailbox, server `smtp.hostinger.com`, port 465),
   sender name "Plaani Äri", text in Estonian, Russian and English. Limit: 30 login emails per hour for the whole app
   (change it in **Authentication → Rate Limits**).
+- Each login email has a **link** and a **6-digit code**. The link logs in on the device where it is clicked;
+  the code can be typed on the login page of any device (handy when the email is read on a phone).
+  Both work once, within 1 hour. The email text is in **Authentication → Emails → Templates** ("Magic link" and "Confirm signup").
 
 When the app moves to your own domain, change the Site URL and the Redirect URL to the new address.
 If you change the password of the `noreply@sekdigital.eu` mailbox in Hostinger, enter the new password in
