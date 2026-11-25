@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // The packed Hostinger upload (scripts/pack-hostinger.sh).
+    ".hostinger/**",
   ]),
 ]);
 

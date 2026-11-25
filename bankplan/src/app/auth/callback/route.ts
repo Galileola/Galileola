@@ -9,7 +9,7 @@ import { createClient } from "@/lib/supabase/server";
  * session cookie, then send the user on to their plans.
  */
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = request.nextUrl;
+  const { searchParams } = request.nextUrl;
   const next = safeNextPath(searchParams.get("next"));
   const supabase = await createClient();
 
@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
   const code = searchParams.get("code");
   if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) return NextResponse.redirect(`${origin}${next}`);
+    if (!error) return redirectTo(next);
   }
 
   // Custom email template variant: ?token_hash=...&type=...
@@ -25,12 +25,21 @@ export async function GET(request: NextRequest) {
   const type = searchParams.get("type") as EmailOtpType | null;
   if (tokenHash && type) {
     const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type });
-    if (!error) return NextResponse.redirect(`${origin}${next}`);
+    if (!error) return redirectTo(next);
   }
 
   const locale = next.split("/")[1];
   const loginLocale = hasLocale(routing.locales, locale) ? locale : routing.defaultLocale;
-  return NextResponse.redirect(`${origin}/${loginLocale}/login?error=link`);
+  return redirectTo(`/${loginLocale}/login?error=link`);
+}
+
+/**
+ * A redirect to a path on this site. The address is relative on purpose: behind the
+ * hosting's proxy the server only knows its internal address (such as 0.0.0.0:3000),
+ * so the browser fills in the real one.
+ */
+function redirectTo(path: string) {
+  return new NextResponse(null, { status: 307, headers: { Location: path } });
 }
 
 /** Only allow paths on this site (blocks redirects to other websites). */
