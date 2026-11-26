@@ -10,6 +10,7 @@ import {
   VAT_PERCENTS,
   type FinanceInputs,
 } from "@/lib/finance/inputs";
+import { explainCalculations } from "@/lib/finance/explain";
 import { calculateProjection } from "@/lib/finance/projection";
 import { saveFinance } from "./actions";
 import { AddButton, CheckboxField, LineCard, NumberField, Section, SelectField, TextField } from "./fields";
@@ -43,6 +44,10 @@ export function FinanceEditor({ planId, planTitle, companyType, initialInputs }:
   const isFie = companyType === "FIE";
   const valid = useMemo(() => financeInputsSchema.safeParse(inputs), [inputs]);
   const result = useMemo(() => (valid.success ? calculateProjection(valid.data, companyType) : null), [valid, companyType]);
+  const explanations = useMemo(
+    () => (valid.success && result ? explainCalculations(valid.data, companyType, result) : []),
+    [valid, companyType, result],
+  );
   const dirty = JSON.stringify(inputs) !== savedJson;
 
   function set<K extends keyof FinanceInputs>(key: K, value: FinanceInputs[K]) {
@@ -369,7 +374,7 @@ export function FinanceEditor({ planId, planTitle, companyType, initialInputs }:
       </div>
 
       {result ? (
-        <FinanceResults result={result} companyType={companyType} />
+        <FinanceResults result={result} companyType={companyType} explanations={explanations} />
       ) : (
         <p role="alert" className="rounded-md border border-red-300 bg-red-50 p-3 text-red-800">
           {t("invalid")}

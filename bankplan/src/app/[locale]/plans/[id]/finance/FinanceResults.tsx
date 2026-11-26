@@ -2,11 +2,24 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 import { estonia, type CompanyType } from "@/config/countries/ee";
+import type { ExplainTopic, TopicId } from "@/lib/finance/explain";
 import type { ProjectionResult, Warning } from "@/lib/finance/projection";
+import { Explanations, HowLink } from "./Explanations";
 
-type Row = { label: string; values: string[]; strong?: boolean; alert?: boolean[] };
+type Row = { label: string; values: string[]; strong?: boolean; alert?: boolean[]; how?: TopicId };
 
-function Table({ caption, columns, rows }: { caption: string; columns: string[]; rows: Row[] }) {
+function Table({
+  caption,
+  columns,
+  rows,
+  howTopics,
+}: {
+  caption: string;
+  columns: string[];
+  rows: Row[];
+  /** Topics that have an explanation; rows linked to them get a "How?" link. */
+  howTopics: Set<TopicId>;
+}) {
   return (
     <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white">
       <table className="w-full min-w-max text-sm">
@@ -26,6 +39,7 @@ function Table({ caption, columns, rows }: { caption: string; columns: string[];
             <tr key={row.label} className={`border-b border-slate-100 ${row.strong ? "font-semibold" : ""}`}>
               <th scope="row" className="px-3 py-1.5 text-left font-normal text-slate-800">
                 {row.label}
+                {row.how && howTopics.has(row.how) && <HowLink topic={row.how} />}
               </th>
               {row.values.map((value, index) => (
                 <td key={index} className={`px-3 py-1.5 text-right tabular-nums ${row.alert?.[index] ? "text-red-700" : ""}`}>
@@ -40,7 +54,9 @@ function Table({ caption, columns, rows }: { caption: string; columns: string[];
   );
 }
 
-export function FinanceResults({ result, companyType }: { result: ProjectionResult; companyType: CompanyType }) {
+type Props = { result: ProjectionResult; companyType: CompanyType; explanations: ExplainTopic[] };
+
+export function FinanceResults({ result, companyType, explanations }: Props) {
   const t = useTranslations("finance");
   const format = useFormatter();
   const isFie = companyType === "FIE";
@@ -90,6 +106,7 @@ export function FinanceResults({ result, companyType }: { result: ProjectionResu
       : t("assumptions.other", { year });
 
   const year1 = result.months.slice(0, 12);
+  const howTopics = new Set(explanations.map((topic) => topic.id));
 
   return (
     <div className="space-y-6" id="results">
@@ -122,25 +139,29 @@ export function FinanceResults({ result, companyType }: { result: ProjectionResu
       </section>
 
       <Table
+        howTopics={howTopics}
         caption={t("results.keyFigures")}
         columns={yearColumns}
         rows={[
           {
             label: t("results.dscr"),
+            how: "dscr",
             values: years.map((y) => ratio(y.ratios.dscr)),
             alert: years.map((y) => y.ratios.dscr !== null && y.ratios.dscr < minimums.minDscr.value),
             strong: true,
           },
           { label: t("results.closingCash"), values: perYear((y) => y.closingCash), alert: years.map((y) => y.closingCash < 0) },
           { label: t("results.lowestCash"), values: perYear((y) => y.lowestCash), alert: years.map((y) => y.lowestCash < 0) },
-          { label: t("results.breakEven"), values: years.map((y) => (y.ratios.breakEvenRevenue === null ? t("results.none") : eur(y.ratios.breakEvenRevenue))) },
+          { label: t("results.breakEven"), how: "breakEven", values: years.map((y) => (y.ratios.breakEvenRevenue === null ? t("results.none") : eur(y.ratios.breakEvenRevenue))) },
           {
             label: t("results.equityRatio"),
+            how: "equityRatio",
             values: years.map((y) => percent(y.ratios.equityRatio)),
             alert: years.map((y) => y.ratios.equityRatio !== null && y.ratios.equityRatio < minimums.minEquityRatio.value),
           },
           {
             label: t("results.currentRatio"),
+            how: "currentRatio",
             values: years.map((y) => ratio(y.ratios.currentRatio)),
             alert: years.map((y) => y.ratios.currentRatio !== null && y.ratios.currentRatio < minimums.minCurrentRatio.value),
           },
@@ -149,6 +170,7 @@ export function FinanceResults({ result, companyType }: { result: ProjectionResu
       <p className="text-sm text-slate-600">{t("results.dscrHint", { minimum: ratio(minimums.minDscr.value) })}</p>
 
       <Table
+        howTopics={howTopics}
         caption={t("results.pnl")}
         columns={yearColumns}
         rows={[
@@ -156,18 +178,19 @@ export function FinanceResults({ result, companyType }: { result: ProjectionResu
           { label: t("results.directCosts"), values: perYear((y) => -y.directCosts) },
           { label: t("results.grossProfit"), values: perYear((y) => y.grossProfit) },
           { label: t("results.operatingCosts"), values: perYear((y) => -y.operatingCosts) },
-          { label: t("results.wages"), values: perYear((y) => -y.wages) },
-          { label: t("results.employerTaxes"), values: perYear((y) => -y.employerTaxes) },
+          { label: t("results.wages"), how: "payroll", values: perYear((y) => -y.wages) },
+          { label: t("results.employerTaxes"), how: "payroll", values: perYear((y) => -y.employerTaxes) },
           { label: t("results.ebitda"), values: perYear((y) => y.ebitda), strong: true },
-          { label: t("results.depreciation"), values: perYear((y) => -y.depreciation) },
-          { label: t("results.interest"), values: perYear((y) => -(y.interest + y.loanFees)) },
-          { label: isFie ? t("results.incomeTaxesFie") : t("results.incomeTaxes"), values: perYear((y) => -y.incomeTaxes) },
+          { label: t("results.depreciation"), how: "depreciation", values: perYear((y) => -y.depreciation) },
+          { label: t("results.interest"), how: "loan", values: perYear((y) => -(y.interest + y.loanFees)) },
+          { label: isFie ? t("results.incomeTaxesFie") : t("results.incomeTaxes"), how: isFie ? "fieTaxes" : "dividendTax", values: perYear((y) => -y.incomeTaxes) },
           { label: t("results.netProfit"), values: perYear((y) => y.netProfit), strong: true, alert: years.map((y) => y.netProfit < 0) },
           { label: isFie ? t("results.toOwnerFie") : t("results.toOwner"), values: perYear((y) => y.toOwner) },
         ]}
       />
 
       <Table
+        howTopics={howTopics}
         caption={t("results.balance")}
         columns={yearColumns}
         rows={[
@@ -184,6 +207,7 @@ export function FinanceResults({ result, companyType }: { result: ProjectionResu
       />
 
       <Table
+        howTopics={howTopics}
         caption={t("results.cashflow")}
         columns={year1.map((m) => monthName(m.month))}
         rows={[
@@ -191,11 +215,11 @@ export function FinanceResults({ result, companyType }: { result: ProjectionResu
           { label: t("results.fromLoan"), values: year1.map((m) => eur(m.cashFromLoan)) },
           { label: t("results.fromOwner"), values: year1.map((m) => eur(m.cashFromOwner)) },
           { label: t("results.toSuppliers"), values: year1.map((m) => eur(-m.cashToSuppliers)) },
-          { label: t("results.toStaff"), values: year1.map((m) => eur(-m.cashToStaff)) },
+          { label: t("results.toStaff"), how: "payroll", values: year1.map((m) => eur(-m.cashToStaff)) },
           { label: t("results.payrollTaxes"), values: year1.map((m) => eur(-m.cashPayrollTaxes)) },
-          { label: t("results.vat"), values: year1.map((m) => eur(-m.cashVat)) },
+          { label: t("results.vat"), how: "vat", values: year1.map((m) => eur(-m.cashVat)) },
           { label: t("results.investmentsOut"), values: year1.map((m) => eur(-m.cashInvestments)) },
-          { label: t("results.loanPayments"), values: year1.map((m) => eur(-(m.cashLoanPrincipal + m.cashInterestAndFees))) },
+          { label: t("results.loanPayments"), how: "loan", values: year1.map((m) => eur(-(m.cashLoanPrincipal + m.cashInterestAndFees))) },
           { label: t("results.taxes"), values: year1.map((m) => eur(-m.cashIncomeTaxes)) },
           { label: isFie ? t("results.toOwnerFie") : t("results.toOwner"), values: year1.map((m) => eur(-m.cashToOwner)) },
           { label: t("results.net"), values: year1.map((m) => eur(m.netCashFlow)), strong: true },
@@ -210,6 +234,7 @@ export function FinanceResults({ result, companyType }: { result: ProjectionResu
 
       {isFie && result.fieTaxYears.length > 0 && (
         <Table
+          howTopics={howTopics}
           caption={t("results.fieTaxes")}
           columns={result.fieTaxYears.map((y) => `${y.calendarYear} (${y.months})`)}
           rows={[
@@ -217,7 +242,7 @@ export function FinanceResults({ result, companyType }: { result: ProjectionResu
             { label: t("results.socialTax"), values: result.fieTaxYears.map((y) => eur(y.socialTax)) },
             { label: t("results.pension"), values: result.fieTaxYears.map((y) => eur(y.fundedPension)) },
             { label: t("results.incomeTax"), values: result.fieTaxYears.map((y) => eur(y.incomeTax)) },
-            { label: t("results.total"), values: result.fieTaxYears.map((y) => eur(y.total)), strong: true },
+            { label: t("results.total"), how: "fieTaxes", values: result.fieTaxYears.map((y) => eur(y.total)), strong: true },
           ]}
         />
       )}
@@ -253,6 +278,8 @@ export function FinanceResults({ result, companyType }: { result: ProjectionResu
           </div>
         </details>
       )}
+
+      <Explanations topics={explanations} />
 
       <section className="space-y-1 rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-700">
         <h3 className="font-semibold text-slate-900">{t("results.how")}</h3>

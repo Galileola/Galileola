@@ -6,14 +6,20 @@ import type { Rule } from "@/config/types";
  * period itself is marked 'assumed', or the day is after `knownUntil`.
  */
 export function valueAt<T>(rule: Rule<T>, date: string): { value: T; assumed: boolean } {
+  const current = periodAt(rule, date);
+  const assumed =
+    current.certainty === "assumed" || (rule.knownUntil !== undefined && date > rule.knownUntil);
+  return { value: current.value, assumed };
+}
+
+/** The period of a rule that applies on a given day (YYYY-MM-DD), with its sources. */
+export function periodAt<T>(rule: Rule<T>, date: string): Rule<T>["periods"][number] {
   let current: Rule<T>["periods"][number] | undefined;
   for (const period of rule.periods) {
     if (period.from <= date) current = period;
   }
   if (!current) throw new Error(`No value for "${rule.label}" on ${date}`);
-  const assumed =
-    current.certainty === "assumed" || (rule.knownUntil !== undefined && date > rule.knownUntil);
-  return { value: current.value, assumed };
+  return current;
 }
 
 /** A rule value that was used but is not confirmed yet, e.g. 2027's social tax base. */

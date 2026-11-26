@@ -110,6 +110,10 @@ export type YearResult = {
   incomeTaxes: number;
   netProfit: number;
   toOwner: number;
+  /** VAT added to sales in the year (0 when not VAT registered). */
+  vatOnSales: number;
+  /** VAT on purchases and investments that is reclaimed (0 when not VAT registered). */
+  vatOnPurchases: number;
   loanPrincipalPaid: number;
   interestPaid: number;
   cashIn: number;
@@ -466,6 +470,8 @@ export function calculateProjection(inputs: FinanceInputs, companyType: CompanyT
       incomeTaxes: yearIncomeTaxes,
       netProfit: total("netProfit"),
       toOwner: yearToOwner,
+      vatOnSales: sum(outputVat.slice(first, last + 1)),
+      vatOnPurchases: sum(inputVat.slice(first, last + 1)),
       loanPrincipalPaid,
       interestPaid,
       cashIn: total("cashFromSales") + total("cashFromLoan") + total("cashFromOwner"),
