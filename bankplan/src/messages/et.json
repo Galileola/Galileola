@@ -69,52 +69,64 @@
     "finance": "Numbrid ja laenukalkulaator",
     "export": "Laadi alla Wordi ja PDF-ina",
     "bankReview": "Pangatöötaja kontroll",
-    "score": "Valmisolek: {score} / 100"
+    "score": "Valmisolek: {score} / 100",
+    "whyAsk": "Miks pank seda küsib?"
   },
   "sections": {
     "summary": {
       "title": "Kokkuvõte",
-      "hint": "Lühike ülevaade: mida teed, kui palju soovid laenata ja miks pank saab oma raha tagasi. Kirjutad selle viimasena, kuid see on plaanis esimene."
+      "hint": "Lühike ülevaade: mida teed, kui palju soovid laenata ja miks pank saab oma raha tagasi. Kirjutad selle viimasena, kuid see on plaanis esimene.",
+      "why": "Pangatöötaja loeb kokkuvõtte sageli esimesena ja täies mahus. Mõne lausega: mida teed, kui palju ja milleks laenad ning miks suudad selle tagasi maksta. Kirjuta see viimasena."
     },
     "idea": {
       "title": "Äriidee",
-      "hint": "Sinu toode või teenus, millise probleemi see lahendab ja miks just praegu on õige aeg."
+      "hint": "Sinu toode või teenus, millise probleemi see lahendab ja miks just praegu on õige aeg.",
+      "why": "Pank tahab aru saada, mida müüd ja miks inimesed seda ostavad. Lihtsad sõnad ja konkreetsed näited mõjuvad paremini kui suured lubadused."
     },
     "market": {
       "title": "Turg ja konkurendid",
-      "hint": "Kui suur on turg, kes on peamised konkurendid ja miks kliendid valivad sinu."
+      "hint": "Kui suur on turg, kes on peamised konkurendid ja miks kliendid valivad sinu.",
+      "why": "Näita, et nõudlus on olemas: kes veel sama pakub, mida teed teisiti ja kui suur on turg. Allikaga numbrid (näiteks Statistikaametilt) muudavad selle usutavaks."
     },
     "customers": {
       "title": "Kliendid",
-      "hint": "Kes sinult ostavad, mitut klienti ootad ja kas sul on juba esimesi kliente või kokkuleppeid."
+      "hint": "Kes sinult ostavad, mitut klienti ootad ja kas sul on juba esimesi kliente või kokkuleppeid.",
+      "why": "Kes sulle maksavad, kui palju neid on ja kust sa seda tead. Olemasolevad kliendid, kavatsuste protokollid või ettetellimused on tugev tõend."
     },
     "team": {
       "title": "Meeskond",
-      "hint": "Omanikud ja võtmeisikud, nende kogemus ning kes mida teeb."
+      "hint": "Omanikud ja võtmeisikud, nende kogemus ning kes mida teeb.",
+      "why": "Pangad laenavad inimestele. Näita oma kogemust selles valdkonnas ja kes mida teeb. Puuduvaid oskusi saab katta raamatupidaja, partneri või mentoriga."
     },
     "marketing": {
       "title": "Turundus ja müük",
-      "hint": "Kuidas kliendid sind leiavad, sinu hinnad, müügikanalid ja turunduseelarve."
+      "hint": "Kuidas kliendid sind leiavad, sinu hinnad, müügikanalid ja turunduseelarve.",
+      "why": "Kuidas kliendid sind leiavad ja mis see maksab. Seo see müügiprognoosiga: mitu klienti kuus ja millisest kanalist."
     },
     "operations": {
       "title": "Tegevus",
-      "hint": "Asukoht, seadmed, tarnijad ning vajalikud load ja litsentsid."
+      "hint": "Asukoht, seadmed, tarnijad ning vajalikud load ja litsentsid.",
+      "why": "Kus ja kuidas töö tehakse: ruumid, seadmed, tarnijad, load. Pank kontrollib, et sinu numbrite kulud sellega klapiksid."
     },
     "risks": {
       "title": "Riskid",
-      "hint": "Peamised riskid ja kuidas igaüht neist vähendad. Pank hindab omanikke, kes on selle läbi mõelnud."
+      "hint": "Peamised riskid ja kuidas igaüht neist vähendad. Pank hindab omanikke, kes on selle läbi mõelnud.",
+      "why": "Igal ettevõttel on riskid. Pangad usaldavad plaane, mis nimetavad peamised riskid ausalt ja ütlevad, mida teed, kui mõni neist juhtub."
     },
     "loan": {
       "title": "Laenu eesmärk ja summa",
-      "hint": "Milleks raha kulub, kui palju vajad, kui pikaks ajaks ja kuidas plaanid selle tagasi maksta."
+      "hint": "Milleks raha kulub, kui palju vajad, kui pikaks ajaks ja kuidas plaanid selle tagasi maksta.",
+      "why": "Mida täpselt raha eest ostad, kui palju ja kui pikaks ajaks. Laenumakse peab kasumiga klappima: pangad ja EIS ootavad DSCR-i vähemalt {minDscr} (vaata numbrite lehte)."
     },
     "ownContribution": {
       "title": "Omafinantseering",
-      "hint": "Kui palju omaraha projekti läheb ja kust see tuleb. Pangad küsivad sageli 10–30%."
+      "hint": "Kui palju omaraha projekti läheb ja kust see tuleb. Pangad küsivad sageli 10–30%.",
+      "why": "Pangad tahavad, et jagaksid riski oma rahaga. Suunisena: Coop Pank finantseerib kuni {coopShare} projekti maksumusest ja suletud EIS-i stardilaen soovitas vähemalt {eisMin} omaraha."
     },
     "collateral": {
       "title": "Tagatis",
-      "hint": "Mis laenu tagab: kinnisvara, isiklik käendus või EISi (Ettevõtluse ja Innovatsiooni Sihtasutuse) käendus."
+      "hint": "Mis laenu tagab: kinnisvara, isiklik käendus või EISi (Ettevõtluse ja Innovatsiooni Sihtasutuse) käendus.",
+      "why": "Tagatis kaitseb panka juhuks, kui laenu ei maksta tagasi: kinnisvara, seadmed, isiklik käendus. Kui tagatist napib, võib EIS-i laenukäendus katta kuni {eisShare} laenust; seda taotletakse oma panga kaudu."
     }
   },
   "settings": {
@@ -416,7 +428,30 @@
         "crLiabilities": "Aasta jooksul tasumisele tulevad kohustused: maksuvõlad {taxPayable} + laen tasumisega 12 kuu jooksul {loanCurrent} = {total}.",
         "crResult": "Kattekordaja = {assets} ÷ {liabilities} = {ratio}. EIS ootab vähemalt {minimum}. Üle 1 tähendab, et selle aasta kohustused saab tasuda olemasolevast või peagi laekuvast rahast."
       }
-    }
+    },
+    "help": {
+      "vatRegistered": "Käibemaksukohustuslane (KMKR) lisab müügile käibemaksu ja saab ostudelt makstud käibemaksu maha arvata. Registreerida tuleb siis, kui maksustatav käive kalendriaastas ületab {threshold}.",
+      "paymentDelay": "Poed ja kohvikud saavad raha tavaliselt kohe. Ettevõtetest kliendid maksavad sageli mõni nädal pärast arvet. Mida hiljem kliendid maksavad, seda rohkem raha on vaja vahepealseks ajaks.",
+      "salesVat": "Enamik kaupu ja teenuseid: {standard}. Majutus: {accommodation}. Raamatud, ajakirjandus, ravimid ja mõned muud kaubad: {reduced}. Eksport ja mõned teenused: 0%. Kui sa pole kindel, küsi Maksu- ja Tolliametist.",
+      "directCost": "Hinna osa, mis kulub müüdava kauba või materjali ostmiseks. Näide: kohv maksab 3 € ning kohv, piim ja tops maksavad kokku 0,90 € → 30%. Teenuste puhul on see sageli 0.",
+      "costVat": "Märgi, kui arvele lisandub käibemaks (näiteks käibemaksukohustuslasest üürileandja üür, elekter, telefon). Kindlustusel ja pangatasudel käibemaksu tavaliselt ei ole. Sisesta summad ilma käibemaksuta.",
+      "costGrowth": "Kui palju püsikulud 2. ja 3. aastal igal aastal kasvavad, näiteks 3% hinnatõusu tõttu. 0 jätab need samaks.",
+      "staffGross": "Brutopalk on lepingus kirjas olev palk enne makse. Inimene saab kätte vähem (netopalk) ja ettevõte maksab rohkem (tööandja maksud). Vaata tulemuste all osa „Kuidas numbrid on arvutatud”.",
+      "staffKind": "OÜ juhatuse liikme tasu: makstakse {socialTax} sotsiaalmaksu, kuid mitte töötuskindlustusmakset ega sotsiaalmaksu miinimumi. Töötajal on tööleping.",
+      "staffMinimum": "Täistööajaga töötaja eest maksab tööandja sotsiaalmaksu vähemalt {base} pealt kuus, ka siis, kui palk on väiksem. Seadus näeb ette erandid (SMS § 2 lg 3); kui mõni neist kehtib, eemalda linnuke.",
+      "investLife": "Mitu aastat seda kasutad. Hind jagatakse nende aastate peale kulumina. Näiteks arvuti 3 aastat, seadmed 5–10 aastat.",
+      "investVat": "Märgi, kui hinnale lisandub käibemaks. Sisesta hind ilma käibemaksuta.",
+      "own": "Raha, mille paned ise sisse. Pangad tahavad, et jagaksid riski: näiteks Coop Pank finantseerib kuni {coop} projekti maksumusest ja LHV küsib omaraha {lhv} laenusummast (või lisatagatist).",
+      "interest": "Panga pakutav aastane intressimäär. See sõltub riskist ja tagatisest, seega küsi oma pangalt pakkumist.",
+      "loanType": "Annuiteet: igal kuul sama suur makse, lihtne planeerida. Võrdne põhiosa: maksed on alguses suuremad ja vähenevad ajas, intressi kokku on vähem.",
+      "grace": "Kuud alguses, mil maksad ainult intressi (maksepuhkus), näiteks äri käivitamise ajal. Laen makstakse seejärel tagasi ülejäänud kuude jooksul.",
+      "fee": "Ühekordne lepingutasu protsendina laenusummast. Vaata oma panga hinnakirja.",
+      "drawings": "Raha, mille võtad välja oma elamiseks. FIE puhul ei ole see ettevõtluse kulu ega vähenda makse, kuid jätab ettevõttesse vähem raha.",
+      "pension": "Ainult siis, kui oled liitunud II sambaga (kogumispension). Vali enda valitud määr: 2, 4 või 6%.",
+      "exemption": "Maksuvaba tulu on {monthly} kuus ({yearly} aastas) inimese kohta ja seda saab kasutada ainult ühes kohas. Kui tööandja juba arvestab seda sinu palgalt, eemalda linnuke.",
+      "dividends": "Dividend on raha, mida ettevõte maksab kasumist omanikele. Ettevõte maksab sellelt {ratio} tulumaksu; ettevõttesse jäetud kasumit ei maksustata."
+    },
+    "helpButton": "Mida see tähendab?"
   },
   "questions": {
     "summary": {

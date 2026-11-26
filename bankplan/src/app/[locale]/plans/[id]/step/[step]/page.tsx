@@ -1,5 +1,6 @@
-import { getTranslations } from "next-intl/server";
+import { getFormatter, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { estonia } from "@/config/countries/ee";
 import { Link } from "@/i18n/navigation";
 import { isAiConfigured } from "@/lib/ai/claude";
 import { requireUser } from "@/lib/auth";
@@ -18,6 +19,7 @@ export default async function WizardStepPage({ params }: Props) {
   if (!plan) notFound();
 
   const t = await getTranslations();
+  const format = await getFormatter();
   const saved = readPlanAnswers(plan.answers)[step];
   const index = bankLoanSections.indexOf(step);
   const previous = bankLoanSections[index - 1];
@@ -44,6 +46,10 @@ export default async function WizardStepPage({ params }: Props) {
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
         <h2 className="font-semibold text-blue-900">{t("plan.bankLooksFor")}</h2>
         <p className="mt-1 text-blue-900">{t(`sections.${step}.hint`)}</p>
+        <details className="mt-2 text-sm text-blue-900">
+          <summary className="cursor-pointer font-medium underline">{t("plan.whyAsk")}</summary>
+          <p className="mt-1">{t(`sections.${step}.why`, bankFigures(format))}</p>
+        </details>
       </div>
 
       {/* key: a fresh form for each section, so typed answers never leak between steps */}
@@ -82,4 +88,17 @@ export default async function WizardStepPage({ params }: Props) {
       </nav>
     </div>
   );
+}
+
+/** Bank benchmarks quoted in the "Why does the bank ask this?" texts, from the checked config. */
+function bankFigures(format: Awaited<ReturnType<typeof getFormatter>>) {
+  const b = estonia.bankBenchmarks;
+  const pct = (value: number) => format.number(value, { style: "percent", maximumFractionDigits: 0 });
+  const coop = b.ownContributionExamples.value.find((l) => l.lender.startsWith("Coop"))?.share ?? 0;
+  return {
+    minDscr: format.number(b.minDscr.value, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+    coopShare: pct(1 - coop),
+    eisMin: pct(b.ownContributionTarget.value.minimum),
+    eisShare: pct(b.eisGuarantee.value.maxShareOfLoan),
+  };
 }

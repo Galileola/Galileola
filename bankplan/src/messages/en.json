@@ -69,52 +69,64 @@
     "finance": "Numbers and loan calculator",
     "export": "Download as Word and PDF",
     "bankReview": "Bank officer check",
-    "score": "Readiness: {score} / 100"
+    "score": "Readiness: {score} / 100",
+    "whyAsk": "Why does the bank ask this?"
   },
   "sections": {
     "summary": {
       "title": "Summary",
-      "hint": "A short overview: what you do, how much you want to borrow, and why the bank will get its money back. You write it last, but it comes first."
+      "hint": "A short overview: what you do, how much you want to borrow, and why the bank will get its money back. You write it last, but it comes first.",
+      "why": "Bank officers often read the summary first and in full. In a few lines: what you do, how much you borrow and for what, and why you can pay it back. Write it last."
     },
     "idea": {
       "title": "Business idea",
-      "hint": "Your product or service, the problem it solves, and why now is the right time."
+      "hint": "Your product or service, the problem it solves, and why now is the right time.",
+      "why": "The bank wants to understand what you sell and why people will buy it. Plain words and concrete examples work better than big promises."
     },
     "market": {
       "title": "Market and competitors",
-      "hint": "How big the market is, who your main competitors are, and why customers will choose you."
+      "hint": "How big the market is, who your main competitors are, and why customers will choose you.",
+      "why": "Show that there is demand: who else sells the same, what you do differently, and how big the market is. Numbers with a source, such as Statistics Estonia, make it credible."
     },
     "customers": {
       "title": "Customers",
-      "hint": "Who buys from you, how many customers you expect, and any first customers or agreements you already have."
+      "hint": "Who buys from you, how many customers you expect, and any first customers or agreements you already have.",
+      "why": "Who will pay you, how many of them there are and how you know. Existing customers, letters of intent or pre-orders are strong proof."
     },
     "team": {
       "title": "Team",
-      "hint": "The owners and key people, their experience, and who does what."
+      "hint": "The owners and key people, their experience, and who does what.",
+      "why": "Banks lend to people. Show your experience in this field and who does what. Missing skills can be covered by an accountant, a partner or a mentor."
     },
     "marketing": {
       "title": "Marketing and sales",
-      "hint": "How customers find you, your prices, sales channels and marketing budget."
+      "hint": "How customers find you, your prices, sales channels and marketing budget.",
+      "why": "How customers will find you and what it costs. Link it to your sales forecast: how many customers a month, from which channel."
     },
     "operations": {
       "title": "Operations",
-      "hint": "Location, equipment, suppliers, and the licences and permits you need."
+      "hint": "Location, equipment, suppliers, and the licences and permits you need.",
+      "why": "Where and how the work gets done: premises, equipment, suppliers, permits. The bank checks that the costs in your numbers match this."
     },
     "risks": {
       "title": "Risks",
-      "hint": "The main risks and how you reduce each one. Banks value owners who have thought this through."
+      "hint": "The main risks and how you reduce each one. Banks value owners who have thought this through.",
+      "why": "Every business has risks. Banks trust plans that name the main risks honestly and say what you will do if one happens."
     },
     "loan": {
       "title": "Loan purpose and amount",
-      "hint": "What the money is for, how much you need, for how long, and how you plan to pay it back."
+      "hint": "What the money is for, how much you need, for how long, and how you plan to pay it back.",
+      "why": "What exactly the money buys, how much and for how long. The loan payment must fit your profit: banks and EIS look for a DSCR of at least {minDscr} (see the numbers page)."
     },
     "ownContribution": {
       "title": "Own contribution",
-      "hint": "How much of your own money goes into the project and where it comes from. Banks often ask for 10–30%."
+      "hint": "How much of your own money goes into the project and where it comes from. Banks often ask for 10–30%.",
+      "why": "Banks want you to share the risk with your own money. As a guide: Coop Pank finances up to {coopShare} of a project's cost, and the closed EIS starter loan recommended at least {eisMin} own money."
     },
     "collateral": {
       "title": "Collateral",
-      "hint": "What secures the loan: real estate, a personal guarantee, or a guarantee from EIS (Enterprise Estonia)."
+      "hint": "What secures the loan: real estate, a personal guarantee, or a guarantee from EIS (Enterprise Estonia).",
+      "why": "Collateral protects the bank if the loan is not repaid: real estate, equipment, a personal guarantee. If you lack it, an EIS loan guarantee can cover up to {eisShare} of the loan; you apply for it through your bank."
     }
   },
   "settings": {
@@ -416,7 +428,30 @@
         "crLiabilities": "Debts due within a year: taxes owed {taxPayable} + loan due within 12 months {loanCurrent} = {total}.",
         "crResult": "Current ratio = {assets} ÷ {liabilities} = {ratio}. EIS looks for at least {minimum}. Above 1 means this year's debts can be paid from money you have or will soon receive."
       }
-    }
+    },
+    "help": {
+      "vatRegistered": "VAT registered (KMKR) means you add VAT to your sales and can deduct the VAT on your purchases. You must register once taxable sales in a calendar year go above {threshold}.",
+      "paymentDelay": "Shops and cafés are usually paid at once. Business customers often pay some weeks after the invoice. The later customers pay, the more cash you need to bridge the gap.",
+      "salesVat": "Most goods and services: {standard}. Accommodation: {accommodation}. Books, press, medicines and some other goods: {reduced}. Exports and some services: 0%. If you are unsure, ask the Tax and Customs Board.",
+      "directCost": "The share of the price spent on goods or materials for the sale. Example: a coffee sells for 3 € and the coffee, milk and cup cost 0.90 € → 30%. For services this is often 0.",
+      "costVat": "Tick if VAT is added to the bill (for example rent from a VAT-registered landlord, electricity, phone). Insurance and bank fees usually have no VAT. Enter amounts without VAT.",
+      "costGrowth": "How much running costs rise each year in years 2 and 3, for example 3% for price rises. 0 keeps them the same.",
+      "staffGross": "Gross wage is the wage in the contract, before taxes. The person receives less (net wage) and the business pays more (employer taxes). See \"How the numbers are calculated\" below the results.",
+      "staffKind": "OÜ board member fee: {socialTax} social tax is paid, but no unemployment insurance and no minimum social tax. An employee has an employment contract.",
+      "staffMinimum": "For a full-time employee the employer pays social tax on at least {base} a month, even if the wage is lower. The law lists exceptions (SMS § 2 lg 3); untick this if one applies.",
+      "investLife": "How many years you will use it. The price is spread over these years as depreciation. For example a computer 3 years, equipment 5–10 years.",
+      "investVat": "Tick if VAT is added to the price. Enter the price without VAT.",
+      "own": "Money you put in yourself. Banks want you to share the risk: for example Coop Pank finances up to {coop} of a project's cost, and LHV asks for own money of {lhv} of the loan amount (or extra collateral).",
+      "interest": "The yearly interest rate offered by the bank. It depends on your risk and collateral, so ask your bank for an offer.",
+      "loanType": "Annuity: the same payment every month, easy to plan. Equal principal: payments start higher and fall over time, and the total interest is lower.",
+      "grace": "Months at the start when you pay only interest (maksepuhkus), for example while the business starts up. The loan is then repaid over the remaining months.",
+      "fee": "A one-time fee for the loan contract, as a share of the loan. Check your bank's price list.",
+      "drawings": "Money you take out for your own living. For an FIE this is not a business cost and does not lower taxes, but it leaves less cash in the business.",
+      "pension": "Only if you joined the II pillar (funded pension). Choose the rate you picked: 2, 4 or 6%.",
+      "exemption": "Tax-free income is {monthly} a month ({yearly} a year) per person and can be used only once. If an employer already uses it for you, untick this.",
+      "dividends": "A dividend is money the company pays its owners from profit. The company pays {ratio} income tax on it; profit kept in the company is not taxed."
+    },
+    "helpButton": "What does this mean?"
   },
   "questions": {
     "summary": {

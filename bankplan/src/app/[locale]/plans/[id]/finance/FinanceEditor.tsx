@@ -1,8 +1,8 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { useMemo, useState, useTransition } from "react";
-import type { CompanyType } from "@/config/countries/ee";
+import { estonia, type CompanyType } from "@/config/countries/ee";
 import { Link } from "@/i18n/navigation";
 import {
   financeInputsSchema,
@@ -12,6 +12,7 @@ import {
 } from "@/lib/finance/inputs";
 import { explainCalculations } from "@/lib/finance/explain";
 import { calculateProjection } from "@/lib/finance/projection";
+import { valueAt } from "@/lib/finance/rules";
 import { saveFinance } from "./actions";
 import { AddButton, CheckboxField, LineCard, NumberField, Section, SelectField, TextField } from "./fields";
 import { FinanceResults } from "./FinanceResults";
@@ -67,6 +68,8 @@ export function FinanceEditor({ planId, planTitle, companyType, initialInputs }:
     });
   }
 
+  const help = useHelpTexts(inputs.startMonth);
+
   const delayOptions = [0, 1, 2, 3].map((value) => ({ value, label: t(`basics.delay${value}` as "basics.delay0") }));
   const vatOptions = VAT_PERCENTS.map((value) => ({ value, label: `${value}%` }));
   const pensionOptions = PENSION_PERCENTS.map((value) => ({
@@ -104,12 +107,14 @@ export function FinanceEditor({ planId, planTitle, companyType, initialInputs }:
             value={inputs.salesPaymentDelayMonths}
             options={delayOptions}
             onChange={(value) => set("salesPaymentDelayMonths", value)}
+            help={help.paymentDelay}
           />
           <div className="sm:pt-6">
             <CheckboxField
               label={t("basics.vatRegistered")}
               checked={inputs.vatRegistered}
               onChange={(value) => set("vatRegistered", value)}
+              help={help.vatRegistered}
             />
           </div>
         </div>
@@ -123,12 +128,19 @@ export function FinanceEditor({ planId, planTitle, companyType, initialInputs }:
           return (
             <LineCard key={line.id} removeLabel={t("remove")} onRemove={() => set("revenue", inputs.revenue.filter((l) => l.id !== line.id))}>
               <TextField label={t("sales.name")} value={line.name} onChange={(name) => update({ name })} />
-              <SelectField label={t("sales.vat")} value={line.vatPercent} options={vatOptions} onChange={(vatPercent) => update({ vatPercent })} />
+              <SelectField
+                label={t("sales.vat")}
+                value={line.vatPercent}
+                options={vatOptions}
+                onChange={(vatPercent) => update({ vatPercent })}
+                help={help.salesVat}
+              />
               <NumberField
                 label={t("sales.goods")}
                 suffix="%"
                 value={line.directCostPercent}
                 onChange={(directCostPercent) => update({ directCostPercent })}
+                help={help.directCost}
               />
               {!showMonths && (
                 <NumberField
@@ -188,7 +200,7 @@ export function FinanceEditor({ planId, planTitle, companyType, initialInputs }:
               <TextField label={t("costs.name")} value={line.name} onChange={(name) => update({ name })} />
               <NumberField label={t("costs.monthly")} suffix="€" value={line.monthly} onChange={(monthly) => update({ monthly })} />
               <div className="sm:pt-6">
-                <CheckboxField label={t("costs.hasVat")} checked={line.hasVat} onChange={(hasVat) => update({ hasVat })} />
+                <CheckboxField label={t("costs.hasVat")} checked={line.hasVat} onChange={(hasVat) => update({ hasVat })} help={help.costVat} />
               </div>
             </LineCard>
           );
@@ -199,7 +211,13 @@ export function FinanceEditor({ planId, planTitle, companyType, initialInputs }:
             onClick={() => set("costs", [...inputs.costs, { id: newId(), name: "", monthly: 0, hasVat: true }])}
           />
           <div className="w-56">
-            <NumberField label={t("costs.growth")} suffix="%" value={inputs.costGrowthPercent} onChange={(v) => set("costGrowthPercent", v)} />
+            <NumberField
+              label={t("costs.growth")}
+              suffix="%"
+              value={inputs.costGrowthPercent}
+              onChange={(v) => set("costGrowthPercent", v)}
+              help={help.costGrowth}
+            />
           </div>
         </div>
       </Section>
@@ -221,9 +239,16 @@ export function FinanceEditor({ planId, planTitle, companyType, initialInputs }:
                     { value: "boardMember", label: t("staff.boardMember") },
                   ]}
                   onChange={(kind) => update({ kind })}
+                  help={help.staffKind}
                 />
               )}
-              <NumberField label={t("staff.gross")} suffix="€" value={line.grossMonthly} onChange={(grossMonthly) => update({ grossMonthly })} />
+              <NumberField
+                label={t("staff.gross")}
+                suffix="€"
+                value={line.grossMonthly}
+                onChange={(grossMonthly) => update({ grossMonthly })}
+                help={help.staffGross}
+              />
               <NumberField label={t("staff.count")} value={line.count} onChange={(count) => update({ count: Math.round(count) })} />
               <NumberField label={t("staff.startMonth")} value={line.startMonth} onChange={(startMonth) => update({ startMonth: Math.round(startMonth) })} />
               {!isBoardMember && (
@@ -232,6 +257,7 @@ export function FinanceEditor({ planId, planTitle, companyType, initialInputs }:
                     label={t("staff.minimum")}
                     checked={line.minimumSocialTax}
                     onChange={(minimumSocialTax) => update({ minimumSocialTax })}
+                    help={help.staffMinimum}
                   />
                 </div>
               )}
@@ -267,9 +293,14 @@ export function FinanceEditor({ planId, planTitle, companyType, initialInputs }:
               <TextField label={t("investments.name")} value={line.name} onChange={(name) => update({ name })} />
               <NumberField label={t("investments.amount")} suffix="€" value={line.amount} onChange={(amount) => update({ amount })} />
               <NumberField label={t("investments.month")} value={line.month} onChange={(month) => update({ month: Math.round(month) })} />
-              <NumberField label={t("investments.life")} value={line.lifeYears} onChange={(lifeYears) => update({ lifeYears: Math.round(lifeYears) })} />
+              <NumberField
+                label={t("investments.life")}
+                value={line.lifeYears}
+                onChange={(lifeYears) => update({ lifeYears: Math.round(lifeYears) })}
+                help={help.investLife}
+              />
               <div className="sm:pt-6">
-                <CheckboxField label={t("investments.hasVat")} checked={line.hasVat} onChange={(hasVat) => update({ hasVat })} />
+                <CheckboxField label={t("investments.hasVat")} checked={line.hasVat} onChange={(hasVat) => update({ hasVat })} help={help.investVat} />
               </div>
             </LineCard>
           );
@@ -284,13 +315,20 @@ export function FinanceEditor({ planId, planTitle, companyType, initialInputs }:
 
       <Section title={t("financing.title")}>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          <NumberField label={t("financing.own")} suffix="€" value={inputs.ownContribution} onChange={(v) => set("ownContribution", v)} />
+          <NumberField
+            label={t("financing.own")}
+            suffix="€"
+            value={inputs.ownContribution}
+            onChange={(v) => set("ownContribution", v)}
+            help={help.own}
+          />
           <NumberField label={t("financing.loanAmount")} suffix="€" value={inputs.loan.amount} onChange={(amount) => set("loan", { ...inputs.loan, amount })} />
           <NumberField
             label={t("financing.interest")}
             suffix="%"
             value={inputs.loan.annualInterestPercent}
             onChange={(annualInterestPercent) => set("loan", { ...inputs.loan, annualInterestPercent })}
+            help={help.interest}
           />
           <NumberField
             label={t("financing.term")}
@@ -305,11 +343,13 @@ export function FinanceEditor({ planId, planTitle, companyType, initialInputs }:
               { value: "equalPrincipal", label: t("financing.equalPrincipal") },
             ]}
             onChange={(type) => set("loan", { ...inputs.loan, type })}
+            help={help.loanType}
           />
           <NumberField
             label={t("financing.grace")}
             value={inputs.loan.graceMonths}
             onChange={(graceMonths) => set("loan", { ...inputs.loan, graceMonths: Math.round(graceMonths) })}
+            help={help.grace}
           />
           <NumberField
             label={t("financing.disbursement")}
@@ -321,6 +361,7 @@ export function FinanceEditor({ planId, planTitle, companyType, initialInputs }:
             suffix="%"
             value={inputs.loan.contractFeePercent}
             onChange={(contractFeePercent) => set("loan", { ...inputs.loan, contractFeePercent })}
+            help={help.fee}
           />
         </div>
       </Section>
@@ -328,20 +369,33 @@ export function FinanceEditor({ planId, planTitle, companyType, initialInputs }:
       <Section title={t("owner.title")}>
         {isFie ? (
           <div className="grid gap-3 sm:grid-cols-2">
-            <NumberField label={t("owner.drawings")} suffix="€" value={inputs.ownerDrawingsMonthly} onChange={(v) => set("ownerDrawingsMonthly", v)} />
+            <NumberField
+              label={t("owner.drawings")}
+              suffix="€"
+              value={inputs.ownerDrawingsMonthly}
+              onChange={(v) => set("ownerDrawingsMonthly", v)}
+              help={help.drawings}
+            />
             <SelectField
               label={t("owner.pension")}
               value={inputs.fundedPensionPercent}
               options={pensionOptions}
               onChange={(v) => set("fundedPensionPercent", v)}
+              help={help.pension}
             />
             <div className="sm:col-span-2">
-              <CheckboxField label={t("owner.exemption")} checked={inputs.useBasicExemption} onChange={(v) => set("useBasicExemption", v)} />
+              <CheckboxField
+                label={t("owner.exemption")}
+                checked={inputs.useBasicExemption}
+                onChange={(v) => set("useBasicExemption", v)}
+                help={help.exemption}
+              />
             </div>
           </div>
         ) : (
           <div className="space-y-2">
             <p className="text-sm text-slate-700">{t("owner.dividends")}</p>
+            <p className="text-xs text-slate-600">{help.dividends}</p>
             <div className="grid gap-3 sm:grid-cols-3">
               {inputs.dividends.map((amount, index) => (
                 <NumberField
@@ -382,4 +436,51 @@ export function FinanceEditor({ planId, planTitle, companyType, initialInputs }:
       )}
     </div>
   );
+}
+
+/**
+ * Short explanations for the "?" buttons. Every number in them comes from the checked rules
+ * in config/countries/ee.ts, on the first day of the forecast.
+ */
+function useHelpTexts(startMonth: string) {
+  const t = useTranslations("finance.help");
+  const format = useFormatter();
+  const date = `${startMonth}-01`;
+  const ee = estonia;
+  const eur = (value: number) => format.number(value, { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
+  const pct = (value: number) => format.number(value, { style: "percent", maximumFractionDigits: 1 });
+  const [accommodation, reduced] = valueAt(ee.vat.reducedRates, date).value;
+  const exemptionMonthly = valueAt(ee.payroll.basicExemptionMonthly, date).value;
+  const taxRate = valueAt(ee.corporate.distributionTaxRate, date).value;
+  const divisor = valueAt(ee.corporate.distributionGrossUpDivisor, date).value;
+  const lenders = ee.bankBenchmarks.ownContributionExamples.value;
+  const lhv = lenders.find((l) => l.lender.startsWith("LHV investment"))?.share ?? 0;
+  const coop = lenders.find((l) => l.lender.startsWith("Coop"))?.share ?? 0;
+
+  return {
+    vatRegistered: t("vatRegistered", { threshold: eur(valueAt(ee.vat.registrationThreshold, date).value) }),
+    paymentDelay: t("paymentDelay"),
+    salesVat: t("salesVat", {
+      standard: pct(valueAt(ee.vat.standardRate, date).value),
+      accommodation: pct(accommodation),
+      reduced: pct(reduced),
+    }),
+    directCost: t("directCost"),
+    costVat: t("costVat"),
+    costGrowth: t("costGrowth"),
+    staffGross: t("staffGross"),
+    staffKind: t("staffKind", { socialTax: pct(valueAt(ee.payroll.socialTaxRate, date).value) }),
+    staffMinimum: t("staffMinimum", { base: eur(valueAt(ee.payroll.socialTaxMonthlyMinBase, date).value) }),
+    investLife: t("investLife"),
+    investVat: t("investVat"),
+    own: t("own", { coop: pct(1 - coop), lhv: pct(lhv) }),
+    interest: t("interest"),
+    loanType: t("loanType"),
+    grace: t("grace"),
+    fee: t("fee"),
+    drawings: t("drawings"),
+    pension: t("pension"),
+    exemption: t("exemption", { monthly: eur(exemptionMonthly), yearly: eur(valueAt(ee.payroll.basicExemptionYearly, date).value) }),
+    dividends: t("dividends", { ratio: `${Math.round(taxRate * 100)}/${Math.round(divisor * 100)}` }),
+  };
 }

@@ -1,8 +1,35 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useId, useState } from "react";
 
 const inputClass = "mt-1 w-full rounded-md border border-slate-300 bg-white px-2 py-1.5";
+
+/** A "?" button next to a field label; the short explanation opens under the field. */
+function useHelp(label: string, help?: string) {
+  const t = useTranslations("finance");
+  const id = useId();
+  const [open, setOpen] = useState(false);
+  if (!help) return { button: null, text: null };
+  return {
+    button: (
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        aria-controls={id}
+        className="ml-1 inline-flex h-5 w-5 items-center justify-center rounded-full border border-blue-700 text-xs font-semibold text-blue-700 hover:bg-blue-50"
+      >
+        ?<span className="sr-only">{` ${t("helpButton")} ${label}`}</span>
+      </button>
+    ),
+    text: open ? (
+      <p id={id} className="mt-1 rounded-md bg-blue-50 p-2 text-xs text-blue-900">
+        {help}
+      </p>
+    ) : null,
+  };
+}
 
 function parseNumber(text: string): number {
   const cleaned = text.replace(/\s/g, "").replace(",", ".");
@@ -15,21 +42,26 @@ export function NumberField({
   value,
   onChange,
   suffix,
+  help,
 }: {
   label: string;
   value: number;
   onChange: (value: number) => void;
   suffix?: string;
+  /** Short plain-language explanation, opened with a "?" button. */
+  help?: string;
 }) {
   const id = useId();
   const [text, setText] = useState(String(value));
   const shown = parseNumber(text) === value ? text : String(value);
+  const helpParts = useHelp(label, help);
 
   return (
     <div className="text-sm">
       <label htmlFor={id} className="text-slate-700">
         {label}
       </label>
+      {helpParts.button}
       <div className="flex items-center gap-1">
         <input
           id={id}
@@ -45,6 +77,7 @@ export function NumberField({
         />
         {suffix && <span className="mt-1 text-slate-500">{suffix}</span>}
       </div>
+      {helpParts.text}
     </div>
   );
 }
@@ -66,18 +99,22 @@ export function SelectField<T extends string | number>({
   value,
   options,
   onChange,
+  help,
 }: {
   label: string;
   value: T;
   options: { value: T; label: string }[];
   onChange: (value: T) => void;
+  help?: string;
 }) {
   const id = useId();
+  const helpParts = useHelp(label, help);
   return (
     <div className="text-sm">
       <label htmlFor={id} className="text-slate-700">
         {label}
       </label>
+      {helpParts.button}
       <select
         id={id}
         value={String(value)}
@@ -90,16 +127,34 @@ export function SelectField<T extends string | number>({
           </option>
         ))}
       </select>
+      {helpParts.text}
     </div>
   );
 }
 
-export function CheckboxField({ label, checked, onChange }: { label: string; checked: boolean; onChange: (value: boolean) => void }) {
+export function CheckboxField({
+  label,
+  checked,
+  onChange,
+  help,
+}: {
+  label: string;
+  checked: boolean;
+  onChange: (value: boolean) => void;
+  help?: string;
+}) {
+  const helpParts = useHelp(label, help);
   return (
-    <label className="flex items-start gap-2 text-sm text-slate-700">
-      <input type="checkbox" checked={checked} onChange={(event) => onChange(event.target.checked)} className="mt-0.5" />
-      <span>{label}</span>
-    </label>
+    <div className="text-sm">
+      <div className="flex items-start">
+        <label className="flex items-start gap-2 text-slate-700">
+          <input type="checkbox" checked={checked} onChange={(event) => onChange(event.target.checked)} className="mt-0.5" />
+          <span>{label}</span>
+        </label>
+        {helpParts.button}
+      </div>
+      {helpParts.text}
+    </div>
   );
 }
 

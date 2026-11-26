@@ -8,6 +8,8 @@ It is a planning tool only, not legal, tax or financial advice.
 
 1. **Guided plan.** 11 sections with simple questions. An AI helper turns rough answers into clear text in Estonian, Russian or English.
 2. **Numbers with Estonian rules.** A 3-year forecast (monthly for year 1), the loan schedule, the balance sheet and the ratios banks check (DSCR, break-even and others), for an OÜ or an FIE.
+   **"How?"** next to the key numbers opens a step-by-step explanation with the user's own numbers and a link to the law or official page.
+   A **?** next to difficult fields, and **"Why does the bank ask this?"** in every plan section, explain the terms in plain words.
 3. **Bank officer check.** A readiness score out of 100, the weak points, and the 10 hardest questions a credit officer would ask. Your answers are rated and the score updates.
 4. **Download.** The whole plan as a Word or PDF file, in any of the three languages.
 
@@ -118,6 +120,8 @@ Values that are not confirmed are marked `assumed` in the config file and are li
 
 ## Status
 
+- **Phase 7:** "How is this calculated?" explanations (wages, loan, VAT, dividend tax, FIE taxes, depreciation, DSCR, break-even, equity share, current ratio) and short explanations of terms in the numbers form and in every plan section. Numbers in these texts come from `src/config/countries/ee.ts`.
+
 - **Phase 6:** error pages, a daily AI limit per user, clearer login messages, security headers, privacy page, Frankfurt hosting region, this guide.
 - **Phase 5:** bank officer check with readiness score (plan check 60 points + AI interview 40 points).
 - **Phase 4:** download as Word and PDF in Estonian, Russian or English; AI translation of sections.
@@ -132,7 +136,7 @@ Values that are not confirmed are marked `assumed` in the config file and are li
 | Folder | What it holds |
 |---|---|
 | `src/config/countries/ee.ts` | All Estonian tax rules and bank benchmarks, each with source and check date |
-| `src/lib/finance/` | The calculator (no screens, no database) and its tests in `__tests__/` |
+| `src/lib/finance/` | The calculator (no screens, no database) and its tests in `__tests__/`; `explain.ts` builds the "How?" steps |
 | `src/plan-types/bank-loan/` | The wizard sections and their questions |
 | `src/lib/ai/` | The AI helper: prompts and the one call to Claude (server only, with the daily limit) |
 | `src/lib/review/` | The readiness score and the saved bank officer check |
