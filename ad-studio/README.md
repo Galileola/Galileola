@@ -87,6 +87,31 @@ npx expo start
 
 For the web version, run `npm run build:web`. It writes the site to `app/dist/`. The server then serves it at its own address, for example `http://localhost:3000`, and the app uses that same address to reach the server. The `Dockerfile` does the same in one image.
 
+## Android and iPhone apps
+
+The app in `app/` is a native app for Android and iPhone; the same code also builds the web version. Installable apps are built in the cloud by Expo's build service (EAS), so no Mac is needed. `eas.json` holds two build profiles:
+
+| Profile | Android | iPhone |
+|---|---|---|
+| `preview` | An `.apk` file you install from a link, no store needed | Installs on registered test iPhones (needs an Apple developer account) |
+| `production` | An app bundle for Google Play | A build for TestFlight and the App Store |
+
+Before building, put the server address (for example the Render address) in `EXPO_PUBLIC_API_URL` in `eas.json`, so the app opens ready to use. People can still change it in the app's Settings.
+
+```bash
+cd app
+npx eas-cli login                                 # free Expo account
+npx eas-cli init                                  # links the project to the account
+npx eas-cli build -p android --profile preview    # gives an install link for Android
+npx eas-cli build -p ios --profile production     # iPhone build
+npx eas-cli submit -p ios                         # sends it to TestFlight
+```
+
+What each store needs:
+- **Google Play:** a Play Console developer account (one-time fee). New personal accounts currently have to run a closed test with at least 12 testers for 14 days before publishing; organisation accounts don't.
+- **Apple App Store and TestFlight:** an Apple Developer Program membership (yearly fee). EAS creates the signing certificates for you.
+- **Both:** a privacy policy web page, because the app uses the camera and photos and sends pictures to AI services. You also need store screenshots and a short description.
+
 ## API
 
 | Method | Path | What it does |

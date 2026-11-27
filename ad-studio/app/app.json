@@ -8,11 +8,15 @@
     "backgroundColor": "#0E0F13",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.galileola.adstudio"
+      "bundleIdentifier": "com.galileola.adstudio",
+      "config": {
+        "usesNonExemptEncryption": false
+      }
     },
     "android": {
       "package": "com.galileola.adstudio",
       "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0E0F13"
       }
     },
@@ -20,10 +24,20 @@
       "name": "Ad Studio",
       "shortName": "Ad Studio",
       "themeColor": "#0E0F13",
-      "backgroundColor": "#0E0F13"
+      "backgroundColor": "#0E0F13",
+      "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-status-bar",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 180,
+          "resizeMode": "contain",
+          "backgroundColor": "#0E0F13"
+        }
+      ],
       [
         "expo-image-picker",
         {
@@ -36,10 +50,15 @@
         "expo-media-library",
         {
           "photosPermission": "Ad Studio saves finished ads to your photo library.",
-          "savePhotosPermission": "Ad Studio saves finished ads to your photo library."
+          "savePhotosPermission": "Ad Studio saves finished ads to your photo library.",
+          "granularPermissions": [
+            "photo",
+            "video"
+          ]
         }
       ],
       "expo-video"
-    ]
+    ],
+    "icon": "./assets/icon.png"
   }
 }

@@ -70,7 +70,7 @@ export async function saveToPhotos(url) {
     await Linking.openURL(url);
     return 'Opened in a new tab. Right-click (or long-press) to save it.';
   }
-  const permission = await MediaLibrary.requestPermissionsAsync(true);
+  const permission = await MediaLibrary.requestPermissionsAsync(true, ['photo', 'video']);
   if (!permission.granted) throw new Error('Allow saving to Photos in Settings.');
   const file = await download(url);
   await MediaLibrary.Asset.create(file.uri);
