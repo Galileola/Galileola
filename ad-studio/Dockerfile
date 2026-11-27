@@ -18,6 +18,6 @@ COPY server/package.json server/package-lock.json ./
 RUN npm ci --omit=dev
 COPY server/ ./
 COPY --from=web /build/app/dist /srv/app/dist
-ENV NODE_ENV=production PORT=3000 WEB_DIR=/srv/app/dist OUTPUT_DIR=/srv/output
+ENV NODE_ENV=production PORT=3000 WEB_DIR=/srv/app/dist DATA_DIR=/data
 EXPOSE 3000
-CMD ["node", "index.js"]
+CMD ["node", "--disable-warning=ExperimentalWarning", "index.js"]

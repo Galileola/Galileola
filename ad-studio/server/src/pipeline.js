@@ -4,7 +4,7 @@ import { writeBrief, reviewScene } from './director.js';
 import { removeBackground, generateScene, generateSceneAlt } from './fal.js';
 import { trimCutout, buildCanvas, locate, finishScene } from './compose.js';
 import { renderBanner, sceneTone } from './typeset.js';
-import { jobFiles, saveFile } from './jobs.js';
+import { jobFiles, saveFile, persist, unfinishedJobs } from './jobs.js';
 
 const HEX = /^#[0-9a-f]{6}$/i;
 
@@ -54,7 +54,7 @@ async function attempt({ job, formatId, layoutId, cutout, photo, mime, fix, alt 
 }
 
 async function makeFormat(job, formatId, cutout) {
-  const files = jobFiles(job.id);
+  const files = await jobFiles(job);
   const { photo, mime } = files;
   const state = job.formats[formatId];
   const layoutId = pickLayout(formatId, cutout.aspect);
@@ -72,56 +72,54 @@ async function makeFormat(job, formatId, cutout) {
   state.stage = 'typesetting';
   files.scenes[formatId] = best.scene;
   const tone = await sceneTone(best.scene, FORMATS[formatId].layouts[layoutId]);
-  files.tones[formatId] = tone;
+  job.tones[formatId] = tone;
   const banner = await renderBanner({ scene: best.scene, formatId, layoutId, styleId: job.brief.style, copy: job.brief.copy, brand: files.brand, palette: job.brief.palette, tone });
 
-  state.scene = saveFile(job.id, `scene-${formatId}.png`, best.scene);
-  state.banner = saveFile(job.id, `banner-${formatId}-v${job.version}.png`, banner);
+  state.scene = saveFile(job.id, `scene-${formatId}.jpg`, await sharp(best.scene).jpeg({ quality: 94 }).toBuffer());
+  state.banner = saveFile(job.id, `banner-${formatId}-v${job.version}.jpg`, await toJpeg(banner));
   state.model = best.model;
   state.exactProduct = best.exactProduct;
   state.review = { score: best.review.score, issues: best.review.issues, approved: best.review.pass };
   state.stage = 'done';
 }
 
-async function prepareLogo(logoDataUri) {
-  if (!logoDataUri) return null;
-  const buffer = Buffer.from(logoDataUri.slice(logoDataUri.indexOf(',') + 1), 'base64');
-  const png = await sharp(buffer).trim({ threshold: 10 }).resize({ width: 800, height: 400, fit: 'inside', withoutEnlargement: true }).png().toBuffer();
-  const { width, height } = await sharp(png).metadata();
-  return { dataUri: `data:image/png;base64,${png.toString('base64')}`, width, height };
+// Banners are delivered as high-quality JPEG: what ad platforms and
+// Instagram expect, and a quarter of the size of PNG.
+function toJpeg(png) {
+  return sharp(png).jpeg({ quality: 92, chromaSubsampling: '4:4:4' }).toBuffer();
 }
 
 /** Runs a whole job: brief, cut-out, then every format in parallel. */
 export async function runJob(job) {
-  const files = jobFiles(job.id);
   const { request } = job;
+  job.status = 'running';
+  job.error = null;
   try {
-    files.mime = request.photo.slice(5, request.photo.indexOf(';'));
-    files.photo = Buffer.from(request.photo.slice(request.photo.indexOf(',') + 1), 'base64');
+    const files = await jobFiles(job);
     files.scenes = {};
-    files.tones = {};
-    const logo = await prepareLogo(request.logo);
-    files.brand = { name: request.brand, logo };
-    delete request.photo;
-    delete request.logo;
-    saveFile(job.id, 'photo.jpg', await sharp(files.photo).jpeg({ quality: 90 }).toBuffer());
 
     job.stage = 'brief';
+    persist(job);
     const brief = await writeBrief({ photo: files.photo, mime: files.mime, request });
     if (!brief.usable) {
       job.status = 'error';
       job.error = brief.problem || 'No clear product was found in this photo.';
       return;
     }
+    // The client's brand colours win over the art director's choice.
+    if (HEX.test(request.primary || '')) brief.palette.primary = request.primary;
+    if (HEX.test(request.accent || '')) brief.palette.accent = request.accent;
     if (!HEX.test(brief.palette.primary)) brief.palette.primary = '#222222';
     if (!HEX.test(brief.palette.accent)) brief.palette.accent = '#e63946';
     job.brief = brief;
 
     job.stage = 'cutout';
+    persist(job);
     files.cutout = await trimCutout(await removeBackground(files.photo, files.mime, brief.product.cutout));
     saveFile(job.id, 'cutout.png', files.cutout.buffer);
 
     job.stage = 'scenes';
+    persist(job);
     const results = await Promise.allSettled(request.formats.map((f) => makeFormat(job, f, files.cutout)));
     results.forEach((r, i) => {
       if (r.status === 'rejected') {
@@ -139,26 +137,68 @@ export async function runJob(job) {
     console.error(`[${job.id}] job failed:`, err);
     job.status = 'error';
     job.error = err.userMessage || 'Something went wrong while making the ad. Please try again.';
+  } finally {
+    persist(job);
+  }
+}
+
+// Jobs wait in this queue so that bulk orders don't overload the AI
+// services or the server. MAX_RUNNING_JOBS run at the same time.
+const MAX_RUNNING = Number(process.env.MAX_RUNNING_JOBS) || 3;
+const queue = [];
+let running = 0;
+
+function pump() {
+  while (running < MAX_RUNNING && queue.length) {
+    const job = queue.shift();
+    running++;
+    runJob(job).finally(() => {
+      running--;
+      pump();
+    });
+  }
+}
+
+export function enqueue(job) {
+  job.status = 'queued';
+  job.stage = 'queued';
+  persist(job);
+  queue.push(job);
+  pump();
+}
+
+export function queueLength() {
+  return queue.length + running;
+}
+
+/** After a restart, jobs that were waiting or running start again. */
+export function resumeQueue() {
+  for (const job of unfinishedJobs()) {
+    for (const state of Object.values(job.formats)) if (state.stage !== 'done') state.stage = 'waiting';
+    enqueue(job);
   }
 }
 
 /** Makes one size again (new scene, new check), e.g. when the client doesn't like it. */
 export async function redoFormat(job, formatId) {
-  const files = jobFiles(job.id);
+  const files = await jobFiles(job);
   job.formats[formatId] = { stage: 'waiting' };
   delete job.videos[formatId];
+  delete files.scenes[formatId];
   try {
     await makeFormat(job, formatId, files.cutout);
   } catch (err) {
     console.error(`[${job.id}] redo ${formatId} failed:`, err.message);
     job.formats[formatId].stage = 'error';
     job.formats[formatId].error = 'This size could not be made. Try again.';
+  } finally {
+    persist(job);
   }
 }
 
 /** Re-typesets every finished banner with new text or style; no AI cost. */
 export async function retypeset(job, { copy, style, palette }) {
-  const files = jobFiles(job.id);
+  const files = await jobFiles(job);
   job.brief.copy = { ...job.brief.copy, ...copy };
   if (style) job.brief.style = style;
   if (palette) job.brief.palette = { ...job.brief.palette, ...palette };
@@ -166,7 +206,8 @@ export async function retypeset(job, { copy, style, palette }) {
   for (const [formatId, state] of Object.entries(job.formats)) {
     const scene = files.scenes?.[formatId];
     if (!scene) continue;
-    const banner = await renderBanner({ scene, formatId, layoutId: state.layout, styleId: job.brief.style, copy: job.brief.copy, brand: files.brand, palette: job.brief.palette, tone: files.tones[formatId] });
-    state.banner = saveFile(job.id, `banner-${formatId}-v${job.version}.png`, banner);
+    const banner = await renderBanner({ scene, formatId, layoutId: state.layout, styleId: job.brief.style, copy: job.brief.copy, brand: files.brand, palette: job.brief.palette, tone: job.tones[formatId] });
+    state.banner = saveFile(job.id, `banner-${formatId}-v${job.version}.jpg`, await toJpeg(banner));
   }
+  persist(job);
 }

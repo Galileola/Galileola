@@ -80,8 +80,24 @@ If the photo has no clear product (for example a blank image, a selfie or a land
 
 const STYLE_LINES = Object.entries(STYLES).map(([id, s]) => `- ${id}: ${s.mood}`).join('\n');
 
-function imageBlock(buffer, mime) {
-  return { type: 'image', source: { type: 'base64', media_type: mime, data: buffer.toString('base64') } };
+function mimeOf(buffer) {
+  if (buffer[0] === 0x89 && buffer[1] === 0x50) return 'image/png';
+  if (buffer[0] === 0x52 && buffer[1] === 0x49) return 'image/webp';
+  return 'image/jpeg';
+}
+
+function imageBlock(buffer) {
+  return { type: 'image', source: { type: 'base64', media_type: mimeOf(buffer), data: buffer.toString('base64') } };
+}
+
+// Brand kit lines shared by every writing task.
+function brandLines(request) {
+  return [
+    `Brand: ${request.brand || '(not given)'}.`,
+    request.about ? `About the business: ${request.about}` : '',
+    request.tone ? `Brand voice: ${request.tone}` : '',
+    request.website ? `Website: ${request.website}` : '',
+  ].filter(Boolean);
 }
 
 async function ask({ system, content, schema, effort }) {
@@ -107,7 +123,8 @@ async function ask({ system, content, schema, effort }) {
 export async function writeBrief({ photo, mime, request }) {
   const lines = [
     `Ad language: ${LANGUAGES[request.language]}.`,
-    `Brand: ${request.brand || '(not given)'}.`,
+    ...brandLines(request),
+    request.primary || request.accent ? `Brand colours: ${[request.primary, request.accent].filter(Boolean).join(' and ')}. Use them for the palette and let the scene work with them.` : '',
     `Offer: ${request.offer || '(none)'}.`,
     `Details from the client: ${request.details || '(none)'}.`,
     request.style === 'auto'
@@ -116,7 +133,7 @@ export async function writeBrief({ photo, mime, request }) {
   ];
   const brief = await ask({
     system: BRIEF_SYSTEM,
-    content: [imageBlock(photo, mime), { type: 'text', text: lines.join('\n') }],
+    content: [imageBlock(photo), { type: 'text', text: lines.filter(Boolean).join('\n') }],
     schema: Brief,
     effort: 'medium',
   });
@@ -130,9 +147,9 @@ export async function reviewScene({ photo, mime, scene, brief, textArea }) {
     system: 'You are the creative director who approves ad images before they go to a paying client. Be strict but fair.',
     content: [
       { type: 'text', text: 'Reference: the client’s original product photo.' },
-      imageBlock(photo, mime),
+      imageBlock(photo),
       { type: 'text', text: 'Candidate ad scene (text is added later).' },
-      imageBlock(scene, 'image/png'),
+      imageBlock(scene),
       {
         type: 'text',
         text: `The product: ${brief.product.name}. ${brief.product.look}
@@ -146,4 +163,94 @@ Check: Does the product match the reference (shape, colours, label text)? Is the
   });
   result.pass = result.score >= 7 && result.product_matches && result.single_product;
   return result;
+}
+
+const Slogans = z.object({
+  slogans: z.array(z.object({
+    text: z.string(),
+    tone: z.enum(['premium', 'playful', 'bold', 'emotional', 'short']),
+    why: z.string().describe('one short line in the ad language: why it works'),
+  })),
+});
+
+const SLOGAN_SYSTEM = `You are an award-winning advertising copywriter. You write slogans that people remember: short, rhythmic, specific to the product and true.
+Rules:
+- Write in the requested language as a native copywriter would; use wordplay, rhyme or rhythm only where it sounds natural in that language. Never translate English idioms literally.
+- At most 7 words each. No hashtags, no emojis, no quotation marks.
+- Never invent facts, prices, awards or medical effects; only use what the photo shows or the client said.
+- Avoid clichés such as "the best", "number one", "like never before", "quality you can trust".
+- Give a spread of tones: premium, playful, bold, emotional and short (two or three words).`;
+
+/** Writes slogan options for a product or brand. */
+export async function writeSlogans({ photo, request, product, count = 10 }) {
+  const content = [];
+  if (photo) content.push(imageBlock(photo));
+  content.push({
+    type: 'text',
+    text: [
+      `Language: ${LANGUAGES[request.language] || 'English'}.`,
+      ...brandLines(request),
+      product ? `Product: ${product}` : '',
+      request.offer ? `Offer: ${request.offer}` : '',
+      request.details ? `Details: ${request.details}` : '',
+      `Write ${count} slogans.`,
+    ].filter(Boolean).join('\n'),
+  });
+  const result = await ask({ system: SLOGAN_SYSTEM, content, schema: Slogans, effort: 'medium' });
+  return result.slogans.slice(0, count);
+}
+
+const Script = z.object({
+  script: z.string().describe('the words the presenter says, in the ad language'),
+  presenter: z.string().describe('English: what the AI presenter looks like and where they are, e.g. "a friendly woman in her thirties in a bright modern kitchen"'),
+});
+
+/** Writes what an AI presenter says about the product (about 12 seconds). */
+export async function writeScript({ brief, request, presenter }) {
+  return ask({
+    system: `You write short spoken scripts for presenter-style video ads (the kind a real person records on their phone for Instagram or TikTok). Natural, warm and convincing, never pushy.
+Rules:
+- About 25 to 32 words, so it takes 10 to 13 seconds to say. Write in the requested language exactly as people speak it.
+- Start with a hook in the first five words. Mention the product by name once. End with the call to action.
+- Only say what is true: what the photo shows or the client said. Never invent prices, discounts, awards or health effects.
+- Write words only: no stage directions, no emojis, no hashtags.`,
+    content: [{
+      type: 'text',
+      text: [
+        `Language: ${LANGUAGES[request.language]}.`,
+        ...brandLines(request),
+        `Product: ${brief.product.name}. ${brief.product.look}`,
+        `Ad headline: ${brief.copy.headline}. ${brief.copy.subline}`,
+        `Call to action: ${brief.copy.cta}.`,
+        request.offer ? `Offer: ${request.offer}` : '',
+        presenter ? `Presenter: ${presenter}` : 'Suggest a presenter who suits the product and brand.',
+      ].filter(Boolean).join('\n'),
+    }],
+    schema: Script,
+    effort: 'medium',
+  });
+}
+
+const Caption = z.object({
+  caption: z.string().describe('the post text in the ad language, 1 to 3 short sentences, may use one or two fitting emojis'),
+  hashtags: z.array(z.string()).describe('3 to 6 relevant hashtags without the # sign'),
+});
+
+/** Writes the text that goes with a social media post. */
+export async function writeCaption({ brief, request, platform }) {
+  return ask({
+    system: 'You write social media captions for brands. Short, natural, specific to the product, true. Match the brand voice. No invented facts.',
+    content: [{
+      type: 'text',
+      text: [
+        `Platform: ${platform}. Language: ${LANGUAGES[request.language]}.`,
+        ...brandLines(request),
+        `Product: ${brief.product.name}.`,
+        `Ad: ${brief.copy.headline}. ${brief.copy.subline}. Button: ${brief.copy.cta}.`,
+        request.offer ? `Offer: ${request.offer}` : '',
+      ].filter(Boolean).join('\n'),
+    }],
+    schema: Caption,
+    effort: 'low',
+  });
 }

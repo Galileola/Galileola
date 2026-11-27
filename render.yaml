@@ -1,19 +1,33 @@
 # Render Blueprint for Ad Studio (https://render.com/docs/blueprint-spec).
 # In Render: New > Blueprint > choose this repository. Render asks for the
-# three values marked sync: false, builds ad-studio/Dockerfile and gives
-# the app its own web address.
+# values marked sync: false, builds ad-studio/Dockerfile and gives the app
+# its own web address. The disk keeps clients, ads and approvals safe
+# across restarts, which needs a paid plan (Starter).
 services:
   - type: web
     name: ad-studio
     runtime: docker
-    plan: free
+    plan: starter
     dockerfilePath: ./ad-studio/Dockerfile
     dockerContext: ./ad-studio
     healthCheckPath: /health
+    disk:
+      name: data
+      mountPath: /data
+      sizeGB: 2
     envVars:
       - key: ANTHROPIC_API_KEY
         sync: false
       - key: FAL_KEY
         sync: false
       - key: APP_TOKEN
+        sync: false
+      # Optional: one-click publishing (see ad-studio/README.md).
+      - key: META_APP_ID
+        sync: false
+      - key: META_APP_SECRET
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
         sync: false

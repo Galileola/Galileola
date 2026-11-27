@@ -3,5 +3,7 @@ node_modules/
 .env
 server/.env
 server/output/
+server/data/
+data/
 .DS_Store
 dist/

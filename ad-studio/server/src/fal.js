@@ -6,6 +6,9 @@ export const FAL_MODELS = {
   scene: 'openai/gpt-image-2/edit',
   sceneAlt: 'fal-ai/nano-banana-pro/edit',
   video: process.env.VIDEO_MODEL || 'fal-ai/kling-video/v3/pro/image-to-video',
+  voice: 'elevenlabs/tts/eleven-v4',
+  presenter: 'openai/gpt-image-2/edit',
+  avatar: process.env.AVATAR_MODEL || 'fal-ai/bytedance/omnihuman/v1.5',
 };
 
 fal.config({ credentials: () => process.env.FAL_KEY });
@@ -104,3 +107,36 @@ export async function videoResult(requestId) {
   const { data } = await fal.queue.result(FAL_MODELS.video, { requestId });
   return { status: 'COMPLETED', video: await download(data.video.url) };
 }
+
+/** Speaks a script with an ElevenLabs voice. Returns the audio file's URL. */
+export async function speak({ text, voice, language }) {
+  const { data } = await run(FAL_MODELS.voice, { text, voice, language_code: language, output_format: 'mp3_44100_128' });
+  return data.audio.url;
+}
+
+/** Creates a presenter photo: a person holding the product from the reference image. */
+export async function presenterImage({ reference, prompt }) {
+  const { data } = await run(FAL_MODELS.presenter, {
+    prompt,
+    image_urls: [dataUri(reference, 'image/png')],
+    image_size: { width: 1024, height: 1824 },
+    quality: 'high',
+    output_format: 'jpeg',
+    num_images: 1,
+    sync_mode: true,
+  });
+  return download(data.images[0].url);
+}
+
+/** Animates a presenter photo so it speaks the audio. Returns the video. */
+export async function talkingAvatar({ image, audioUrl }) {
+  const { data } = await run(FAL_MODELS.avatar, {
+    image_url: dataUri(image, 'image/jpeg'),
+    audio_url: audioUrl,
+    resolution: '1080p',
+    prompt: 'A friendly presenter talks to the camera with natural facial expressions and small natural hand movements, holding the product steady.',
+  });
+  return { video: await download(data.video.url), duration: data.duration };
+}
+
+export { download };

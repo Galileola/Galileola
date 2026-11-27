@@ -1,9 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Saved on this device only: server settings, the brand kit and recent ads.
+// Saved on this device only: server settings and the quick brand (for ads without a client).
 const KEY = 'adstudio.v1';
 
-const EMPTY = { server: { url: '', token: '' }, brand: { name: '', logo: null }, recent: [] };
+const EMPTY = { server: { url: '', token: '' }, brand: { name: '', logo: null } };
 
 export async function load() {
   try {
@@ -20,8 +20,4 @@ export async function save(state) {
   } catch {
     // Storage full or unavailable: the app still works for this session.
   }
-}
-
-export function addRecent(recent, item) {
-  return [item, ...recent.filter((r) => r.id !== item.id)].slice(0, 12);
 }

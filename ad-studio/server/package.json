@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Ad Studio AI server: Claude as art director, fal.ai for image and video models",
   "scripts": {
-    "start": "node index.js"
+    "start": "node --disable-warning=ExperimentalWarning index.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.14.0",

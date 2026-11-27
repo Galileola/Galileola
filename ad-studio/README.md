@@ -1,6 +1,14 @@
 # Ad Studio
 
-Take a photo or a short video of a product with your phone. Ad Studio turns it into finished advertising banners in up to three sizes, and a 5-second video ad on request.
+Take a photo or a short video of a product with your phone. Ad Studio turns it into finished advertising banners in up to three sizes, a 5-second video ad and a presenter video, on request.
+
+Made for an advertising agency:
+- **Brand kit per client:** logo, colours, style, language, brand voice and usual sizes, used by every ad for that client.
+- **Client approval link:** the client opens a page (in English, Russian or Estonian), sees the ads and approves each one or asks for changes. No login is needed, and the decisions show up in the app.
+- **One-click publishing:** post to the client's Facebook Page and Instagram (feed or story), or send the ad to their Meta ad account or Google Ads account as ready-to-use material. Nothing starts a paid campaign on its own.
+- **Bulk ads:** read the products of a Shopify or WooCommerce shop (or a CSV file) and make one ad per product.
+- **Presenter videos:** an AI presenter (or a real person, from a photo, with their permission) talks about the product for about 12 seconds in the ad language, and the banner closes the video.
+- **Slogans:** ten slogan ideas in different tones, in the client's voice, for any product or straight into an ad's headline.
 
 ## What happens to a photo
 
@@ -13,9 +21,11 @@ Take a photo or a short video of a product with your phone. Ad Studio turns it i
 7. **Video (on request).** Kling 3.0 Pro films a 5-second clip from the finished scene. The server then adds the same text, which fades in after half a second.
 
 After that, in the app you can:
-- edit the text or style (instant, no AI cost)
+- edit the text or style (instant, no AI cost), with slogan ideas for the headline
 - make a new scene for one size
-- save or share any banner or video
+- save, share or publish any banner or video
+- send the client an approval link
+- make a presenter video
 
 | Size | Pixels | For |
 |---|---|---|
@@ -23,20 +33,21 @@ After that, in the app you can:
 | Story 9:16 | 1080 × 1920 | Stories, Reels, TikTok |
 | Banner 1.91:1 | 1200 × 628 | Facebook link ads, websites |
 
-## Try it online (Render)
+## Put it online (Render)
 
-The repository includes a setup file for [Render](https://render.com), a hosting service. Render builds the server and the web version of the app together and gives them one web address, which you open on your phone or computer.
+The repository includes a setup file (`render.yaml`) for [Render](https://render.com), a hosting service. Render builds the server and the web version of the app together and gives them one web address, which you open on your phone or computer.
 
 1. Sign up at render.com with **Sign in with GitHub**, and allow Render to see the `Galileola` repository.
 2. Click **New → Blueprint** and choose the `Galileola` repository and the branch that holds Ad Studio.
-3. Render asks for three values:
+3. Render asks for these values:
    - `ANTHROPIC_API_KEY`: your Claude key (starts with `sk-ant-`)
    - `FAL_KEY`: your fal.ai key
    - `APP_TOKEN`: a password you make up; the app asks for it once
+   - `META_APP_ID`, `META_APP_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`: only for one-click publishing (see below). Leave them empty for now if you like; you can add them later under the service's **Environment** tab.
 4. Click **Deploy Blueprint**. The first build takes several minutes.
 5. Open the address Render shows (it ends in `onrender.com`), enter the password and make an ad. On an iPhone, tap **Share → Add to Home Screen** to open it like an app.
 
-The setup uses Render's free plan, which is fine for trying it out. A free service sleeps when nobody uses it, so the first visit after a break can take about a minute. It also loses its saved files when it restarts, so save the ads you want to keep. For daily work, switch the service to a paid plan in Render.
+The setup uses Render's **Starter** plan with a small disk, so clients, ads and approvals are kept when the server restarts. Render shows the monthly price before you confirm.
 
 ## AI services
 
@@ -47,8 +58,12 @@ The setup uses Render's free plan, which is fine for trying it out. A free servi
 | Second try | fal.ai | `fal-ai/nano-banana-pro/edit` |
 | Cut-out | fal.ai | `fal-ai/bria/background/remove` |
 | Video | fal.ai | `fal-ai/kling-video/v3/pro/image-to-video` |
+| Slogans, presenter script, post text | Anthropic | `claude-opus-5-5` |
+| Presenter photo | fal.ai | `openai/gpt-image-2/edit` |
+| Presenter voice | fal.ai | `elevenlabs/tts/eleven-v4` |
+| Presenter video | fal.ai | `fal-ai/bytedance/omnihuman/v1.5` |
 
-Each size uses one GPT Image 2 scene, or two images if the quality check asks for a second try, plus a few cut-outs. Each video is one 5-second Kling clip. For current prices, see fal.ai's pricing page and your fal.ai usage dashboard.
+Each size uses one GPT Image 2 scene, or two images if the quality check asks for a second try, plus a few cut-outs. Each video is one 5-second Kling clip. A presenter video costs the most: a presenter photo, a voice recording and about 12 seconds of OmniHuman video. For current prices, see fal.ai's pricing page and your fal.ai usage dashboard.
 
 ## Run the server
 
@@ -69,7 +84,32 @@ To get the keys:
 
 The keys stay on the server and never go into the app. Set `APP_TOKEN` as well, so that only your app can use the server.
 
-Finished ads are kept for 48 hours (`JOB_TTL_HOURS`). Running jobs live in memory, so a restart forgets them, but the finished files stay on disk.
+Everything is kept in `DATA_DIR` (default `data/`): a small database (clients, ads, approvals, account connections) and the pictures and videos. Ads are kept for 60 days (`JOB_TTL_DAYS`). Ads wait in a queue and `MAX_RUNNING_JOBS` (default 3) are made at the same time; after a restart, waiting ads start again.
+
+## Publishing setup (one time)
+
+One-click publishing uses the platforms' own sign-in pages. The agency sets up one app with Meta and one with Google; after that, each client is connected from the client's page in the app (**Clients → client → Publishing → Connect**).
+
+The server needs its public address for the sign-in pages and so that Meta can fetch the pictures. Render provides it automatically; elsewhere, set `PUBLIC_URL`, for example `https://ads.example.com`.
+
+**Facebook and Instagram (Meta):**
+1. At developers.facebook.com, create an app of the **Business** type.
+2. Add **Facebook Login for Business**. Under its settings, add this redirect address: `<your address>/connect/meta/callback`.
+3. The app asks for these permissions: `pages_show_list`, `pages_read_engagement`, `pages_manage_posts`, `instagram_basic`, `instagram_content_publish`, `business_management`, `ads_management`.
+4. Put the app's ID and secret in `META_APP_ID` and `META_APP_SECRET`.
+
+While the Meta app is in development mode, only people with a role on the app (add your staff under **App roles**) can connect accounts. That's enough when your agency manages the clients' Pages through its Business Manager. For clients who should connect their own accounts, Meta has to approve the app first (App Review).
+
+For Instagram, the client's Instagram account must be a business or creator account linked to their Facebook Page. Story-size ads are posted as Instagram stories; the other sizes go to the feed.
+
+**Google Ads:**
+1. In Google Cloud Console, create a project and enable the **Google Ads API**.
+2. Create an OAuth client of the **Web application** type, with this redirect address: `<your address>/connect/google/callback`.
+3. Put the client ID and secret in `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`.
+
+Google may ask you to apply for API access for the Cloud project before it accepts uploads. If you reach client accounts through a manager (MCC) account, enter its ID on the account page when you connect.
+
+Banners go into the Google Ads account as image assets, ready to add to a campaign. Videos for Google Ads have to go through YouTube, so the app sends only banners there.
 
 ## Run the app
 
@@ -83,7 +123,7 @@ npx expo start
 
 1. Scan the QR code with the iPhone's Camera app (with Expo Go installed).
 2. In the app, open **Settings** and enter the server address. For a server on your computer, that's its address on your Wi-Fi network, for example `http://192.168.1.10:3000`.
-3. Enter the app token if you set one, then tap **Test connection**.
+3. Enter the app password if you set one, then tap **Test connection**.
 
 For the web version, run `npm run build:web`. It writes the site to `app/dist/`. The server then serves it at its own address, for example `http://localhost:3000`, and the app uses that same address to reach the server. The `Dockerfile` does the same in one image.
 
@@ -114,14 +154,29 @@ What each store needs:
 
 ## API
 
+The app password (`APP_TOKEN`) goes in the `x-app-token` header of every `/api` request.
+
 | Method | Path | What it does |
 |---|---|---|
-| GET | `/health` | Whether the Claude and fal.ai keys are set, and whether a password is needed |
-| GET | `/api/options` | Styles, sizes, languages and model ids |
-| POST | `/api/jobs` | Start an ad: `{ photo, logo?, brand, offer, details, style, language, formats }`. Photo and logo are data URIs. |
+| GET | `/health` | Whether the keys are set, which publishing is set up, and whether a password is needed |
+| GET | `/api/options` | Styles, sizes, languages, publishing set-up and model ids |
+| GET, POST | `/api/clients` | List clients; create a brand kit `{ name, logo?, primary, accent, style, language, tone, website, about, formats }` |
+| GET, PUT, DELETE | `/api/clients/:id` | One brand kit, with which accounts are connected (never the tokens) |
+| POST, DELETE | `/api/clients/:id/connect/:provider` | Start connecting (`meta` or `google`; returns the sign-in `url`) or disconnect |
+| POST | `/api/jobs` | Start an ad: `{ photo, clientId?, brand?, logo?, offer, details, style, language, formats }`. Photo and logo are data URIs; a client's brand kit fills in the rest. |
+| GET | `/api/jobs?client=` | Recent ads |
 | GET | `/api/jobs/:id` | Progress and results |
 | POST | `/api/jobs/:id/text` | New text or style: `{ copy: { headline, subline, cta, badge }, style? }` |
 | POST | `/api/jobs/:id/redo` | New scene for one size: `{ format }` |
 | POST | `/api/jobs/:id/video` | Make a video for one size: `{ format }` |
+| POST | `/api/jobs/:id/avatar` | Presenter video: `{ mode: 'ai' \| 'photo', gender, photo?, consent? }` |
+| POST | `/api/jobs/:id/review` | The client approval link |
+| POST | `/api/jobs/:id/slogans` | Slogan ideas for this ad |
+| POST | `/api/jobs/:id/caption` | Suggested post text |
+| POST | `/api/jobs/:id/publish` | `{ format, kind: 'image' \| 'video' \| 'presenter', targets: ['facebook', 'instagram', 'meta_ads', 'google_ads'], caption }` |
+| POST | `/api/slogans` | Slogans without an ad: `{ clientId?, product, offer?, language, photo? }` |
+| POST | `/api/shop/products` | Products from a shop `{ url }` or a CSV `{ csv }` |
+| GET, POST | `/api/batches` | Bulk orders; start one with `{ clientId?, products, offer, style, language, formats }` |
+| GET | `/api/batches/:id` | A bulk order's progress |
 
-Files are served under `/files/<job id>/`.
+Public pages: `/review/<token>` (client approval), `/connect/meta/...` and `/connect/google/...` (account sign-in). Files are served under `/files/`.

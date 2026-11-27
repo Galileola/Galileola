@@ -6,7 +6,7 @@ import { promisify } from 'node:util';
 import sharp from 'sharp';
 import { startVideo, videoResult } from './fal.js';
 import { renderOverlay } from './typeset.js';
-import { jobFiles, saveFile } from './jobs.js';
+import { jobFiles, saveFile, persist } from './jobs.js';
 
 const run = promisify(execFile);
 const FFMPEG = process.env.FFMPEG_PATH || 'ffmpeg';
@@ -22,7 +22,7 @@ async function videoSize(file) {
 
 // Puts the banner text on the AI video: it fades in after half a second.
 async function addText(job, formatId, rawVideo) {
-  const files = jobFiles(job.id);
+  const files = await jobFiles(job);
   const state = job.formats[formatId];
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'adstudio-'));
   try {
@@ -33,7 +33,7 @@ async function addText(job, formatId, rawVideo) {
     const { width, height } = await videoSize(input);
     const overlay = await renderOverlay({
       formatId, layoutId: state.layout, width, height, styleId: job.brief.style,
-      copy: job.brief.copy, brand: files.brand, palette: job.brief.palette, tone: files.tones[formatId],
+      copy: job.brief.copy, brand: files.brand, palette: job.brief.palette, tone: job.tones[formatId],
     });
     fs.writeFileSync(overlayFile, overlay);
     await run(FFMPEG, [
@@ -63,10 +63,12 @@ export function followVideo(job, formatId) {
       const finished = await addText(job, formatId, result.video);
       video.url = saveFile(job.id, `video-${formatId}-v${job.version}.mp4`, finished);
       video.status = 'done';
+      persist(job);
     } catch (err) {
       console.error(`[${job.id}] video ${formatId} failed:`, err.message);
       video.status = 'error';
       video.error = 'The video could not be made. Please try again.';
+      persist(job);
     }
   };
   setTimeout(poll, POLL_MS);
@@ -74,11 +76,32 @@ export function followVideo(job, formatId) {
 
 /** Starts a video ad for one finished format and follows it in the background. */
 export async function makeVideo(job, formatId) {
-  const files = jobFiles(job.id);
+  const files = await jobFiles(job);
   const image = await sharp(files.scenes[formatId]).jpeg({ quality: 92 }).toBuffer();
   const prompt = `${job.brief.video.motion} The ${job.brief.product.name} stays perfectly still, sharp and unchanged, with its label exactly as it is. No text appears.`;
   job.videos[formatId] = { status: 'starting', startedAt: Date.now() };
   job.videos[formatId].requestId = await startVideo({ image, prompt });
   job.videos[formatId].status = 'rendering';
+  persist(job);
   followVideo(job, formatId);
+}
+
+/** After a restart, keeps following videos that were still being filmed. */
+export function resumeVideos(jobs) {
+  for (const job of jobs) {
+    if (job.avatar?.status === 'working') {
+      job.avatar.status = 'error';
+      job.avatar.error = 'The presenter video was interrupted by a server restart. Please try again.';
+      persist(job);
+    }
+    for (const [formatId, video] of Object.entries(job.videos || {})) {
+      if (['rendering', 'finishing'].includes(video.status) && video.requestId) {
+        video.status = 'rendering';
+        followVideo(job, formatId);
+      } else if (video.status === 'starting') {
+        video.status = 'error';
+        video.error = 'The video was interrupted. Please try again.';
+      }
+    }
+  }
 }
