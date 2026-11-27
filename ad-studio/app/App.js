@@ -3,7 +3,7 @@ import { ScrollView, View, KeyboardAvoidingView, Platform, ActivityIndicator, St
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { C } from './src/theme';
-import { setServer, getServer } from './src/api';
+import { setServer, getServer, api } from './src/api';
 import { load, save, addRecent } from './src/store';
 import CreateScreen from './src/screens/CreateScreen';
 import JobScreen from './src/screens/JobScreen';
@@ -19,7 +19,14 @@ export default function App() {
       const server = saved.server.url ? saved.server : getServer();
       setServer(server);
       setData({ ...saved, server });
-      if (!server.url) setScreen({ name: 'settings' });
+      if (!server.url) {
+        setScreen({ name: 'settings' });
+        return;
+      }
+      // Ask for the app password up front if the server needs one.
+      api.health().then((h) => {
+        if (h.passwordRequired && !server.token) setScreen({ name: 'settings' });
+      }).catch(() => {});
     });
   }, []);
 

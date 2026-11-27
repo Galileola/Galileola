@@ -23,6 +23,21 @@ After that, in the app you can:
 | Story 9:16 | 1080 × 1920 | Stories, Reels, TikTok |
 | Banner 1.91:1 | 1200 × 628 | Facebook link ads, websites |
 
+## Try it online (Render)
+
+The repository includes a setup file for [Render](https://render.com), a hosting service. Render builds the server and the web version of the app together and gives them one web address, which you open on your phone or computer.
+
+1. Sign up at render.com with **Sign in with GitHub**, and allow Render to see the `Galileola` repository.
+2. Click **New → Blueprint** and choose the `Galileola` repository and the branch that holds Ad Studio.
+3. Render asks for three values:
+   - `ANTHROPIC_API_KEY`: your Claude key (starts with `sk-ant-`)
+   - `FAL_KEY`: your fal.ai key
+   - `APP_TOKEN`: a password you make up; the app asks for it once
+4. Click **Deploy Blueprint**. The first build takes several minutes.
+5. Open the address Render shows (it ends in `onrender.com`), enter the password and make an ad. On an iPhone, tap **Share → Add to Home Screen** to open it like an app.
+
+The setup uses Render's free plan, which is fine for trying it out. A free service sleeps when nobody uses it, so the first visit after a break can take about a minute. It also loses its saved files when it restarts, so save the ads you want to keep. For daily work, switch the service to a paid plan in Render.
+
 ## AI services
 
 | Job | Service | Model id |
@@ -70,13 +85,13 @@ npx expo start
 2. In the app, open **Settings** and enter the server address. For a server on your computer, that's its address on your Wi-Fi network, for example `http://192.168.1.10:3000`.
 3. Enter the app token if you set one, then tap **Test connection**.
 
-For a web version, run `npm run build:web`. It writes a static site to `dist/`, which can be hosted anywhere.
+For the web version, run `npm run build:web`. It writes the site to `app/dist/`. The server then serves it at its own address, for example `http://localhost:3000`, and the app uses that same address to reach the server. The `Dockerfile` does the same in one image.
 
 ## API
 
 | Method | Path | What it does |
 |---|---|---|
-| GET | `/health` | Whether the Claude and fal.ai keys are set |
+| GET | `/health` | Whether the Claude and fal.ai keys are set, and whether a password is needed |
 | GET | `/api/options` | Styles, sizes, languages and model ids |
 | POST | `/api/jobs` | Start an ad: `{ photo, logo?, brand, offer, details, style, language, formats }`. Photo and logo are data URIs. |
 | GET | `/api/jobs/:id` | Progress and results |

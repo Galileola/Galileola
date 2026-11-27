@@ -1,4 +1,7 @@
 import 'dotenv/config';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import express from 'express';
 import cors from 'cors';
 import { FORMATS, FORMAT_IDS } from './src/formats.js';
@@ -25,7 +28,7 @@ app.use('/api', (req, res, next) => {
 });
 
 app.get('/health', (req, res) => {
-  res.json({ ok: true, claude: claudeConfigured(), fal: falConfigured() });
+  res.json({ ok: true, claude: claudeConfigured(), fal: falConfigured(), passwordRequired: Boolean(process.env.APP_TOKEN) });
 });
 
 app.get('/api/options', (req, res) => {
@@ -115,6 +118,12 @@ app.post('/api/jobs/:id/video', async (req, res) => {
   res.status(202).json(publicJob(job));
 });
 
+// The web version of the app, when it has been built (npm run build:web in
+// app/, or the Docker image). Then one address serves the app and the API.
+const WEB_DIR = path.resolve(process.env.WEB_DIR || path.join(path.dirname(fileURLToPath(import.meta.url)), '../app/dist'));
+const hasWeb = fs.existsSync(path.join(WEB_DIR, 'index.html'));
+if (hasWeb) app.use(express.static(WEB_DIR, { index: 'index.html' }));
+
 app.use((err, req, res, next) => {
   if (err?.type === 'entity.too.large') return res.status(413).json({ error: 'The upload is too large.' });
   if (err?.status === 404) return res.status(404).json({ error: 'Not found' });
@@ -125,5 +134,5 @@ app.use((err, req, res, next) => {
 startCleanup();
 const port = Number(process.env.PORT) || 3000;
 app.listen(port, () => {
-  console.log(`Ad Studio server on port ${port} (Claude: ${claudeConfigured() ? 'ready' : 'missing key'}, fal.ai: ${falConfigured() ? 'ready' : 'missing key'})`);
+  console.log(`Ad Studio server on port ${port}${hasWeb ? ' with the web app' : ''} (Claude: ${claudeConfigured() ? 'ready' : 'missing key'}, fal.ai: ${falConfigured() ? 'ready' : 'missing key'})`);
 });

@@ -1,8 +1,13 @@
 // Talks to the Ad Studio server. The server holds the AI keys; the app
 // never does. APP_TOKEN only stops strangers from using your server.
 
+// On the web, when the server itself serves the app, the API is on the same address.
+const sameOrigin = typeof window !== 'undefined' && window.location?.protocol?.startsWith('http') && !process.env.EXPO_PUBLIC_API_URL && !/:(8081|19006)$/.test(window.location.host)
+  ? window.location.origin
+  : '';
+
 let config = {
-  url: process.env.EXPO_PUBLIC_API_URL || '',
+  url: process.env.EXPO_PUBLIC_API_URL || sameOrigin,
   token: process.env.EXPO_PUBLIC_APP_TOKEN || '',
 };
 

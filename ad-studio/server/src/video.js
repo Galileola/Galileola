@@ -39,7 +39,7 @@ async function addText(job, formatId, rawVideo) {
     await run(FFMPEG, [
       '-y', '-i', input, '-loop', '1', '-i', overlayFile,
       '-filter_complex', '[1:v]format=rgba,fade=in:st=0.5:d=0.7:alpha=1[t];[0:v][t]overlay=0:0:shortest=1,format=yuv420p',
-      '-c:v', 'libx264', '-crf', '18', '-preset', 'medium', '-movflags', '+faststart', '-an', output,
+      '-c:v', 'libx264', '-crf', '18', '-preset', 'veryfast', '-movflags', '+faststart', '-an', output,
     ]);
     return fs.readFileSync(output);
   } finally {

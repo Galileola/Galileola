@@ -30,9 +30,9 @@ export default function SettingsScreen({ server, onSave, onBack }) {
       </TouchableOpacity>
       <Card>
         <Title>Server</Title>
-        <Hint style={{ marginBottom: 14 }}>The Ad Studio server holds the AI keys and makes the ads. Ask whoever set it up for its address.</Hint>
+        <Hint style={{ marginBottom: 14 }}>The Ad Studio server holds the AI keys and makes the ads. Ask whoever set it up for its address and password.</Hint>
         <Field label="Server address" value={url} onChangeText={setUrl} placeholder="https://ads.example.com" autoCapitalize="none" autoCorrect={false} keyboardType="url" />
-        <Field label="App token (if the server uses one)" value={token} onChangeText={setToken} autoCapitalize="none" autoCorrect={false} secureTextEntry />
+        <Field label="App password (if the server has one)" value={token} onChangeText={setToken} autoCapitalize="none" autoCorrect={false} secureTextEntry />
         {status ? <Note kind={status.ok ? 'warn' : 'bad'}>{status.text}</Note> : null}
         <View style={s.row}>
           <Button kind="secondary" label="Test connection" onPress={test} busy={testing} style={{ flex: 1 }} />

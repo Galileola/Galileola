@@ -1,0 +1,19 @@
+# Render Blueprint for Ad Studio (https://render.com/docs/blueprint-spec).
+# In Render: New > Blueprint > choose this repository. Render asks for the
+# three values marked sync: false, builds ad-studio/Dockerfile and gives
+# the app its own web address.
+services:
+  - type: web
+    name: ad-studio
+    runtime: docker
+    plan: free
+    dockerfilePath: ./ad-studio/Dockerfile
+    dockerContext: ./ad-studio
+    healthCheckPath: /health
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: FAL_KEY
+        sync: false
+      - key: APP_TOKEN
+        sync: false
