@@ -29,6 +29,17 @@ function findFfmpeg() {
 
 export const FFMPEG = findFfmpeg();
 
+// Checked once at start-up and shown on /health, so a host that can't run
+// ffmpeg is noticed before anyone orders a video.
+let ffmpegReady = null;
+execFile(FFMPEG, ['-version'], { timeout: 20_000 }, (err) => {
+  ffmpegReady = !err;
+  if (err) console.error(`Video tool (ffmpeg) does not run here: ${err.message}`);
+});
+export function videoTools() {
+  return { ready: ffmpegReady, source: FFMPEG === 'ffmpeg' ? 'system' : process.env.FFMPEG_PATH ? 'FFMPEG_PATH' : 'bundled' };
+}
+
 export function ffmpeg(args) {
   return run(FFMPEG, ['-hide_banner', '-loglevel', 'error', ...args], { maxBuffer: 20 * 1024 * 1024 });
 }

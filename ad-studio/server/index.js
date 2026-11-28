@@ -13,6 +13,7 @@ import { OUTPUT_DIR, createJob, getJob, listJobs, publicJob, persist, filePath, 
 import { enqueue, queueLength, resumeQueue, retypeset, redoFormat } from './src/pipeline.js';
 import { makeVideo, resumeVideos } from './src/video.js';
 import { makeAvatar } from './src/avatar.js';
+import { videoTools } from './src/tools.js';
 import { listClients, getClient, publicClient, saveClient, deleteClient } from './src/clients.js';
 import { reviewToken, getReview, decide, reviewPage, expiredPage } from './src/review.js';
 import { readShop, parseCsv } from './src/shop.js';
@@ -43,7 +44,7 @@ const userError = (res, err, status = 400) => res.status(err.status && err.statu
 // ---------- Public pages: health, client review, account sign-in ----------
 
 app.get('/health', (req, res) => {
-  res.json({ ok: true, claude: claudeConfigured(), fal: falConfigured(), publishing: publishingSetup(), passwordRequired: Boolean(process.env.APP_TOKEN) });
+  res.json({ ok: true, claude: claudeConfigured(), fal: falConfigured(), video: videoTools(), publishing: publishingSetup(), passwordRequired: Boolean(process.env.APP_TOKEN) });
 });
 
 app.get('/review/:token', (req, res) => {
