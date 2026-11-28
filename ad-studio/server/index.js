@@ -1,3 +1,4 @@
+import './src/quiet.js';
 import 'dotenv/config';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -8,7 +9,7 @@ import { FORMATS, FORMAT_IDS } from './src/formats.js';
 import { STYLES, STYLE_IDS } from './src/styles.js';
 import { claudeConfigured, CLAUDE_MODEL, writeSlogans } from './src/director.js';
 import { falConfigured, FAL_MODELS } from './src/fal.js';
-import { OUTPUT_DIR, createJob, getJob, listJobs, publicJob, persist, filePath, startHousekeeping } from './src/jobs.js';
+import { OUTPUT_DIR, createJob, getJob, listJobs, publicJob, persist, filePath, startHousekeeping, rememberAddress } from './src/jobs.js';
 import { enqueue, queueLength, resumeQueue, retypeset, redoFormat } from './src/pipeline.js';
 import { makeVideo, resumeVideos } from './src/video.js';
 import { makeAvatar } from './src/avatar.js';
@@ -17,7 +18,7 @@ import { reviewToken, getReview, decide, reviewPage, expiredPage } from './src/r
 import { readShop, parseCsv } from './src/shop.js';
 import { startBatch, getBatch, listBatches, batchJobs } from './src/batches.js';
 import {
-  TARGETS, publishingSetup, baseUrl, publish, suggestCaption, disconnect,
+  TARGETS, publishingSetup, baseUrl, startPublish, suggestCaption, disconnect,
   metaConnectUrl, metaCallback, metaFinish, googleConnectUrl, googleCallback, googleFinish,
 } from './src/publish.js';
 import { metaPickPage, googlePickPage, donePage, errorPage } from './src/pages.js';
@@ -30,6 +31,10 @@ app.set('trust proxy', 1);
 app.use(cors());
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: false, limit: '100kb' }));
+app.use((req, res, next) => {
+  rememberAddress(baseUrl(req));
+  next();
+});
 app.use('/files', express.static(OUTPUT_DIR, { maxAge: '7d', fallthrough: false }));
 
 const text = (value, max) => (typeof value === 'string' ? value.trim().slice(0, max) : '');
@@ -331,7 +336,7 @@ app.post('/api/jobs/:id/caption', async (req, res) => {
   }
 });
 
-app.post('/api/jobs/:id/publish', async (req, res) => {
+app.post('/api/jobs/:id/publish', (req, res) => {
   const job = finishedJob(req, res);
   if (!job) return;
   const b = req.body || {};
@@ -339,8 +344,8 @@ app.post('/api/jobs/:id/publish', async (req, res) => {
   if (!targets.length) return res.status(400).json({ error: 'Choose where to publish.' });
   const kind = ['image', 'video', 'presenter'].includes(b.kind) ? b.kind : 'image';
   try {
-    const results = await publish(job, { format: b.format, kind, targets, caption: text(b.caption, 2200) }, baseUrl(req));
-    res.json({ results, job: publicJob(job) });
+    const runId = startPublish(job, { format: b.format, kind, targets, caption: text(b.caption, 2200) }, baseUrl(req));
+    res.status(202).json({ runId, job: publicJob(job) });
   } catch (err) {
     userError(res, err);
   }
@@ -418,7 +423,10 @@ app.get('/api/batches/:id', (req, res) => {
 
 // ---------- The web app, when built ----------
 
-const WEB_DIR = path.resolve(process.env.WEB_DIR || path.join(path.dirname(fileURLToPath(import.meta.url)), '../app/dist'));
+// The built web app ships inside the server folder (public/), so the server
+// folder alone can be deployed; ../app/dist is used when building locally.
+const HERE = path.dirname(fileURLToPath(import.meta.url));
+const WEB_DIR = path.resolve(process.env.WEB_DIR || [path.join(HERE, 'public'), path.join(HERE, '../app/dist')].find((d) => fs.existsSync(path.join(d, 'index.html'))) || path.join(HERE, 'public'));
 const hasWeb = fs.existsSync(path.join(WEB_DIR, 'index.html'));
 if (hasWeb) app.use(express.static(WEB_DIR, { index: 'index.html' }));
 

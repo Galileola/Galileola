@@ -259,42 +259,51 @@ export async function suggestCaption(job) {
 }
 
 /**
- * Publishes one finished banner or video to the chosen places.
+ * Starts publishing one finished banner or video to the chosen places.
  * what: { format, kind: 'image' | 'video' | 'presenter', targets, caption }.
- * Returns one result per target ({ target, ok, id, link, error }).
+ * Checks right away and throws if it can't start; the publishing itself
+ * runs in the background (an Instagram video can take minutes) and its
+ * results appear in job.publishRuns[runId] and job.published.
  */
-export async function publish(job, { format, kind, targets, caption }, base) {
+export function startPublish(job, { format, kind, targets, caption }, base) {
   if (!job.clientId) throw fail('No client', 'Publishing works for ads made for a saved client. Choose a client when you create the ad.');
-  const secrets = getSecrets(job.clientId);
   let mediaPath;
   if (kind === 'presenter') mediaPath = job.avatar?.status === 'done' ? job.avatar.url : null;
   else if (kind === 'video') mediaPath = job.videos?.[format]?.status === 'done' ? job.videos[format].url : null;
   else mediaPath = job.formats[format]?.stage === 'done' ? job.formats[format].banner : null;
   if (!mediaPath) throw fail('Nothing to publish', 'This ad isn’t finished yet.');
 
-  const mediaKind = kind === 'image' ? 'image' : 'video';
-  const url = `${base}${mediaPath}`;
-  const name = `${job.request.brand || 'Ad'} – ${job.brief?.copy?.headline || ''} (${format})`.slice(0, 120);
-  const file = mediaKind === 'image' ? readFile(job.id, path.basename(mediaPath)) : null;
-  const story = format === 'story' || kind === 'presenter';
-  const text = caption || '';
-
-  const results = [];
-  for (const target of targets) {
-    try {
-      let r;
-      if (target === 'facebook') r = await publishMetaPage(secrets.meta, { kind: mediaKind, url, text });
-      else if (target === 'instagram') r = await publishInstagram(secrets.meta, { kind: mediaKind, url, text, story });
-      else if (target === 'meta_ads') r = await publishMetaAds(secrets.meta, { kind: mediaKind, url, file, name });
-      else if (target === 'google_ads') r = await publishGoogleAds(secrets.google, { kind: mediaKind, file, name });
-      else continue;
-      results.push({ target, ok: true, ...r });
-    } catch (err) {
-      console.error(`[${job.id}] publish to ${target} failed:`, err.message);
-      results.push({ target, ok: false, error: err.userMessage || 'Publishing failed.' });
-    }
-  }
-  job.published = [...(job.published || []), ...results.map((r) => ({ ...r, format, kind, at: now() }))];
+  const runId = newId(6);
+  const run = { status: 'working', format, kind, targets, startedAt: now(), results: [] };
+  job.publishRuns = { ...(job.publishRuns || {}), [runId]: run };
   persist(job);
-  return results;
+
+  (async () => {
+    const secrets = getSecrets(job.clientId);
+    const mediaKind = kind === 'image' ? 'image' : 'video';
+    const url = `${base}${mediaPath}`;
+    const name = `${job.request.brand || 'Ad'} – ${job.brief?.copy?.headline || ''} (${format})`.slice(0, 120);
+    const file = mediaKind === 'image' ? readFile(job.id, path.basename(mediaPath)) : null;
+    const story = format === 'story' || kind === 'presenter';
+    const text = caption || '';
+    for (const target of targets) {
+      try {
+        let r;
+        if (target === 'facebook') r = await publishMetaPage(secrets.meta, { kind: mediaKind, url, text });
+        else if (target === 'instagram') r = await publishInstagram(secrets.meta, { kind: mediaKind, url, text, story });
+        else if (target === 'meta_ads') r = await publishMetaAds(secrets.meta, { kind: mediaKind, url, file, name });
+        else if (target === 'google_ads') r = await publishGoogleAds(secrets.google, { kind: mediaKind, file, name });
+        else continue;
+        run.results.push({ target, ok: true, ...r });
+      } catch (err) {
+        console.error(`[${job.id}] publish to ${target} failed:`, err.message);
+        run.results.push({ target, ok: false, error: err.userMessage || 'Publishing failed.' });
+      }
+      persist(job);
+    }
+    run.status = 'done';
+    job.published = [...(job.published || []), ...run.results.map((r) => ({ ...r, format, kind, at: now() }))];
+    persist(job);
+  })();
+  return runId;
 }

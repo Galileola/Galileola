@@ -1,10 +1,17 @@
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
-import { DatabaseSync } from 'node:sqlite';
+import { createRequire } from 'node:module';
+
+// Loaded here (not with import) so that quiet.js can hide Node's
+// "experimental" notice for it.
+const { DatabaseSync } = createRequire(import.meta.url)('node:sqlite');
 
 // Everything the agency keeps lives in DATA_DIR: the database (clients,
-// ads, approvals, connections) and the image and video files.
-export const DATA_DIR = path.resolve(process.env.DATA_DIR || 'data');
+// ads, approvals, connections) and the image and video files. By default
+// it is outside the app folder (~/ad-studio-data), so redeploying the app
+// never touches it.
+export const DATA_DIR = path.resolve(process.env.DATA_DIR || path.join(os.homedir(), 'ad-studio-data'));
 fs.mkdirSync(DATA_DIR, { recursive: true });
 
 export const db = new DatabaseSync(path.join(DATA_DIR, 'adstudio.db'));

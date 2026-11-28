@@ -33,6 +33,34 @@ After that, in the app you can:
 | Story 9:16 | 1080 × 1920 | Stories, Reels, TikTok |
 | Banner 1.91:1 | 1200 × 628 | Facebook link ads, websites |
 
+## Put it online on Hostinger (Business or Cloud web hosting)
+
+Hostinger's Business and Cloud plans run Node.js apps. The server folder contains everything, including the web version of the app, so Hostinger only deploys that folder.
+
+1. In hPanel, go to **Websites → Add website → Node.js web app**, and choose **Import Git repository**. Connect GitHub, give Hostinger access to the `Galileola` repository, and pick the branch that holds Ad Studio.
+2. Choose the web address, for example a subdomain such as `ads.yourdomain.com`.
+3. Check the deploy settings:
+   - **Root directory:** `ad-studio/server`
+   - **Node.js version:** 22 (or 24)
+   - **Entry file:** `index.js`
+   - **Build command:** leave empty
+4. Under **Environment variables**, add:
+   - `ANTHROPIC_API_KEY`: your Claude key
+   - `FAL_KEY`: your fal.ai key
+   - `APP_TOKEN`: a password you make up; the app asks for it once
+   - `PUBLIC_URL`: the full address, for example `https://ads.yourdomain.com`
+   - `MAX_RUNNING_JOBS`: `1` to start with (shared hosting has limited memory and processes; more ads simply wait in the queue)
+   - later, for publishing: `META_APP_ID`, `META_APP_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
+5. Click **Deploy**, then open the address, enter the password and make an ad. Every push to the branch redeploys automatically.
+
+How it fits Hostinger's limits:
+- **120-second limit:** Hostinger stops any single request after 120 seconds. Long work (making an ad, videos, publishing, bulk orders) runs in the background, and the app checks on it every few seconds.
+- **Sleeping when idle:** Hostinger puts apps to sleep when nobody uses them. While work is in progress, the server visits its own address once a minute to stay awake. If it restarts anyway, unfinished ads start again by themselves; an ad that was halfway through is made again, which can cost a little extra.
+- **Data:** clients, ads and pictures are kept in `~/ad-studio-data` in your hosting account, outside the app folder, so redeploying never deletes them. Download a copy now and then with the File Manager.
+- **Video tools:** ffmpeg (used for the text on videos and the presenter video's end card) comes with the app through npm, so the hosting doesn't need it installed.
+
+If the plan's memory or process limits become a problem (many clients, many videos), a Hostinger VPS or Render (below) runs the same code without these limits.
+
 ## Put it online (Render)
 
 The repository includes a setup file (`render.yaml`) for [Render](https://render.com), a hosting service. Render builds the server and the web version of the app together and gives them one web address, which you open on your phone or computer.
@@ -67,7 +95,7 @@ Each size uses one GPT Image 2 scene, or two images if the quality check asks fo
 
 ## Run the server
 
-You need Node.js 20.19 or newer and `ffmpeg`, which is used for the video text.
+You need Node.js 22.5 or newer (for the built-in database). ffmpeg, used for the video text, is installed with the other packages.
 
 ```bash
 cd server
@@ -84,7 +112,7 @@ To get the keys:
 
 The keys stay on the server and never go into the app. Set `APP_TOKEN` as well, so that only your app can use the server.
 
-Everything is kept in `DATA_DIR` (default `data/`): a small database (clients, ads, approvals, account connections) and the pictures and videos. Ads are kept for 60 days (`JOB_TTL_DAYS`). Ads wait in a queue and `MAX_RUNNING_JOBS` (default 3) are made at the same time; after a restart, waiting ads start again.
+Everything is kept in `DATA_DIR` (default `~/ad-studio-data`, outside the app folder): a small database (clients, ads, approvals, account connections) and the pictures and videos. Ads are kept for 60 days (`JOB_TTL_DAYS`). Ads wait in a queue and `MAX_RUNNING_JOBS` (default 2) are made at the same time; after a restart, waiting ads start again.
 
 ## Publishing setup (one time)
 
@@ -125,7 +153,7 @@ npx expo start
 2. In the app, open **Settings** and enter the server address. For a server on your computer, that's its address on your Wi-Fi network, for example `http://192.168.1.10:3000`.
 3. Enter the app password if you set one, then tap **Test connection**.
 
-For the web version, run `npm run build:web`. It writes the site to `app/dist/`. The server then serves it at its own address, for example `http://localhost:3000`, and the app uses that same address to reach the server. The `Dockerfile` does the same in one image.
+For the web version, run `npm run build:web`. It writes the site to `server/public/` (this folder is committed, so the server folder can be deployed on its own; rebuild it after changing the app). The server serves it at its own address, for example `http://localhost:3000`, and the app uses that same address to reach the server. The `Dockerfile` does the same in one image.
 
 ## Android and iPhone apps
 

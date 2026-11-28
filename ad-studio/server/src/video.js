@@ -1,24 +1,14 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { execFile } from 'node:child_process';
-import { promisify } from 'node:util';
 import sharp from 'sharp';
+import { ffmpeg, probe } from './tools.js';
 import { startVideo, videoResult } from './fal.js';
 import { renderOverlay } from './typeset.js';
 import { jobFiles, saveFile, persist } from './jobs.js';
 
-const run = promisify(execFile);
-const FFMPEG = process.env.FFMPEG_PATH || 'ffmpeg';
-const FFPROBE = process.env.FFPROBE_PATH || 'ffprobe';
 const POLL_MS = 6000;
 const GIVE_UP_MS = 15 * 60 * 1000;
-
-async function videoSize(file) {
-  const { stdout } = await run(FFPROBE, ['-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=width,height', '-of', 'csv=p=0:s=x', file]);
-  const [width, height] = stdout.trim().split('x').map(Number);
-  return { width, height };
-}
 
 // Puts the banner text on the AI video: it fades in after half a second.
 async function addText(job, formatId, rawVideo) {
@@ -30,13 +20,13 @@ async function addText(job, formatId, rawVideo) {
     const overlayFile = path.join(dir, 'text.png');
     const output = path.join(dir, 'out.mp4');
     fs.writeFileSync(input, rawVideo);
-    const { width, height } = await videoSize(input);
+    const { width, height } = await probe(input);
     const overlay = await renderOverlay({
       formatId, layoutId: state.layout, width, height, styleId: job.brief.style,
       copy: job.brief.copy, brand: files.brand, palette: job.brief.palette, tone: job.tones[formatId],
     });
     fs.writeFileSync(overlayFile, overlay);
-    await run(FFMPEG, [
+    await ffmpeg([
       '-y', '-i', input, '-loop', '1', '-i', overlayFile,
       '-filter_complex', '[1:v]format=rgba,fade=in:st=0.5:d=0.7:alpha=1[t];[0:v][t]overlay=0:0:shortest=1,format=yuv420p',
       '-c:v', 'libx264', '-crf', '18', '-preset', 'veryfast', '-movflags', '+faststart', '-an', output,

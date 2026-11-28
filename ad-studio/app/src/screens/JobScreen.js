@@ -82,10 +82,20 @@ function PublishPanel({ job, format, kind, connections, onPublished }) {
   const go = async () => {
     setPublishing(true);
     setError('');
+    setResults(null);
     try {
-      const r = await api.publish(job.id, { format, kind, targets, caption });
-      setResults(r.results);
-      onPublished?.(r.job);
+      const { runId } = await api.publish(job.id, { format, kind, targets, caption });
+      // Publishing runs on the server; an Instagram video can take a few minutes.
+      for (let i = 0; i < 200; i++) {
+        await new Promise((r) => setTimeout(r, 2500));
+        const next = await api.job(job.id);
+        const run = next.publishRuns?.[runId];
+        if (run) setResults(run.results);
+        if (run?.status === 'done') {
+          onPublished?.(next);
+          break;
+        }
+      }
     } catch (e) {
       setError(e.message);
     } finally {

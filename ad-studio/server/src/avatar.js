@@ -1,9 +1,8 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { execFile } from 'node:child_process';
-import { promisify } from 'node:util';
 import sharp from 'sharp';
+import { ffmpeg, probe } from './tools.js';
 import { writeScript } from './director.js';
 import { speak, presenterImage, talkingAvatar, download } from './fal.js';
 import { jobFiles, saveFile, persist, readFile } from './jobs.js';
@@ -12,16 +11,7 @@ import { jobFiles, saveFile, persist, readFile } from './jobs.js';
 // photo, with their permission) talks about the product for about 12
 // seconds; the finished banner closes the video.
 
-const run = promisify(execFile);
-const FFMPEG = process.env.FFMPEG_PATH || 'ffmpeg';
-const FFPROBE = process.env.FFPROBE_PATH || 'ffprobe';
 const VOICES = { female: 'Sarah', male: 'Brian' };
-
-async function probe(file) {
-  const { stdout } = await run(FFPROBE, ['-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=width,height:format=duration', '-of', 'json', file]);
-  const info = JSON.parse(stdout);
-  return { width: info.streams[0].width, height: info.streams[0].height, duration: Number(info.format.duration) };
-}
 
 // Presenter clip, then a 3-second end card with the banner, cross-faded;
 // the voice track runs under the clip and silence under the end card.
@@ -43,7 +33,7 @@ async function withEndCard(clip, voice, banner) {
       await sharp({ create: { width: W, height: H, channels: 3, background: '#000000' } }).png().toFile(endFile);
     }
     const fade = 0.5;
-    await run(FFMPEG, [
+    await ffmpeg([
       '-y', '-i', clipFile, '-loop', '1', '-t', '3', '-i', endFile, '-i', voiceFile,
       '-filter_complex',
       `[0:v]fps=30,scale=${W}:${H},setsar=1,format=yuv420p[a];[1:v]fps=30,scale=${W}:${H},setsar=1,format=yuv420p[b];` +

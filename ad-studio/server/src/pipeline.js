@@ -1,4 +1,5 @@
 import sharp from 'sharp';
+import './tools.js';
 import { FORMATS, pickLayout } from './formats.js';
 import { writeBrief, reviewScene } from './director.js';
 import { removeBackground, generateScene, generateSceneAlt } from './fal.js';
@@ -143,8 +144,8 @@ export async function runJob(job) {
 }
 
 // Jobs wait in this queue so that bulk orders don't overload the AI
-// services or the server. MAX_RUNNING_JOBS run at the same time.
-const MAX_RUNNING = Number(process.env.MAX_RUNNING_JOBS) || 3;
+// services or the server. MAX_RUNNING_JOBS (default 2) run at the same time.
+const MAX_RUNNING = Number(process.env.MAX_RUNNING_JOBS) || 2;
 const queue = [];
 let running = 0;
 

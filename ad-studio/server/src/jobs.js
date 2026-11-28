@@ -164,7 +164,16 @@ function busy(job) {
   return job.status === 'running' || job.status === 'queued'
     || Object.values(job.formats).some((f) => !['done', 'error', 'waiting'].includes(f.stage))
     || Object.values(job.videos || {}).some((v) => ['starting', 'rendering', 'finishing'].includes(v.status))
-    || ['working'].includes(job.avatar?.status);
+    || job.avatar?.status === 'working'
+    || Object.values(job.publishRuns || {}).some((r) => r.status === 'working');
+}
+
+// Some hosts (Hostinger's Node.js hosting, free plans elsewhere) put an app
+// to sleep when no requests come in. While work is in progress, the server
+// calls its own public address once a minute so it stays awake.
+let selfUrl = process.env.PUBLIC_URL || process.env.RENDER_EXTERNAL_URL || null;
+export function rememberAddress(url) {
+  if (!selfUrl && /^https?:\/\//.test(url)) selfUrl = url.replace(/\/+$/, '');
 }
 
 /** Saves busy jobs every few seconds, and removes old jobs and their files. */
@@ -172,6 +181,10 @@ export function startHousekeeping() {
   setInterval(() => {
     for (const job of live.values()) if (busy(job)) persist(job);
   }, 2000).unref();
+
+  setInterval(() => {
+    if (selfUrl && [...live.values()].some(busy)) fetch(`${selfUrl}/health`, { signal: AbortSignal.timeout(20_000) }).catch(() => {});
+  }, 60_000).unref();
 
   const sweep = () => {
     const cutoff = new Date(Date.now() - TTL_MS).toISOString();
