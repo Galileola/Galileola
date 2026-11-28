@@ -33,7 +33,7 @@ async function call(path, { method = 'GET', body } = {}) {
   try {
     res = await fetch(`${base()}${path}`, {
       method,
-      headers: { 'content-type': 'application/json', ...(config.token ? { 'x-app-token': config.token } : {}) },
+      headers: { 'content-type': 'application/json', ...(config.token ? { 'x-app-token': encodeURIComponent(config.token.trim()) } : {}) },
       body: body ? JSON.stringify(body) : undefined,
     });
   } catch {

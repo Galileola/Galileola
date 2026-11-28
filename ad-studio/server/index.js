@@ -1,6 +1,7 @@
 import './src/quiet.js';
 import 'dotenv/config';
 import fs from 'node:fs';
+import crypto from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import express from 'express';
@@ -44,7 +45,7 @@ const userError = (res, err, status = 400) => res.status(err.status && err.statu
 // ---------- Public pages: health, client review, account sign-in ----------
 
 app.get('/health', (req, res) => {
-  res.json({ ok: true, claude: claudeConfigured(), fal: falConfigured(), video: videoTools(), publishing: publishingSetup(), passwordRequired: Boolean(process.env.APP_TOKEN) });
+  res.json({ ok: true, claude: claudeConfigured(), fal: falConfigured(), video: videoTools(), publishing: publishingSetup(), passwordRequired: Boolean(cleanPassword(process.env.APP_TOKEN)) });
 });
 
 app.get('/review/:token', (req, res) => {
@@ -105,9 +106,25 @@ app.post('/connect/google/finish', (req, res) => {
 
 // ---------- The app's API (needs the app password when APP_TOKEN is set) ----------
 
+// Spaces around the password and invisible characters (often picked up when
+// copying and pasting) are ignored. The app sends the password URL-encoded so
+// that any character works in it; an unencoded password is accepted too.
+const cleanPassword = (value) => String(value ?? '').normalize('NFC').replace(/[\u200B-\u200D\u2060\uFEFF]/g, '').trim();
+
+function passwordMatches(given) {
+  const wanted = Buffer.from(cleanPassword(process.env.APP_TOKEN));
+  const tries = [given];
+  try {
+    tries.push(decodeURIComponent(given ?? ''));
+  } catch {}
+  return tries.some((value) => {
+    const candidate = Buffer.from(cleanPassword(value));
+    return candidate.length === wanted.length && crypto.timingSafeEqual(candidate, wanted);
+  });
+}
+
 app.use('/api', (req, res, next) => {
-  const token = process.env.APP_TOKEN;
-  if (token && req.get('x-app-token') !== token) return res.status(401).json({ error: 'Wrong app password.' });
+  if (cleanPassword(process.env.APP_TOKEN) && !passwordMatches(req.get('x-app-token'))) return res.status(401).json({ error: 'Wrong app password.' });
   next();
 });
 
