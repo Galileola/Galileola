@@ -7,11 +7,11 @@
     "preview": {
       "distribution": "internal",
       "android": { "buildType": "apk" },
-      "env": { "EXPO_PUBLIC_API_URL": "" }
+      "env": { "EXPO_PUBLIC_API_URL": "https://ads.sekdigital.eu" }
     },
     "production": {
       "autoIncrement": true,
-      "env": { "EXPO_PUBLIC_API_URL": "" }
+      "env": { "EXPO_PUBLIC_API_URL": "https://ads.sekdigital.eu" }
     }
   },
   "submit": {
